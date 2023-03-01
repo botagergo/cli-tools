@@ -2,8 +2,13 @@ package task_manager.ui.cli;
 
 import java.io.InputStream;
 import java.io.PrintStream;
-import java.util.List;
 import java.util.Scanner;
+
+import task_manager.api.command.Command;
+import task_manager.ui.cli.command_parser.ArgumentList;
+import task_manager.ui.cli.command_parser.CommandParser;
+import task_manager.ui.cli.command_parser.CommandParserFactory;
+import task_manager.ui.cli.command_parser.CommandParserFactoryImpl;
 
 public class SimpleCommandLine implements CommandLine {
 
@@ -13,23 +18,33 @@ public class SimpleCommandLine implements CommandLine {
         scanner = new Scanner(input);
 
         argParser = new RegexArgumentParser();
+
+        commandParserFactory = new CommandParserFactoryImpl();
         executor = new Executor(input, output);
     }
 
     public void run() {
         output.print(prompt);
         while (scanner.hasNext()) {
-            String command = scanner.nextLine().trim();
+            String commandStr = scanner.nextLine().trim();
 
             try {
-                List<String> arguments = argParser.parse(command);
-                executor.execute(arguments);
+                ArgumentList arguments = argParser.parse(commandStr);
+
+                if (arguments.commandName == null) {
+                    continue;
+                }
+
+                CommandParser parser = commandParserFactory.getParser(arguments);
+                Command command = parser.parse(arguments);
+                executor.execute(command);
 
                 if (executor.shouldExit()) {
                     break;
                 }
-            } catch (ArgumentParserException e) {
-                output.println(e.getMessage());
+            } catch (Exception e) {
+                output.println(e);
+                e.printStackTrace();
             }
 
             output.print(prompt);
@@ -42,6 +57,7 @@ public class SimpleCommandLine implements CommandLine {
     private Scanner scanner;
 
     private ArgumentParser argParser;
+    private CommandParserFactory commandParserFactory;
     private Executor executor;
 
     private static String prompt = "> ";

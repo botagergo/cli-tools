@@ -8,58 +8,58 @@ import org.testng.annotations.*;
 import task_manager.ui.cli.ArgumentParser;
 import task_manager.ui.cli.ArgumentParserException;
 import task_manager.ui.cli.RegexArgumentParser;
+import task_manager.ui.cli.command_parser.ArgumentList;
 
 import static org.testng.Assert.*;
-
-import java.util.List;
 
 public class RegexArgumentParserTest {
     ArgumentParser argParser = new RegexArgumentParser();
 
     @Test
-    public void emptyCommand() throws ArgumentParserException {
-        assertEquals(argParser.parse("").size(), 0);
-        assertEquals(argParser.parse(" ").size(), 0);
-        assertEquals(argParser.parse(" \t\n \t").size(), 0);
+    public void testEmptyCommand() throws ArgumentParserException {
+        assertEquals(argParser.parse("").commandName, null);
+        assertEquals(argParser.parse(" ").commandName, null);
+        assertEquals(argParser.parse(" \t\n \t").commandName, null);
     }
 
     @Test
-    public void singleArgument() throws ArgumentParserException {
-        List<String> args = argParser.parse("test");
-        assertEquals(args.size(), 1);
-        assertEquals(args.get(0), "test");
+    public void testSingleArgument() throws ArgumentParserException {
+        ArgumentList argList = argParser.parse("test");
+        assertEquals(argList.commandName, "test");
 
-        args = argParser.parse(" \t@^!:123?& ");
-        assertEquals(args.size(), 1);
-        assertEquals(args.get(0), "@^!:123?&");
+        argList = argParser.parse(" \t@^!:123?& ");
+        assertEquals(argList.commandName, "@^!:123?&");
     }
 
     @Test
-    public void multipleArguments() throws ArgumentParserException {
-        List<String> args = argParser.parse("arg1 arg2 arg3");
-        assertEquals(args.size(), 3);
-        assertEquals(args.get(0), "arg1");
-        assertEquals(args.get(1), "arg2");
-        assertEquals(args.get(2), "arg3");
+    public void testMultipleArguments() throws ArgumentParserException {
+        ArgumentList argList = argParser.parse("arg1 arg2 arg3");
+        assertEquals(argList.commandName, "arg1");
+        assertEquals(argList.normalArguments.size(), 2);
+        assertEquals(argList.normalArguments.get(0), "arg2");
+        assertEquals(argList.normalArguments.get(1), "arg3");
+        assertEquals(argList.specialArguments.size(), 0);
 
-        args = argParser.parse(" arg$%@ arg3//32: \t23456 ");
-        assertEquals(args.size(), 3);
-        assertEquals(args.get(0), "arg$%@");
-        assertEquals(args.get(1), "arg3//32:");
-        assertEquals(args.get(2), "23456");
+        argList = argParser.parse(" arg$%@ arg3//32: \t23456 ");
+        assertEquals(argList.commandName, "arg$%@");
+        assertEquals(argList.normalArguments.size(), 2);
+        assertEquals(argList.normalArguments.get(0), "arg3//32:");
+        assertEquals(argList.normalArguments.get(1), "23456");
+        assertEquals(argList.specialArguments.size(), 0);
     }
 
     @Test
-    public void argumentsInQuotes() throws ArgumentParserException {
-        List<String> args = argParser.parse("\"arg1\" \"arg2  \" \"arg3\"");
-        assertEquals(args.size(), 3);
-        assertEquals(args.get(0), "arg1");
-        assertEquals(args.get(1), "arg2  ");
-        assertEquals(args.get(2), "arg3");
+    public void testArgumentsInQuotes() throws ArgumentParserException {
+        ArgumentList argList = argParser.parse("\"arg1\" \"arg2  \" \"arg3\"");
+        assertEquals(argList.commandName, "\"arg1\"");
+        assertEquals(argList.normalArguments.size(), 2);
+        assertEquals(argList.normalArguments.get(0), "arg2  ");
+        assertEquals(argList.normalArguments.get(1), "arg3");
+        assertEquals(argList.specialArguments.size(), 0);
     }
 
     @Test
-    public void unmatchedQuote() {
+    public void testUnmatchedQuote() {
         assertThrows(ArgumentParserException.class, () -> {
             argParser.parse("\"arg1 \"arg2  \" \"arg3\"");
         });

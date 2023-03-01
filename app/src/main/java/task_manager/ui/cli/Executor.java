@@ -2,7 +2,8 @@ package task_manager.ui.cli;
 
 import java.io.InputStream;
 import java.io.PrintStream;
-import java.util.List;
+
+import task_manager.api.command.Command;
 
 public class Executor {
     public Executor(InputStream input, PrintStream output) {
@@ -10,8 +11,8 @@ public class Executor {
         this.output = output;
     }
 
-    public void execute(List<String> commands) {
-        output.println("You've executed \"" + String.join(" ", commands) + "\"");
+    public void execute(Command command) {
+        command.execute();
     }
 
     public boolean shouldExit() {

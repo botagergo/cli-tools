@@ -1,7 +1,7 @@
 package task_manager.ui.cli;
 
-import java.util.List;
+import task_manager.ui.cli.command_parser.ArgumentList;
 
 public interface ArgumentParser {
-    public List<String> parse(String str) throws ArgumentParserException;
+    public ArgumentList parse(String str) throws ArgumentParserException;
 }
