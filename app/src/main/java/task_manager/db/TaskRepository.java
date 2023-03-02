@@ -6,9 +6,9 @@ import java.util.Map;
 
 public interface TaskRepository {
 
-    public void addTask(Map<String, Object> task) throws IOException;
+    public Map<String, Object> addTask(Map<String, Object> task) throws IOException;
 
-    public void modifyTask(Map<String, Object> task) throws IOException;
+    public Map<String, Object> modifyTask(Map<String, Object> task) throws IOException;
 
     public List<Map<String, Object>> getTasks() throws IOException;
 

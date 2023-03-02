@@ -19,14 +19,15 @@ public class JsonTaskRepository implements TaskRepository {
     }
 
     @Override
-    public void addTask(Map<String, Object> task) throws IOException {
+    public Map<String, Object> addTask(Map<String, Object> task) throws IOException {
         List<Map<String, Object>> tasks = readJson();
         tasks.add(task);
         writeJson(tasks);
+        return task;
     }
 
     @Override
-    public void modifyTask(Map<String, Object> task) throws IOException {
+    public Map<String, Object> modifyTask(Map<String, Object> task) throws IOException {
         List<Map<String, Object>> tasks = readJson();
         Optional<Map<String, Object>> taskToUpdate = tasks.stream().filter(
                 t -> {
@@ -39,6 +40,7 @@ public class JsonTaskRepository implements TaskRepository {
 
         taskToUpdate.get().put("done", task.get("done"));
         writeJson(tasks);
+        return taskToUpdate.get();
     }
 
     @Override

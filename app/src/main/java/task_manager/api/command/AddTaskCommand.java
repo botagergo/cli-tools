@@ -4,9 +4,13 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
+
+import lombok.extern.log4j.Log4j2;
 import task_manager.db.JsonTaskRepository;
 import task_manager.db.TaskRepository;
 
+@Log4j2
 public class AddTaskCommand implements Command {
 
     public AddTaskCommand(Map<String, Object> task) {
@@ -17,6 +21,8 @@ public class AddTaskCommand implements Command {
 
     @Override
     public void execute() {
+        log.info("execute");
+
         if (((String) task.get("name")).isEmpty()) {
             return;
         }
@@ -24,9 +30,11 @@ public class AddTaskCommand implements Command {
         task.put("done", false);
 
         try {
-            taskRepository.addTask(task);
+            task = taskRepository.addTask(task);
+            log.info("added task: {}", task);
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("Error adding task");
+            log.error("error adding task: {}\n{}", task, ExceptionUtils.getStackTrace(e));
         }
     }
 
