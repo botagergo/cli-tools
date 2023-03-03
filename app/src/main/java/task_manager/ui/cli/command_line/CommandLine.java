@@ -1,4 +1,4 @@
-package task_manager.ui.cli;
+package task_manager.ui.cli.command_line;
 
 import java.io.IOException;
 

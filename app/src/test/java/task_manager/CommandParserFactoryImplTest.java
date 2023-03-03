@@ -2,8 +2,8 @@ package task_manager;
 
 import org.testng.annotations.*;
 
+import task_manager.ui.cli.argument.ArgumentList;
 import task_manager.ui.cli.command_parser.AddTaskCommandParser;
-import task_manager.ui.cli.command_parser.ArgumentList;
 import task_manager.ui.cli.command_parser.CommandParserFactoryImpl;
 import task_manager.ui.cli.command_parser.DoneTaskCommandParser;
 import task_manager.ui.cli.command_parser.ListTasksCommandParser;
@@ -16,17 +16,20 @@ public class CommandParserFactoryImplTest {
 
     @Test
     public void testAdd() throws Exception {
-        assertTrue(commandParserFactory.getParser(getArgList("add")) instanceof AddTaskCommandParser);
+        assertTrue(
+                commandParserFactory.getParser(getArgList("add")) instanceof AddTaskCommandParser);
     }
 
     @Test
     public void testDone() throws Exception {
-        assertTrue(commandParserFactory.getParser(getArgList("done")) instanceof DoneTaskCommandParser);
+        assertTrue(commandParserFactory
+                .getParser(getArgList("done")) instanceof DoneTaskCommandParser);
     }
 
     @Test
     public void testList() throws Exception {
-        assertTrue(commandParserFactory.getParser(getArgList("list")) instanceof ListTasksCommandParser);
+        assertTrue(commandParserFactory
+                .getParser(getArgList("list")) instanceof ListTasksCommandParser);
     }
 
     @Test

@@ -3,8 +3,8 @@ package task_manager;
 import org.testng.annotations.*;
 
 import task_manager.api.command.AddTaskCommand;
+import task_manager.ui.cli.argument.ArgumentList;
 import task_manager.ui.cli.command_parser.AddTaskCommandParser;
-import task_manager.ui.cli.command_parser.ArgumentList;
 import task_manager.ui.cli.command_parser.CommandParserFactoryImpl;
 
 import static org.testng.Assert.*;
@@ -28,13 +28,15 @@ public class AddTaskCommandParserTest {
 
     @Test
     public void testMultipleNormalArgs() {
-        Map<String, Object> task = ((AddTaskCommand) parser.parse(getArgList("my", "simple", "task"))).task;
+        Map<String, Object> task =
+                ((AddTaskCommand) parser.parse(getArgList("my", "simple", "task"))).task;
         assertEquals(task.get("name"), "my simple task");
     }
 
     @Test
     public void testMultipleNormalArgsWithWhitespace() {
-        Map<String, Object> task = ((AddTaskCommand) parser.parse(getArgList("my ", "simple", "  task"))).task;
+        Map<String, Object> task =
+                ((AddTaskCommand) parser.parse(getArgList("my ", "simple", "  task"))).task;
         assertEquals(task.get("name"), "my  simple   task");
     }
 

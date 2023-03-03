@@ -1,4 +1,4 @@
-package task_manager.ui.cli;
+package task_manager.ui.cli.command_line;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -12,7 +12,8 @@ import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
 
 import task_manager.api.command.Command;
-import task_manager.ui.cli.command_parser.ArgumentList;
+import task_manager.ui.cli.Executor;
+import task_manager.ui.cli.argument.ArgumentList;
 import task_manager.ui.cli.command_parser.CommandParser;
 import task_manager.ui.cli.command_parser.CommandParserFactory;
 import task_manager.ui.cli.command_parser.CommandParserFactoryImpl;
@@ -29,23 +30,18 @@ public class JlineCommandLine implements CommandLine {
     @Override
     public void run() throws IOException {
         Terminal terminal = TerminalBuilder.terminal();
-        LineReader reader = LineReaderBuilder.builder()
-            .terminal(terminal)
-            .option(Option.DISABLE_EVENT_EXPANSION, true)
-            .build();
+        LineReader reader = LineReaderBuilder.builder().terminal(terminal)
+                .option(Option.DISABLE_EVENT_EXPANSION, true).build();
 
         String line;
         while ((line = reader.readLine(prompt)) != null) {
-            List<String> arguments = reader.getParser().parse(line, 0).words();
+            List<String> args = reader.getParser().parse(line, 0).words();
 
-            if (arguments.size() == 0) {
+            if (args.size() == 0) {
                 continue;
             }
 
-            ArgumentList argList = new ArgumentList(
-                arguments.get(0),
-                arguments.subList(1, arguments.size()),
-                List.of());
+            ArgumentList argList = ArgumentList.from(args);
 
             CommandParser parser = commandParserFactory.getParser(argList);
             if (parser == null) {

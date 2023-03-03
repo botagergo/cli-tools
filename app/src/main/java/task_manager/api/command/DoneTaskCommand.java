@@ -31,13 +31,14 @@ public class DoneTaskCommand implements Command {
             tasks = taskRepository.getTasks();
         } catch (IOException e) {
             System.out.println("Error getting the list of matching tasks");
-            log.error("error getting the list of matching tasks:\n{}", ExceptionUtils.getStackTrace(e));
+            log.error("error getting the list of matching tasks:\n{}",
+                    ExceptionUtils.getStackTrace(e));
+            return;
         }
 
-        List<Map<String, Object>> filteredTasks = tasks.stream().filter(
-                task -> {
-                    return ((String) task.get("name")).toLowerCase().contains(this.query.toLowerCase());
-                }).collect(Collectors.toList());
+        List<Map<String, Object>> filteredTasks = tasks.stream().filter(task -> {
+            return ((String) task.get("name")).toLowerCase().contains(this.query.toLowerCase());
+        }).collect(Collectors.toList());
 
         if (filteredTasks.size() == 0) {
             System.out.println("No task matches the string '" + query + "'");
@@ -52,7 +53,8 @@ public class DoneTaskCommand implements Command {
                 task = taskRepository.modifyTask(task);
             } catch (IOException e) {
                 System.out.println("Error marking task as done");
-                log.error("error marking task as done: {}\n{}", task, ExceptionUtils.getStackTrace(e));
+                log.error("error marking task as done: {}\n{}", task,
+                        ExceptionUtils.getStackTrace(e));
             }
 
             log.info("marked task as done: {}", task);

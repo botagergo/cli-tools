@@ -3,7 +3,7 @@ package task_manager;
 import org.testng.annotations.*;
 
 import task_manager.api.command.DoneTaskCommand;
-import task_manager.ui.cli.command_parser.ArgumentList;
+import task_manager.ui.cli.argument.ArgumentList;
 import task_manager.ui.cli.command_parser.CommandParserFactoryImpl;
 import task_manager.ui.cli.command_parser.DoneTaskCommandParser;
 
@@ -25,7 +25,8 @@ public class DoneTaskCommandParserTest {
 
     @Test
     public void testMultipleNormalArgs() {
-        assertEquals(((DoneTaskCommand) parser.parse(getArgList("my", "simple", "task"))).query, "my simple task");
+        assertEquals(((DoneTaskCommand) parser.parse(getArgList("my", "simple", "task"))).query,
+                "my simple task");
     }
 
     @Test
