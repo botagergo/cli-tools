@@ -33,6 +33,8 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok:1.18.20'
 
     implementation 'org.apache.commons:commons-lang3:3.12.0'
+
+    implementation 'org.jline:jline:3.20.0'
 }
 
 application {
