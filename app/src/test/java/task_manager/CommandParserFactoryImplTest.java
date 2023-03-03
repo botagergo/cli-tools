@@ -7,8 +7,6 @@ import task_manager.ui.cli.command_parser.AddTaskCommandParser;
 import task_manager.ui.cli.command_parser.CommandParserFactoryImpl;
 import task_manager.ui.cli.command_parser.DoneTaskCommandParser;
 import task_manager.ui.cli.command_parser.ListTasksCommandParser;
-import task_manager.ui.cli.command_parser.NullCommandException;
-import task_manager.ui.cli.command_parser.UnknownCommandException;
 
 import static org.testng.Assert.*;
 
@@ -34,12 +32,8 @@ public class CommandParserFactoryImplTest {
 
     @Test
     public void testUnknown() throws Exception {
-        assertThrows(UnknownCommandException.class, () -> {
-            commandParserFactory.getParser(getArgList("unknown"));
-        });
-        assertThrows(NullCommandException.class, () -> {
-            commandParserFactory.getParser(getArgList(null));
-        });
+        assertNull(commandParserFactory.getParser(getArgList("unknown")));
+        assertNull(commandParserFactory.getParser(getArgList(null)));
     }
 
     private ArgumentList getArgList(String commandName) {

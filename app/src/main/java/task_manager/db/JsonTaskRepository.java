@@ -29,10 +29,9 @@ public class JsonTaskRepository implements TaskRepository {
     @Override
     public Map<String, Object> modifyTask(Map<String, Object> task) throws IOException {
         List<Map<String, Object>> tasks = readJson();
-        Optional<Map<String, Object>> taskToUpdate = tasks.stream().filter(
-                t -> {
-                    return ((String) t.get("name")).equals(task.get("name"));
-                }).findFirst();
+        Optional<Map<String, Object>> taskToUpdate = tasks.stream().filter(t -> {
+            return ((String) t.get("uuid")).equals(task.get("uuid"));
+        }).findFirst();
 
         if (taskToUpdate.isEmpty()) {
             throw new IOException("No such task: " + (String) task.get("name"));

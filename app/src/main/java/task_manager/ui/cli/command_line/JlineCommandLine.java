@@ -1,8 +1,6 @@
 package task_manager.ui.cli.command_line;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.PrintStream;
 import java.util.List;
 
 import org.jline.reader.LineReader;
@@ -21,10 +19,8 @@ import task_manager.ui.cli.command_parser.CommandParserFactoryImpl;
 public class JlineCommandLine implements CommandLine {
 
     public JlineCommandLine() {
-        input = System.in;
-        output = System.out;
         commandParserFactory = new CommandParserFactoryImpl();
-        executor = new Executor(input, output);
+        executor = new Executor();
     }
 
     @Override
@@ -45,7 +41,7 @@ public class JlineCommandLine implements CommandLine {
 
             CommandParser parser = commandParserFactory.getParser(argList);
             if (parser == null) {
-                output.println("Unknown command: " + argList.commandName);
+                System.out.println("Unknown command: " + argList.commandName);
                 continue;
             }
 
@@ -57,9 +53,6 @@ public class JlineCommandLine implements CommandLine {
             }
         }
     }
-
-    private InputStream input;
-    private PrintStream output;
 
     private CommandParserFactory commandParserFactory;
     private Executor executor;

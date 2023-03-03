@@ -3,7 +3,7 @@ package task_manager.api.command;
 import java.io.File;
 import java.io.IOException;
 import java.util.Map;
-
+import java.util.UUID;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
 import lombok.extern.log4j.Log4j2;
@@ -28,6 +28,7 @@ public class AddTaskCommand implements Command {
         }
 
         task.put("done", false);
+        task.put("uuid", UUID.randomUUID().toString());
 
         try {
             task = taskRepository.addTask(task);
