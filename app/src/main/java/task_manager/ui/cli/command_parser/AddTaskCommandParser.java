@@ -1,20 +1,22 @@
 package task_manager.ui.cli.command_parser;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import java.util.List;
+import java.util.stream.Collectors;
 import task_manager.api.command.AddTaskCommand;
 import task_manager.api.command.Command;
 import task_manager.ui.cli.argument.ArgumentList;
+import task_manager.ui.cli.argument.SpecialArgument;
 
 public class AddTaskCommandParser implements CommandParser {
 
     @Override
     public Command parse(ArgumentList argList) {
-        String taskName = String.join(" ", argList.normalArguments);
-        Map<String, Object> task = new HashMap<>();
-        task.put("name", taskName);
-        return new AddTaskCommand(task);
+        List<String> tags = null;
+        List<SpecialArgument> tagArgs = argList.specialArguments.get('/');
+        if (tagArgs != null) {
+            tags = tagArgs.stream().map(tag -> tag.value).collect(Collectors.toList());
+        }
+        return new AddTaskCommand(String.join(" ", argList.normalArguments), tags);
     }
 
 }

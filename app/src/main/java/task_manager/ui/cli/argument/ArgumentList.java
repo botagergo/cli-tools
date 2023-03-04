@@ -1,23 +1,25 @@
 package task_manager.ui.cli.argument;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 public class ArgumentList {
     public ArgumentList(String commandName, List<String> normalArguments,
-            List<SpecialArgument> specialArguments) {
+            LinkedHashMap<Character, List<SpecialArgument>> specialArguments) {
         this.commandName = commandName;
         this.normalArguments = normalArguments;
         this.specialArguments = specialArguments;
     }
 
     public ArgumentList() {
-        this(null, new ArrayList<>(), new ArrayList<>());
+        this(null, new ArrayList<>(), new LinkedHashMap<Character, List<SpecialArgument>>());
     }
 
     public static ArgumentList from(List<String> args) {
         if (args.isEmpty()) {
-            return new ArgumentList(null, List.of(), List.of());
+            return new ArgumentList(null, List.of(),
+                    new LinkedHashMap<Character, List<SpecialArgument>>());
         }
 
         ArgumentList argList = new ArgumentList();
@@ -27,7 +29,15 @@ public class ArgumentList {
         for (String arg : args.subList(1, args.size())) {
             if (SpecialArgument.isSpecialArgument(arg)) {
                 try {
-                    argList.specialArguments.add(SpecialArgument.from(arg));
+                    SpecialArgument specialArg = SpecialArgument.from(arg);
+
+                    if (!argList.specialArguments.containsKey(specialArg.type)) {
+                        argList.specialArguments.put(specialArg.type, new ArrayList<>());
+                    }
+
+                    List<SpecialArgument> specialArgList =
+                            argList.specialArguments.get(specialArg.type);
+                    specialArgList.add(specialArg);
                 } catch (NotASpecialArgumentException e) {
                     throw new RuntimeException("This should not happen");
                 }
@@ -41,5 +51,5 @@ public class ArgumentList {
 
     public String commandName = null;
     public List<String> normalArguments;
-    public List<SpecialArgument> specialArguments;
+    public LinkedHashMap<Character, List<SpecialArgument>> specialArguments;
 }

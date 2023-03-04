@@ -9,41 +9,63 @@ import task_manager.ui.cli.command_parser.CommandParserFactoryImpl;
 
 import static org.testng.Assert.*;
 
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Map;
+import java.util.List;
 
 public class AddTaskCommandParserTest {
 
     @Test
     public void testNoNormalArgs() {
-        Map<String, Object> task = ((AddTaskCommand) parser.parse(getArgList())).task;
-        assertEquals(task.get("name"), "");
+        assertEquals(parse().name, "");
     }
 
     @Test
     public void testOneNormalArg() {
-        Map<String, Object> task = ((AddTaskCommand) parser.parse(getArgList("task"))).task;
-        assertEquals(task.get("name"), "task");
+        assertEquals(parse("task").name, "task");
     }
 
     @Test
     public void testMultipleNormalArgs() {
-        Map<String, Object> task =
-                ((AddTaskCommand) parser.parse(getArgList("my", "simple", "task"))).task;
-        assertEquals(task.get("name"), "my simple task");
+        assertEquals(parse("my", "simple", "task").name,
+                "my simple task");
     }
 
     @Test
     public void testMultipleNormalArgsWithWhitespace() {
-        Map<String, Object> task =
-                ((AddTaskCommand) parser.parse(getArgList("my ", "simple", "  task"))).task;
-        assertEquals(task.get("name"), "my  simple   task");
+        assertEquals(parse("my ", "simple", "  task").name,
+                "my  simple   task");
+    }
+
+    @Test
+    public void testOneTag() {
+        AddTaskCommand command = parse("task", "/tag");
+        assertEquals(command.name, "task");
+        assertEquals(command.tagNames, List.of("tag"));
+    }
+
+    @Test
+    public void testMultipleTags() {
+        AddTaskCommand command = parse("task", "/tag1", "/tag2", "/tag3");
+        assertEquals(command.name, "task");
+        assertEquals(command.tagNames, List.of("tag1", "tag2", "tag3"));
+    }
+
+    @Test
+    public void testMultipleSeparatedTags() {
+        AddTaskCommand command = parse("my", "/tag1", "simple", "/tag2", "task", "/tag3");
+        assertEquals(command.name, "my simple task");
+        assertEquals(command.tagNames, List.of("tag1", "tag2", "tag3"));
+    }
+
+    private AddTaskCommand parse(String... param) {
+        return (AddTaskCommand) parser.parse(getArgList(param));
     }
 
     private ArgumentList getArgList(String... param) {
-        ArgumentList argList = new ArgumentList();
-        argList.commandName = "add";
-        argList.normalArguments = Arrays.asList(param);
+        List<String> paramList = new ArrayList<>(Arrays.asList(param));
+        paramList.add(0, "add");
+        ArgumentList argList = ArgumentList.from(paramList);
         return argList;
     }
 
