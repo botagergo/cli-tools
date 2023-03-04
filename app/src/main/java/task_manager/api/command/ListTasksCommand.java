@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.fusesource.jansi.Ansi;
+import org.fusesource.jansi.Ansi.Color;
 
 import lombok.extern.log4j.Log4j2;
 import task_manager.api.use_case.TagUseCase;
@@ -37,10 +39,14 @@ public class ListTasksCommand implements Command {
 
     private void printTask(Map<String, Object> task) throws IOException {
         String name = (String) task.get("name");
+
+        Ansi done;
         if (task.containsKey("done") && task.get("done").equals(true)) {
-            name = "\u2713 " + name;
+            done = Ansi.ansi().fg(Color.GREEN).a("\u2713").reset();
+        } else {
+            done = Ansi.ansi().a("\u2022");
         }
-        System.out.format("%-32s%s\n", name, getTagsStr(task));
+        System.out.format("%s %-32s%s\n", done, name, getTagsStr(task));
     }
 
     private String getTagsStr(Map<String, Object> task) throws IOException {
@@ -56,9 +62,6 @@ public class ListTasksCommand implements Command {
                 Tag tag = tagUseCase.getTag(UUID.fromString((String) tagUuidStr));
 
                 if (tag != null) {
-                    if (tagsStr.isEmpty()) {
-                        tagsStr = "\ttags: ";
-                    }
                     tagsStr += "/" + tag.getName() + " ";
                 }
             }
