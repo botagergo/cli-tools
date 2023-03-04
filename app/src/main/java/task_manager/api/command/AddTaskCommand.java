@@ -13,6 +13,7 @@ import lombok.extern.log4j.Log4j2;
 import task_manager.api.use_case.TagUseCase;
 import task_manager.api.use_case.TaskUseCase;
 import task_manager.db.Tag;
+import task_manager.db.Task;
 
 @Log4j2
 public class AddTaskCommand implements Command {
@@ -29,10 +30,10 @@ public class AddTaskCommand implements Command {
         log.info("execute");
 
         try {
-            Map<String, Object> task = new HashMap<>();
-            task.put("name", name);
+            Task task = new Task();
+            task.setName(name);
             if (tagNames != null) {
-                task.put("tags", findTagUuids(tagNames));
+                task.setTags(findTagUuids(tagNames));
             }
             taskUseCase.addTask(task);
         } catch (IOException e) {

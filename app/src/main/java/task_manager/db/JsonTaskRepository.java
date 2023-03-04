@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class JsonTaskRepository extends JsonRepository implements TaskRepository {
 
@@ -14,35 +15,34 @@ public class JsonTaskRepository extends JsonRepository implements TaskRepository
     }
 
     @Override
-    public Map<String, Object> addTask(Map<String, Object> task) throws IOException {
+    public Task addTask(Task task) throws IOException {
         List<Map<String, Object>> tasks = readJson();
-        task.put("done", false);
-        task.put("uuid", UUID.randomUUID().toString());
-        tasks.add(task);
+        task.setUuid(UUID.randomUUID());
+        tasks.add(task.asMap());
         writeJson(tasks);
         return task;
     }
 
     @Override
-    public Map<String, Object> modifyTask(Map<String, Object> task)
+    public Task modifyTask(Task task)
             throws IOException, IllegalArgumentException {
         List<Map<String, Object>> tasks = readJson();
         Optional<Map<String, Object>> taskToUpdate = tasks.stream().filter(t -> {
-            return ((String) t.get("uuid")).equals(task.get("uuid"));
+            return ((UUID) t.get("uuid")).equals(task.getUuid());
         }).findFirst();
 
         if (taskToUpdate.isEmpty()) {
-            throw new IllegalArgumentException("No such task: " + (String) task.get("name"));
+            throw new IllegalArgumentException("No such task: " + (String) task.getName());
         }
 
-        taskToUpdate.get().put("done", task.get("done"));
+        taskToUpdate.get().put("done", task.getDone());
         writeJson(tasks);
-        return taskToUpdate.get();
+        return Task.fromMap(taskToUpdate.get());
     }
 
     @Override
-    public List<Map<String, Object>> getTasks() throws IOException {
-        return readJson();
+    public List<Task> getTasks() throws IOException {
+        return readJson().stream().map(taskMap -> Task.fromMap(taskMap)).collect(Collectors.toList());
     }
 
     private static String jsonFileName = "tasks.json";

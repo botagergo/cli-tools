@@ -5,13 +5,13 @@ import task_manager.db.TaskRepository;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
 import lombok.extern.log4j.Log4j2;
 import task_manager.db.JsonTaskRepository;
+import task_manager.db.Task;
 
 @Log4j2
 public class DoneTaskCommand implements Command {
@@ -25,7 +25,7 @@ public class DoneTaskCommand implements Command {
     @Override
     public void execute() {
         log.info("execute:");
-        List<Map<String, Object>> tasks = null;
+        List<Task> tasks = null;
 
         try {
             tasks = taskRepository.getTasks();
@@ -36,8 +36,8 @@ public class DoneTaskCommand implements Command {
             return;
         }
 
-        List<Map<String, Object>> filteredTasks = tasks.stream().filter(task -> {
-            return ((String) task.get("name")).toLowerCase().contains(this.query.toLowerCase());
+        List<Task> filteredTasks = tasks.stream().filter(task -> {
+            return ((String) task.getName()).toLowerCase().contains(this.query.toLowerCase());
         }).collect(Collectors.toList());
 
         if (filteredTasks.size() == 0) {
@@ -47,8 +47,8 @@ public class DoneTaskCommand implements Command {
             System.out.println("Multiple tasks match the string '" + query + "'");
             log.info("multiple tasks match the string '{}'", query);
         } else {
-            Map<String, Object> task = filteredTasks.get(0);
-            task.put("done", true);
+            Task task = filteredTasks.get(0);
+            task.setDone(true);
             try {
                 task = taskRepository.modifyTask(task);
             } catch (IOException e) {

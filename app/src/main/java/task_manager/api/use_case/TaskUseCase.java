@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import task_manager.db.TaskRepository;
 import task_manager.db.JsonTaskRepository;
+import task_manager.db.Task;
 
 public class TaskUseCase {
 
@@ -14,11 +15,11 @@ public class TaskUseCase {
                 new File(System.getProperty("user.home") + "/.config/task_manager/"));
     }
 
-    public void addTask(Map<String, Object> task) throws IOException {
+    public void addTask(Task task) throws IOException {
         task = taskRepository.addTask(task);
     }
 
-    public List<Map<String, Object>> getTasks() throws IOException {
+    public List<Task> getTasks() throws IOException {
         return taskRepository.getTasks();
     }
 

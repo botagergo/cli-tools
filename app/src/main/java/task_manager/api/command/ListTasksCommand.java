@@ -12,6 +12,7 @@ import lombok.extern.log4j.Log4j2;
 import task_manager.api.use_case.TagUseCase;
 import task_manager.api.use_case.TaskUseCase;
 import task_manager.db.Tag;
+import task_manager.db.Task;
 
 @Log4j2
 public class ListTasksCommand implements Command {
@@ -26,8 +27,8 @@ public class ListTasksCommand implements Command {
         log.info("execute");
 
         try {
-            List<Map<String, Object>> tasks = taskUseCase.getTasks();
-            for (Map<String, Object> task : tasks) {
+            List<Task> tasks = taskUseCase.getTasks();
+            for (Task task : tasks) {
                 printTask(task);
             }
         } catch (IOException e) {
@@ -37,11 +38,11 @@ public class ListTasksCommand implements Command {
         }
     }
 
-    private void printTask(Map<String, Object> task) throws IOException {
-        String name = (String) task.get("name");
+    private void printTask(Task task) throws IOException {
+        String name = task.getName();
 
         Ansi done;
-        if (task.containsKey("done") && task.get("done").equals(true)) {
+        if (task.getDone()) {
             done = Ansi.ansi().fg(Color.GREEN).a("\u2713").reset();
         } else {
             done = Ansi.ansi().a("\u2022");
@@ -49,21 +50,15 @@ public class ListTasksCommand implements Command {
         System.out.format("%s %-32s%s\n", done, name, getTagsStr(task));
     }
 
-    private String getTagsStr(Map<String, Object> task) throws IOException {
+    private String getTagsStr(Task task) throws IOException {
         String tagsStr = "";
 
-        List<?> tagUuidStrs = (List<?>) task.get("tags");
-        if (tagUuidStrs != null) {
-            for (Object tagUuidStr : tagUuidStrs) {
-                if (!(tagUuidStr instanceof String)) {
-                    continue;
-                }
+        List<UUID> tagUuids = task.getTags();
+        for (UUID tagUuid : tagUuids) {
+            Tag tag = tagUseCase.getTag(tagUuid);
 
-                Tag tag = tagUseCase.getTag(UUID.fromString((String) tagUuidStr));
-
-                if (tag != null) {
-                    tagsStr += "/" + tag.getName() + " ";
-                }
+            if (tag != null) {
+                tagsStr += "/" + tag.getName() + " ";
             }
         }
 
