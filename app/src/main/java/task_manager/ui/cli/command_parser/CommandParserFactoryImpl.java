@@ -14,6 +14,8 @@ public class CommandParserFactoryImpl implements CommandParserFactory {
             return new ListTasksCommandParser();
         } else if (argList.commandName.equals("done")) {
             return new DoneTaskCommandParser();
+        } else if (argList.commandName.equals("clear")) {
+            return new ClearCommandParser();
         } else {
             return null;
         }

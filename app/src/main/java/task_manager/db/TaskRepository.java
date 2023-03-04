@@ -11,4 +11,6 @@ public interface TaskRepository {
 
     public List<Task> getTasks() throws IOException;
 
+    public void deleteAllTasks() throws IOException;
+
 }

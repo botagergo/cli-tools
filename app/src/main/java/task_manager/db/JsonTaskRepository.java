@@ -45,6 +45,11 @@ public class JsonTaskRepository extends JsonRepository implements TaskRepository
         return readJson().stream().map(taskMap -> Task.fromMap(taskMap)).collect(Collectors.toList());
     }
 
+    @Override
+    public void deleteAllTasks() throws IOException {
+        writeJson(List.of());
+    }
+
     private static String jsonFileName = "tasks.json";
 
 }

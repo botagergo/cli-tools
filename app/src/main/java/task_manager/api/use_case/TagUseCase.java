@@ -27,6 +27,10 @@ public class TagUseCase {
         return tagRepository.getTag(uuid);
     }
 
+    public void deleteAllTags() throws IOException {
+        tagRepository.deleteAllTags();
+    }
+
     private TagRepository tagRepository;
 
 }

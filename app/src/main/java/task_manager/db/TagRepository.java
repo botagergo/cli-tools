@@ -9,4 +9,6 @@ public interface TagRepository {
     public Tag getTag(UUID uuid) throws IOException;
 
     public Tag addTag(String name) throws IOException;
+
+    public void deleteAllTags() throws IOException;
 }

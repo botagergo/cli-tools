@@ -4,7 +4,6 @@ import org.testng.annotations.*;
 
 import task_manager.api.command.ListTasksCommand;
 import task_manager.ui.cli.argument.ArgumentList;
-import task_manager.ui.cli.command_parser.CommandParserFactoryImpl;
 import task_manager.ui.cli.command_parser.ListTasksCommandParser;
 
 import static org.testng.Assert.*;
@@ -23,6 +22,5 @@ public class ListTasksCommandParserTest {
         return argList;
     }
 
-    CommandParserFactoryImpl commandParserFactory = new CommandParserFactoryImpl();
     ListTasksCommandParser parser = new ListTasksCommandParser();
 }

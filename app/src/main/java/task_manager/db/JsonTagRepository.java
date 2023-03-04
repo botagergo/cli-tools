@@ -48,6 +48,11 @@ public class JsonTagRepository extends JsonRepository implements TagRepository {
         return tag;
     }
 
+    @Override
+    public void deleteAllTags() throws IOException {
+        writeJson(List.of());
+    }
+
     private static String jsonFileName = "tags.json";
 
 }
