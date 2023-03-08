@@ -1,11 +1,10 @@
 package task_manager.api.command;
 
 import task_manager.db.TaskRepository;
-
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
@@ -29,38 +28,38 @@ public class DoneTaskCommand implements Command {
 
         try {
             tasks = taskRepository.getTasks();
-        } catch (IOException e) {
-            System.out.println("Error getting the list of matching tasks");
-            log.error("error getting the list of matching tasks:\n{}",
-                    ExceptionUtils.getStackTrace(e));
-            return;
-        }
+            List<Task> filteredTasks = new ArrayList<>();
 
-        List<Task> filteredTasks = tasks.stream().filter(task -> {
-            return ((String) task.getName()).toLowerCase().contains(this.query.toLowerCase());
-        }).collect(Collectors.toList());
-
-        if (filteredTasks.size() == 0) {
-            System.out.println("No task matches the string '" + query + "'");
-            log.info("no task matches the string '{}'", query);
-        } else if (filteredTasks.size() > 1) {
-            System.out.println("Multiple tasks match the string '" + query + "'");
-            log.info("multiple tasks match the string '{}'", query);
-        } else {
-            Task task = filteredTasks.get(0);
-            task.setDone(true);
-            try {
-                task = taskRepository.modifyTask(task);
-            } catch (IOException e) {
-                System.out.println("Error marking task as done");
-                log.error("error marking task as done: {}\n{}", task,
-                        ExceptionUtils.getStackTrace(e));
+            for (Task task : tasks) {
+                if (task.getName().toLowerCase().contains(this.query.toLowerCase())) {
+                    filteredTasks.add(task);
+                }
             }
 
-            log.info("marked task as done: {}", task);
+            if (filteredTasks.size() == 0) {
+                System.out.println("No task matches the string '" + query + "'");
+                log.info("no task matches the string '{}'", query);
+            } else if (filteredTasks.size() > 1) {
+                System.out.println("Multiple tasks match the string '" + query + "'");
+                log.info("multiple tasks match the string '{}'", query);
+            } else {
+                Task task = filteredTasks.get(0);
+                task.setDone(true);
+                task = taskRepository.modifyTask(task);
+                log.info("marked task as done: {}", task);
+            }
+
+        } catch (IOException e) {
+            System.out.println("An IO error has occurred: " + e.getMessage());
+            System.out.println("Check the logs for details.");
+            log.error("{}\n{}", e.getMessage(), ExceptionUtils.getStackTrace(e));
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            log.error("{}\n{}", e.getMessage(), ExceptionUtils.getStackTrace(e));
         }
     }
 
     TaskRepository taskRepository;
+
     public String query;
 }

@@ -12,6 +12,7 @@ import task_manager.api.use_case.TagUseCase;
 import task_manager.api.use_case.TaskUseCase;
 import task_manager.db.Tag;
 import task_manager.db.Task;
+import task_manager.db.property.PropertyException;
 
 @Log4j2
 public class ListTasksCommand implements Command {
@@ -34,10 +35,13 @@ public class ListTasksCommand implements Command {
             System.out.println("An IO error has occurred: " + e.getMessage());
             System.out.println("Check the logs for details.");
             log.error(ExceptionUtils.getStackTrace(e));
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            log.error("{}\n{}", e.toString(), ExceptionUtils.getStackTrace(e));
         }
     }
 
-    private void printTask(Task task) throws IOException {
+    private void printTask(Task task) throws IOException, PropertyException {
         String name = task.getName();
 
         Ansi done;
@@ -49,7 +53,7 @@ public class ListTasksCommand implements Command {
         System.out.format("%s %-32s%s\n", done, name, getTagsStr(task));
     }
 
-    private String getTagsStr(Task task) throws IOException {
+    private String getTagsStr(Task task) throws IOException, PropertyException {
         String tagsStr = "";
 
         List<UUID> tagUuids = task.getTags();

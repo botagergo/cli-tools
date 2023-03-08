@@ -16,7 +16,8 @@ public class JsonTagRepository extends JsonRepository implements TagRepository {
     @Override
     public Tag findTag(String name) throws IOException {
         List<Map<String, Object>> tags = readJson();
-        Optional<Map<String, Object>> tag = tags.stream().filter(t -> t.get("name").equals(name)).findAny();
+        Optional<Map<String, Object>> tag =
+                tags.stream().filter(t -> t.get("name").equals(name)).findAny();
         if (tag.isPresent()) {
             try {
                 return new Tag(UUID.fromString((String) tag.get().get("uuid")), name);
@@ -31,7 +32,8 @@ public class JsonTagRepository extends JsonRepository implements TagRepository {
     @Override
     public Tag getTag(UUID uuid) throws IOException {
         List<Map<String, Object>> tags = readJson();
-        Optional<Map<String, Object>> tag = tags.stream().filter(t -> t.get("uuid").equals(uuid.toString())).findAny();
+        Optional<Map<String, Object>> tag =
+                tags.stream().filter(t -> t.get("uuid").equals(uuid.toString())).findAny();
         if (tag.isPresent()) {
             return new Tag(uuid, (String) tag.get().get("name"));
         } else {

@@ -2,11 +2,8 @@ package task_manager.api.command;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
-
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
 import lombok.extern.log4j.Log4j2;
@@ -39,12 +36,15 @@ public class AddTaskCommand implements Command {
         } catch (IOException e) {
             System.out.println("An IO error has occurred: " + e.getMessage());
             System.out.println("Check the logs for details.");
-            log.error(ExceptionUtils.getStackTrace(e));
+            log.error("{}\n{}", e.getMessage(), ExceptionUtils.getStackTrace(e));
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            log.error("{}", ExceptionUtils.getStackTrace(e));
         }
     }
 
     private List<UUID> findTagUuids(List<String> tagNames) throws IOException {
-        List<UUID> tags = new ArrayList<UUID>();
+        List<UUID> tags = new ArrayList<>();
         for (String tagName : tagNames) {
             Tag tag = tagUseCase.findTag(tagName);
 
