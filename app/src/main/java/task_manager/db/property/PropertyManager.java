@@ -16,7 +16,11 @@ public class PropertyManager {
         log.debug("getProperty - {}", propertyName);
 
         PropertyDescriptor propertyDescriptor = getPropertyDescriptor(propertyName);
+
         Object propertyValue = getPropertyValue(propertyOwner, propertyDescriptor);
+        if (propertyValue == null) {
+            return null;
+        }
 
         if (propertyDescriptor.getIsList()) {
             return convertPropertyValues(propertyValue, propertyDescriptor, false);
@@ -25,7 +29,7 @@ public class PropertyManager {
         }
     }
 
-    public boolean getBooleanProperty(PropertyOwner propertyOwner, String propertyName)
+    public Boolean getBooleanProperty(PropertyOwner propertyOwner, String propertyName)
             throws PropertyException {
         log.debug("getBooleanProperty - {}", propertyName);
 
@@ -40,6 +44,10 @@ public class PropertyManager {
         }
 
         Object propertyValue = getPropertyValue(propertyOwner, propertyDescriptor);
+        if (propertyValue == null) {
+            return null;
+        }
+
         if (!(propertyValue instanceof Boolean)) {
             throw new PropertyException(PropertyException.Type.WrongValueType, propertyName,
                     propertyDescriptor, propertyValue, PropertyDescriptor.Type.Boolean);
@@ -63,6 +71,10 @@ public class PropertyManager {
         }
 
         Object propertyValue = getPropertyValue(propertyOwner, propertyDescriptor);
+        if (propertyValue == null) {
+            return null;
+        }
+
         if (!(propertyValue instanceof String)) {
             throw new PropertyException(PropertyException.Type.WrongValueType, propertyName,
                     propertyDescriptor, propertyValue, PropertyDescriptor.Type.Boolean);
@@ -86,6 +98,10 @@ public class PropertyManager {
         }
 
         Object propertyValue = getPropertyValue(propertyOwner, propertyDescriptor);
+        if (propertyValue == null) {
+            return null;
+        }
+
         if (!(propertyValue instanceof String)) {
             throw new PropertyException(PropertyException.Type.WrongValueType, propertyName,
                     propertyDescriptor, propertyValue, PropertyDescriptor.Type.UUID);
@@ -110,6 +126,9 @@ public class PropertyManager {
 
 
         Object propertyValue = getPropertyValue(propertyOwner, propertyDescriptor);
+        if (propertyValue == null) {
+            return null;
+        }
 
         List<?> propertyValues =
                 convertPropertyValues((List<?>) propertyValue, propertyDescriptor, false);

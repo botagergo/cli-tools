@@ -8,8 +8,10 @@ import org.fusesource.jansi.Ansi;
 import org.fusesource.jansi.Ansi.Color;
 
 import lombok.extern.log4j.Log4j2;
+import task_manager.api.use_case.StatusUseCase;
 import task_manager.api.use_case.TagUseCase;
 import task_manager.api.use_case.TaskUseCase;
+import task_manager.db.Status;
 import task_manager.db.Tag;
 import task_manager.db.Task;
 import task_manager.db.property.PropertyException;
@@ -20,6 +22,7 @@ public class ListTasksCommand implements Command {
     public ListTasksCommand() {
         this.taskUseCase = new TaskUseCase();
         this.tagUseCase = new TagUseCase();
+        this.statusUseCase = new StatusUseCase();
     }
 
     @Override
@@ -50,7 +53,8 @@ public class ListTasksCommand implements Command {
         } else {
             done = Ansi.ansi().a("\u2022");
         }
-        System.out.format("%s %-32s%s\n", done, name, getTagsStr(task));
+
+        System.out.format("%s %-32s%-15s%s\n", done, name, getStatusStr(task), getTagsStr(task));
     }
 
     private String getTagsStr(Task task) throws IOException, PropertyException {
@@ -68,6 +72,22 @@ public class ListTasksCommand implements Command {
         return tagsStr;
     }
 
+    private String getStatusStr(Task task) throws IOException, PropertyException {
+        UUID statusUuid = task.getStatus();
+        if (statusUuid == null) {
+            return "";
+        }
+
+        Status status = statusUseCase.getStatus(statusUuid);
+        if (status == null) {
+            log.warn("Status with UUID '" + statusUuid.toString() + "' does not exist");
+            return "";
+        }
+
+        return status.getName();
+    }
+
     TaskUseCase taskUseCase;
     TagUseCase tagUseCase;
+    StatusUseCase statusUseCase;
 }

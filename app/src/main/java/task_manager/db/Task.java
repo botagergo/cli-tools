@@ -50,6 +50,14 @@ public class Task extends PropertyOwner {
         return getUuidListProperty("tags");
     }
 
+    public void setStatus(UUID status) throws PropertyException {
+        setProperty("status", status);
+    }
+
+    public UUID getStatus() throws PropertyException {
+        return getUuidProperty("status");
+    }
+
     public Map<String, Object> asMap() {
         return properties;
     }
