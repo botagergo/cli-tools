@@ -2,10 +2,10 @@ package task_manager;
 
 import java.io.File;
 import java.io.IOException;
-import task_manager.db.Task;
 import task_manager.db.property.JsonPropertyDescriptorRepository;
 import task_manager.db.property.PropertyDescriptorRepository;
 import task_manager.db.property.PropertyManager;
+import task_manager.db.task.Task;
 import task_manager.ui.cli.command_line.CommandLine;
 import task_manager.ui.cli.command_line.JlineCommandLine;
 

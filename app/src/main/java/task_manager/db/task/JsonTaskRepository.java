@@ -1,4 +1,4 @@
-package task_manager.db;
+package task_manager.db.task;
 
 import java.io.File;
 import java.io.IOException;
@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.tuple.Pair;
+import task_manager.db.JsonRepository;
 import task_manager.db.property.PropertyException;
 
 public class JsonTaskRepository extends JsonRepository implements TaskRepository {

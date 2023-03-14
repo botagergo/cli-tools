@@ -10,9 +10,9 @@ import lombok.extern.log4j.Log4j2;
 import task_manager.api.use_case.StatusUseCase;
 import task_manager.api.use_case.TagUseCase;
 import task_manager.api.use_case.TaskUseCase;
-import task_manager.db.Status;
-import task_manager.db.Tag;
-import task_manager.db.Task;
+import task_manager.db.status.Status;
+import task_manager.db.tag.Tag;
+import task_manager.db.task.Task;
 
 @Log4j2
 public class AddTaskCommand implements Command {

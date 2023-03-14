@@ -1,9 +1,9 @@
-package task_manager.db;
+package task_manager.db.status;
 
 import java.util.UUID;
 
-public class Tag {
-    public Tag(UUID uuid, String name) {
+public class Status {
+    public Status(UUID uuid, String name) {
         if (uuid == null || name == null) {
             throw new NullPointerException();
         }

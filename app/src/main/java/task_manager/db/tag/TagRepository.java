@@ -1,4 +1,4 @@
-package task_manager.db;
+package task_manager.db.tag;
 
 import java.io.IOException;
 import java.util.UUID;

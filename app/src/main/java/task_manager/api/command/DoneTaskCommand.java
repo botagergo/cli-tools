@@ -1,6 +1,8 @@
 package task_manager.api.command;
 
-import task_manager.db.TaskRepository;
+import task_manager.db.task.JsonTaskRepository;
+import task_manager.db.task.Task;
+import task_manager.db.task.TaskRepository;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -9,8 +11,6 @@ import java.util.List;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
 import lombok.extern.log4j.Log4j2;
-import task_manager.db.JsonTaskRepository;
-import task_manager.db.Task;
 
 @Log4j2
 public class DoneTaskCommand implements Command {

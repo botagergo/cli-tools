@@ -3,9 +3,9 @@ package task_manager.api.use_case;
 import java.io.File;
 import java.io.IOException;
 import java.util.UUID;
-import task_manager.db.JsonStatusRepository;
-import task_manager.db.Status;
-import task_manager.db.StatusRepository;
+import task_manager.db.status.JsonStatusRepository;
+import task_manager.db.status.Status;
+import task_manager.db.status.StatusRepository;
 
 public class StatusUseCase {
 
@@ -22,7 +22,7 @@ public class StatusUseCase {
         return statusRepository.findStatus(statusName);
     }
 
-    public task_manager.db.Status getStatus(UUID uuid) throws IOException {
+    public task_manager.db.status.Status getStatus(UUID uuid) throws IOException {
         return statusRepository.getStatus(uuid);
     }
 

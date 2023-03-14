@@ -1,4 +1,4 @@
-package task_manager.db;
+package task_manager.db.status;
 
 import java.io.File;
 import java.io.IOException;
@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import task_manager.db.JsonRepository;
 
 public class JsonStatusRepository extends JsonRepository implements StatusRepository {
 

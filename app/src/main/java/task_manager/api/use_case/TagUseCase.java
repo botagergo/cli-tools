@@ -3,9 +3,9 @@ package task_manager.api.use_case;
 import java.io.File;
 import java.io.IOException;
 import java.util.UUID;
-import task_manager.db.JsonTagRepository;
-import task_manager.db.Tag;
-import task_manager.db.TagRepository;
+import task_manager.db.tag.JsonTagRepository;
+import task_manager.db.tag.Tag;
+import task_manager.db.tag.TagRepository;
 
 public class TagUseCase {
 

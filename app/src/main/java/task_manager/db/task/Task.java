@@ -1,4 +1,4 @@
-package task_manager.db;
+package task_manager.db.task;
 
 import java.util.HashMap;
 import java.util.List;

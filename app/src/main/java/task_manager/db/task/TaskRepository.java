@@ -1,4 +1,4 @@
-package task_manager.db;
+package task_manager.db.task;
 
 import java.io.IOException;
 import java.util.List;
