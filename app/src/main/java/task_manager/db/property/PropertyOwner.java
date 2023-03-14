@@ -1,8 +1,10 @@
 package task_manager.db.property;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import org.apache.commons.lang3.tuple.Pair;
 
 public abstract class PropertyOwner {
     public abstract PropertyManager getPropertyManager();
@@ -31,5 +33,13 @@ public abstract class PropertyOwner {
 
     public List<UUID> getUuidListProperty(String propertyName) throws PropertyException {
         return getPropertyManager().getUuidListProperty(this, propertyName);
+    }
+
+    public Iterable<Pair<String, Object>> getPropertiesIter() throws PropertyException {
+        List<Pair<String, Object>> properties = new ArrayList<>();
+        for (String propertyName : getProperties().keySet()) {
+            properties.add(Pair.of(propertyName, getProperty(propertyName)));
+        }
+        return properties;
     }
 }

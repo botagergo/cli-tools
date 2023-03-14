@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import org.apache.commons.lang3.tuple.Pair;
 import task_manager.db.property.PropertyException;
 
 public class JsonTaskRepository extends JsonRepository implements TaskRepository {
@@ -44,6 +45,12 @@ public class JsonTaskRepository extends JsonRepository implements TaskRepository
 
             if (taskToUpdate == null) {
                 throw new IllegalArgumentException("No such task: " + task.getName());
+            }
+
+            for (Pair<String, Object> pair : task.getPropertiesIter()) {
+                if (pair.getKey() != "uuid") {
+                    taskToUpdate.setProperty(pair.getKey(), pair.getValue());
+                }
             }
 
             taskToUpdate.setDone(task.getDone());

@@ -2,7 +2,6 @@ package task_manager;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
 import task_manager.db.Task;
 import task_manager.db.property.JsonPropertyDescriptorRepository;
 import task_manager.db.property.PropertyDescriptorRepository;
