@@ -9,12 +9,21 @@
 plugins {
     // Apply the application plugin to add support for building a CLI application in Java.
     id 'application'
+    id 'antlr'
 }
 
 repositories {
     // Use Maven Central for resolving dependencies.
     mavenCentral()
 }
+
+configurations {
+    compile {
+        extendsFrom = extendsFrom.findAll { it != configurations.antlr }
+    }
+}
+
+
 
 dependencies {
     // Use TestNG framework, also requires calling test.useTestNG() below
@@ -37,7 +46,11 @@ dependencies {
     implementation 'org.jline:jline:3.20.0'
 
     implementation 'org.fusesource.jansi:jansi:2.4.0'
+
+    antlr "org.antlr:antlr4:4.7.1"
+    compile "org.antlr:antlr4-runtime:4.7.1"
 }
+
 
 application {
     // Define the main class for the application.

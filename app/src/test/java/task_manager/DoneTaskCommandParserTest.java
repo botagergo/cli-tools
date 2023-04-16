@@ -26,13 +26,13 @@ public class DoneTaskCommandParserTest {
     @Test
     public void testMultipleNormalArgs() {
         assertEquals(((DoneTaskCommand) parser.parse(getArgList("my", "simple", "task"))).query,
-                "my simple task");
+            "my simple task");
     }
 
     @Test
     public void testMultipleNormalArgsWithWhitespace() {
         assertEquals(((DoneTaskCommand) parser.parse(getArgList("my ", "simple", "  task"))).query,
-                "my  simple   task");
+            "my  simple   task");
     }
 
     private ArgumentList getArgList(String... param) {

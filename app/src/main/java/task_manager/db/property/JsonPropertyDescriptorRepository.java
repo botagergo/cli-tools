@@ -2,8 +2,8 @@ package task_manager.db.property;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import task_manager.db.JsonRepository;
 
@@ -16,8 +16,8 @@ public class JsonPropertyDescriptorRepository extends JsonRepository
 
     @Override
     public PropertyDescriptor getProperty(String name) throws IOException {
-        List<Map<String, Object>> propertyDescriptors = readJson();
-        Optional<Map<String, Object>> propertyDescriptor =
+        List<HashMap<String, Object>> propertyDescriptors = readJson();
+        Optional<HashMap<String, Object>> propertyDescriptor =
                 propertyDescriptors.stream().filter(t -> t.get("name").equals(name)).findAny();
 
         if (!propertyDescriptor.isPresent()) {
@@ -44,10 +44,10 @@ public class JsonPropertyDescriptorRepository extends JsonRepository
 
     @Override
     public PropertyDescriptorCollection getPropertyDescriptors() throws IOException {
-        List<Map<String, Object>> propertyDescriptorMaps = readJson();
+        List<HashMap<String, Object>> propertyDescriptorMaps = readJson();
         PropertyDescriptorCollection propertyDescriptors = new PropertyDescriptorCollection();
 
-        for (Map<String, Object> propertyDescriptor : propertyDescriptorMaps) {
+        for (HashMap<String, Object> propertyDescriptor : propertyDescriptorMaps) {
             String name = (String) propertyDescriptor.get("name");
             String typeStr = (String) propertyDescriptor.get("type");
             PropertyDescriptor.Type type = null;
@@ -58,6 +58,7 @@ public class JsonPropertyDescriptorRepository extends JsonRepository
             } else if (typeStr.equals("UUID")) {
                 type = PropertyDescriptor.Type.UUID;
             }
+
             propertyDescriptors.addPropertyDescriptor(
                     new PropertyDescriptor(name, type, (boolean) propertyDescriptor.get("is_list"),
                             propertyDescriptor.get("default_value")));

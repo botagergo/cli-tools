@@ -4,8 +4,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -17,17 +17,17 @@ public abstract class JsonRepository {
         this.objectMapper = new ObjectMapper();
     }
 
-    protected List<Map<String, Object>> readJson() throws IOException {
+    protected List<HashMap<String, Object>> readJson() throws IOException {
         if (jsonPath.exists()) {
             return objectMapper.readValue(jsonPath, new TypeReference<>() {
 
             });
         } else {
-            return new ArrayList<Map<String, Object>>();
+            return new ArrayList<HashMap<String, Object>>();
         }
     }
 
-    protected void writeJson(List<Map<String, Object>> tasks) throws IOException {
+    protected void writeJson(List<HashMap<String, Object>> tasks) throws IOException {
         String json = objectMapper.writeValueAsString(tasks);
         FileWriter writer = new FileWriter(jsonPath);
         writer.write(json);

@@ -2,6 +2,7 @@ package task_manager.db.status;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -16,8 +17,8 @@ public class JsonStatusRepository extends JsonRepository implements StatusReposi
 
     @Override
     public Status findStatus(String name) throws IOException {
-        List<Map<String, Object>> statuses = readJson();
-        Optional<Map<String, Object>> status =
+        List<HashMap<String, Object>> statuses = readJson();
+        Optional<HashMap<String, Object>> status =
                 statuses.stream().filter(t -> t.get("name").equals(name)).findAny();
         if (status.isPresent()) {
             try {
@@ -32,8 +33,8 @@ public class JsonStatusRepository extends JsonRepository implements StatusReposi
 
     @Override
     public Status getStatus(UUID uuid) throws IOException {
-        List<Map<String, Object>> statuses = readJson();
-        Optional<Map<String, Object>> status =
+        List<HashMap<String, Object>> statuses = readJson();
+        Optional<HashMap<String, Object>> status =
                 statuses.stream().filter(t -> t.get("uuid").equals(uuid.toString())).findAny();
         if (status.isPresent()) {
             return new Status(uuid, (String) status.get().get("name"));
@@ -44,9 +45,9 @@ public class JsonStatusRepository extends JsonRepository implements StatusReposi
 
     @Override
     public Status addStatus(String name) throws IOException {
-        List<Map<String, Object>> statuses = readJson();
+        List<HashMap<String, Object>> statuses = readJson();
         Status status = new Status(UUID.randomUUID(), name);
-        statuses.add(Map.of("uuid", status.getUuid().toString(), "name", name));
+        statuses.add(new HashMap<>(Map.of("uuid", status.getUuid().toString(), "name", name)));
         writeJson(statuses);
         return status;
     }

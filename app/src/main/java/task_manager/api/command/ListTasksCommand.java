@@ -1,6 +1,7 @@
 package task_manager.api.command;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -8,6 +9,12 @@ import org.fusesource.jansi.Ansi;
 import org.fusesource.jansi.Ansi.Color;
 
 import lombok.extern.log4j.Log4j2;
+import task_manager.api.filter.AndFilterCriterion;
+import task_manager.api.filter.ContainsCaseInsensitiveFilterCriterion;
+import task_manager.api.filter.Filter;
+import task_manager.api.filter.FilterCriterion;
+import task_manager.api.filter.SimpleFilter;
+import task_manager.api.filter.grammar.FilterBuilder;
 import task_manager.api.use_case.StatusUseCase;
 import task_manager.api.use_case.TagUseCase;
 import task_manager.api.use_case.TaskUseCase;
@@ -19,7 +26,10 @@ import task_manager.db.task.Task;
 @Log4j2
 public class ListTasksCommand implements Command {
 
-    public ListTasksCommand() {
+    public ListTasksCommand(List<String> queries, String nameQuery) {
+        this.queries = queries;
+        this.nameQuery = nameQuery;
+
         this.taskUseCase = new TaskUseCase();
         this.tagUseCase = new TagUseCase();
         this.statusUseCase = new StatusUseCase();
@@ -31,6 +41,24 @@ public class ListTasksCommand implements Command {
 
         try {
             List<Task> tasks = taskUseCase.getTasks();
+
+            List<FilterCriterion> filterCriterions = new ArrayList<>();
+
+            if (queries != null) {
+                for (String query : queries) {
+                    filterCriterions.add(FilterBuilder.buildFilter(query));
+                }
+            }
+
+            if (nameQuery != null) {
+                filterCriterions.add(new ContainsCaseInsensitiveFilterCriterion("name", nameQuery));
+            }
+
+            if (filterCriterions.size() != 0) {
+                Filter filter = new SimpleFilter(new AndFilterCriterion(filterCriterions));
+                tasks = filter.doFilter(tasks);
+            }
+
             for (Task task : tasks) {
                 printTask(task);
             }
@@ -86,6 +114,17 @@ public class ListTasksCommand implements Command {
 
         return status.getName();
     }
+
+    public List<String> getQueries() {
+        return queries;
+    }
+
+    public String getNameQuery() {
+        return nameQuery;
+    }
+    
+    private List<String> queries;
+    private String nameQuery;
 
     TaskUseCase taskUseCase;
     TagUseCase tagUseCase;

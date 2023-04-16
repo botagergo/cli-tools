@@ -12,6 +12,7 @@ import task_manager.ui.cli.command_line.JlineCommandLine;
 public class App {
 
     public static void main(String[] args) throws IOException {
+
         PropertyDescriptorRepository repo = new JsonPropertyDescriptorRepository(
                 new File(System.getProperty("user.home") + "/.config/task_manager/"));
 

@@ -19,7 +19,7 @@ public class AddTaskCommandParser implements CommandParser {
             tags = tagArgs.stream().map(tag -> tag.value).collect(Collectors.toList());
         }
 
-        List<SpecialArgument> statusArgs = argList.specialArguments.get('=');
+        List<SpecialArgument> statusArgs = argList.specialArguments.get('%');
         if (statusArgs != null && statusArgs.size() >= 1) {
             status = statusArgs.get(statusArgs.size() - 1).value;
         }

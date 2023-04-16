@@ -2,7 +2,6 @@ package task_manager.db.task;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 import task_manager.db.property.PropertyException;
 import task_manager.db.property.PropertyManager;
@@ -14,7 +13,7 @@ public class Task extends PropertyOwner {
         this(new HashMap<>());
     }
 
-    private Task(Map<String, Object> taskMap) {
+    private Task(HashMap<String, Object> taskMap) {
         this.properties = taskMap;
     }
 
@@ -58,11 +57,11 @@ public class Task extends PropertyOwner {
         return getUuidProperty("status");
     }
 
-    public Map<String, Object> asMap() {
+    public HashMap<String, Object> asMap() {
         return properties;
     }
 
-    public static Task fromMap(Map<String, Object> taskMap) {
+    public static Task fromMap(HashMap<String, Object> taskMap) {
         return new Task(taskMap);
     }
 
@@ -76,11 +75,11 @@ public class Task extends PropertyOwner {
     }
 
     @Override
-    public Map<String, Object> getProperties() {
+    public HashMap<String, Object> getRawProperties() {
         return asMap();
     }
 
     private static PropertyManager propertyManager;
-    private Map<String, Object> properties;
+    private HashMap<String, Object> properties;
 
 }

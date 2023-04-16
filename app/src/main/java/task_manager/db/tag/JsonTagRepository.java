@@ -2,6 +2,7 @@ package task_manager.db.tag;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -16,8 +17,8 @@ public class JsonTagRepository extends JsonRepository implements TagRepository {
 
     @Override
     public Tag findTag(String name) throws IOException {
-        List<Map<String, Object>> tags = readJson();
-        Optional<Map<String, Object>> tag =
+        List<HashMap<String, Object>> tags = readJson();
+        Optional<HashMap<String, Object>> tag =
                 tags.stream().filter(t -> t.get("name").equals(name)).findAny();
         if (tag.isPresent()) {
             try {
@@ -32,8 +33,8 @@ public class JsonTagRepository extends JsonRepository implements TagRepository {
 
     @Override
     public Tag getTag(UUID uuid) throws IOException {
-        List<Map<String, Object>> tags = readJson();
-        Optional<Map<String, Object>> tag =
+        List<HashMap<String, Object>> tags = readJson();
+        Optional<HashMap<String, Object>> tag =
                 tags.stream().filter(t -> t.get("uuid").equals(uuid.toString())).findAny();
         if (tag.isPresent()) {
             return new Tag(uuid, (String) tag.get().get("name"));
@@ -44,9 +45,9 @@ public class JsonTagRepository extends JsonRepository implements TagRepository {
 
     @Override
     public Tag addTag(String name) throws IOException {
-        List<Map<String, Object>> tags = readJson();
+        List<HashMap<String, Object>> tags = readJson();
         Tag tag = new Tag(UUID.randomUUID(), name);
-        tags.add(Map.of("uuid", tag.getUuid().toString(), "name", name));
+        tags.add(new HashMap<>(Map.of("uuid", tag.getUuid().toString(), "name", name)));
         writeJson(tags);
         return tag;
     }
