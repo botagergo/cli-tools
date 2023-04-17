@@ -1,18 +1,12 @@
 package task_manager.api.use_case;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.UUID;
-import task_manager.db.status.JsonStatusRepository;
+import com.google.inject.Inject;
 import task_manager.db.status.Status;
 import task_manager.db.status.StatusRepository;
 
 public class StatusUseCase {
-
-    public StatusUseCase() {
-        this.statusRepository = new JsonStatusRepository(
-                new File(System.getProperty("user.home") + "/.config/task_manager/"));
-    }
 
     public Status addStatus(String statusName) throws IOException {
         return statusRepository.addStatus(statusName);
@@ -30,6 +24,7 @@ public class StatusUseCase {
         statusRepository.deleteAllStatuses();
     }
 
+    @Inject
     private StatusRepository statusRepository;
 
 }

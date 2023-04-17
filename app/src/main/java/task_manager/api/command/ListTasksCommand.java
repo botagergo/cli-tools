@@ -9,15 +9,13 @@ import org.fusesource.jansi.Ansi;
 import org.fusesource.jansi.Ansi.Color;
 
 import lombok.extern.log4j.Log4j2;
+import task_manager.api.Context;
 import task_manager.api.filter.AndFilterCriterion;
 import task_manager.api.filter.ContainsCaseInsensitiveFilterCriterion;
 import task_manager.api.filter.Filter;
 import task_manager.api.filter.FilterCriterion;
 import task_manager.api.filter.SimpleFilter;
 import task_manager.api.filter.grammar.FilterBuilder;
-import task_manager.api.use_case.StatusUseCase;
-import task_manager.api.use_case.TagUseCase;
-import task_manager.api.use_case.TaskUseCase;
 import task_manager.db.property.PropertyException;
 import task_manager.db.status.Status;
 import task_manager.db.tag.Tag;
@@ -29,18 +27,14 @@ public class ListTasksCommand implements Command {
     public ListTasksCommand(List<String> queries, String nameQuery) {
         this.queries = queries;
         this.nameQuery = nameQuery;
-
-        this.taskUseCase = new TaskUseCase();
-        this.tagUseCase = new TagUseCase();
-        this.statusUseCase = new StatusUseCase();
     }
 
     @Override
-    public void execute() {
+    public void execute(Context context) {
         log.info("execute");
 
         try {
-            List<Task> tasks = taskUseCase.getTasks();
+            List<Task> tasks = context.getTaskUseCase().getTasks();
 
             List<FilterCriterion> filterCriterions = new ArrayList<>();
 
@@ -60,7 +54,7 @@ public class ListTasksCommand implements Command {
             }
 
             for (Task task : tasks) {
-                printTask(task);
+                printTask(context, task);
             }
         } catch (IOException e) {
             System.out.println("An IO error has occurred: " + e.getMessage());
@@ -72,7 +66,7 @@ public class ListTasksCommand implements Command {
         }
     }
 
-    private void printTask(Task task) throws IOException, PropertyException {
+    private void printTask(Context context, Task task) throws IOException, PropertyException {
         String name = task.getName();
 
         Ansi done;
@@ -82,15 +76,16 @@ public class ListTasksCommand implements Command {
             done = Ansi.ansi().a("\u2022");
         }
 
-        System.out.format("%s %-32s%-15s%s\n", done, name, getStatusStr(task), getTagsStr(task));
+        System.out.format("%s %-32s%-15s%s\n", done, name, getStatusStr(context, task),
+            getTagsStr(context, task));
     }
 
-    private String getTagsStr(Task task) throws IOException, PropertyException {
+    private String getTagsStr(Context context, Task task) throws IOException, PropertyException {
         String tagsStr = "";
 
         List<UUID> tagUuids = task.getTags();
         for (UUID tagUuid : tagUuids) {
-            Tag tag = tagUseCase.getTag(tagUuid);
+            Tag tag = context.getTagUseCase().getTag(tagUuid);
 
             if (tag != null) {
                 tagsStr += "/" + tag.getName() + " ";
@@ -100,13 +95,13 @@ public class ListTasksCommand implements Command {
         return tagsStr;
     }
 
-    private String getStatusStr(Task task) throws IOException, PropertyException {
+    private String getStatusStr(Context context, Task task) throws IOException, PropertyException {
         UUID statusUuid = task.getStatus();
         if (statusUuid == null) {
             return "";
         }
 
-        Status status = statusUseCase.getStatus(statusUuid);
+        Status status = context.getStatusUseCase().getStatus(statusUuid);
         if (status == null) {
             log.warn("Status with UUID '" + statusUuid.toString() + "' does not exist");
             return "";
@@ -126,7 +121,4 @@ public class ListTasksCommand implements Command {
     private List<String> queries;
     private String nameQuery;
 
-    TaskUseCase taskUseCase;
-    TagUseCase tagUseCase;
-    StatusUseCase statusUseCase;
 }

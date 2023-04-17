@@ -15,7 +15,7 @@ public class JsonPropertyDescriptorRepository extends JsonRepository
     }
 
     @Override
-    public PropertyDescriptor getProperty(String name) throws IOException {
+    public PropertyDescriptor getPropertyDescriptor(String name) throws IOException {
         List<HashMap<String, Object>> propertyDescriptors = readJson();
         Optional<HashMap<String, Object>> propertyDescriptor =
                 propertyDescriptors.stream().filter(t -> t.get("name").equals(name)).findAny();
@@ -39,8 +39,6 @@ public class JsonPropertyDescriptorRepository extends JsonRepository
                 propertyDescriptor.get().get("default_value"));
 
     }
-
-    private static String jsonFileName = "property_descriptors.json";
 
     @Override
     public PropertyDescriptorCollection getPropertyDescriptors() throws IOException {
@@ -66,5 +64,7 @@ public class JsonPropertyDescriptorRepository extends JsonRepository
 
         return propertyDescriptors;
     }
+
+    private static String jsonFileName = "property_descriptors.json";
 
 }

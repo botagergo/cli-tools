@@ -4,6 +4,7 @@ import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 public class PropertyManager {
+
     public PropertyManager(PropertyDescriptorCollection propertyDescriptors) {
         this.propertyDescriptors = propertyDescriptors;
     }

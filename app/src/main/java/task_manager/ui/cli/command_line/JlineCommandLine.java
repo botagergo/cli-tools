@@ -8,9 +8,15 @@ import org.jline.reader.LineReaderBuilder;
 import org.jline.reader.LineReader.Option;
 import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
-
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+import task_manager.AppModule;
+import task_manager.api.Executor;
 import task_manager.api.command.Command;
-import task_manager.ui.cli.Executor;
+import task_manager.api.use_case.PropertyDescriptorUseCase;
+import task_manager.db.property.PropertyDescriptorCollection;
+import task_manager.db.property.PropertyManager;
+import task_manager.db.task.Task;
 import task_manager.ui.cli.argument.ArgumentList;
 import task_manager.ui.cli.command_parser.CommandParser;
 import task_manager.ui.cli.command_parser.CommandParserFactory;
@@ -20,11 +26,20 @@ public class JlineCommandLine implements CommandLine {
 
     public JlineCommandLine() {
         commandParserFactory = new CommandParserFactoryImpl();
-        executor = new Executor();
     }
 
     @Override
     public void run() throws IOException {
+        Injector injector = Guice.createInjector(new AppModule());
+        executor = injector.getInstance(Executor.class);
+
+        PropertyDescriptorUseCase propertyDescriptorUseCase =
+            injector.getInstance(PropertyDescriptorUseCase.class);
+        PropertyDescriptorCollection propertyDescriptors =
+            propertyDescriptorUseCase.getPropertyDescriptors();
+
+        Task.setPropertyManager(new PropertyManager(propertyDescriptors));
+
         Terminal terminal = TerminalBuilder.terminal();
         LineReader reader = LineReaderBuilder.builder().terminal(terminal)
                 .option(Option.DISABLE_EVENT_EXPANSION, true).build();

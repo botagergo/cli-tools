@@ -5,23 +5,17 @@ import java.io.IOException;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
 import lombok.extern.log4j.Log4j2;
-import task_manager.api.use_case.TagUseCase;
-import task_manager.api.use_case.TaskUseCase;
+import task_manager.api.Context;
 
 @Log4j2
 public class ClearCommand implements Command {
 
-    public ClearCommand() {
-        this.taskUseCase = new TaskUseCase();
-        this.tagUseCase = new TagUseCase();
-    }
-
     @Override
-    public void execute() {
+    public void execute(Context context) {
         log.info("execute");
         try {
-            taskUseCase.deleteAllTasks();
-            tagUseCase.deleteAllTags();
+            context.getTaskUseCase().deleteAllTasks();
+            context.getTagUseCase().deleteAllTags();
         } catch (IOException e) {
             System.out.println("An IO error has occurred: " + e.getMessage());
             System.out.println("Check the logs for details.");
@@ -29,6 +23,4 @@ public class ClearCommand implements Command {
         }
     }
 
-    TaskUseCase taskUseCase;
-    TagUseCase tagUseCase;
 }

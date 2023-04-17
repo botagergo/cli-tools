@@ -5,7 +5,6 @@ import java.util.stream.Collectors;
 import task_manager.api.command.Command;
 import task_manager.api.command.ListTasksCommand;
 import task_manager.ui.cli.argument.ArgumentList;
-import task_manager.ui.cli.argument.SpecialArgument;
 
 public class ListTasksCommandParser implements CommandParser {
 

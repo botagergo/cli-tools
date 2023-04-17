@@ -1,21 +1,19 @@
 package task_manager.api.use_case;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.List;
-import task_manager.db.task.JsonTaskRepository;
+import com.google.inject.Inject;
 import task_manager.db.task.Task;
 import task_manager.db.task.TaskRepository;
 
 public class TaskUseCase {
 
-    public TaskUseCase() {
-        this.taskRepository = new JsonTaskRepository(
-                new File(System.getProperty("user.home") + "/.config/task_manager/"));
+    public Task addTask(Task task) throws IOException {
+        return taskRepository.addTask(task);
     }
 
-    public void addTask(Task task) throws IOException {
-        task = taskRepository.addTask(task);
+    public Task modifyTask(Task task) throws IOException {
+        return taskRepository.modifyTask(task);
     }
 
     public List<Task> getTasks() throws IOException {
@@ -26,6 +24,7 @@ public class TaskUseCase {
         taskRepository.deleteAllTasks();
     }
 
+    @Inject
     private TaskRepository taskRepository;
 
 }

@@ -65,12 +65,9 @@ public class JsonTaskRepository extends JsonRepository implements TaskRepository
 
     @Override
     public List<Task> getTasks() throws IOException {
-        List<Task> tasks = new ArrayList<>();
-        Iterator<HashMap<String, Object>> taskIter = readJson().stream().iterator();
-        while (taskIter.hasNext()) {
-            tasks.add(Task.fromMap(taskIter.next()));
-        } ;
-
+        if (tasks == null) {
+            tasks = getTasks_();
+        }
         return tasks;
     }
 
@@ -84,6 +81,18 @@ public class JsonTaskRepository extends JsonRepository implements TaskRepository
     public void deleteAllTasks() throws IOException {
         writeJson(List.of());
     }
+
+    private List<Task> getTasks_() throws IOException {
+        List<Task> tasks = new ArrayList<>();
+        Iterator<HashMap<String, Object>> taskIter = readJson().stream().iterator();
+        while (taskIter.hasNext()) {
+            tasks.add(Task.fromMap(taskIter.next()));
+        } ;
+
+        return tasks;
+    }
+
+    private List<Task> tasks = null;
 
     private static String jsonFileName = "tasks.json";
 }

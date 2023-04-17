@@ -47,6 +47,8 @@ dependencies {
 
     implementation 'org.fusesource.jansi:jansi:2.4.0'
 
+    implementation 'com.google.inject:guice:5.1.0'
+
     antlr "org.antlr:antlr4:4.7.1"
     compile "org.antlr:antlr4-runtime:4.7.1"
 }
