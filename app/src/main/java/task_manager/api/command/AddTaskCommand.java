@@ -11,6 +11,7 @@ import task_manager.api.Context;
 import task_manager.db.status.Status;
 import task_manager.db.tag.Tag;
 import task_manager.db.task.Task;
+import task_manager.ui.cli.Util;
 
 @Log4j2
 public class AddTaskCommand implements Command {
@@ -60,14 +61,16 @@ public class AddTaskCommand implements Command {
         for (String tagName : tagNames) {
             Tag tag = context.getTagUseCase().findTag(tagName);
 
-            if (tag == null) {
-                // TODO System.out.println("Tag '" + tagStr + "' does not exist. Do you want to
-                // create it? (Y/n)");
+            if (tag == null
+                && Util.yesNo("Tag '" + tagName + "' does not exist. Do you want to create it?")) {
                 tag = context.getTagUseCase().addTag(tagName);
             }
 
-            tags.add(tag.getUuid());
+            if (tag != null) {
+                tags.add(tag.getUuid());
+            }
         }
+
         return tags;
     }
 
