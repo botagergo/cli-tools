@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: task-manager-server
+  labels:
+    app: task-manager-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: task-manager-server
+  template:
+    metadata:
+      labels:
+        app: task-manager-server
+    spec:
+      containers:
+      - name: task-manager-server
+        image: docker.io/library/server:latest
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 8080
+        env:
+        - name: MONGO_HOST
+          value: mongodb

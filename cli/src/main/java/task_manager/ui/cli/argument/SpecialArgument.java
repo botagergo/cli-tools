@@ -11,11 +11,10 @@ public class SpecialArgument {
 
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof SpecialArgument)) {
+        if (!(obj instanceof SpecialArgument other)) {
             return false;
         }
 
-        SpecialArgument other = (SpecialArgument) obj;
         return type == other.type && value.equals(other.value);
     }
 
@@ -35,8 +34,8 @@ public class SpecialArgument {
         return specialChars.contains(ch);
     }
 
-    public char type;
-    public String value;
+    public final char type;
+    public final String value;
 
     public static final Set<Character> specialChars =
             Set.of('!', '@', '/', '?', '#', '+', '*', ':', '<', '>', '&', '=', '%');

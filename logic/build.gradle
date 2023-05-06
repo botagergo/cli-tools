@@ -1,0 +1,18 @@
+plugins {
+    id 'java-library'
+}
+
+dependencies {
+    testImplementation 'org.testng:testng:7.7.0'
+
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.14.2'
+    testImplementation 'com.fasterxml.jackson.core:jackson-databind:2.14.2'
+
+    implementation 'jakarta.inject:jakarta.inject-api:2.0.1'
+
+    implementation project(':core')
+}
+
+tasks.named('test') {
+    useTestNG()
+}

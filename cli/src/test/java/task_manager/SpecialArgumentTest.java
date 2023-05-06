@@ -20,17 +20,13 @@ public class SpecialArgumentTest {
     @Test
     public void testBlank() {
         assertFalse(SpecialArgument.isSpecialArgument("   "));
-        assertThrows(NotASpecialArgumentException.class, () -> {
-            SpecialArgument.from("   ");
-        });
+        assertThrows(NotASpecialArgumentException.class, () -> SpecialArgument.from("   "));
     }
 
     @Test
     public void testNotSpecialArgument() {
         assertFalse(SpecialArgument.isSpecialArgument("Parg"));
-        assertThrows(NotASpecialArgumentException.class, () -> {
-            SpecialArgument.from("Parg");
-        });
+        assertThrows(NotASpecialArgumentException.class, () -> SpecialArgument.from("Parg"));
     }
 
     @Test

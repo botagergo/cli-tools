@@ -4,4 +4,13 @@
 # Ignore Gradle build output directory
 build
 
-app/bin/
+core/bin/
+db/bin/
+logic/bin/
+server/bin/
+cli/bin/
+core/build/
+db/build/
+logic/build/
+server/build/
+cli/build/

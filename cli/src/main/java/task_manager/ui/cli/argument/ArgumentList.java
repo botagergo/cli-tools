@@ -13,13 +13,13 @@ public class ArgumentList {
     }
 
     public ArgumentList() {
-        this(null, new ArrayList<>(), new LinkedHashMap<Character, List<SpecialArgument>>());
+        this(null, new ArrayList<>(), new LinkedHashMap<>());
     }
 
     public static ArgumentList from(List<String> args) {
         if (args.isEmpty()) {
             return new ArgumentList(null, List.of(),
-                    new LinkedHashMap<Character, List<SpecialArgument>>());
+                    new LinkedHashMap<>());
         }
 
         ArgumentList argList = new ArgumentList();
@@ -49,7 +49,7 @@ public class ArgumentList {
         return argList;
     }
 
-    public String commandName = null;
+    public String commandName;
     public List<String> normalArguments;
     public LinkedHashMap<Character, List<SpecialArgument>> specialArguments;
 }

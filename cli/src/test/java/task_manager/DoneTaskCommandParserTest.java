@@ -1,9 +1,8 @@
 package task_manager;
 
 import org.testng.annotations.*;
-
-import task_manager.api.command.DoneTaskCommand;
 import task_manager.ui.cli.argument.ArgumentList;
+import task_manager.ui.cli.command.DoneTaskCommand;
 import task_manager.ui.cli.command_parser.CommandParserFactoryImpl;
 import task_manager.ui.cli.command_parser.DoneTaskCommandParser;
 
@@ -43,5 +42,5 @@ public class DoneTaskCommandParserTest {
     }
 
     CommandParserFactoryImpl commandParserFactory = new CommandParserFactoryImpl();
-    DoneTaskCommandParser parser = new DoneTaskCommandParser();
+    final DoneTaskCommandParser parser = new DoneTaskCommandParser();
 }

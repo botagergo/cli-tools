@@ -13,25 +13,25 @@ import static org.testng.Assert.*;
 public class CommandParserFactoryImplTest {
 
     @Test
-    public void testAdd() throws Exception {
+    public void testAdd() {
         assertTrue(
                 commandParserFactory.getParser(getArgList("add")) instanceof AddTaskCommandParser);
     }
 
     @Test
-    public void testDone() throws Exception {
+    public void testDone() {
         assertTrue(commandParserFactory
                 .getParser(getArgList("done")) instanceof DoneTaskCommandParser);
     }
 
     @Test
-    public void testList() throws Exception {
+    public void testList() {
         assertTrue(commandParserFactory
                 .getParser(getArgList("list")) instanceof ListTasksCommandParser);
     }
 
     @Test
-    public void testUnknown() throws Exception {
+    public void testUnknown() {
         assertNull(commandParserFactory.getParser(getArgList("unknown")));
         assertNull(commandParserFactory.getParser(getArgList(null)));
     }
@@ -42,5 +42,5 @@ public class CommandParserFactoryImplTest {
         return argList;
     }
 
-    CommandParserFactoryImpl commandParserFactory = new CommandParserFactoryImpl();
+    final CommandParserFactoryImpl commandParserFactory = new CommandParserFactoryImpl();
 }

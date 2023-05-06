@@ -8,9 +8,17 @@ import org.jline.reader.LineReaderBuilder;
 import org.jline.reader.LineReader.Option;
 import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
-import task_manager.api.Executor;
-import task_manager.api.command.Command;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+import task_manager.data.Task;
+import task_manager.data.property.PropertyDescriptorCollection;
+import task_manager.data.property.PropertyManager;
+import task_manager.init.Initializer;
+import task_manager.logic.use_case.PropertyDescriptorUseCase;
+import task_manager.ui.cli.AppModule;
+import task_manager.ui.cli.Executor;
 import task_manager.ui.cli.argument.ArgumentList;
+import task_manager.ui.cli.command.Command;
 import task_manager.ui.cli.command_parser.CommandParser;
 import task_manager.ui.cli.command_parser.CommandParserFactory;
 import task_manager.ui.cli.command_parser.CommandParserFactoryImpl;
@@ -23,12 +31,28 @@ public class JlineCommandLine implements CommandLine {
 
     @Override
     public void run() throws IOException {
-        Executor executor = Executor.getExecutor();
+        Injector injector = Guice.createInjector(new AppModule());
+
+        Initializer initializer = injector.getInstance(Initializer.class);
+        if (initializer.needsInitialization()) {
+            initializer.initialize();
+        }
+
+        PropertyDescriptorUseCase propertyDescriptorUseCase =
+            injector.getInstance(PropertyDescriptorUseCase.class);
+        PropertyDescriptorCollection propertyDescriptors =
+            propertyDescriptorUseCase.getPropertyDescriptors();
+
+        Task.setPropertyManager(new PropertyManager(propertyDescriptors));
+
+        Executor executor = injector.getInstance(Executor.class);
+
         Terminal terminal = TerminalBuilder.terminal();
         LineReader reader = LineReaderBuilder.builder().terminal(terminal)
             .option(Option.DISABLE_EVENT_EXPANSION, true).build();
 
         String line;
+        String prompt = "> ";
         while ((line = reader.readLine(prompt)) != null) {
             List<String> args = reader.getParser().parse(line, 0).words();
 
@@ -45,7 +69,11 @@ public class JlineCommandLine implements CommandLine {
             }
 
             Command command = parser.parse(argList);
-            executor.execute(command);
+            try {
+                executor.execute(command);
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
 
             if (executor.shouldExit()) {
                 break;
@@ -53,8 +81,6 @@ public class JlineCommandLine implements CommandLine {
         }
     }
 
-    private CommandParserFactory commandParserFactory;
-
-    private static String prompt = "> ";
+    private final CommandParserFactory commandParserFactory;
 
 }

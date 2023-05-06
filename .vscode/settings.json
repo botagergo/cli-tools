@@ -1,7 +1,0 @@
-{
-    "java.compile.nullAnalysis.mode": "automatic",
-    "java.configuration.updateBuildConfiguration": "automatic",
-    "java.format.settings.url": ".vscode/java-google-style.xml",
-    "java.format.settings.profile": "GoogleStyle",
-    "java.format.settings.join_wrapped_lines": "true",
-}

@@ -1,0 +1,28 @@
+plugins {
+    id 'java-library'
+    id 'antlr'
+}
+
+dependencies {
+    testImplementation 'org.testng:testng:7.7.0'
+
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.0'
+    testImplementation 'com.fasterxml.jackson.core:jackson-databind:2.15.0'
+
+    implementation 'jakarta.inject:jakarta.inject-api:2.0.1'
+
+    antlr "org.antlr:antlr4:4.7.1"
+    compile "org.antlr:antlr4-runtime:4.7.1"
+}
+
+tasks.named('test') {
+    useTestNG()
+}
+
+sourceSets {
+  main {
+    java {
+      srcDir 'build/generated-src/antlr/main'
+    }
+  }
+}
