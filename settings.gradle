@@ -8,4 +8,6 @@
  */
 
 rootProject.name = 'task_manager'
-include('app')
+
+include('cli')
+include('lib')
