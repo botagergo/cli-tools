@@ -1,10 +1,12 @@
 package task_manager.logic.use_case;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 import jakarta.inject.Inject;
+import task_manager.data.property.PropertyException;
 import task_manager.repository.TaskRepository;
 import task_manager.data.Task;
 
@@ -30,6 +32,17 @@ public class TaskUseCase {
 
     public List<Task> getTasks() throws IOException {
         return taskRepository.getAll();
+    }
+
+    public List<Task> getTasks(String query) throws IOException, PropertyException {
+        List<Task> tasks = taskRepository.getAll();
+        ArrayList<Task> filteredTasks = new ArrayList<>();
+        for (Task task : tasks) {
+            if (task.getName().toLowerCase().contains(query.toLowerCase())) {
+                filteredTasks.add(task);
+            }
+        }
+        return filteredTasks;
     }
 
     public Task getTask(UUID uuid) throws IOException {

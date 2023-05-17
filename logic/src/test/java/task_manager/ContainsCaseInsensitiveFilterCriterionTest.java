@@ -44,5 +44,4 @@ public class ContainsCaseInsensitiveFilterCriterionTest {
 
 
     final PropertyManager propertyManager = new PropertyManager(propertyDescriptors);
-    PropertyOwner propertyOwner = new PropertyOwnerImpl(propertyManager);
 }

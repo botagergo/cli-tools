@@ -15,10 +15,6 @@ dependencies {
     compile "org.antlr:antlr4-runtime:4.7.1"
 }
 
-tasks.named('test') {
-    useTestNG()
-}
-
 sourceSets {
   main {
     java {

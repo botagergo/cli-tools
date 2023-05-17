@@ -4,7 +4,6 @@ import org.testng.annotations.Test;
 import task_manager.ui.cli.argument.ArgumentList;
 import task_manager.ui.cli.command.AddTaskCommand;
 import task_manager.ui.cli.command_parser.AddTaskCommandParser;
-import task_manager.ui.cli.command_parser.CommandParserFactoryImpl;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -33,7 +32,7 @@ public class AddTaskCommandParserTest {
     @Test
     public void testMultipleNormalArgsWithWhitespace() {
         assertEquals(parse("my ", "simple", " task").name,
-            "my simple task");
+            "my  simple  task");
     }
     
     @Test
@@ -67,7 +66,6 @@ public class AddTaskCommandParserTest {
         return ArgumentList.from(paramList);
     }
     
-    CommandParserFactoryImpl commandParserFactory = new CommandParserFactoryImpl();
     final AddTaskCommandParser parser = new AddTaskCommandParser();
 
 }

@@ -23,6 +23,8 @@ public class AndFilterCriterionTest {
         assertFalse(checkEqual(true, true, true, false));
         assertFalse(checkEqual(false, true, false, false));
         assertFalse(checkEqual(false, true, true, false));
+        assertFalse(checkEqual(false, false, true, false));
+        assertFalse(checkEqual(false, true, true, true));
     }
 
     boolean checkEqual(boolean operand1, boolean propertyValue1, boolean operand2,
@@ -44,5 +46,4 @@ public class AndFilterCriterionTest {
         new PropertyDescriptor("test_boolean2", PropertyDescriptor.Type.Boolean, false, null)));
 
     final PropertyManager propertyManager = new PropertyManager(propertyDescriptors);
-    PropertyOwner propertyOwner = new PropertyOwnerImpl(propertyManager);
 }

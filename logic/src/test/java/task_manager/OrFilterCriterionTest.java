@@ -23,6 +23,8 @@ public class OrFilterCriterionTest {
     @Test
     public void testFalse() throws PropertyException {
         assertFalse(checkEqual(false, true, true, false));
+        assertFalse(checkEqual(false, true, false, true));
+
     }
 
     boolean checkEqual(boolean operand1, boolean propertyValue1, boolean operand2,
@@ -44,5 +46,4 @@ public class OrFilterCriterionTest {
         new PropertyDescriptor("test_boolean2", PropertyDescriptor.Type.Boolean, false, null)));
 
     final PropertyManager propertyManager = new PropertyManager(propertyDescriptors);
-    PropertyOwner propertyOwner = new PropertyOwnerImpl(propertyManager);
 }

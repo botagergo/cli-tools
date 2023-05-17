@@ -54,13 +54,20 @@ public class JlineCommandLine implements CommandLine {
         String line;
         String prompt = "> ";
         while ((line = reader.readLine(prompt)) != null) {
-            List<String> args = reader.getParser().parse(line, 0).words();
+            line = line.trim();
+            if (line.isEmpty()) {
+                continue;
+            }
 
+            List<String> args = reader.getParser().parse(line, 0).words();
             if (args.size() == 0) {
                 continue;
             }
 
             ArgumentList argList = ArgumentList.from(args);
+            if (argList.commandName.equals("exit")) {
+                break;
+            }
 
             CommandParser parser = commandParserFactory.getParser(argList);
             if (parser == null) {
@@ -73,10 +80,6 @@ public class JlineCommandLine implements CommandLine {
                 executor.execute(command);
             } catch (Exception e) {
                 System.out.println(e.getMessage());
-            }
-
-            if (executor.shouldExit()) {
-                break;
             }
         }
     }

@@ -11,10 +11,6 @@ public class Executor {
         command.execute(context);
     }
 
-    public boolean shouldExit() {
-        return false;
-    }
-
     @Getter @Setter @Inject
     private Context context;
 

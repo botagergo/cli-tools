@@ -1,7 +1,6 @@
 package task_manager.ui.cli.command;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -19,29 +18,28 @@ public class DoneTaskCommand implements Command {
     @Override
     public void execute(Context context) {
         log.traceEntry();
-        List<Task> tasks;
 
         try {
-            tasks = context.getTaskUseCase().getTasks();
-            List<Task> filteredTasks = new ArrayList<>();
+            List<Task> tasks = context.getTaskUseCase().getTasks(query);
 
-            for (Task task : tasks) {
-                if (task.getName().toLowerCase().contains(this.query.toLowerCase())) {
-                    filteredTasks.add(task);
-                }
-            }
-
-            if (filteredTasks.size() == 0) {
+            if (tasks.size() == 0) {
                 System.out.println("No task matches the string '" + query + "'");
                 log.info("no task matches the string '{}'", query);
-            } else if (filteredTasks.size() > 1) {
+            } else if (tasks.size() > 1) {
                 System.out.println("Multiple tasks match the string '" + query + "'");
                 log.info("multiple tasks match the string '{}'", query);
             } else {
-                Task task = filteredTasks.get(0);
+                Task task = tasks.get(0);
                 task.setDone(true);
-                task = context.getTaskUseCase().modifyTask(task);
-                log.info("marked task as done: {}", task);
+
+                Task updatedTask = context.getTaskUseCase().modifyTask(task);
+                if (updatedTask != null) {
+                    System.out.println("Task marked as done");
+                    log.info("marked task as done: {}", updatedTask.getUuid());
+                } else {
+                    System.out.println("No task matches the string '" + query + "'");
+                    log.info("failed to mark task as done: {}", task.getUuid());
+                }
             }
 
         } catch (IOException e) {

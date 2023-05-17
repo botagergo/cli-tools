@@ -1,22 +1,55 @@
 package task_manager.ui.cli.command;
 
-import task_manager.ui.cli.Context;
-import java.util.UUID;
 import lombok.extern.log4j.Log4j2;
+import org.apache.commons.lang3.exception.ExceptionUtils;
+import task_manager.data.Task;
+import task_manager.ui.cli.Context;
+
+import java.io.IOException;
+import java.util.List;
 
 @Log4j2
 public class DeleteTaskCommand implements Command {
 
-    public DeleteTaskCommand(UUID uuid) {
-        this.uuid = uuid;
+    public DeleteTaskCommand(String query) {
+        this.query = query;
     }
 
     @Override
-    public void execute(Context context) throws Exception {
+    public void execute(Context context) {
         log.traceEntry();
-        context.getTaskUseCase().deleteTask(uuid);
+
+        try {
+            List<Task> tasks = context.getTaskUseCase().getTasks(query);
+
+            if (tasks.size() == 0) {
+                System.out.println("No task matches the string '" + query + "'");
+                log.info("no task matches the string '{}'", query);
+            } else if (tasks.size() > 1) {
+                System.out.println("Multiple tasks match the string '" + query + "'");
+                log.info("multiple tasks match the string '{}'", query);
+            } else {
+                Task task = tasks.get(0);
+                boolean result = context.getTaskUseCase().deleteTask(task.getUuid());
+                if (result) {
+                    System.out.println("Task deleted successfully");
+                    log.info("deleted task: {}", task);
+                } else {
+                    System.out.println("No task matches the string '" + query + "'");
+                    log.info("failed to delete task: {}", task.getUuid());
+                }
+            }
+
+        } catch (IOException e) {
+            System.out.println("An IO error has occurred: " + e.getMessage());
+            System.out.println("Check the logs for details.");
+            log.error("{}\n{}", e.getMessage(), ExceptionUtils.getStackTrace(e));
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            log.error("{}\n{}", e.getMessage(), ExceptionUtils.getStackTrace(e));
+        }
     }
 
-    public final UUID uuid;
+    public final String query;
 
 }
