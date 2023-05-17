@@ -119,5 +119,4 @@ public class EqualsFilterCriterionTest {
 
 
     final PropertyManager propertyManager = new PropertyManager(propertyDescriptors);
-    PropertyOwnerImpl propertyOwner = new PropertyOwnerImpl(propertyManager);
 }

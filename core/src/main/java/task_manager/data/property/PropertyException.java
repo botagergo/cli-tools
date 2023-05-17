@@ -19,20 +19,8 @@ public class PropertyException extends Exception {
         return exceptionType;
     }
 
-    public String getPropertyName() {
-        return propertyName;
-    }
-
-    public PropertyDescriptor getPropertyDescriptor() {
-        return propertyDescriptor;
-    }
-
     public Object getPropertyValue() {
         return propertyValue;
-    }
-
-    public PropertyDescriptor.Type getRequestedType() {
-        return requestedType;
     }
 
     private static String getMsg(Type exceptionType, String propertyName,
@@ -45,11 +33,11 @@ public class PropertyException extends Exception {
         } else if (exceptionType == Type.NotExist) {
             return "Property '" + propertyName + "' does not exist";
         } else if (exceptionType == Type.TypeMismatch) {
-            return "Trying to read " + propertyDescriptor.getType().name() + " property '"
+            return "Trying to read " + propertyDescriptor.type().name() + " property '"
                     + propertyName + "' as " + requestedType.name();
         } else if (exceptionType == Type.WrongValueType) {
             return "The value of property '" + propertyName + "' does not have the required type "
-                    + propertyDescriptor.getType().name() + ": " + propertyValue;
+                    + propertyDescriptor.type().name() + ": " + propertyValue;
         } else {
             return null;
         }

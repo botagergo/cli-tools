@@ -7,7 +7,7 @@ import task_manager.data.property.PropertyDescriptorCollection;
 public interface PropertyDescriptorRepository {
 
     void create(PropertyDescriptor propertyDescriptor) throws IOException;
-    PropertyDescriptor get(String name) throws IOException;
+
     PropertyDescriptorCollection getAll() throws IOException;
 
 }

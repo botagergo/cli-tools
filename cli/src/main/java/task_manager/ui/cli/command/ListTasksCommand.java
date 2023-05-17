@@ -22,12 +22,7 @@ import task_manager.filter.grammar.FilterBuilder;
 import task_manager.ui.cli.Context;
 
 @Log4j2
-public class ListTasksCommand implements Command {
-
-    public ListTasksCommand(List<String> queries, String nameQuery) {
-        this.queries = queries;
-        this.nameQuery = nameQuery;
-    }
+public record ListTasksCommand(List<String> queries, String nameQuery) implements Command {
 
     @Override
     public void execute(Context context) {
@@ -77,7 +72,7 @@ public class ListTasksCommand implements Command {
         }
 
         System.out.format("%s %-32s%-15s%s\n", done, name, getStatusStr(context, task),
-            getTagsStr(context, task));
+                getTagsStr(context, task));
     }
 
     private String getTagsStr(Context context, Task task) throws IOException, PropertyException {
@@ -109,16 +104,5 @@ public class ListTasksCommand implements Command {
 
         return status.name();
     }
-
-    public List<String> getQueries() {
-        return queries;
-    }
-
-    public String getNameQuery() {
-        return nameQuery;
-    }
-
-    private final List<String> queries;
-    private final String nameQuery;
 
 }

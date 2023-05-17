@@ -17,16 +17,16 @@ public class ListTasksCommandParserTest {
     public void testNoNormalArgs() {
         ListTasksCommand cmd =
             (ListTasksCommand) parser.parse(getArgList(List.of(), new LinkedHashMap<>()));
-        assertEquals(cmd.getNameQuery(), null);
-        assertEquals(cmd.getQueries(), null);
+        assertNull(cmd.nameQuery());
+        assertNull(cmd.queries());
     }
 
     @Test
     public void testNormalArg() {
         ListTasksCommand cmd = (ListTasksCommand) parser
                 .parse(getArgList(List.of("my", "task"), new LinkedHashMap<>()));
-        assertEquals(cmd.getNameQuery(), "my task");
-        assertEquals(cmd.getQueries(), null);
+        assertEquals(cmd.nameQuery(), "my task");
+        assertNull(cmd.queries());
     }
 
     @Test
@@ -34,8 +34,8 @@ public class ListTasksCommandParserTest {
         ListTasksCommand cmd = (ListTasksCommand) parser.parse(getArgList(List.of(),
                 new LinkedHashMap<>(Map.of('?', List.of(new SpecialArgument('?', "name='my task'"),
                         new SpecialArgument('?', "name='other task'"))))));
-        assertEquals(cmd.getNameQuery(), null);
-        assertEquals(cmd.getQueries(), List.of("name='my task'", "name='other task'"));
+        assertNull(cmd.nameQuery());
+        assertEquals(cmd.queries(), List.of("name='my task'", "name='other task'"));
     }
 
     private ArgumentList getArgList(List<String> normalArgs,

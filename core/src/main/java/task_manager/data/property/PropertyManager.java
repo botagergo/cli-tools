@@ -60,10 +60,10 @@ public class PropertyManager {
 
     private Object getPropertyValue(PropertyOwner propertyOwner,
             PropertyDescriptor propertyDescriptor) {
-        Object propertyValue = propertyOwner.getRawProperties().get(propertyDescriptor.getName());
+        Object propertyValue = propertyOwner.getRawProperties().get(propertyDescriptor.name());
         if (propertyValue == null) {
-            log.debug("Property '{}' not set, getting default value", propertyDescriptor.getName());
-            propertyValue = propertyDescriptor.getDefaultValue();
+            log.debug("Property '{}' not set, getting default value", propertyDescriptor.name());
+            propertyValue = propertyDescriptor.defaultValue();
         }
         return propertyValue;
     }

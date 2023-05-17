@@ -9,11 +9,7 @@ import java.io.IOException;
 import java.util.List;
 
 @Log4j2
-public class DeleteTaskCommand implements Command {
-
-    public DeleteTaskCommand(String query) {
-        this.query = query;
-    }
+public record DeleteTaskCommand(String query) implements Command {
 
     @Override
     public void execute(Context context) {
@@ -49,7 +45,5 @@ public class DeleteTaskCommand implements Command {
             log.error("{}\n{}", e.getMessage(), ExceptionUtils.getStackTrace(e));
         }
     }
-
-    public final String query;
 
 }

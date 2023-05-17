@@ -24,11 +24,6 @@ public class MongoPropertyDescriptorRepository implements PropertyDescriptorRepo
         return propertyDescriptorCollection;
     }
 
-    public PropertyDescriptor get(String name) {
-        Document document = mongoCollection.find(new Document("name", name)).first();
-        return documentToPropertyDescriptor(document);
-    }
-
     @Override
     public void create(PropertyDescriptor propertyDescriptor) {
         mongoCollection.insertOne(propertyDescriptorToDocument(propertyDescriptor));
@@ -56,10 +51,10 @@ public class MongoPropertyDescriptorRepository implements PropertyDescriptorRepo
 
     private Document propertyDescriptorToDocument(PropertyDescriptor propertyDescriptor) {
         Document document = new Document();
-        document.append("name", propertyDescriptor.getName());
-        document.append("type", propertyDescriptor.getType().toString());
-        document.append("isList", propertyDescriptor.getIsList());
-        document.append("defaultValue", propertyDescriptor.getDefaultValue());
+        document.append("name", propertyDescriptor.name());
+        document.append("type", propertyDescriptor.type().toString());
+        document.append("isList", propertyDescriptor.isList());
+        document.append("defaultValue", propertyDescriptor.defaultValue());
         return document;
     }
 

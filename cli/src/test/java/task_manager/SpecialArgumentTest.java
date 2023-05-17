@@ -12,9 +12,7 @@ public class SpecialArgumentTest {
     @Test
     public void testEmpty() {
         assertFalse(SpecialArgument.isSpecialArgument(""));
-        assertThrows(NotASpecialArgumentException.class, () -> {
-            SpecialArgument.from("");
-        });
+        assertThrows(NotASpecialArgumentException.class, () -> SpecialArgument.from(""));
     }
 
     @Test

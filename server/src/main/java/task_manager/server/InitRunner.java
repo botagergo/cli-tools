@@ -2,7 +2,6 @@ package task_manager.server;
 
 import jakarta.inject.Inject;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.stereotype.Component;
 import task_manager.init.Initializer;
 
@@ -21,8 +20,6 @@ public class InitRunner implements CommandLineRunner {
         }
     }
 
-    @Inject
-    private ConfigurableApplicationContext context;
     private final Initializer initializer;
 
 }

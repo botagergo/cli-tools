@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
 
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
@@ -19,30 +18,6 @@ public class JsonPropertyDescriptorRepository implements PropertyDescriptorRepos
         final String jsonFileName = "property_descriptors.json";
         this.basePath = basePath;
         this.jsonFile = new File(basePath, jsonFileName);
-    }
-
-    @Override
-    public PropertyDescriptor get(String name) throws IOException {
-        List<HashMap<String, Object>> propertyDescriptors = getPropertyDescriptors();
-        Optional<HashMap<String, Object>> propertyDescriptor =
-            propertyDescriptors.stream().filter(t -> t.get("name").equals(name)).findAny();
-
-        if (propertyDescriptor.isEmpty()) {
-            return null;
-        }
-
-        String typeStr = (String) propertyDescriptor.get().get("type");
-        PropertyDescriptor.Type type = switch (typeStr) {
-            case "String" -> PropertyDescriptor.Type.String;
-            case "Boolean" -> PropertyDescriptor.Type.Boolean;
-            case "UUID" -> PropertyDescriptor.Type.UUID;
-            default -> null;
-        };
-
-        return new PropertyDescriptor((String) propertyDescriptor.get().get("name"), type,
-            (boolean) propertyDescriptor.get().get("isList"),
-            propertyDescriptor.get().get("defaultValue"));
-
     }
 
     @Override
@@ -72,10 +47,10 @@ public class JsonPropertyDescriptorRepository implements PropertyDescriptorRepos
     public void create(PropertyDescriptor propertyDescriptor) throws IOException {
         List<HashMap<String, Object>> propertyDescriptorMaps = getPropertyDescriptors();
         HashMap<String, Object> propertyDescriptorMap = new HashMap<>();
-        propertyDescriptorMap.put("name", propertyDescriptor.getName());
-        propertyDescriptorMap.put("type", propertyDescriptor.getType().toString());
-        propertyDescriptorMap.put("isList", propertyDescriptor.getIsList());
-        propertyDescriptorMap.put("defaultValue", propertyDescriptor.getDefaultValue());
+        propertyDescriptorMap.put("name", propertyDescriptor.name());
+        propertyDescriptorMap.put("type", propertyDescriptor.type().toString());
+        propertyDescriptorMap.put("isList", propertyDescriptor.isList());
+        propertyDescriptorMap.put("defaultValue", propertyDescriptor.defaultValue());
         propertyDescriptorMaps.add(propertyDescriptorMap);
         JsonMapper.writeJson(jsonFile, propertyDescriptorMaps);
     }

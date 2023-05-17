@@ -55,8 +55,11 @@ public class TaskController {
 	@GetMapping
 	public Object getTasks(@RequestParam(value = "query", defaultValue = "") String query) {
 		try {
-			return taskUseCase.getTasks();
-		} catch (IOException e) {
+			return taskUseCase.getTasks(query);
+		} catch (PropertyException e) {
+			return null;
+		}
+		catch (IOException e) {
 			return handleInternalServerError(e);
 		}
 	}
@@ -111,7 +114,7 @@ public class TaskController {
 		try {
 			boolean result = taskUseCase.deleteTask(UUID.fromString(uuid));
 			if (!result) {
-				return handleTaskNotFound(uuid.toString());
+				return handleTaskNotFound(uuid);
 			}
 			return ResponseEntity.ok().build();
 		} catch (IllegalArgumentException e) {

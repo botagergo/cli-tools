@@ -15,7 +15,7 @@ public class Property {
             throws PropertyException {
         if (propertyValue == null) {
             return new Property(propertyDescriptor, null);
-        } else if (propertyDescriptor.getIsList()) {
+        } else if (propertyDescriptor.isList()) {
             return new Property(propertyDescriptor,
                 convertPropertyValues(propertyValue, propertyDescriptor, true));
         } else {
@@ -28,7 +28,7 @@ public class Property {
             throws PropertyException {
         if (propertyValue == null) {
             return new Property(propertyDescriptor, null);
-        } else if (propertyDescriptor.getIsList()) {
+        } else if (propertyDescriptor.isList()) {
             return new Property(propertyDescriptor,
                 convertPropertyValues(propertyValue, propertyDescriptor, false));
         } else {
@@ -38,8 +38,8 @@ public class Property {
     }
 
     public Object getValue() throws PropertyException {
-        if (propertyDescriptor.getType() == PropertyDescriptor.Type.UUID) {
-            if (propertyDescriptor.getIsList()) {
+        if (propertyDescriptor.type() == PropertyDescriptor.Type.UUID) {
+            if (propertyDescriptor.isList()) {
                 return getUuidList();
             } else {
                 return getUuid();
@@ -54,9 +54,9 @@ public class Property {
     }
 
     public Boolean getBoolean() throws PropertyException {
-        if (propertyDescriptor.getType() != PropertyDescriptor.Type.Boolean) {
+        if (propertyDescriptor.type() != PropertyDescriptor.Type.Boolean) {
             throw new PropertyException(PropertyException.Type.TypeMismatch,
-                    propertyDescriptor.getName(), propertyDescriptor, value,
+                    propertyDescriptor.name(), propertyDescriptor, value,
                     PropertyDescriptor.Type.Boolean);
         }
 
@@ -68,9 +68,9 @@ public class Property {
     }
 
     public String getString() throws PropertyException {
-        if (propertyDescriptor.getType() != PropertyDescriptor.Type.String) {
+        if (propertyDescriptor.type() != PropertyDescriptor.Type.String) {
             throw new PropertyException(PropertyException.Type.TypeMismatch,
-                    propertyDescriptor.getName(), propertyDescriptor, value,
+                    propertyDescriptor.name(), propertyDescriptor, value,
                     PropertyDescriptor.Type.String);
         }
 
@@ -82,9 +82,9 @@ public class Property {
     }
 
     public UUID getUuid() throws PropertyException {
-        if (propertyDescriptor.getType() != PropertyDescriptor.Type.UUID) {
+        if (propertyDescriptor.type() != PropertyDescriptor.Type.UUID) {
             throw new PropertyException(PropertyException.Type.TypeMismatch,
-                    propertyDescriptor.getName(), propertyDescriptor, value,
+                    propertyDescriptor.name(), propertyDescriptor, value,
                     PropertyDescriptor.Type.UUID);
         }
 
@@ -96,19 +96,19 @@ public class Property {
             return UUID.fromString((String) value);
         } catch (IllegalArgumentException e) {
             throw new PropertyException(PropertyException.Type.WrongValueType,
-                propertyDescriptor.getName(), propertyDescriptor, (String) value,
-                propertyDescriptor.getType());
+                propertyDescriptor.name(), propertyDescriptor, value,
+                propertyDescriptor.type());
         }
     }
 
     public List<UUID> getUuidList() throws PropertyException {
-        if (propertyDescriptor.getType() != PropertyDescriptor.Type.UUID) {
+        if (propertyDescriptor.type() != PropertyDescriptor.Type.UUID) {
             throw new PropertyException(PropertyException.Type.TypeMismatch,
-                    propertyDescriptor.getName(), propertyDescriptor, value,
+                    propertyDescriptor.name(), propertyDescriptor, value,
                     PropertyDescriptor.Type.UUID);
-        } else if (!propertyDescriptor.getIsList()) {
+        } else if (!propertyDescriptor.isList()) {
             throw new PropertyException(PropertyException.Type.NotAList,
-                    propertyDescriptor.getName(), propertyDescriptor, value,
+                    propertyDescriptor.name(), propertyDescriptor, value,
                     PropertyDescriptor.Type.UUID);
         }
 
@@ -127,8 +127,8 @@ public class Property {
         PropertyDescriptor propertyDescriptor, boolean fromRaw) throws PropertyException {
         if (!(propertyValues instanceof List<?>)) {
             throw new PropertyException(PropertyException.Type.WrongValueType,
-                propertyDescriptor.getName(), propertyDescriptor, propertyValues,
-                propertyDescriptor.getType());
+                propertyDescriptor.name(), propertyDescriptor, propertyValues,
+                propertyDescriptor.type());
         }
 
         List<Object> convertedPropertyValues = new ArrayList<>();
@@ -148,34 +148,34 @@ public class Property {
 
     private static Object getRawPropertyValueFromRaw(Object propertyValue,
             PropertyDescriptor propertyDescriptor) throws PropertyException {
-        if ((propertyDescriptor.getType().equals(PropertyDescriptor.Type.String)
+        if ((propertyDescriptor.type().equals(PropertyDescriptor.Type.String)
                 && propertyValue instanceof String)
-                || (propertyDescriptor.getType().equals(PropertyDescriptor.Type.Boolean)
+                || (propertyDescriptor.type().equals(PropertyDescriptor.Type.Boolean)
                         && propertyValue instanceof Boolean)
-                || (propertyDescriptor.getType().equals(PropertyDescriptor.Type.UUID)
+                || (propertyDescriptor.type().equals(PropertyDescriptor.Type.UUID)
                         && propertyValue instanceof String)) {
             return propertyValue;
         } else {
             throw new PropertyException(PropertyException.Type.WrongValueType,
-                    propertyDescriptor.getName(), propertyDescriptor, propertyValue,
-                    propertyDescriptor.getType());
+                    propertyDescriptor.name(), propertyDescriptor, propertyValue,
+                    propertyDescriptor.type());
         }
     }
 
     private static Object getRawPropertyValue(Object propertyValue,
         PropertyDescriptor propertyDescriptor) throws PropertyException {
-        if ((propertyDescriptor.getType().equals(PropertyDescriptor.Type.String)
+        if ((propertyDescriptor.type().equals(PropertyDescriptor.Type.String)
             && propertyValue instanceof String)
-            || (propertyDescriptor.getType().equals(PropertyDescriptor.Type.Boolean)
+            || (propertyDescriptor.type().equals(PropertyDescriptor.Type.Boolean)
                 && propertyValue instanceof Boolean)) {
             return propertyValue;
-        } else if (propertyDescriptor.getType().equals(PropertyDescriptor.Type.UUID)
+        } else if (propertyDescriptor.type().equals(PropertyDescriptor.Type.UUID)
             && propertyValue instanceof UUID) {
-            return ((UUID) propertyValue).toString();
+            return propertyValue.toString();
         } else {
             throw new PropertyException(PropertyException.Type.WrongValueType,
-                propertyDescriptor.getName(), propertyDescriptor, propertyValue,
-                propertyDescriptor.getType());
+                propertyDescriptor.name(), propertyDescriptor, propertyValue,
+                propertyDescriptor.type());
         }
     }
 
