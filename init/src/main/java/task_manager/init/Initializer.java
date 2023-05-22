@@ -1,11 +1,11 @@
 package task_manager.init;
 
 import jakarta.inject.Inject;
-import task_manager.annotation.StatusAnnotation;
 import task_manager.data.Label;
 import task_manager.data.property.PropertyDescriptor;
 import task_manager.data.property.PropertyDescriptorCollection;
 import task_manager.repository.LabelRepository;
+import task_manager.repository.LabelRepositoryFactory;
 import task_manager.repository.PropertyDescriptorRepository;
 
 import java.io.IOException;
@@ -15,9 +15,9 @@ import java.util.UUID;
 public class Initializer {
 
     @Inject
-    public Initializer(PropertyDescriptorRepository propertyDescriptorRepository, @StatusAnnotation LabelRepository statusRepository) {
+    public Initializer(PropertyDescriptorRepository propertyDescriptorRepository, LabelRepositoryFactory labelRepositoryFactory) {
         this.propertyDescriptorRepository = propertyDescriptorRepository;
-        this.statusRepository = statusRepository;
+        this.statusRepository = labelRepositoryFactory.getLabelRepository("status");
     }
 
     public boolean needsInitialization() throws IOException {

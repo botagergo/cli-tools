@@ -8,15 +8,13 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.web.filter.CommonsRequestLoggingFilter;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
-import task_manager.annotation.StatusAnnotation;
-import task_manager.annotation.TagAnnotation;
 import task_manager.init.Initializer;
 import task_manager.logic.use_case.PropertyDescriptorUseCase;
 import task_manager.logic.use_case.StatusUseCase;
 import task_manager.logic.use_case.TagUseCase;
 import task_manager.logic.use_case.TaskUseCase;
 import task_manager.repository.*;
-import task_manager.server.repository.MongoLabelRepository;
+import task_manager.server.repository.MongoLabelRepositoryFactory;
 import task_manager.server.repository.MongoPropertyDescriptorRepository;
 import task_manager.server.repository.MongoTaskRepository;
 
@@ -35,14 +33,11 @@ public class Application {
     }
 
     @Bean
-    @TagAnnotation
-    MongoLabelRepository tagRepository() {
-        return new MongoLabelRepository(mongoClient(), MONGODB_DATABASE_NAME,
-                MONGODB_TAG_COLLECTION_NAME);
+    MongoLabelRepositoryFactory labelRepositoryFactory() {
+        return new MongoLabelRepositoryFactory(mongoClient(), MONGODB_DATABASE_NAME);
     }
 
     @Bean
-    @StatusAnnotation
     JsonLabelRepository statusRepository() {
         return new JsonLabelRepository("statuses",
             new File(System.getProperty("user.home") + "/.config/task_manager/"));
@@ -55,12 +50,12 @@ public class Application {
 
     @Bean
     TagUseCase tagUseCase() {
-        return new TagUseCase(tagRepository());
+        return new TagUseCase(labelRepositoryFactory());
     }
 
     @Bean
     StatusUseCase statusUseCase() {
-        return new StatusUseCase(statusRepository());
+        return new StatusUseCase(labelRepositoryFactory());
     }
 
     @Bean
@@ -91,8 +86,8 @@ public class Application {
     }
 
     @Bean
-    Initializer initializer() {
-        return new Initializer(propertyDescriptorRepository(), statusRepository());
+    public Initializer initializer() {
+        return new Initializer(propertyDescriptorRepository(), labelRepositoryFactory());
     }
 
     @Value("${mongodb.host}")

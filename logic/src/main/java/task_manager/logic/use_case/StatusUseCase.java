@@ -4,16 +4,16 @@ import java.io.IOException;
 import java.util.UUID;
 
 import jakarta.inject.Inject;
-import task_manager.annotation.StatusAnnotation;
 import task_manager.data.Label;
 import task_manager.repository.LabelRepository;
 import task_manager.data.Status;
+import task_manager.repository.LabelRepositoryFactory;
 
 public class StatusUseCase {
 
     @Inject
-    public StatusUseCase(@StatusAnnotation LabelRepository labelRepository) {
-        this.labelRepository = labelRepository;
+    public StatusUseCase(LabelRepositoryFactory labelRepositoryFactory) {
+        this.labelRepository = labelRepositoryFactory.getLabelRepository("status");
     }
 
     public Status createStatus(String statusName) throws IOException {

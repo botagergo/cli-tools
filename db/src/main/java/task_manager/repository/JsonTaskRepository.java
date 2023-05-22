@@ -16,7 +16,7 @@ public class JsonTaskRepository implements TaskRepository {
 
     @Inject
     public JsonTaskRepository(@Named("basePath") File basePath) {
-        final String jsonFileName = "tasks.json";
+        final String jsonFileName = "task.json";
         this.basePath = basePath;
         this.jsonFile = new File(basePath, jsonFileName);
     }

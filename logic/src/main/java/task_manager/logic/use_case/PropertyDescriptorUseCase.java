@@ -18,6 +18,10 @@ public class PropertyDescriptorUseCase {
         propertyDescriptorRepository.create(propertyDescriptor);
     }
 
+    public PropertyDescriptor getPropertyDescriptor(String name) throws IOException {
+        return propertyDescriptorRepository.getAll().get(name);
+    }
+
     public PropertyDescriptorCollection getPropertyDescriptors() throws IOException {
         return propertyDescriptorRepository.getAll();
     }

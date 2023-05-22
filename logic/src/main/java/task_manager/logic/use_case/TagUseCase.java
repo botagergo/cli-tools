@@ -6,16 +6,16 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import jakarta.inject.Inject;
-import task_manager.annotation.TagAnnotation;
 import task_manager.data.Label;
 import task_manager.data.Tag;
 import task_manager.repository.LabelRepository;
+import task_manager.repository.LabelRepositoryFactory;
 
 public class TagUseCase {
 
     @Inject
-    public TagUseCase(@TagAnnotation LabelRepository labelRepository) {
-        this.labelRepository = labelRepository;
+    public TagUseCase(LabelRepositoryFactory labelRepositoryFactory) {
+        this.labelRepository = labelRepositoryFactory.getLabelRepository("tag");
     }
 
     public Tag addTag(String name) throws IOException {

@@ -15,7 +15,7 @@ public class JsonPropertyDescriptorRepository implements PropertyDescriptorRepos
 
     @Inject
     public JsonPropertyDescriptorRepository(@Named("basePath") File basePath) {
-        final String jsonFileName = "property_descriptors.json";
+        final String jsonFileName = "property_descriptor.json";
         this.basePath = basePath;
         this.jsonFile = new File(basePath, jsonFileName);
     }
