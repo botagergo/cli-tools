@@ -2,22 +2,26 @@ package task_manager.init;
 
 import jakarta.inject.Inject;
 import task_manager.data.Label;
-import task_manager.data.property.PropertyDescriptor;
-import task_manager.data.property.PropertyDescriptorCollection;
+import task_manager.property.PropertyDescriptor;
+import task_manager.property.PropertyDescriptorCollection;
 import task_manager.repository.LabelRepository;
 import task_manager.repository.LabelRepositoryFactory;
 import task_manager.repository.PropertyDescriptorRepository;
+import task_manager.util.UUIDGenerator;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.UUID;
 
 public class Initializer {
 
     @Inject
-    public Initializer(PropertyDescriptorRepository propertyDescriptorRepository, LabelRepositoryFactory labelRepositoryFactory) {
+    public Initializer(
+            PropertyDescriptorRepository propertyDescriptorRepository,
+            LabelRepositoryFactory labelRepositoryFactory,
+            UUIDGenerator uuidGenerator) {
         this.propertyDescriptorRepository = propertyDescriptorRepository;
-        this.statusRepository = labelRepositoryFactory.getLabelRepository("status");
+        this.statusRepository = labelRepositoryFactory.getLabelRepository("statuses");
+        this.uuidGenerator = uuidGenerator;
     }
 
     public boolean needsInitialization() throws IOException {
@@ -44,13 +48,14 @@ public class Initializer {
     }
 
     private void initializeStatuses() throws IOException {
-        statusRepository.create(new Label(UUID.randomUUID(), "NextAction"));
-        statusRepository.create(new Label(UUID.randomUUID(), "Waiting"));
-        statusRepository.create(new Label(UUID.randomUUID(), "Planning"));
-        statusRepository.create(new Label(UUID.randomUUID(), "OnHold"));
+        statusRepository.create(new Label(uuidGenerator.getUUID(), "NextAction"));
+        statusRepository.create(new Label(uuidGenerator.getUUID(), "Waiting"));
+        statusRepository.create(new Label(uuidGenerator.getUUID(), "Planning"));
+        statusRepository.create(new Label(uuidGenerator.getUUID(), "OnHold"));
     }
 
     private final PropertyDescriptorRepository propertyDescriptorRepository;
     private final LabelRepository statusRepository;
+    private final UUIDGenerator uuidGenerator;
 
 }

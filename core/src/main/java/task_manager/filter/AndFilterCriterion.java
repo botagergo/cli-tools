@@ -1,8 +1,10 @@
 package task_manager.filter;
 
+import java.io.IOException;
 import java.util.List;
-import task_manager.data.property.PropertyException;
-import task_manager.data.property.PropertyOwner;
+import task_manager.property.PropertyException;
+import task_manager.property.PropertyManager;
+import task_manager.property.PropertyOwner;
 
 public class AndFilterCriterion extends FilterCriterion {
 
@@ -17,9 +19,9 @@ public class AndFilterCriterion extends FilterCriterion {
     final List<FilterCriterion> criteria;
 
     @Override
-    public boolean check_(PropertyOwner propertyOwner) throws PropertyException {
+    public boolean check_(PropertyOwner propertyOwner, PropertyManager propertyManager) throws PropertyException, IOException {
         for (FilterCriterion criterion : criteria) {
-            if (!criterion.check(propertyOwner)) {
+            if (!criterion.check(propertyOwner, propertyManager)) {
                 return false;
             }
         }

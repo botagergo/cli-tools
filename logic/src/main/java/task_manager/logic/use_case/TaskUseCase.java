@@ -6,19 +6,17 @@ import java.util.List;
 import java.util.UUID;
 
 import jakarta.inject.Inject;
-import task_manager.data.property.PropertyException;
+import lombok.AllArgsConstructor;
+import task_manager.property.PropertyException;
+import task_manager.property.PropertyManager;
 import task_manager.repository.TaskRepository;
 import task_manager.data.Task;
-
+import task_manager.util.UUIDGenerator;
+@AllArgsConstructor(onConstructor = @__(@Inject))
 public class TaskUseCase {
 
-    @Inject
-    public TaskUseCase(TaskRepository taskRepository) {
-        this.taskRepository = taskRepository;
-    }
-
     public Task addTask(Task task) throws IOException {
-        task.asMap().put("uuid", UUID.randomUUID().toString());
+        task.getRawProperties().put("uuid", uuidGenerator.getUUID().toString());
         return taskRepository.create(task);
     }
 
@@ -38,7 +36,7 @@ public class TaskUseCase {
         List<Task> tasks = taskRepository.getAll();
         ArrayList<Task> filteredTasks = new ArrayList<>();
         for (Task task : tasks) {
-            if (task.getName().toLowerCase().contains(query.toLowerCase())) {
+            if (propertyManager.getProperty(task, "name").getString().toLowerCase().contains(query.toLowerCase())) {
                 filteredTasks.add(task);
             }
         }
@@ -54,5 +52,7 @@ public class TaskUseCase {
     }
 
     private final TaskRepository taskRepository;
+    private final PropertyManager propertyManager;
+    private final UUIDGenerator uuidGenerator;
 
 }

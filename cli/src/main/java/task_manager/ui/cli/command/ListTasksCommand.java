@@ -12,7 +12,7 @@ import lombok.extern.log4j.Log4j2;
 import task_manager.data.Status;
 import task_manager.data.Tag;
 import task_manager.data.Task;
-import task_manager.data.property.PropertyException;
+import task_manager.property.PropertyException;
 import task_manager.filter.AndFilterCriterion;
 import task_manager.filter.ContainsCaseInsensitiveFilterCriterion;
 import task_manager.filter.Filter;
@@ -31,21 +31,21 @@ public record ListTasksCommand(List<String> queries, String nameQuery) implement
         try {
             List<Task> tasks = context.getTaskUseCase().getTasks();
 
-            List<FilterCriterion> filterCriterions = new ArrayList<>();
+            List<FilterCriterion> filterCriteria = new ArrayList<>();
 
             if (queries != null) {
                 for (String query : queries) {
-                    filterCriterions.add(FilterBuilder.buildFilter(query));
+                    filterCriteria.add(FilterBuilder.buildFilter(query));
                 }
             }
 
             if (nameQuery != null) {
-                filterCriterions.add(new ContainsCaseInsensitiveFilterCriterion("name", nameQuery));
+                filterCriteria.add(new ContainsCaseInsensitiveFilterCriterion("name", nameQuery));
             }
 
-            if (filterCriterions.size() != 0) {
-                Filter filter = new SimpleFilter(new AndFilterCriterion(filterCriterions));
-                tasks = filter.doFilter(tasks);
+            if (filterCriteria.size() != 0) {
+                Filter filter = new SimpleFilter(new AndFilterCriterion(filterCriteria));
+                tasks = filter.doFilter(tasks, context.getPropertyManager());
             }
 
             for (Task task : tasks) {
@@ -62,10 +62,10 @@ public record ListTasksCommand(List<String> queries, String nameQuery) implement
     }
 
     private void printTask(Context context, Task task) throws IOException, PropertyException {
-        String name = task.getName();
+        String name = context.getPropertyManager().getProperty(task, "name").getString();
 
         Ansi done;
-        if (task.getDone()) {
+        if (context.getPropertyManager().getProperty(task, "done").getBoolean()) {
             done = Ansi.ansi().fg(Color.GREEN).a("✓").reset();
         } else {
             done = Ansi.ansi().a("•");
@@ -78,7 +78,7 @@ public record ListTasksCommand(List<String> queries, String nameQuery) implement
     private String getTagsStr(Context context, Task task) throws IOException, PropertyException {
         StringBuilder tagsStr = new StringBuilder();
 
-        List<UUID> tagUuids = task.getTags();
+        List<UUID> tagUuids = context.getPropertyManager().getProperty(task, "tags").getUuidList();
         for (UUID tagUuid : tagUuids) {
             Tag tag = context.getTagUseCase().getTag(tagUuid);
 
@@ -91,7 +91,7 @@ public record ListTasksCommand(List<String> queries, String nameQuery) implement
     }
 
     private String getStatusStr(Context context, Task task) throws IOException, PropertyException {
-        UUID statusUuid = task.getStatus();
+        UUID statusUuid = context.getPropertyManager().getProperty(task, "status").getUuid();
         if (statusUuid == null) {
             return "";
         }

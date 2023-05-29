@@ -13,12 +13,12 @@ public class ListTasksCommandParser implements CommandParser {
         List<String> queries = null;
         String nameQuery = null;
         
-        if (argList.specialArguments.containsKey('?')) {
-            queries = argList.specialArguments.get('?').stream().map(SpecialArgument -> SpecialArgument.value).collect(Collectors.toList());
+        if (argList.getSpecialArguments().containsKey('?')) {
+            queries = argList.getSpecialArguments().get('?').stream().map(SpecialArgument -> SpecialArgument.value).collect(Collectors.toList());
         }
 
-        if (argList.normalArguments.size() >= 1) {
-            nameQuery = String.join(" ", argList.normalArguments);
+        if (argList.getNormalArguments().size() >= 1) {
+            nameQuery = String.join(" ", argList.getNormalArguments());
         }
 
         return new ListTasksCommand(queries, nameQuery);

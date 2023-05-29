@@ -1,7 +1,6 @@
 package task_manager.ui.cli.command_line;
 
 import java.io.IOException;
-import java.util.List;
 
 import org.jline.reader.LineReader;
 import org.jline.reader.LineReaderBuilder;
@@ -10,11 +9,7 @@ import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import task_manager.data.Task;
-import task_manager.data.property.PropertyDescriptorCollection;
-import task_manager.data.property.PropertyManager;
 import task_manager.init.Initializer;
-import task_manager.logic.use_case.PropertyDescriptorUseCase;
 import task_manager.ui.cli.AppModule;
 import task_manager.ui.cli.Executor;
 import task_manager.ui.cli.argument.ArgumentList;
@@ -22,6 +17,9 @@ import task_manager.ui.cli.command.Command;
 import task_manager.ui.cli.command_parser.CommandParser;
 import task_manager.ui.cli.command_parser.CommandParserFactory;
 import task_manager.ui.cli.command_parser.CommandParserFactoryImpl;
+import task_manager.ui.cli.tokenizer.MismatchedQuotesException;
+import task_manager.ui.cli.tokenizer.TokenList;
+import task_manager.ui.cli.tokenizer.Tokenizer;
 
 public class JlineCommandLine implements CommandLine {
 
@@ -38,14 +36,9 @@ public class JlineCommandLine implements CommandLine {
             initializer.initialize();
         }
 
-        PropertyDescriptorUseCase propertyDescriptorUseCase =
-            injector.getInstance(PropertyDescriptorUseCase.class);
-        PropertyDescriptorCollection propertyDescriptors =
-            propertyDescriptorUseCase.getPropertyDescriptors();
-
-        Task.setPropertyManager(new PropertyManager(propertyDescriptors));
-
         Executor executor = injector.getInstance(Executor.class);
+
+        Tokenizer tokenizer = injector.getInstance(Tokenizer.class);
 
         Terminal terminal = TerminalBuilder.terminal();
         LineReader reader = LineReaderBuilder.builder().terminal(terminal)
@@ -59,19 +52,25 @@ public class JlineCommandLine implements CommandLine {
                 continue;
             }
 
-            List<String> args = reader.getParser().parse(line, 0).words();
-            if (args.size() == 0) {
+            TokenList tokenList;
+            try {
+                tokenList = tokenizer.tokenize(line);
+                if (tokenList.tokens().size() == 0) {
+                    continue;
+                }
+            } catch (MismatchedQuotesException e) {
+                System.out.println("Syntax error: mismatched quotes");
                 continue;
             }
 
-            ArgumentList argList = ArgumentList.from(args);
-            if (argList.commandName.equals("exit")) {
+            ArgumentList argList = ArgumentList.from(tokenList);
+            if (argList.getCommandName().equals("exit")) {
                 break;
             }
 
             CommandParser parser = commandParserFactory.getParser(argList);
             if (parser == null) {
-                System.out.println("Unknown command: " + argList.commandName);
+                System.out.println("Unknown command: " + argList.getCommandName());
                 continue;
             }
 

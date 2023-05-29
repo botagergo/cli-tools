@@ -38,5 +38,5 @@ public class SpecialArgument {
     public final String value;
 
     public static final Set<Character> specialChars =
-            Set.of('!', '@', '/', '?', '#', '+', '*', ':', '<', '>', '&', '=', '%');
+            Set.of('!', '@', '/', '?', '#', '+', '*', ':', '<', '>', '&', '=', '%', '.');
 }

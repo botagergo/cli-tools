@@ -12,8 +12,7 @@ public class JsonLabelRepository extends LabelRepository {
     public JsonLabelRepository(String labelName, File basePath) {
         super(labelName);
         this.basePath = basePath;
-        String jsonFileName = labelName + ".json";
-        this.jsonFile = new File(basePath, jsonFileName);
+        this.jsonFile = new File(basePath, labelName + ".json");
     }
 
     @Override

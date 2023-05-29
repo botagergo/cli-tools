@@ -26,13 +26,15 @@ public record DeleteTaskCommand(String query) implements Command {
                 log.info("multiple tasks match the string '{}'", query);
             } else {
                 Task task = tasks.get(0);
-                boolean result = context.getTaskUseCase().deleteTask(task.getUuid());
+                boolean result = context.getTaskUseCase().deleteTask(
+                        context.getPropertyManager().getProperty(task, "uuid").getUuid());
                 if (result) {
                     System.out.println("Task deleted successfully");
                     log.info("deleted task: {}", task);
                 } else {
                     System.out.println("No task matches the string '" + query + "'");
-                    log.info("failed to delete task: {}", task.getUuid());
+                    log.info("failed to delete task: {}",
+                            context.getPropertyManager().getProperty(task, "uuid"));
                 }
             }
 

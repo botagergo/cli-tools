@@ -6,19 +6,21 @@ public class CommandParserFactoryImpl implements CommandParserFactory {
 
     @Override
     public CommandParser getParser(ArgumentList argList) {
-        if (argList.commandName == null) {
+        if (argList.getCommandName() == null) {
             return null;
-        } else if (argList.commandName.equals("add")) {
+        } else if (argList.getCommandName().equals("add")) {
             return new AddTaskCommandParser();
-        } else if (argList.commandName.equals("list")) {
+        } else if (argList.getCommandName().equals("list")) {
             return new ListTasksCommandParser();
-        } else if (argList.commandName.equals("done")) {
+        } else if (argList.getCommandName().equals("done")) {
             return new DoneTaskCommandParser();
-        } else if (argList.commandName.equals("clear")) {
+        } else if (argList.getCommandName().equals("clear")) {
             return new ClearCommandParser();
-        } else if (argList.commandName.equals("delete")) {
+        } else if (argList.getCommandName().equals("delete")) {
             return new DeleteTaskCommandParser();
-        } else {
+        } else if (argList.getCommandName().equals("modify")) {
+            return new ModifyTaskCommandParser();
+        }else {
             return null;
         }
     }

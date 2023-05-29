@@ -11,8 +11,4 @@ public record Status(UUID uuid, String name) {
         return new Status(label.uuid(), label.name());
     }
 
-    public Label asLabel() {
-        return new Label(uuid, name);
-    }
-
 }

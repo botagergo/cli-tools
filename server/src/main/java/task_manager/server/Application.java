@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.web.filter.CommonsRequestLoggingFilter;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
+import task_manager.property.PropertyManager;
 import task_manager.init.Initializer;
 import task_manager.logic.use_case.PropertyDescriptorUseCase;
 import task_manager.logic.use_case.StatusUseCase;
@@ -17,6 +18,7 @@ import task_manager.repository.*;
 import task_manager.server.repository.MongoLabelRepositoryFactory;
 import task_manager.server.repository.MongoPropertyDescriptorRepository;
 import task_manager.server.repository.MongoTaskRepository;
+import task_manager.util.RandomUUIDGenerator;
 
 @SpringBootApplication
 public class Application {
@@ -45,12 +47,12 @@ public class Application {
 
     @Bean
     TaskUseCase taskUseCase() {
-        return new TaskUseCase(taskRepository());
+        return new TaskUseCase(taskRepository(), propertyManager(), new RandomUUIDGenerator());
     }
 
     @Bean
     TagUseCase tagUseCase() {
-        return new TagUseCase(labelRepositoryFactory());
+        return new TagUseCase(labelRepositoryFactory(), new RandomUUIDGenerator());
     }
 
     @Bean
@@ -87,7 +89,12 @@ public class Application {
 
     @Bean
     public Initializer initializer() {
-        return new Initializer(propertyDescriptorRepository(), labelRepositoryFactory());
+        return new Initializer(propertyDescriptorRepository(), labelRepositoryFactory(), new RandomUUIDGenerator());
+    }
+
+    @Bean
+    public PropertyManager propertyManager() {
+        return new PropertyManager(propertyDescriptorRepository());
     }
 
     @Value("${mongodb.host}")
@@ -101,9 +108,6 @@ public class Application {
 
     @Value("${mongodb.task_collection_name}")
     private String MONGODB_TASK_COLLECTION_NAME;
-
-    @Value("${mongodb.tag_collection_name}")
-    private String MONGODB_TAG_COLLECTION_NAME;
 
     @Value("${mongodb.property_descriptor_collection_name}")
     private String MONGODB_PROPERTY_DESCRIPTOR_COLLECTION_NAME;

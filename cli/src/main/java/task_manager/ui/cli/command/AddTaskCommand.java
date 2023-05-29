@@ -1,26 +1,17 @@
 package task_manager.ui.cli.command;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
+
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
 import lombok.extern.log4j.Log4j2;
-import task_manager.data.Status;
-import task_manager.data.Tag;
+import org.apache.commons.lang3.tuple.Pair;
 import task_manager.data.Task;
 import task_manager.ui.cli.Context;
-import task_manager.ui.cli.Util;
 
 @Log4j2
-public class AddTaskCommand implements Command {
-
-    public AddTaskCommand(String taskName, List<String> tagNames, String statusName) {
-        this.name = taskName;
-        this.tagNames = tagNames;
-        this.statusName = statusName;
-    }
+public record AddTaskCommand(String name, List<Pair<String, List<String>>> properties) implements Command {
 
     @Override
     public void execute(Context context) {
@@ -28,21 +19,12 @@ public class AddTaskCommand implements Command {
 
         try {
             Task task = new Task();
-            task.setName(name);
 
-            if (tagNames != null) {
-                task.setTags(findTagUuids(context, tagNames));
+            if (properties != null) {
+                context.getPropertyConverter().convertProperties(properties, task, context.getPropertyManager());
             }
 
-            if (statusName != null) {
-                Status status = context.getStatusUseCase().findStatus(statusName);
-                if (status != null) {
-                    task.setStatus(status.uuid());
-                } else {
-                    System.out.println("Invalid status: " + statusName);
-                    return;
-                }
-            }
+            context.getPropertyManager().setProperty(task, "name", name);
 
             context.getTaskUseCase().addTask(task);
         } catch (IOException e) {
@@ -54,27 +36,5 @@ public class AddTaskCommand implements Command {
             log.error("{}", ExceptionUtils.getStackTrace(e));
         }
     }
-
-    private List<UUID> findTagUuids(Context context, List<String> tagNames) throws IOException {
-        List<UUID> tags = new ArrayList<>();
-        for (String tagName : tagNames) {
-            Tag tag = context.getTagUseCase().findTag(tagName);
-
-            if (tag == null
-                && Util.yesNo("Tag '" + tagName + "' does not exist. Do you want to create it?")) {
-                tag = context.getTagUseCase().addTag(tagName);
-            }
-
-            if (tag != null) {
-                tags.add(tag.uuid());
-            }
-        }
-
-        return tags;
-    }
-
-    public final String name;
-    public final List<String> tagNames;
-    public final String statusName;
 
 }

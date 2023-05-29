@@ -8,7 +8,6 @@ public class Util {
 
         System.out.print(prompt + " (y/n)");
         String answer = scanner.nextLine();
-        System.out.println();
 
         return answer.equalsIgnoreCase("y");
     }

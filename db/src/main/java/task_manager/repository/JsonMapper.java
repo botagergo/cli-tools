@@ -22,7 +22,24 @@ public abstract class JsonMapper {
         }
     }
 
+    public static HashMap<String, HashMap<String, Object>> readJsonMap(File jsonPath) throws IOException {
+        if (jsonPath.exists()) {
+            return objectMapper.readValue(jsonPath, new TypeReference<>() {
+
+            });
+        } else {
+            return new HashMap<>();
+        }
+    }
+
     public static void writeJson(File jsonPath, List<HashMap<String, Object>> tasks) throws IOException {
+        String json = objectMapper.writeValueAsString(tasks);
+        FileWriter writer = new FileWriter(jsonPath);
+        writer.write(json);
+        writer.close();
+    }
+
+    public static void writeJsonMap(File jsonPath, HashMap<String, HashMap<String, Object>> tasks) throws IOException {
         String json = objectMapper.writeValueAsString(tasks);
         FileWriter writer = new FileWriter(jsonPath);
         writer.write(json);

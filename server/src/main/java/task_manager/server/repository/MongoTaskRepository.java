@@ -1,14 +1,10 @@
 package task_manager.server.repository;
 
 import task_manager.data.Task;
-import task_manager.data.property.Property;
-import task_manager.data.property.PropertyException;
-import org.apache.commons.lang3.tuple.Pair;
 import org.bson.Document;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
-import java.io.IOException;
 import java.util.*;
 
 import task_manager.repository.TaskRepository;
@@ -40,25 +36,19 @@ public class MongoTaskRepository implements TaskRepository {
     }
 
     @Override
-    public Task update(Task task) throws IOException {
-        try {
-            Document filter = new Document("uuid", task.getUuid().toString());
-            Document document =
-                mongoCollection.find(filter).first();
-            if (document == null) {
-                return null;
-            }
-
-            for (Pair<String, Property> pair : task.getPropertiesIter()) {
-                if (!Objects.equals(pair.getKey(), "uuid")) {
-                    document.put(pair.getKey(), pair.getValue().getRawValue());
-                }
-            }
-            mongoCollection.replaceOne(filter, document);
-            return documentToTask(document);
-        } catch (PropertyException e) {
-            throw new IOException();
+    public Task update(Task task) {
+        Document filter = new Document("uuid", task.getUUID().toString());
+        Document document = mongoCollection.find(filter).first();
+        if (document == null) {
+            return null;
         }
+        for (Map.Entry<String, Object> pair : task.getRawProperties().entrySet()) {
+            if (!Objects.equals(pair.getKey(), "uuid")) {
+                document.put(pair.getKey(), pair.getValue());
+            }
+        }
+        mongoCollection.replaceOne(filter, document);
+        return documentToTask(document);
     }
 
     @Override
@@ -73,7 +63,7 @@ public class MongoTaskRepository implements TaskRepository {
     }
 
     private Document taskToDocument(Task task) {
-        Map<String, Object> map = task.asMap();
+        Map<String, Object> map = task.getRawProperties();
         Document document = new Document();
         for (String key : map.keySet()) {
             document.append(key, map.get(key));

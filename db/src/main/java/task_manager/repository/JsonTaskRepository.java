@@ -7,9 +7,6 @@ import java.util.stream.Collectors;
 
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
-import org.apache.commons.lang3.tuple.Pair;
-import task_manager.data.property.Property;
-import task_manager.data.property.PropertyException;
 import task_manager.data.Task;
 
 public class JsonTaskRepository implements TaskRepository {
@@ -28,7 +25,7 @@ public class JsonTaskRepository implements TaskRepository {
         }
 
         tasks.add(task);
-        JsonMapper.writeJson(jsonFile, tasks.stream().map(Task::asMap).collect(Collectors.toList()));
+        JsonMapper.writeJson(jsonFile, tasks.stream().map(Task::getRawProperties).collect(Collectors.toList()));
         return task;
     }
 
@@ -39,12 +36,8 @@ public class JsonTaskRepository implements TaskRepository {
         }
 
         for (Task task : tasks) {
-            try {
-                if (task.getUuid().equals(uuid)) {
-                    return task;
-                }
-            } catch (PropertyException e) {
-                throw new IOException();
+            if (Objects.equals(uuid, task.getUUID())) {
+                return task;
             }
         }
 
@@ -65,31 +58,24 @@ public class JsonTaskRepository implements TaskRepository {
             tasks = getTasks();
         }
 
-        try {
-            Task taskToUpdate = null;
-
-            for (Task taskToUpdate_ : tasks) {
-                if (taskToUpdate_.getUuid().equals(task.getUuid())) {
-                    taskToUpdate = taskToUpdate_;
-                    break;
-                }
+        Task taskToUpdate = null;
+        for (Task taskToUpdate_ : tasks) {
+            if (Objects.equals(taskToUpdate_.getUUID(), task.getUUID())) {
+                taskToUpdate = taskToUpdate_;
+                break;
             }
-
-            if (taskToUpdate == null) {
-                return null;
-            }
-
-            for (Pair<String, Property> pair : task.getPropertiesIter()) {
-                if (!Objects.equals(pair.getKey(), "uuid")) {
-                    taskToUpdate.setProperty(pair.getKey(), pair.getValue().getValue());
-                }
-            }
-
-            writeTasks(tasks);
-            return taskToUpdate;
-        } catch (PropertyException e) {
-            throw new IllegalArgumentException(e.getMessage());
         }
+        if (taskToUpdate == null) {
+            return null;
+        }
+        for (Map.Entry<String, Object> pair : task.getRawProperties().entrySet()) {
+            if (!Objects.equals(pair.getKey(), "uuid")) {
+                taskToUpdate.getRawProperties().put(pair.getKey(), pair.getValue());
+            }
+        }
+        writeTasks(tasks);
+        return taskToUpdate;
+
     }
 
     @Override
@@ -98,17 +84,14 @@ public class JsonTaskRepository implements TaskRepository {
             tasks = getTasks();
         }
 
-        try {
-            for (Task task : tasks) {
-                if (task.getUuid().equals(uuid)) {
-                    tasks.remove(task);
-                    writeTasks(tasks);
-                    return true;
-                }
+        for (Task task : tasks) {
+            if (task.getUUID().equals(uuid)) {
+                tasks.remove(task);
+                writeTasks(tasks);
+                return true;
             }
-        } catch (PropertyException e) {
-            throw new IOException();
         }
+
         return false;
     }
 
@@ -124,7 +107,7 @@ public class JsonTaskRepository implements TaskRepository {
         }
 
         List<HashMap<String, Object>> converted_tasks =
-            tasks.stream().map(Task::asMap).collect(Collectors.toList());
+            tasks.stream().map(Task::getRawProperties).collect(Collectors.toList());
         JsonMapper.writeJson(jsonFile, converted_tasks);
     }
 

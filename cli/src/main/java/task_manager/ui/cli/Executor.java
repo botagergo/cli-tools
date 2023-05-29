@@ -7,7 +7,7 @@ import task_manager.ui.cli.command.Command;
 
 public class Executor {
 
-    public void execute(Command command) throws Exception {
+    public void execute(Command command) {
         command.execute(context);
     }
 

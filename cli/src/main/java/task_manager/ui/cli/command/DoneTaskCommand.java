@@ -9,11 +9,7 @@ import task_manager.data.Task;
 import task_manager.ui.cli.Context;
 
 @Log4j2
-public class DoneTaskCommand implements Command {
-
-    public DoneTaskCommand(String query) {
-        this.query = query;
-    }
+public record DoneTaskCommand(String query) implements Command {
 
     @Override
     public void execute(Context context) {
@@ -30,15 +26,17 @@ public class DoneTaskCommand implements Command {
                 log.info("multiple tasks match the string '{}'", query);
             } else {
                 Task task = tasks.get(0);
-                task.setDone(true);
+                context.getPropertyManager().setProperty(task, "done", true);
 
                 Task updatedTask = context.getTaskUseCase().modifyTask(task);
                 if (updatedTask != null) {
                     System.out.println("Task marked as done");
-                    log.info("marked task as done: {}", updatedTask.getUuid());
+                    log.info("marked task as done: {}",
+                            context.getPropertyManager().getProperty(updatedTask, "uuid"));
                 } else {
                     System.out.println("No task matches the string '" + query + "'");
-                    log.info("failed to mark task as done: {}", task.getUuid());
+                    log.info("failed to mark task as done: {}",
+                            context.getPropertyManager().getProperty(task, "uuid"));
                 }
             }
 
@@ -51,7 +49,5 @@ public class DoneTaskCommand implements Command {
             log.error("{}\n{}", e.getMessage(), ExceptionUtils.getStackTrace(e));
         }
     }
-
-    public final String query;
 
 }

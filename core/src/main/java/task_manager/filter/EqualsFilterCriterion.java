@@ -1,7 +1,6 @@
 package task_manager.filter;
 
-import task_manager.data.property.Property;
-import task_manager.data.property.PropertyException;
+import task_manager.property.Property;
 
 public class EqualsFilterCriterion extends PropertyFilterCriterion {
 
@@ -11,11 +10,11 @@ public class EqualsFilterCriterion extends PropertyFilterCriterion {
     }
 
     @Override
-    public boolean check_(Property property) throws PropertyException {
-        if (property.getValue() == null) {
+    public boolean check_(Property property) {
+        if (property.getRawValue() == null) {
             return operand == null;
         } else {
-            return property.getValue().equals(operand);
+            return property.getRawValue().equals(operand);
         }
     }
 

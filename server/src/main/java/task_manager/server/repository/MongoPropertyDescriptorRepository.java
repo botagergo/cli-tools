@@ -1,7 +1,8 @@
 package task_manager.server.repository;
 
-import task_manager.data.property.PropertyDescriptor;
-import task_manager.data.property.PropertyDescriptorCollection;
+import org.apache.commons.lang3.NotImplementedException;
+import task_manager.property.PropertyDescriptor;
+import task_manager.property.PropertyDescriptorCollection;
 import org.bson.Document;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
@@ -14,6 +15,11 @@ public class MongoPropertyDescriptorRepository implements PropertyDescriptorRepo
         String taskCollectionName) {
         MongoDatabase mongoDatabase = mongoClient.getDatabase(databaseName);
         mongoCollection = mongoDatabase.getCollection(taskCollectionName);
+    }
+
+    @Override
+    public PropertyDescriptor get(String name) {
+        throw new NotImplementedException();
     }
 
     public PropertyDescriptorCollection getAll() {

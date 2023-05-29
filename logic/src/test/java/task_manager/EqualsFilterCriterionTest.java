@@ -1,107 +1,145 @@
 package task_manager;
 
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 import org.testng.annotations.*;
 
 import task_manager.filter.EqualsFilterCriterion;
-import task_manager.data.property.PropertyDescriptor;
-import task_manager.data.property.PropertyDescriptorCollection;
-import task_manager.data.property.PropertyException;
-import task_manager.data.property.PropertyManager;
-import task_manager.data.property.PropertyOwner;
+import task_manager.property.PropertyDescriptor;
+import task_manager.property.PropertyException;
+import task_manager.property.PropertyManager;
+import task_manager.property.PropertyOwner;
+import task_manager.repository.PropertyDescriptorRepository;
+
 import static org.testng.Assert.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+
+import java.io.IOException;
+import java.util.*;
 
 public class EqualsFilterCriterionTest {
 
-    @Test
-    public void testStringEquals() throws PropertyException {
-        checkEquals("test_string", "string_value", "string_value");
+    public EqualsFilterCriterionTest() throws IOException {
+        MockitoAnnotations.openMocks(this);
+        mockitoPropertyDescriptor("test_string", PropertyDescriptor.Type.String, false);
+        mockitoPropertyDescriptor("test_boolean", PropertyDescriptor.Type.Boolean, false);
+        mockitoPropertyDescriptor("test_uuid", PropertyDescriptor.Type.UUID, false);
+        mockitoPropertyDescriptor("test_string_list", PropertyDescriptor.Type.String, true);
+    }
+
+    @BeforeMethod
+    public void clear() {
+        Mockito.reset(propertyOwner);
     }
 
     @Test
-    public void testBooleanEquals() throws PropertyException {
-        assertTrue(checkEquals("test_boolean", true, true));
+    public void test_check_string_equals() throws PropertyException, IOException {
+        Mockito.when(propertyOwner.getRawProperties()).thenReturn(new HashMap<>(Map.of("test_string", "string_value")));
+        checkEquals("test_string", "string_value");
     }
 
     @Test
-    public void testUuidEquals() throws PropertyException {
-        assertTrue(checkEquals("test_uuid",
-            UUID.fromString("c7817f46-77c4-48a7-93d2-41016a2a2682"),
-            UUID.fromString("c7817f46-77c4-48a7-93d2-41016a2a2682")));
+    public void test_check_boolean_equals() throws PropertyException, IOException {
+        Mockito.when(propertyOwner.getRawProperties()).thenReturn(new HashMap<>(Map.of("test_boolean", true)));
+        assertTrue(checkEquals("test_boolean", true));
     }
 
     @Test
-    public void testListEquals() throws PropertyException {
-        assertTrue(checkEquals("test_string_list",
-            List.of("string_value1", "string_value2"), List.of("string_value1", "string_value2")));
+    public void test_check_uuid_equals() throws PropertyException, IOException {
+        Mockito.when(propertyOwner.getRawProperties()).thenReturn(new HashMap<>(Map.of("test_uuid", "c7817f46-77c4-48a7-93d2-41016a2a2682")));
+        assertTrue(checkEquals("test_uuid", "c7817f46-77c4-48a7-93d2-41016a2a2682"));
     }
 
     @Test
-    public void testStringNotEquals() throws PropertyException {
-        assertFalse(checkEquals("test_string", "other_string_value", "string_value"));
-        assertFalse(checkEquals("test_string", null, "string_value"));
+    public void test_check_list_equals() throws PropertyException, IOException {
+        Mockito.when(propertyOwner.getRawProperties()).thenReturn(new HashMap<>(Map.of("test_string_list", List.of("string_value1", "string_value2"))));
+        assertTrue(checkEquals("test_string_list", List.of("string_value1", "string_value2")));
+    }
+
+    @Test
+    public void test_check_string_not_equal() throws PropertyException, IOException {
+        Mockito.when(propertyOwner.getRawProperties()).thenReturn(new HashMap<>(Map.of("test_string", "string_value")));
+        assertFalse(checkEquals("test_string", "other_string_value"));
+
+        Mockito.when(propertyOwner.getRawProperties()).thenReturn(new HashMap<>(Map.of("test_string", "string_value")));
+        assertFalse(checkEquals("test_string", null));
+
+        Mockito.when(propertyOwner.getRawProperties()).thenReturn(new HashMap<>());
         assertFalse(checkEqualsWithDefault("test_string", "other_string_value"));
     }
 
     @Test
-    public void testBooleanNotEquals() throws PropertyException {
-        assertFalse(checkEquals("test_boolean", false, true));
-        assertFalse(checkEquals("test_boolean", null, true));
+    public void test_check_boolean_not_equal() throws PropertyException, IOException {
+        Mockito.when(propertyOwner.getRawProperties()).thenReturn(new HashMap<>(Map.of("test_boolean", true)));
+        assertFalse(checkEquals("test_boolean", false));
+
+        Mockito.when(propertyOwner.getRawProperties()).thenReturn(new HashMap<>(Map.of("test_boolean", true)));
+        assertFalse(checkEquals("test_boolean", null));
+
+        Mockito.when(propertyOwner.getRawProperties()).thenReturn(new HashMap<>());
         assertFalse(checkEqualsWithDefault("test_boolean", false));
     }
 
     @Test
-    public void testUuidNotEquals() throws PropertyException {
+    public void test_check_uuid_not_equal() throws PropertyException, IOException {
+        Mockito.when(propertyOwner.getRawProperties()).thenReturn(new HashMap<>(Map.of("test_uuid", "c7817f46-77c4-48a7-93d2-41016a2a2682")));
         assertFalse(
             checkEquals("test_uuid",
-                UUID.fromString("a7817f46-77c4-48a7-93d2-41016a2a2682"),
-                UUID.fromString("c7817f46-77c4-48a7-93d2-41016a2a2682")));
+                UUID.fromString("a7817f46-77c4-48a7-93d2-41016a2a2682")));
+
+        Mockito.when(propertyOwner.getRawProperties()).thenReturn(new HashMap<>(Map.of("test_uuid", "c7817f46-77c4-48a7-93d2-41016a2a2682")));
         assertFalse(
-            checkEquals("test_uuid", null,
-                UUID.fromString("c7817f46-77c4-48a7-93d2-41016a2a2682")));
+            checkEquals("test_uuid", null));
+
+        Mockito.when(propertyOwner.getRawProperties()).thenReturn(new HashMap<>());
         assertFalse(
             checkEqualsWithDefault("test_uuid",
                 UUID.fromString("a7817f46-77c4-48a7-93d2-41016a2a2682")));
     }
 
     @Test
-    public void testListNotEquals() throws PropertyException {
+    public void test_check_list_not_equal() throws PropertyException, IOException {
+        Mockito.when(propertyOwner.getRawProperties()).thenReturn(new HashMap<>(Map.of("test_string_list", List.of("string_value1", "string_value3"))));
         assertFalse(
             checkEquals("test_string_list",
-                List.of("string_value1", "string_value2"),
-                List.of("string_value1", "string_value3")));
+                List.of("string_value1", "string_value2")));
+
+        Mockito.when(propertyOwner.getRawProperties()).thenReturn(new HashMap<>(Map.of("test_string_list", listOfFuckingNull(null, "string_value3"))));
         assertFalse(
             checkEquals("test_string_list",
-                listOfFuckingNull(null, "string_value2"),
-                listOfFuckingNull(null, "string_value3")));
+                listOfFuckingNull(null, "string_value2")));
+
+        Mockito.when(propertyOwner.getRawProperties()).thenReturn(new HashMap<>(Map.of("test_string_list", listOfFuckingNull(null, "string_value3"))));
         assertFalse(
             checkEquals("test_string_list",
-                List.of("string_value1", "string_value2"),
-                listOfFuckingNull(null, "string_value3")));
+                List.of("string_value1", "string_value2")));
+
+        Mockito.when(propertyOwner.getRawProperties()).thenReturn(new HashMap<>(Map.of("test_string_list", List.of("string_value1", "string_value3"))));
         assertFalse(
-            checkEquals("test_string_list", null, List.of("string_value1", "string_value3")));
+            checkEquals("test_string_list", null));
+
+        Mockito.when(propertyOwner.getRawProperties()).thenReturn(new HashMap<>());
         assertFalse(
             checkEqualsWithDefault("test_string_list",
                 List.of("string_value1", "string_value2")));
     }
 
-    boolean checkEquals(String propertyName, Object operand, Object propertyValue)
-        throws PropertyException {
+    private boolean checkEquals(String propertyName, Object operand)
+            throws PropertyException, IOException {
         return new EqualsFilterCriterion(propertyName, operand)
-            .check(getPropertyOwner().setProperty(propertyName, propertyValue));
+            .check(propertyOwner, propertyManager);
     }
 
-    boolean checkEqualsWithDefault(String propertyName, Object operand)
-        throws PropertyException {
+    private boolean checkEqualsWithDefault(String propertyName, Object operand)
+            throws PropertyException, IOException {
         return new EqualsFilterCriterion(propertyName, operand)
-            .check(getPropertyOwner());
+            .check(propertyOwner, propertyManager);
     }
 
-    PropertyOwner getPropertyOwner() {
-        return new PropertyOwnerImpl(propertyManager);
+    private void mockitoPropertyDescriptor(String propertyName, PropertyDescriptor.Type propertyType, boolean isList) throws IOException {
+        Mockito.when(propertyDescriptorRepository.get(propertyName)).thenReturn(new PropertyDescriptor(propertyName,
+                propertyType, isList, null));
     }
 
     // Fucking java doesn't allow fucking nulls in fucking List.of...
@@ -110,13 +148,9 @@ public class EqualsFilterCriterionTest {
         return new ArrayList<>(Arrays.asList(items));
     }
 
-    final PropertyDescriptorCollection propertyDescriptors = new PropertyDescriptorCollection(List.of(
-        new PropertyDescriptor("test_string", PropertyDescriptor.Type.String, false, null),
-        new PropertyDescriptor("test_boolean", PropertyDescriptor.Type.Boolean, false, null),
-        new PropertyDescriptor("test_uuid", PropertyDescriptor.Type.UUID, false, null),
-        new PropertyDescriptor("test_string_list", PropertyDescriptor.Type.String, true,
-            null)));
+    @Mock
+    private PropertyOwner propertyOwner;
+    @Mock private PropertyDescriptorRepository propertyDescriptorRepository;
+    @InjectMocks private PropertyManager propertyManager;
 
-
-    final PropertyManager propertyManager = new PropertyManager(propertyDescriptors);
 }

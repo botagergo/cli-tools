@@ -1,49 +1,79 @@
 package task_manager;
 
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 import org.testng.annotations.*;
 import task_manager.filter.AndFilterCriterion;
 import task_manager.filter.EqualsFilterCriterion;
-import task_manager.data.property.PropertyDescriptor;
-import task_manager.data.property.PropertyDescriptorCollection;
-import task_manager.data.property.PropertyException;
-import task_manager.data.property.PropertyManager;
-import task_manager.data.property.PropertyOwner;
+import task_manager.property.PropertyDescriptor;
+import task_manager.property.PropertyException;
+import task_manager.property.PropertyManager;
+import task_manager.property.PropertyOwner;
+import task_manager.repository.PropertyDescriptorRepository;
+
 import static org.testng.Assert.*;
-import java.util.List;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class AndFilterCriterionTest {
 
-    @Test
-    public void testTrue() throws PropertyException {
-        assertTrue(checkEqual(true, true, false, false));
+    public AndFilterCriterionTest() throws IOException {
+        MockitoAnnotations.openMocks(this);
+        mockitoPropertyDescriptor("test_boolean1");
+        mockitoPropertyDescriptor("test_boolean2");
+    }
+
+    @BeforeMethod
+    public void clear() {
+        Mockito.reset(propertyOwner);
     }
 
     @Test
-    public void testFalse() throws PropertyException {
-        assertFalse(checkEqual(true, true, true, false));
-        assertFalse(checkEqual(false, true, false, false));
-        assertFalse(checkEqual(false, true, true, false));
-        assertFalse(checkEqual(false, false, true, false));
-        assertFalse(checkEqual(false, true, true, true));
+    public void test_check_equals() throws PropertyException, IOException {
+        Mockito.when(propertyOwner.getRawProperties()).thenReturn(new HashMap<>(Map.of("test_boolean1", true, "test_boolean2", false)));
+        assertTrue(checkEqual(true, false));
+
+        Mockito.when(propertyOwner.getRawProperties()).thenReturn(new HashMap<>(Map.of("test_boolean1", false, "test_boolean2", true)));
+        assertTrue(checkEqual(false, true));
+
+        Mockito.when(propertyOwner.getRawProperties()).thenReturn(new HashMap<>(Map.of("test_boolean1", false, "test_boolean2", false)));
+        assertTrue(checkEqual(false, false));
+
+        Mockito.when(propertyOwner.getRawProperties()).thenReturn(new HashMap<>(Map.of("test_boolean1", true, "test_boolean2", true)));
+        assertTrue(checkEqual(true, true));
     }
 
-    boolean checkEqual(boolean operand1, boolean propertyValue1, boolean operand2,
-        boolean propertyValue2) throws PropertyException {
+    @Test
+    public void test_check_not_equals() throws PropertyException, IOException {
+        Mockito.when(propertyOwner.getRawProperties()).thenReturn(new HashMap<>(Map.of("test_boolean1", false, "test_boolean2", false)));
+        assertFalse(checkEqual(false, true));
+
+        Mockito.when(propertyOwner.getRawProperties()).thenReturn(new HashMap<>(Map.of("test_boolean1", true, "test_boolean2", true)));
+        assertFalse(checkEqual(false, true));
+
+        Mockito.when(propertyOwner.getRawProperties()).thenReturn(new HashMap<>(Map.of("test_boolean1", true, "test_boolean2", true)));
+        assertFalse(checkEqual(false, false));
+    }
+
+    boolean checkEqual(boolean operand1, boolean operand2) throws PropertyException, IOException {
         return new AndFilterCriterion(
-            new EqualsFilterCriterion("test_boolean1", operand1),
-            new EqualsFilterCriterion("test_boolean2", operand2)).check(
-                getPropertyOwner()
-                    .setProperty("test_boolean1", propertyValue1)
-                    .setProperty("test_boolean2", propertyValue2));
+                new EqualsFilterCriterion("test_boolean1", operand1),
+                new EqualsFilterCriterion("test_boolean2", operand2))
+                .check(propertyOwner, propertyManager);
     }
 
-    PropertyOwner getPropertyOwner() {
-        return new PropertyOwnerImpl(propertyManager);
+    private void mockitoPropertyDescriptor(String name) throws IOException {
+        Mockito.when(propertyDescriptorRepository.get(name)).thenReturn(new PropertyDescriptor(name,
+                PropertyDescriptor.Type.Boolean, false, null));
     }
 
-    final PropertyDescriptorCollection propertyDescriptors = new PropertyDescriptorCollection(List.of(
-        new PropertyDescriptor("test_boolean1", PropertyDescriptor.Type.Boolean, false, null),
-        new PropertyDescriptor("test_boolean2", PropertyDescriptor.Type.Boolean, false, null)));
+    @Mock
+    private PropertyOwner propertyOwner;
+    @Mock private PropertyDescriptorRepository propertyDescriptorRepository;
+    @InjectMocks private PropertyManager propertyManager;
 
-    final PropertyManager propertyManager = new PropertyManager(propertyDescriptors);
 }

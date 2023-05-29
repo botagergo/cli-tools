@@ -8,10 +8,10 @@ import task_manager.logic.use_case.PropertyDescriptorUseCase;
 import task_manager.logic.use_case.TaskUseCase;
 import task_manager.server.ProblemDetails;
 import task_manager.data.Task;
-import task_manager.data.property.PropertyDescriptor;
-import task_manager.data.property.PropertyDescriptorCollection;
-import task_manager.data.property.PropertyException;
-import task_manager.data.property.PropertyManager;
+import task_manager.property.PropertyDescriptor;
+import task_manager.property.PropertyDescriptorCollection;
+import task_manager.property.PropertyException;
+import task_manager.property.PropertyManager;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import java.io.IOException;
@@ -26,7 +26,7 @@ public class TaskController {
 
 	@Inject
 	public TaskController(PropertyDescriptorUseCase propertyDescriptorUseCase,
-		TaskUseCase taskUseCase)
+		TaskUseCase taskUseCase, PropertyManager propertyManager)
 		throws IOException {
 		PropertyDescriptorCollection propertyDescriptors =
 			propertyDescriptorUseCase.getPropertyDescriptors();
@@ -42,14 +42,10 @@ public class TaskController {
 				new PropertyDescriptor("tags", PropertyDescriptor.Type.UUID, true, List.of()));
 			propertyDescriptorUseCase.createPropertyDescriptor(
 				new PropertyDescriptor("status", PropertyDescriptor.Type.UUID, false, null));
-
-			propertyDescriptors =
-				propertyDescriptorUseCase.getPropertyDescriptors();
 		}
 
-		Task.setPropertyManager(new PropertyManager(propertyDescriptors));
-
 		this.taskUseCase = taskUseCase;
+		this.propertyManager = propertyManager;
 	}
 
 	@GetMapping
@@ -82,7 +78,7 @@ public class TaskController {
 	@PostMapping(consumes = "application/json")
 	public Object postTask(@RequestBody Task task) {
 		try {
-			if (task.hasUuid()) {
+			if (propertyManager.hasRawProperty(task, "uuid")) {
 				handleUuidInPostRequest();
 			}
 			return taskUseCase.addTask(task);
@@ -94,16 +90,14 @@ public class TaskController {
 	@PutMapping(consumes = "application/json")
 	public Object putTask(@RequestBody Task task) {
 		try {
-			if (!task.hasUuid()) {
+			if (!propertyManager.hasRawProperty(task, "uuid")) {
 				handleNoUuidInPutRequest();
 			}
-			UUID uuid = task.getUuid();
+			UUID uuid = task.getUUID();
 			if (taskUseCase.modifyTask(task) == null) {
 				return handleTaskNotFound(uuid.toString());
 			}
 			return ResponseEntity.ok().build();
-		} catch (PropertyException e) {
-			return handleTaskUuidException(e);
 		} catch (IOException e) {
 			return handleInternalServerError(e);
 		}
@@ -156,20 +150,8 @@ public class TaskController {
 			ProblemDetails.noUuidInPutRequest(), null);
 	}
 
-	private <T> T handleTaskUuidException(PropertyException e) {
-		log.error(e.getMessage());
-		if (e.getExceptionType() == PropertyException.Type.TypeMismatch) {
-			throw new ErrorResponseException(HttpStatus.BAD_REQUEST,
-				ProblemDetails.propertyTypeMismatch(), e);
-		} else if (e.getExceptionType() == PropertyException.Type.WrongValueType) {
-			throw new ErrorResponseException(HttpStatus.BAD_REQUEST,
-				ProblemDetails.invalidUUID(e.getPropertyValue()), e);
-		} else {
-			throw new ErrorResponseException(HttpStatus.INTERNAL_SERVER_ERROR,
-				ProblemDetails.internalServerError(), e);
-		}
-	}
-
 	TaskUseCase taskUseCase;
+
+	private final PropertyManager propertyManager;
 
 }

@@ -1,47 +1,62 @@
 package task_manager;
 
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 import org.testng.annotations.*;
 import task_manager.filter.ContainsCaseInsensitiveFilterCriterion;
-import task_manager.data.property.PropertyDescriptor;
-import task_manager.data.property.PropertyDescriptorCollection;
-import task_manager.data.property.PropertyException;
-import task_manager.data.property.PropertyManager;
-import task_manager.data.property.PropertyOwner;
+import task_manager.property.PropertyDescriptor;
+import task_manager.property.PropertyException;
+import task_manager.property.PropertyManager;
+import task_manager.property.PropertyOwner;
+import task_manager.repository.PropertyDescriptorRepository;
+
 import static org.testng.Assert.*;
-import java.util.List;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ContainsCaseInsensitiveFilterCriterionTest {
 
-    @Test
-    public void testContains() throws PropertyException {
-        assertTrue(new ContainsCaseInsensitiveFilterCriterion("test_string", "string")
-            .check(getPropertyOwner().setProperty("test_string", "string_value")));
-        assertTrue(new ContainsCaseInsensitiveFilterCriterion("test_string", "VaLuE")
-            .check(getPropertyOwner().setProperty("test_string", "string_value")));
-        assertTrue(new ContainsCaseInsensitiveFilterCriterion("test_string", "")
-            .check(getPropertyOwner().setProperty("test_string", "string_value")));
-        assertTrue(new ContainsCaseInsensitiveFilterCriterion("test_string", "string_value")
-            .check(getPropertyOwner().setProperty("test_string", "string_value")));
+    public ContainsCaseInsensitiveFilterCriterionTest() throws IOException {
+        MockitoAnnotations.openMocks(this);
+        mockitoPropertyDescriptor("test_string", false);
+        mockitoPropertyDescriptor("test_boolean", false);
+        mockitoPropertyDescriptor("test_uuid", false);
+        mockitoPropertyDescriptor("test_string_list", true);
+    }
+
+    @BeforeMethod
+    public void clear() {
+        Mockito.reset(propertyOwner);
     }
 
     @Test
-    public void testNotContains() throws PropertyException {
-        assertFalse(new ContainsCaseInsensitiveFilterCriterion("test_string", "value1")
-            .check(getPropertyOwner().setProperty("test_string", "string_value")));
+    public void test_check_contains() throws PropertyException, IOException {
+        Mockito.when(propertyOwner.getRawProperties()).thenReturn(new HashMap<>(Map.of("test_string", "string_value")));
+        assertTrue(new ContainsCaseInsensitiveFilterCriterion("test_string", "string").check(propertyOwner, propertyManager));
+        assertTrue(new ContainsCaseInsensitiveFilterCriterion("test_string", "VaLuE").check(propertyOwner, propertyManager));
+        assertTrue(new ContainsCaseInsensitiveFilterCriterion("test_string", "").check(propertyOwner, propertyManager));
+        assertTrue(new ContainsCaseInsensitiveFilterCriterion("test_string", "string_value").check(propertyOwner, propertyManager));
     }
 
-    private PropertyOwner getPropertyOwner() {
-        return new PropertyOwnerImpl(propertyManager);
+    @Test
+    public void test_check_doesNotContain() throws PropertyException, IOException {
+        Mockito.when(propertyOwner.getRawProperties()).thenReturn(new HashMap<>(Map.of("test_string", "string_value")));
+        assertFalse(new ContainsCaseInsensitiveFilterCriterion("test_string", "value1").check(propertyOwner, propertyManager));
     }
 
-    final PropertyDescriptorCollection propertyDescriptors = new PropertyDescriptorCollection(List.of(
-        new PropertyDescriptor("test_string", PropertyDescriptor.Type.String, false, null),
-        new PropertyDescriptor("test_boolean", PropertyDescriptor.Type.Boolean, false,
-            null),
-        new PropertyDescriptor("test_uuid", PropertyDescriptor.Type.UUID, false, null),
-        new PropertyDescriptor("test_string_list", PropertyDescriptor.Type.String, true,
-            null)));
+    private void mockitoPropertyDescriptor(String name, boolean isList) throws IOException {
+        Mockito.when(propertyDescriptorRepository.get(name)).thenReturn(new PropertyDescriptor(name,
+                PropertyDescriptor.Type.String, isList, null));
+    }
 
+    @Mock
+    private PropertyOwner propertyOwner;
+    @Mock private PropertyDescriptorRepository propertyDescriptorRepository;
+    @InjectMocks
+    private PropertyManager propertyManager;
 
-    final PropertyManager propertyManager = new PropertyManager(propertyDescriptors);
 }

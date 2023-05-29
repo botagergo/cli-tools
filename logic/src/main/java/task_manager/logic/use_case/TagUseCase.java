@@ -10,16 +10,18 @@ import task_manager.data.Label;
 import task_manager.data.Tag;
 import task_manager.repository.LabelRepository;
 import task_manager.repository.LabelRepositoryFactory;
+import task_manager.util.UUIDGenerator;
 
 public class TagUseCase {
 
     @Inject
-    public TagUseCase(LabelRepositoryFactory labelRepositoryFactory) {
-        this.labelRepository = labelRepositoryFactory.getLabelRepository("tag");
+    public TagUseCase(LabelRepositoryFactory labelRepositoryFactory, UUIDGenerator uuidGenerator) {
+        this.labelRepository = labelRepositoryFactory.getLabelRepository("tags");
+        this.uuidGenerator = uuidGenerator;
     }
 
     public Tag addTag(String name) throws IOException {
-        return Tag.fromLabel(labelRepository.create(new Label(UUID.randomUUID(), name)));
+        return Tag.fromLabel(labelRepository.create(new Label(uuidGenerator.getUUID(), name)));
     }
 
     public Tag findTag(String tagName) throws IOException {
@@ -47,5 +49,6 @@ public class TagUseCase {
     }
 
     private final LabelRepository labelRepository;
+    private final UUIDGenerator uuidGenerator;
 
 }

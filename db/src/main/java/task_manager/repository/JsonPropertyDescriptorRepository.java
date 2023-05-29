@@ -2,14 +2,13 @@ package task_manager.repository;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
+import java.util.Map;
 
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
-import task_manager.data.property.PropertyDescriptor;
-import task_manager.data.property.PropertyDescriptorCollection;
+import task_manager.property.PropertyDescriptor;
+import task_manager.property.PropertyDescriptorCollection;
 
 public class JsonPropertyDescriptorRepository implements PropertyDescriptorRepository {
 
@@ -21,23 +20,25 @@ public class JsonPropertyDescriptorRepository implements PropertyDescriptorRepos
     }
 
     @Override
+    public PropertyDescriptor get(String name) throws IOException {
+        HashMap<String, HashMap<String, Object>> propertyDescriptorMaps = getPropertyDescriptors();
+
+        HashMap<String, Object> propertyDescriptorMap = propertyDescriptorMaps.getOrDefault(name, null);
+        if (propertyDescriptorMap == null) {
+            return null;
+        }
+        return mapToPropertyDescriptor(name, propertyDescriptorMap);
+    }
+
+    @Override
     public PropertyDescriptorCollection getAll() throws IOException {
-        List<HashMap<String, Object>> propertyDescriptorMaps = getPropertyDescriptors();
+        HashMap<String, HashMap<String, Object>> propertyDescriptorMaps = getPropertyDescriptors();
         PropertyDescriptorCollection propertyDescriptors = new PropertyDescriptorCollection();
 
-        for (HashMap<String, Object> propertyDescriptor : propertyDescriptorMaps) {
-            String name = (String) propertyDescriptor.get("name");
-            String typeStr = (String) propertyDescriptor.get("type");
-            PropertyDescriptor.Type type = switch (typeStr) {
-                case "String" -> PropertyDescriptor.Type.String;
-                case "Boolean" -> PropertyDescriptor.Type.Boolean;
-                case "UUID" -> PropertyDescriptor.Type.UUID;
-                default -> null;
-            };
-
-            propertyDescriptors.addPropertyDescriptor(
-                new PropertyDescriptor(name, type, (boolean) propertyDescriptor.get("isList"),
-                    propertyDescriptor.get("defaultValue")));
+        for (Map.Entry<String, HashMap<String, Object>> entry : propertyDescriptorMaps.entrySet()) {
+            String name = entry.getKey();
+            HashMap<String, Object> propertyDescriptorMap = entry.getValue();
+            propertyDescriptors.addPropertyDescriptor(mapToPropertyDescriptor(name, propertyDescriptorMap));
         }
 
         return propertyDescriptors;
@@ -45,33 +46,48 @@ public class JsonPropertyDescriptorRepository implements PropertyDescriptorRepos
 
     @Override
     public void create(PropertyDescriptor propertyDescriptor) throws IOException {
-        List<HashMap<String, Object>> propertyDescriptorMaps = getPropertyDescriptors();
+        HashMap<String, HashMap<String, Object>> propertyDescriptorMaps = getPropertyDescriptors();
         HashMap<String, Object> propertyDescriptorMap = new HashMap<>();
         propertyDescriptorMap.put("name", propertyDescriptor.name());
         propertyDescriptorMap.put("type", propertyDescriptor.type().toString());
         propertyDescriptorMap.put("isList", propertyDescriptor.isList());
         propertyDescriptorMap.put("defaultValue", propertyDescriptor.defaultValue());
-        propertyDescriptorMaps.add(propertyDescriptorMap);
-        JsonMapper.writeJson(jsonFile, propertyDescriptorMaps);
+        propertyDescriptorMaps.put(propertyDescriptor.name(), propertyDescriptorMap);
+        JsonMapper.writeJsonMap(jsonFile, propertyDescriptorMaps);
     }
 
-    public List<HashMap<String, Object>> getPropertyDescriptors() throws IOException {
+    private PropertyDescriptor mapToPropertyDescriptor(String name, HashMap<String, Object> propertyDescriptorMap) {
+        String typeStr = (String) propertyDescriptorMap.get("type");
+        PropertyDescriptor.Type type = switch (typeStr) {
+            case "String" -> PropertyDescriptor.Type.String;
+            case "Boolean" -> PropertyDescriptor.Type.Boolean;
+            case "UUID" -> PropertyDescriptor.Type.UUID;
+            default -> null;
+        };
+
+        return new PropertyDescriptor(name, type, (boolean) propertyDescriptorMap.get("isList"),
+                propertyDescriptorMap.get("defaultValue"));
+    }
+
+    private HashMap<String, HashMap<String, Object>> getPropertyDescriptors() throws IOException {
+        if (propertyDescriptors != null) {
+            return propertyDescriptors;
+
+        }
         if (!basePath.exists()) {
             //noinspection ResultOfMethodCallIgnored
             basePath.mkdirs();
         }
 
         if (!jsonFile.exists()) {
-            return new ArrayList<>();
+            return new HashMap<>();
         }
 
-        if (propertyDescriptors == null) {
-            propertyDescriptors = JsonMapper.readJson(jsonFile);
-        }
+        propertyDescriptors = JsonMapper.readJsonMap(jsonFile);
         return propertyDescriptors;
     }
 
-    private List<HashMap<String, Object>> propertyDescriptors = null;
+    private HashMap<String, HashMap<String, Object>> propertyDescriptors = null;
 
     private final File basePath;
     private final File jsonFile;

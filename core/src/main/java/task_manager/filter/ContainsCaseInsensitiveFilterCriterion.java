@@ -1,7 +1,7 @@
 package task_manager.filter;
 
-import task_manager.data.property.Property;
-import task_manager.data.property.PropertyException;
+import task_manager.property.Property;
+import task_manager.property.PropertyException;
 
 public class ContainsCaseInsensitiveFilterCriterion extends PropertyFilterCriterion {
 
