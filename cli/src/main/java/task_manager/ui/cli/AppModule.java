@@ -6,6 +6,8 @@ import com.google.inject.name.Names;
 import task_manager.repository.*;
 import task_manager.ui.cli.tokenizer.Tokenizer;
 import task_manager.ui.cli.tokenizer.TokenizerImpl;
+import task_manager.util.RandomUUIDGenerator;
+import task_manager.util.UUIDGenerator;
 
 public class AppModule extends AbstractModule {
 
@@ -15,6 +17,7 @@ public class AppModule extends AbstractModule {
         bind(TaskRepository.class).to(JsonTaskRepository.class);
         bind(LabelRepositoryFactory.class).to(JsonLabelRepositoryFactory.class);
         bind(PropertyDescriptorRepository.class).to(JsonPropertyDescriptorRepository.class);
+        bind(UUIDGenerator.class).to(RandomUUIDGenerator.class);
         bind(File.class).annotatedWith(Names.named("basePath")).toInstance(new File(System.getProperty("user.home") + "/.config/task_manager/"));
     }
 

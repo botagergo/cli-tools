@@ -24,7 +24,7 @@ dependencies {
 }
 
 application {
-    mainClass = 'task_manager.TaskManagerCLI'
+    mainClass = 'task_manager.ui.cli.TaskManagerCLI'
 }
 
 run {
