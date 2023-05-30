@@ -26,7 +26,7 @@ public class TaskController {
 
 	@Inject
 	public TaskController(PropertyDescriptorUseCase propertyDescriptorUseCase,
-		TaskUseCase taskUseCase, PropertyManager propertyManager)
+						  TaskUseCase taskUseCase, PropertyManager propertyManager)
 		throws IOException {
 		PropertyDescriptorCollection propertyDescriptors =
 			propertyDescriptorUseCase.getPropertyDescriptors();

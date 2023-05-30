@@ -1,58 +1,24 @@
 package task_manager.logic.use_case;
 
+import task_manager.data.Task;
+import task_manager.property.PropertyException;
+
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import jakarta.inject.Inject;
-import lombok.AllArgsConstructor;
-import task_manager.property.PropertyException;
-import task_manager.property.PropertyManager;
-import task_manager.repository.TaskRepository;
-import task_manager.data.Task;
-import task_manager.util.UUIDGenerator;
-@AllArgsConstructor(onConstructor = @__(@Inject))
-public class TaskUseCase {
+public interface TaskUseCase {
+    Task addTask(Task task) throws IOException;
 
-    public Task addTask(Task task) throws IOException {
-        task.getRawProperties().put("uuid", uuidGenerator.getUUID().toString());
-        return taskRepository.create(task);
-    }
+    Task modifyTask(Task task) throws IOException;
 
-    public Task modifyTask(Task task) throws IOException {
-        return taskRepository.update(task);
-    }
+    boolean deleteTask(UUID uuid) throws IOException;
 
-    public boolean deleteTask(UUID uuid) throws IOException {
-        return taskRepository.delete(uuid);
-    }
+    List<Task> getTasks() throws IOException;
 
-    public List<Task> getTasks() throws IOException {
-        return taskRepository.getAll();
-    }
+    List<Task> getTasks(String query) throws IOException, PropertyException;
 
-    public List<Task> getTasks(String query) throws IOException, PropertyException {
-        List<Task> tasks = taskRepository.getAll();
-        ArrayList<Task> filteredTasks = new ArrayList<>();
-        for (Task task : tasks) {
-            if (propertyManager.getProperty(task, "name").getString().toLowerCase().contains(query.toLowerCase())) {
-                filteredTasks.add(task);
-            }
-        }
-        return filteredTasks;
-    }
+    Task getTask(UUID uuid) throws IOException;
 
-    public Task getTask(UUID uuid) throws IOException {
-        return taskRepository.get(uuid);
-    }
-
-    public void deleteAllTasks() throws IOException {
-        taskRepository.deleteAll();
-    }
-
-    private final TaskRepository taskRepository;
-    private final PropertyManager propertyManager;
-    private final UUIDGenerator uuidGenerator;
-
+    void deleteAllTasks() throws IOException;
 }

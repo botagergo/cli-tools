@@ -10,10 +10,10 @@ import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import task_manager.property.PropertyManager;
 import task_manager.init.Initializer;
-import task_manager.logic.use_case.PropertyDescriptorUseCase;
-import task_manager.logic.use_case.StatusUseCase;
-import task_manager.logic.use_case.TagUseCase;
-import task_manager.logic.use_case.TaskUseCase;
+import task_manager.logic.use_case.PropertyDescriptorUseCaseImpl;
+import task_manager.logic.use_case.StatusUseCaseImpl;
+import task_manager.logic.use_case.TagUseCaseImpl;
+import task_manager.logic.use_case.TaskUseCaseImpl;
 import task_manager.repository.*;
 import task_manager.server.repository.MongoLabelRepositoryFactory;
 import task_manager.server.repository.MongoPropertyDescriptorRepository;
@@ -46,18 +46,18 @@ public class Application {
     }
 
     @Bean
-    TaskUseCase taskUseCase() {
-        return new TaskUseCase(taskRepository(), propertyManager(), new RandomUUIDGenerator());
+    TaskUseCaseImpl taskUseCase() {
+        return new TaskUseCaseImpl(taskRepository(), propertyManager(), new RandomUUIDGenerator());
     }
 
     @Bean
-    TagUseCase tagUseCase() {
-        return new TagUseCase(labelRepositoryFactory(), new RandomUUIDGenerator());
+    TagUseCaseImpl tagUseCase() {
+        return new TagUseCaseImpl(labelRepositoryFactory(), new RandomUUIDGenerator());
     }
 
     @Bean
-    StatusUseCase statusUseCase() {
-        return new StatusUseCase(labelRepositoryFactory());
+    StatusUseCaseImpl statusUseCase() {
+        return new StatusUseCaseImpl(labelRepositoryFactory());
     }
 
     @Bean
@@ -67,8 +67,8 @@ public class Application {
     }
 
     @Bean
-    PropertyDescriptorUseCase propertyDescriptorUseCase() {
-        return new PropertyDescriptorUseCase(
+    PropertyDescriptorUseCaseImpl propertyDescriptorUseCase() {
+        return new PropertyDescriptorUseCaseImpl(
             propertyDescriptorRepository());
     }
 

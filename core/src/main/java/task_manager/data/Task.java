@@ -28,7 +28,8 @@ public class Task implements PropertyOwner {
     }
 
     @Override
-    @JsonAnyGetter
+    @JsonSetter
+    @JsonGetter
     public HashMap<String, Object> getRawProperties() {
         return properties;
     }
