@@ -12,7 +12,7 @@ public class StatusUseCaseImpl implements StatusUseCase {
 
     @Inject
     public StatusUseCaseImpl(LabelRepositoryFactory labelRepositoryFactory) {
-        this.labelRepository = labelRepositoryFactory.getLabelRepository("status");
+        this.labelRepository = labelRepositoryFactory.getLabelRepository("statuses");
     }
 
     @Override

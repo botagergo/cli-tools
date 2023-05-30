@@ -2,7 +2,6 @@ package task_manager.logic.use_case;
 
 import org.apache.commons.lang3.NotImplementedException;
 import task_manager.data.Task;
-import task_manager.property.PropertyException;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -54,6 +53,6 @@ public class TaskUseCaseClientImpl implements TaskUseCase {
         throw new NotImplementedException();
     }
 
-    private TaskManagerClient taskManagerClient;
+    private final TaskManagerClient taskManagerClient;
 
 }
