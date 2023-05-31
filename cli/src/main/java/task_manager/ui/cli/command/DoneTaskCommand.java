@@ -26,13 +26,14 @@ public record DoneTaskCommand(String query) implements Command {
                 log.info("multiple tasks match the string '{}'", query);
             } else {
                 Task task = tasks.get(0);
-                context.getPropertyManager().setProperty(task, "done", true);
+                boolean result = context.getTaskUseCase().deleteTask(task.getUUID());
+                //context.getPropertyManager().setProperty(task, "done", true);
 
-                Task updatedTask = context.getTaskUseCase().modifyTask(task);
-                if (updatedTask != null) {
+                //Task updatedTask = context.getTaskUseCase().modifyTask(task);
+                if (result) {
                     System.out.println("Task marked as done");
-                    log.info("marked task as done: {}",
-                            context.getPropertyManager().getProperty(updatedTask, "uuid"));
+                    //log.info("marked task as done: {}",
+                    //        context.getPropertyManager().getProperty(updatedTask, "uuid"));
                 } else {
                     System.out.println("No task matches the string '" + query + "'");
                     log.info("failed to mark task as done: {}",
