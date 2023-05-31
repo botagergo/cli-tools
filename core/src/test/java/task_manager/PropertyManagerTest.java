@@ -291,7 +291,7 @@ public class PropertyManagerTest {
         @Mock private PropertyDescriptorRepository propertyDescriptorRepository;
         @Mock private PropertyOwner propertyOwner;
         @InjectMocks PropertyManager propertyManager;
-        private final UUIDGenerator uuidGenerator = new RoundRobinUUIDGenerator();
+        private final UUIDGenerator uuidGenerator = new RoundRobinUUIDGenerator(2);
         private final UUID uuid1 = uuidGenerator.getUUID();
         private final UUID uuid2 = uuidGenerator.getUUID();
 }

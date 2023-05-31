@@ -32,7 +32,7 @@ public class TaskTest {
         assertNull(Task.fromMap(new HashMap<>(Map.of("uuid", "asdf"))).getUUID());
     }
 
-    private final UUIDGenerator uuidGenerator = new RoundRobinUUIDGenerator();
+    private final UUIDGenerator uuidGenerator = new RoundRobinUUIDGenerator(1);
 
     private final UUID uuid = uuidGenerator.getUUID();
 }

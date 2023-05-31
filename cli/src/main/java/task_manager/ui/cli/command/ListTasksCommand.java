@@ -23,7 +23,8 @@ public record ListTasksCommand(List<String> queries, String nameQuery) implement
 
         try {
             for (Task task : context.getTaskUseCase().getTasks(nameQuery, queries)) {
-                printTask(context, task);
+                int tempID = context.getTempIDMappingRepository().getOrCreateID(task.getUUID());
+                printTask(context, task, tempID);
             }
         } catch (IOException e) {
             System.out.println("An IO error has occurred: " + e.getMessage());
@@ -35,7 +36,7 @@ public record ListTasksCommand(List<String> queries, String nameQuery) implement
         }
     }
 
-    private void printTask(Context context, Task task) throws IOException, PropertyException {
+    private void printTask(Context context, Task task, int tempID) throws IOException, PropertyException {
         String name = context.getPropertyManager().getProperty(task, "name").getString();
 
         Ansi done;
@@ -45,7 +46,7 @@ public record ListTasksCommand(List<String> queries, String nameQuery) implement
             done = Ansi.ansi().a("•");
         }
 
-        System.out.format("%s %-32s%-15s%s\n", done, name, getStatusStr(context, task),
+        System.out.format("%s [%d] %-32s%-15s%s\n", done, tempID, name, getStatusStr(context, task),
                 getTagsStr(context, task));
     }
 

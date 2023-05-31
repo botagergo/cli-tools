@@ -181,7 +181,7 @@ public class PropertyConverterTest {
 
     @Mock private LabelRepositoryFactory labelRepositoryFactory;
     @Mock private LabelRepository labelRepository;
-    @Spy private final UUIDGenerator uuidGenerator = new RoundRobinUUIDGenerator();
+    @Spy private final UUIDGenerator uuidGenerator = new RoundRobinUUIDGenerator(3);
     private final UUID uuid1 = uuidGenerator.getUUID();
     private final UUID uuid2 = uuidGenerator.getUUID();
     private final UUID uuid3 = uuidGenerator.getUUID();

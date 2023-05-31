@@ -23,6 +23,7 @@ public class AppModule extends AbstractModule {
         bind(TagUseCase.class).to(TagUseCaseImpl.class);
         bind(StatusUseCase.class).to(StatusUseCaseImpl.class);
         bind(PropertyDescriptorUseCase.class).to(PropertyDescriptorUseCaseImpl.class);
+        bind(TempIDMappingRepository.class).to(JsonTempIDMappingRepository.class);
         bind(File.class).annotatedWith(Names.named("basePath")).toInstance(new File(System.getProperty("user.home") + "/.config/task_manager/"));
     }
 

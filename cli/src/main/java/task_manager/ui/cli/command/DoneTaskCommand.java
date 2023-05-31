@@ -2,6 +2,7 @@ package task_manager.ui.cli.command;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import lombok.extern.log4j.Log4j2;
@@ -16,7 +17,15 @@ public record DoneTaskCommand(String query) implements Command {
         log.traceEntry();
 
         try {
-            List<Task> tasks = context.getTaskUseCase().getTasks(query, null);
+            List<Task> tasks;
+
+            try {
+                int taskID = Integer.parseInt(query);
+                UUID uuid = context.getTempIDMappingRepository().getUUID(taskID);
+                tasks = List.of(context.getTaskUseCase().getTask(uuid));
+            } catch (Exception e) {
+                tasks = context.getTaskUseCase().getTasks(query, null);
+            }
 
             if (tasks.size() == 0) {
                 System.out.println("No task matches the string '" + query + "'");
@@ -26,6 +35,8 @@ public record DoneTaskCommand(String query) implements Command {
                 log.info("multiple tasks match the string '{}'", query);
             } else {
                 Task task = tasks.get(0);
+
+                context.getTempIDMappingRepository().delete(task.getUUID());
                 boolean result = context.getTaskUseCase().deleteTask(task.getUUID());
                 //context.getPropertyManager().setProperty(task, "done", true);
 

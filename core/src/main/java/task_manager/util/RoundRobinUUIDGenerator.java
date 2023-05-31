@@ -1,9 +1,12 @@
 package task_manager.util;
 
+import jakarta.inject.Inject;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
+import java.nio.ByteBuffer;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -11,19 +14,27 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class RoundRobinUUIDGenerator implements UUIDGenerator {
 
+    public RoundRobinUUIDGenerator(int number) {
+        ArrayList<UUID> uuidList = new ArrayList<>();
+        for (byte i = 0; i < number; i++) {
+            uuidList.add(UUID.nameUUIDFromBytes(ByteBuffer.allocate(4).putInt(i).array()));
+        }
+        this.uuidList = uuidList;
+    }
+
+    @Inject
     public RoundRobinUUIDGenerator() {
-        this(List.of(
-                UUID.fromString("11111111-1111-1111-1111-111111111111"),
-                UUID.fromString("22222222-2222-2222-2222-222222222222"),
-                UUID.fromString("33333333-3333-3333-3333-333333333333"),
-                UUID.fromString("44444444-4444-4444-4444-444444444444")
-        ));
+        this(10);
     }
 
     @Override
     public UUID getUUID() {
         currInd = (currInd+1)%uuidList.size();
         return uuidList.get(currInd);
+    }
+
+    public UUID getUUID(int index) {
+        return uuidList.get(index%uuidList.size());
     }
 
     @NonNull

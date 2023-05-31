@@ -6,6 +6,7 @@ import lombok.Setter;
 import task_manager.logic.use_case.*;
 import task_manager.property.PropertyManager;
 import task_manager.repository.LabelRepositoryFactory;
+import task_manager.repository.TempIDMappingRepository;
 import task_manager.ui.cli.command.property_converter.PropertyConverter;
 
 public class Context {
@@ -30,5 +31,8 @@ public class Context {
 
     @Getter @Setter @Inject
     private LabelRepositoryFactory labelRepositoryFactory;
+
+    @Getter @Setter @Inject
+    private TempIDMappingRepository tempIDMappingRepository;
 
 }

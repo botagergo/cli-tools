@@ -9,6 +9,7 @@ import task_manager.ui.cli.command.property_converter.PropertyConverterException
 
 import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
 
 @Log4j2
 public record ModifyTaskCommand(String query, List<Pair<String, List<String>>> properties) implements Command {
@@ -18,7 +19,15 @@ public record ModifyTaskCommand(String query, List<Pair<String, List<String>>> p
         log.traceEntry();
 
         try {
-            List<Task> tasks = context.getTaskUseCase().getTasks(query, null);
+            List<Task> tasks;
+
+            try {
+                int taskID = Integer.parseInt(query);
+                UUID uuid = context.getTempIDMappingRepository().getUUID(taskID);
+                tasks = List.of(context.getTaskUseCase().getTask(uuid));
+            } catch (Exception e) {
+                tasks = context.getTaskUseCase().getTasks(query, null);
+            }
 
             for (Task task : tasks) {
                 if (properties != null) {

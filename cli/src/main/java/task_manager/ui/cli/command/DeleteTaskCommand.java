@@ -7,6 +7,7 @@ import task_manager.ui.cli.Context;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
 
 @Log4j2
 public record DeleteTaskCommand(String query) implements Command {
@@ -16,7 +17,15 @@ public record DeleteTaskCommand(String query) implements Command {
         log.traceEntry();
 
         try {
-            List<Task> tasks = context.getTaskUseCase().getTasks(query, null);
+            List<Task> tasks;
+
+            try {
+                int taskID = Integer.parseInt(query);
+                UUID uuid = context.getTempIDMappingRepository().getUUID(taskID);
+                tasks = List.of(context.getTaskUseCase().getTask(uuid));
+            } catch (Exception e) {
+                tasks = context.getTaskUseCase().getTasks(query, null);
+            }
 
             if (tasks.size() == 0) {
                 System.out.println("No task matches the string '" + query + "'");
@@ -26,6 +35,7 @@ public record DeleteTaskCommand(String query) implements Command {
                 log.info("multiple tasks match the string '{}'", query);
             } else {
                 Task task = tasks.get(0);
+                context.getTempIDMappingRepository().delete(task.getUUID());
                 boolean result = context.getTaskUseCase().deleteTask(
                         context.getPropertyManager().getProperty(task, "uuid").getUuid());
                 if (result) {

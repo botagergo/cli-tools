@@ -136,7 +136,7 @@ public class PropertyTest {
                 }
         }
 
-        private final UUIDGenerator uuidGenerator = new RoundRobinUUIDGenerator();
+        private final UUIDGenerator uuidGenerator = new RoundRobinUUIDGenerator(2);
         private final UUID uuid1 = uuidGenerator.getUUID();
         private final UUID uuid2 = uuidGenerator.getUUID();
 }
