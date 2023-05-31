@@ -1,13 +1,11 @@
 plugins {
     id 'java-library'
-    id 'antlr'
 }
 
 dependencies {
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.14.2'
-    testImplementation 'com.fasterxml.jackson.core:jackson-databind:2.14.2'
-
-    implementation 'jakarta.inject:jakarta.inject-api:2.0.1'
+    implementation      'com.fasterxml.jackson.core:jackson-databind:2.14.2'
+    testImplementation  'com.fasterxml.jackson.core:jackson-databind:2.14.2'
+    implementation      'jakarta.inject:jakarta.inject-api:2.0.1'
 
     implementation project(':core')
 }
