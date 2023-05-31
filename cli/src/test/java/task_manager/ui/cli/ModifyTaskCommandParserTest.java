@@ -1,51 +1,52 @@
 package task_manager.ui.cli;
 
-import org.testng.annotations.*;
+import org.testng.annotations.Test;
 import task_manager.ui.cli.argument.ArgumentList;
-import task_manager.ui.cli.command.DoneTaskCommand;
+import task_manager.ui.cli.command.ModifyTaskCommand;
 import task_manager.ui.cli.command_parser.CommandParserException;
-import task_manager.ui.cli.command_parser.DoneTaskCommandParser;
-
-import static org.testng.Assert.*;
+import task_manager.ui.cli.command_parser.ModifyTaskCommandParser;
 
 import java.util.Arrays;
 import java.util.List;
 
-public class DoneTaskCommandParserTest {
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertThrows;
+
+public class ModifyTaskCommandParserTest {
 
     @Test
     public void test_parse_noArgs() throws CommandParserException {
-        DoneTaskCommand command = parse(getArgList());
+        ModifyTaskCommand command = parse(getArgList());
         assertEquals(command.taskIDs().size(), 0);
     }
 
     @Test
     public void test_parse_oneTaskID() throws CommandParserException {
-        DoneTaskCommand command = parse(getArgList("1"));
+        ModifyTaskCommand command = parse(getArgList("1"));
         assertEquals(command.taskIDs(), List.of(1));
     }
 
     @Test
     public void test_parse_multipleTaskIDs() throws CommandParserException {
-        DoneTaskCommand command = parse(getArgList("3", "111", "333"));
+        ModifyTaskCommand command = parse(getArgList("3", "111", "333"));
         assertEquals(command.taskIDs(), List.of(3, 111, 333));
     }
 
     @Test
     public void test_parse_invalidTaskID() {
-        assertThrows(CommandParserException.class, () -> parse(getArgList("1", "asdf", "2")));
+        assertThrows(CommandParserException.class, () ->parse(getArgList("1", "asdf", "2")));
     }
 
-    private DoneTaskCommand parse(ArgumentList argList) throws CommandParserException {
-        return (DoneTaskCommand) parser.parse(argList);
+    private ModifyTaskCommand parse(ArgumentList argList) throws CommandParserException {
+        return (ModifyTaskCommand) parser.parse(argList);
     }
 
     private ArgumentList getArgList(String... param) {
         ArgumentList argList = new ArgumentList();
-        argList.setCommandName("done");
+        argList.setCommandName("delete");
         argList.setNormalArguments(Arrays.asList(param));
         return argList;
     }
 
-    final DoneTaskCommandParser parser = new DoneTaskCommandParser();
+    final ModifyTaskCommandParser parser = new ModifyTaskCommandParser();
 }

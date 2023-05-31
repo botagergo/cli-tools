@@ -2,10 +2,13 @@ package task_manager.repository;
 
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
+import jakarta.inject.Singleton;
 import lombok.NonNull;
 
 import java.io.File;
+import java.util.HashMap;
 
+@Singleton
 public class JsonLabelRepositoryFactory implements LabelRepositoryFactory{
 
     @Inject
@@ -15,9 +18,10 @@ public class JsonLabelRepositoryFactory implements LabelRepositoryFactory{
 
     @Override
     public LabelRepository getLabelRepository(String labelName) {
-        return new JsonLabelRepository(labelName, basePath);
+        return repositories.computeIfAbsent(labelName, (key) -> new JsonLabelRepository(labelName, basePath));
     }
 
     @NonNull private final File basePath;
+    private final HashMap<String, LabelRepository> repositories = new HashMap<>();
 
 }

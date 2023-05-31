@@ -7,8 +7,10 @@ import java.util.stream.Collectors;
 
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
+import jakarta.inject.Singleton;
 import task_manager.data.Task;
 
+@Singleton
 public class JsonTaskRepository implements TaskRepository {
 
     @Inject

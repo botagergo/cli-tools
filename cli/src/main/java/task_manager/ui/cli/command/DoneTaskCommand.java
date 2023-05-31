@@ -1,54 +1,44 @@
 package task_manager.ui.cli.command;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import lombok.NonNull;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import lombok.extern.log4j.Log4j2;
 import task_manager.data.Task;
 import task_manager.ui.cli.Context;
 
 @Log4j2
-public record DoneTaskCommand(String query) implements Command {
+public record DoneTaskCommand(@NonNull List<Integer> taskIDs) implements Command {
 
     @Override
     public void execute(Context context) {
         log.traceEntry();
 
-        try {
-            List<Task> tasks;
+        if (taskIDs.isEmpty()) {
+            System.out.println("No selector was specified");
+            return;
+        }
 
-            try {
-                int taskID = Integer.parseInt(query);
+        try {
+            List<Task> tasks = new ArrayList<>();
+
+            for (int taskID : taskIDs) {
                 UUID uuid = context.getTempIDMappingRepository().getUUID(taskID);
-                tasks = List.of(context.getTaskUseCase().getTask(uuid));
-            } catch (Exception e) {
-                tasks = context.getTaskUseCase().getTasks(query, null);
+                tasks.add(context.getTaskUseCase().getTask(uuid));
             }
 
-            if (tasks.size() == 0) {
-                System.out.println("No task matches the string '" + query + "'");
-                log.info("no task matches the string '{}'", query);
-            } else if (tasks.size() > 1) {
-                System.out.println("Multiple tasks match the string '" + query + "'");
-                log.info("multiple tasks match the string '{}'", query);
-            } else {
-                Task task = tasks.get(0);
-
+            for (Task task : tasks) {
                 context.getTempIDMappingRepository().delete(task.getUUID());
                 boolean result = context.getTaskUseCase().deleteTask(task.getUUID());
                 //context.getPropertyManager().setProperty(task, "done", true);
-
                 //Task updatedTask = context.getTaskUseCase().modifyTask(task);
-                if (result) {
-                    System.out.println("Task marked as done");
-                    //log.info("marked task as done: {}",
-                    //        context.getPropertyManager().getProperty(updatedTask, "uuid"));
-                } else {
-                    System.out.println("No task matches the string '" + query + "'");
-                    log.info("failed to mark task as done: {}",
-                            context.getPropertyManager().getProperty(task, "uuid"));
+                if (!result) {
+                    System.out.println("Failed to mark task '" + task.getUUID() + "' as done");
+                    log.info("failed to mark task as done: {}", task.getUUID());
                 }
             }
 

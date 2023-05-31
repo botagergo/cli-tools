@@ -15,6 +15,7 @@ import task_manager.ui.cli.Executor;
 import task_manager.ui.cli.argument.ArgumentList;
 import task_manager.ui.cli.command.Command;
 import task_manager.ui.cli.command_parser.CommandParser;
+import task_manager.ui.cli.command_parser.CommandParserException;
 import task_manager.ui.cli.command_parser.CommandParserFactory;
 import task_manager.ui.cli.command_parser.CommandParserFactoryImpl;
 import task_manager.ui.cli.tokenizer.MismatchedQuotesException;
@@ -74,9 +75,11 @@ public class JlineCommandLine implements CommandLine {
                 continue;
             }
 
-            Command command = parser.parse(argList);
             try {
+                Command command = parser.parse(argList);
                 executor.execute(command);
+            } catch (CommandParserException e) {
+                System.out.println("Error parsing command: " + e.getMessage());
             } catch (Exception e) {
                 System.out.println(e.getMessage());
             }

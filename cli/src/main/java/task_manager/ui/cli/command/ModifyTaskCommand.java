@@ -1,5 +1,6 @@
 package task_manager.ui.cli.command;
 
+import lombok.NonNull;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -8,25 +9,28 @@ import task_manager.ui.cli.Context;
 import task_manager.ui.cli.command.property_converter.PropertyConverterException;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 @Log4j2
-public record ModifyTaskCommand(String query, List<Pair<String, List<String>>> properties) implements Command {
+public record ModifyTaskCommand(@NonNull List<Integer> taskIDs, List<Pair<String, List<String>>> properties) implements Command {
 
     @Override
     public void execute(Context context) {
         log.traceEntry();
 
-        try {
-            List<Task> tasks;
+        if (taskIDs.isEmpty()) {
+            System.out.println("No selector was specified");
+            return;
+        }
 
-            try {
-                int taskID = Integer.parseInt(query);
+        try {
+            List<Task> tasks = new ArrayList<>();
+
+            for (int taskID : taskIDs) {
                 UUID uuid = context.getTempIDMappingRepository().getUUID(taskID);
-                tasks = List.of(context.getTaskUseCase().getTask(uuid));
-            } catch (Exception e) {
-                tasks = context.getTaskUseCase().getTasks(query, null);
+                tasks.add(context.getTaskUseCase().getTask(uuid));
             }
 
             for (Task task : tasks) {
