@@ -1,7 +1,6 @@
 package task_manager.ui.cli.command;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -13,12 +12,6 @@ import task_manager.data.Status;
 import task_manager.data.Tag;
 import task_manager.data.Task;
 import task_manager.property.PropertyException;
-import task_manager.filter.AndFilterCriterion;
-import task_manager.filter.ContainsCaseInsensitiveFilterCriterion;
-import task_manager.filter.Filter;
-import task_manager.filter.FilterCriterion;
-import task_manager.filter.SimpleFilter;
-import task_manager.filter.grammar.FilterBuilder;
 import task_manager.ui.cli.Context;
 
 @Log4j2
@@ -29,26 +22,7 @@ public record ListTasksCommand(List<String> queries, String nameQuery) implement
         log.traceEntry();
 
         try {
-            List<Task> tasks = context.getTaskUseCase().getTasks();
-
-            List<FilterCriterion> filterCriteria = new ArrayList<>();
-
-            if (queries != null) {
-                for (String query : queries) {
-                    filterCriteria.add(FilterBuilder.buildFilter(query));
-                }
-            }
-
-            if (nameQuery != null) {
-                filterCriteria.add(new ContainsCaseInsensitiveFilterCriterion("name", nameQuery));
-            }
-
-            if (filterCriteria.size() != 0) {
-                Filter filter = new SimpleFilter(new AndFilterCriterion(filterCriteria));
-                tasks = filter.doFilter(tasks, context.getPropertyManager());
-            }
-
-            for (Task task : tasks) {
+            for (Task task : context.getTaskUseCase().getTasks(nameQuery, queries)) {
                 printTask(context, task);
             }
         } catch (IOException e) {

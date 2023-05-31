@@ -39,7 +39,7 @@ public class TaskUseCaseClientImpl implements TaskUseCase {
     }
 
     @Override
-    public List<Task> getTasks(String query) {
+    public List<Task> getTasks(String nameQuery, List<String> queries) {
         throw new NotImplementedException();
     }
 

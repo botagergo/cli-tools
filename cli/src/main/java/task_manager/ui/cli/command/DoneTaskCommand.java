@@ -16,7 +16,7 @@ public record DoneTaskCommand(String query) implements Command {
         log.traceEntry();
 
         try {
-            List<Task> tasks = context.getTaskUseCase().getTasks(query);
+            List<Task> tasks = context.getTaskUseCase().getTasks(query, null);
 
             if (tasks.size() == 0) {
                 System.out.println("No task matches the string '" + query + "'");

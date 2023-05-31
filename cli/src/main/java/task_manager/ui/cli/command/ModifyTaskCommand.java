@@ -18,7 +18,7 @@ public record ModifyTaskCommand(String query, List<Pair<String, List<String>>> p
         log.traceEntry();
 
         try {
-            List<Task> tasks = context.getTaskUseCase().getTasks(query);
+            List<Task> tasks = context.getTaskUseCase().getTasks(query, null);
 
             for (Task task : tasks) {
                 if (properties != null) {

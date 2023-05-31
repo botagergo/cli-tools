@@ -7,6 +7,8 @@ import java.util.UUID;
 
 import jakarta.inject.Inject;
 import lombok.AllArgsConstructor;
+import task_manager.filter.*;
+import task_manager.filter.grammar.FilterBuilder;
 import task_manager.property.PropertyException;
 import task_manager.property.PropertyManager;
 import task_manager.repository.TaskRepository;
@@ -37,15 +39,26 @@ public class TaskUseCaseImpl implements TaskUseCase {
     }
 
     @Override
-    public List<Task> getTasks(String query) throws IOException, PropertyException {
-        List<Task> tasks = taskRepository.getAll();
-        ArrayList<Task> filteredTasks = new ArrayList<>();
-        for (Task task : tasks) {
-            if (propertyManager.getProperty(task, "name").getString().toLowerCase().contains(query.toLowerCase())) {
-                filteredTasks.add(task);
+    public List<Task> getTasks(String nameQuery, List<String> queries) throws IOException, PropertyException {
+        List<Task> tasks = getTasks();
+        List<FilterCriterion> filterCriteria = new ArrayList<>();
+
+        if (queries != null) {
+            for (String query : queries) {
+                filterCriteria.add(FilterBuilder.buildFilter(query));
             }
         }
-        return filteredTasks;
+
+        if (nameQuery != null) {
+            filterCriteria.add(new ContainsCaseInsensitiveFilterCriterion("name", nameQuery));
+        }
+
+        if (filterCriteria.size() != 0) {
+            Filter filter = new SimpleFilter(new AndFilterCriterion(filterCriteria));
+            tasks = filter.doFilter(tasks, propertyManager);
+        }
+
+        return tasks;
     }
 
     @Override

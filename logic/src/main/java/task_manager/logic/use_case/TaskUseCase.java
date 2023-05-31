@@ -16,7 +16,7 @@ public interface TaskUseCase {
 
     List<Task> getTasks() throws IOException;
 
-    List<Task> getTasks(String query) throws IOException, PropertyException;
+    List<Task> getTasks(String nameQuery, List<String> queries) throws IOException, PropertyException;
 
     Task getTask(UUID uuid) throws IOException;
 
