@@ -64,6 +64,8 @@ public class JsonTempIDMappingRepository implements TempIDMappingRepository {
             freeIDs.add(id);
         }
 
+        writeMappings();
+
         return true;
     }
 
