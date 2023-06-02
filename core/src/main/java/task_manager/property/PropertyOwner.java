@@ -4,6 +4,6 @@ import java.util.*;
 
 public interface PropertyOwner {
 
-    HashMap<String, Object> getRawProperties();
+    HashMap<String, Object> getProperties();
 
 }

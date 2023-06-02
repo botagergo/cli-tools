@@ -1,9 +1,7 @@
 package task_manager.ui.cli;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;

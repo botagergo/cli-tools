@@ -34,28 +34,28 @@ public class AndFilterCriterionTest {
 
     @Test
     public void test_check_equals() throws PropertyException, IOException {
-        Mockito.when(propertyOwner.getRawProperties()).thenReturn(new HashMap<>(Map.of("test_boolean1", true, "test_boolean2", false)));
+        Mockito.when(propertyOwner.getProperties()).thenReturn(new HashMap<>(Map.of("test_boolean1", true, "test_boolean2", false)));
         assertTrue(checkEqual(true, false));
 
-        Mockito.when(propertyOwner.getRawProperties()).thenReturn(new HashMap<>(Map.of("test_boolean1", false, "test_boolean2", true)));
+        Mockito.when(propertyOwner.getProperties()).thenReturn(new HashMap<>(Map.of("test_boolean1", false, "test_boolean2", true)));
         assertTrue(checkEqual(false, true));
 
-        Mockito.when(propertyOwner.getRawProperties()).thenReturn(new HashMap<>(Map.of("test_boolean1", false, "test_boolean2", false)));
+        Mockito.when(propertyOwner.getProperties()).thenReturn(new HashMap<>(Map.of("test_boolean1", false, "test_boolean2", false)));
         assertTrue(checkEqual(false, false));
 
-        Mockito.when(propertyOwner.getRawProperties()).thenReturn(new HashMap<>(Map.of("test_boolean1", true, "test_boolean2", true)));
+        Mockito.when(propertyOwner.getProperties()).thenReturn(new HashMap<>(Map.of("test_boolean1", true, "test_boolean2", true)));
         assertTrue(checkEqual(true, true));
     }
 
     @Test
     public void test_check_not_equals() throws PropertyException, IOException {
-        Mockito.when(propertyOwner.getRawProperties()).thenReturn(new HashMap<>(Map.of("test_boolean1", false, "test_boolean2", false)));
+        Mockito.when(propertyOwner.getProperties()).thenReturn(new HashMap<>(Map.of("test_boolean1", false, "test_boolean2", false)));
         assertFalse(checkEqual(false, true));
 
-        Mockito.when(propertyOwner.getRawProperties()).thenReturn(new HashMap<>(Map.of("test_boolean1", true, "test_boolean2", true)));
+        Mockito.when(propertyOwner.getProperties()).thenReturn(new HashMap<>(Map.of("test_boolean1", true, "test_boolean2", true)));
         assertFalse(checkEqual(false, true));
 
-        Mockito.when(propertyOwner.getRawProperties()).thenReturn(new HashMap<>(Map.of("test_boolean1", true, "test_boolean2", true)));
+        Mockito.when(propertyOwner.getProperties()).thenReturn(new HashMap<>(Map.of("test_boolean1", true, "test_boolean2", true)));
         assertFalse(checkEqual(false, false));
     }
 
@@ -68,7 +68,7 @@ public class AndFilterCriterionTest {
 
     private void mockitoPropertyDescriptor(String name) throws IOException {
         Mockito.when(propertyDescriptorRepository.get(name)).thenReturn(new PropertyDescriptor(name,
-                PropertyDescriptor.Type.Boolean, false, null));
+                PropertyDescriptor.Type.Boolean, PropertyDescriptor.Multiplicity.SINGLE, null));
     }
 
     @Mock

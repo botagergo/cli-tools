@@ -1,22 +1,18 @@
 package task_manager.ui.cli.command.property_converter;
 
 import jakarta.inject.Inject;
-import org.apache.commons.lang3.tuple.Pair;
+import org.apache.commons.lang3.tuple.Triple;
 import task_manager.data.Label;
 import task_manager.logic.use_case.PropertyDescriptorUseCase;
-import task_manager.property.PropertyDescriptor;
-import task_manager.property.PropertyException;
-import task_manager.property.PropertyManager;
-import task_manager.property.PropertyOwner;
+import task_manager.property.*;
 import task_manager.repository.LabelRepository;
 import task_manager.repository.LabelRepositoryFactory;
 import task_manager.ui.cli.Util;
+import task_manager.property.PropertySpec;
 import task_manager.util.UUIDGenerator;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class PropertyConverter {
 
@@ -28,22 +24,20 @@ public class PropertyConverter {
         this.uuidGenerator = uuidGenerator;
     }
 
-    public void convertProperties(List<Pair<String, List<String>>> properties, PropertyOwner propertyOwner, PropertyManager propertyManager) throws IOException, PropertyConverterException, PropertyException {
-        List<Pair<String, Object>> changes = new ArrayList<>();
+    public List<PropertySpec> convertProperties(List<Triple<PropertySpec.Affinity, String, List<String>>> properties) throws IOException, PropertyConverterException {
+        List<PropertySpec> propertySpecs = new ArrayList<>();
 
-        for (Pair<String, List<String>> entry : properties) {
-            String propertyName = entry.getKey();
-            List<String> propertyValue = entry.getValue();
+        for (Triple<PropertySpec.Affinity, String, List<String>> entry : properties) {
+            String propertyName = entry.getMiddle();
+            List<String> propertyValue = entry.getRight();
 
             PropertyDescriptor propertyDescriptor = propertyDescriptorUseCase.getPropertyDescriptor(propertyName);
 
             Object property = stringToProperty(propertyDescriptor, propertyValue);
-            changes.add(Pair.of(propertyName, property));
+            propertySpecs.add(new PropertySpec(Property.fromUnchecked(propertyDescriptor, property), entry.getLeft()));
         }
 
-        for (Pair<String, Object> change : changes) {
-            propertyManager.setProperty(propertyOwner, change.getKey(), change.getValue());
-        }
+        return propertySpecs;
     }
 
     public Object stringToProperty(PropertyDescriptor propertyDescriptor, List<String> propertyValueList) throws PropertyConverterException, IOException {
@@ -51,12 +45,14 @@ public class PropertyConverter {
             throw new PropertyConverterException(PropertyConverterException.Type.EmptyList, propertyDescriptor, null);
         }
 
-        if (!propertyDescriptor.isList() && propertyValueList.size() != 1) {
+        if (!propertyDescriptor.isCollection() && propertyValueList.size() != 1) {
             throw new PropertyConverterException(PropertyConverterException.Type.NotAList, propertyDescriptor, null);
         }
 
-        if (propertyDescriptor.isList()) {
+        if (propertyDescriptor.multiplicity() == PropertyDescriptor.Multiplicity.LIST) {
             return stringListToProperty(propertyDescriptor, propertyValueList);
+        } else if (propertyDescriptor.multiplicity() == PropertyDescriptor.Multiplicity.SET) {
+            return stringSetToProperty(propertyDescriptor, propertyValueList);
         } else {
             return singleStringToProperty(propertyDescriptor, propertyValueList.get(0));
         }
@@ -68,6 +64,14 @@ public class PropertyConverter {
             convertedPropertyValueList.add(singleStringToProperty(propertyDescriptor, propertyValue));
         }
         return convertedPropertyValueList;
+    }
+
+    public LinkedHashSet<Object> stringSetToProperty(PropertyDescriptor propertyDescriptor, List<String> propertyValueList) throws PropertyConverterException, IOException {
+        LinkedHashSet<Object> convertedPropertyValueSet = new LinkedHashSet<>();
+        for (String propertyValue : propertyValueList) {
+            convertedPropertyValueSet.add(singleStringToProperty(propertyDescriptor, propertyValue));
+        }
+        return convertedPropertyValueSet;
     }
 
     private Object singleStringToProperty(PropertyDescriptor propertyDescriptor, String propertyValue) throws PropertyConverterException, IOException {
@@ -82,7 +86,7 @@ public class PropertyConverter {
         }
     }
 
-    private String stringToStringProperty(String propertyValueStr) {
+    private Object stringToStringProperty(String propertyValueStr) {
         return propertyValueStr;
     }
 

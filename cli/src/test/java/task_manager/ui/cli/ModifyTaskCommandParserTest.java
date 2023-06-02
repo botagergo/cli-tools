@@ -1,12 +1,15 @@
 package task_manager.ui.cli;
 
+import org.apache.commons.lang3.tuple.Triple;
 import org.testng.annotations.Test;
+import task_manager.property.PropertySpec;
 import task_manager.ui.cli.argument.ArgumentList;
 import task_manager.ui.cli.command.ModifyTaskCommand;
 import task_manager.ui.cli.command_parser.CommandParserException;
 import task_manager.ui.cli.command_parser.ModifyTaskCommandParser;
 
 import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import static org.testng.Assert.assertEquals;
@@ -37,15 +40,26 @@ public class ModifyTaskCommandParserTest {
         assertThrows(CommandParserException.class, () ->parse(getArgList("1", "asdf", "2")));
     }
 
+    @Test
+    public void test_parse_propertyArgs() throws CommandParserException {
+        ModifyTaskCommand command = parse(getArgList(List.of("1"), List.of(Triple.of(PropertySpec.Affinity.NEGATIVE, "prop", List.of("value1", "value2", "value3")))));
+        assertEquals(command.taskIDs(), List.of(1));
+        assertEquals(command.properties(), List.of(Triple.of(PropertySpec.Affinity.NEGATIVE, "prop", List.of("value1", "value2", "value3"))));
+    }
+
     private ModifyTaskCommand parse(ArgumentList argList) throws CommandParserException {
         return (ModifyTaskCommand) parser.parse(argList);
     }
 
     private ArgumentList getArgList(String... param) {
         ArgumentList argList = new ArgumentList();
-        argList.setCommandName("delete");
+        argList.setCommandName("modify");
         argList.setNormalArguments(Arrays.asList(param));
         return argList;
+    }
+
+    private ArgumentList getArgList(List<String> normalArgs, List<Triple<PropertySpec.Affinity, String, List<String>>> propertyArgs) {
+        return new ArgumentList("modify", normalArgs, new LinkedHashMap<>(), propertyArgs);
     }
 
     final ModifyTaskCommandParser parser = new ModifyTaskCommandParser();

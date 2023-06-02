@@ -3,8 +3,9 @@ package task_manager.ui.cli.command;
 import lombok.NonNull;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.apache.commons.lang3.tuple.Pair;
+import org.apache.commons.lang3.tuple.Triple;
 import task_manager.data.Task;
+import task_manager.property.PropertySpec;
 import task_manager.ui.cli.Context;
 import task_manager.ui.cli.command.property_converter.PropertyConverterException;
 
@@ -14,7 +15,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Log4j2
-public record ModifyTaskCommand(@NonNull List<Integer> taskIDs, List<Pair<String, List<String>>> properties) implements Command {
+public record ModifyTaskCommand(@NonNull List<Integer> taskIDs, List<Triple<PropertySpec.Affinity, String, List<String>>> properties) implements Command {
 
     @Override
     public void execute(Context context) {
@@ -30,14 +31,19 @@ public record ModifyTaskCommand(@NonNull List<Integer> taskIDs, List<Pair<String
 
             for (int taskID : taskIDs) {
                 UUID uuid = context.getTempIDMappingRepository().getUUID(taskID);
+                if (uuid == null) {
+                    System.out.println("Task ID does not exist: " + taskID);
+                }
+
                 tasks.add(context.getTaskUseCase().getTask(uuid));
             }
 
             for (Task task : tasks) {
                 if (properties != null) {
-                    context.getPropertyConverter().convertProperties(properties, task, context.getPropertyManager());
-                    context.getTaskUseCase().modifyTask(task);
+                    List<PropertySpec> propertySpecs = context.getPropertyConverter().convertProperties(properties);
+                    context.getPropertyManager().modifyProperties(task, propertySpecs);
                 }
+                context.getTaskUseCase().modifyTask(task);
             }
 
         } catch (PropertyConverterException e) {

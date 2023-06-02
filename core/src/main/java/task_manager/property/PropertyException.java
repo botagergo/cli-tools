@@ -20,10 +20,10 @@ public class PropertyException extends Exception {
     private static String getMsg(Type exceptionType, String propertyName,
             PropertyDescriptor propertyDescriptor, Object propertyValue,
             PropertyDescriptor.Type requestedType) {
-        if (exceptionType == Type.NotAList) {
+        if (exceptionType == Type.WrongMultiplicity) {
             return "Property '" + propertyName + "' is not a list";
-        } else if (exceptionType == Type.IsAList) {
-            return "Property '" + propertyName + "' is a list";
+        } else if (exceptionType == Type.NotACollection) {
+            return "Property '" + propertyName + "' is not a collection";
         } else if (exceptionType == Type.NotExist) {
             return "Property '" + propertyName + "' does not exist";
         } else if (exceptionType == Type.TypeMismatch) {
@@ -44,7 +44,7 @@ public class PropertyException extends Exception {
     @Getter final PropertyDescriptor.Type requestedType;
 
     public enum Type {
-        NotExist, TypeMismatch, WrongValueType, NotAList, IsAList
+        NotExist, TypeMismatch, WrongValueType, NotACollection, WrongMultiplicity
     }
 
 }

@@ -51,7 +51,7 @@ public class MongoPropertyDescriptorRepository implements PropertyDescriptorRepo
         return new PropertyDescriptor(
             document.getString("name"),
             type,
-            document.getBoolean("isList"),
+            PropertyDescriptor.Multiplicity.valueOf(document.getString("multiplicity")),
             document.get("defaultValue"));
     }
 
@@ -59,7 +59,7 @@ public class MongoPropertyDescriptorRepository implements PropertyDescriptorRepo
         Document document = new Document();
         document.append("name", propertyDescriptor.name());
         document.append("type", propertyDescriptor.type().toString());
-        document.append("isList", propertyDescriptor.isList());
+        document.append("multiplicity", propertyDescriptor.multiplicity().toString());
         document.append("defaultValue", propertyDescriptor.defaultValue());
         return document;
     }

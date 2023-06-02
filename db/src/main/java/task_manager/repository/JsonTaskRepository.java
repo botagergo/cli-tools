@@ -27,7 +27,7 @@ public class JsonTaskRepository implements TaskRepository {
         }
 
         tasks.add(task);
-        JsonMapper.writeJson(jsonFile, tasks.stream().map(Task::getRawProperties).collect(Collectors.toList()));
+        JsonMapper.writeTaskJson(jsonFile, tasks.stream().map(Task::getProperties).collect(Collectors.toList()));
         return task;
     }
 
@@ -70,9 +70,9 @@ public class JsonTaskRepository implements TaskRepository {
         if (taskToUpdate == null) {
             return null;
         }
-        for (Map.Entry<String, Object> pair : task.getRawProperties().entrySet()) {
+        for (Map.Entry<String, Object> pair : task.getProperties().entrySet()) {
             if (!Objects.equals(pair.getKey(), "uuid")) {
-                taskToUpdate.getRawProperties().put(pair.getKey(), pair.getValue());
+                taskToUpdate.getProperties().put(pair.getKey(), pair.getValue());
             }
         }
         writeTasks(tasks);
@@ -108,9 +108,12 @@ public class JsonTaskRepository implements TaskRepository {
             basePath.mkdirs();
         }
 
+        this.tasks = tasks;
+
         List<HashMap<String, Object>> converted_tasks =
-            tasks.stream().map(Task::getRawProperties).collect(Collectors.toList());
-        JsonMapper.writeJson(jsonFile, converted_tasks);
+            tasks.stream().map(Task::getProperties).collect(Collectors.toList());
+
+        JsonMapper.writeTaskJson(jsonFile, converted_tasks);
     }
 
     private List<Task> getTasks() throws IOException {
@@ -124,7 +127,7 @@ public class JsonTaskRepository implements TaskRepository {
         }
 
         List<Task> tasks = new ArrayList<>();
-        Iterator<HashMap<String, Object>> taskIter = JsonMapper.readJson(jsonFile).stream().iterator();
+        Iterator<HashMap<String, Object>> taskIter = JsonMapper.readTaskJson(jsonFile).stream().iterator();
         while (taskIter.hasNext()) {
             tasks.add(Task.fromMap(taskIter.next()));
         }

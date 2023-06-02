@@ -30,21 +30,16 @@ public class Task implements PropertyOwner {
     @Override
     @JsonSetter
     @JsonGetter
-    public HashMap<String, Object> getRawProperties() {
+    public HashMap<String, Object> getProperties() {
         return properties;
     }
 
     public UUID getUUID() {
-        Object uuid = getRawProperties().get("uuid");
-        if (!(uuid instanceof String)) {
+        Object uuid = getProperties().get("uuid");
+        if (!(uuid instanceof UUID)) {
             return null;
         }
-
-        try {
-            return UUID.fromString((String) uuid);
-        } catch (IllegalArgumentException e) {
-            return null;
-        }
+        return (UUID) uuid;
     }
 
     private final HashMap<String, Object> properties;

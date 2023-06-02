@@ -42,7 +42,7 @@ public class MongoTaskRepository implements TaskRepository {
         if (document == null) {
             return null;
         }
-        for (Map.Entry<String, Object> pair : task.getRawProperties().entrySet()) {
+        for (Map.Entry<String, Object> pair : task.getProperties().entrySet()) {
             if (!Objects.equals(pair.getKey(), "uuid")) {
                 document.put(pair.getKey(), pair.getValue());
             }
@@ -63,7 +63,7 @@ public class MongoTaskRepository implements TaskRepository {
     }
 
     private Document taskToDocument(Task task) {
-        Map<String, Object> map = task.getRawProperties();
+        Map<String, Object> map = task.getProperties();
         Document document = new Document();
         for (String key : map.keySet()) {
             document.append(key, map.get(key));

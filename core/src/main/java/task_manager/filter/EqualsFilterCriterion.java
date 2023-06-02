@@ -11,10 +11,10 @@ public class EqualsFilterCriterion extends PropertyFilterCriterion {
 
     @Override
     public boolean check_(Property property) {
-        if (property.getRawValue() == null) {
+        if (property.getValue() == null) {
             return operand == null;
         } else {
-            return property.getRawValue().equals(operand);
+            return property.getValue().equals(operand);
         }
     }
 

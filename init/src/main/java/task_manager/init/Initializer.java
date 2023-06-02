@@ -36,15 +36,15 @@ public class Initializer {
 
     private void initializePropertyDescriptors() throws IOException {
         propertyDescriptorRepository.create(
-                new PropertyDescriptor("name", PropertyDescriptor.Type.String, false, ""));
+                new PropertyDescriptor("name", PropertyDescriptor.Type.String, PropertyDescriptor.Multiplicity.SINGLE, ""));
         propertyDescriptorRepository.create(
-                new PropertyDescriptor("uuid", PropertyDescriptor.Type.UUID, false, ""));
+                new PropertyDescriptor("uuid", PropertyDescriptor.Type.UUID, PropertyDescriptor.Multiplicity.SINGLE, ""));
         propertyDescriptorRepository.create(
-                new PropertyDescriptor("done", PropertyDescriptor.Type.Boolean, false, false));
+                new PropertyDescriptor("done", PropertyDescriptor.Type.Boolean, PropertyDescriptor.Multiplicity.SINGLE, false));
         propertyDescriptorRepository.create(
-                new PropertyDescriptor("tags", PropertyDescriptor.Type.UUID, true, List.of()));
+                new PropertyDescriptor("tags", PropertyDescriptor.Type.UUID, PropertyDescriptor.Multiplicity.LIST, List.of()));
         propertyDescriptorRepository.create(
-                new PropertyDescriptor("status", PropertyDescriptor.Type.UUID, false, null));
+                new PropertyDescriptor("status", PropertyDescriptor.Type.UUID, PropertyDescriptor.Multiplicity.SINGLE, null));
     }
 
     private void initializeStatuses() throws IOException {

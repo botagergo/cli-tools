@@ -2,178 +2,277 @@ package task_manager.property;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
+@EqualsAndHashCode
 public class Property {
-
-    public static Property fromRaw(PropertyDescriptor propertyDescriptor, Object propertyValue)
-            throws PropertyException {
-        if (propertyValue == null) {
-            return new Property(propertyDescriptor, null);
-        } else if (propertyDescriptor.isList()) {
-            return new Property(propertyDescriptor,
-                convertPropertyValues(propertyValue, propertyDescriptor, true));
-        } else {
-            return new Property(propertyDescriptor,
-                getRawPropertyValueFromRaw(propertyValue, propertyDescriptor));
-        }
-    }
 
     public static Property from(PropertyDescriptor propertyDescriptor, Object propertyValue)
             throws PropertyException {
-        if (propertyValue == null) {
-            return new Property(propertyDescriptor, null);
-        } else if (propertyDescriptor.isList()) {
-            return new Property(propertyDescriptor,
-                convertPropertyValues(propertyValue, propertyDescriptor, false));
-        } else {
-            return new Property(propertyDescriptor,
-                getRawPropertyValue(propertyValue, propertyDescriptor));
+        if (propertyValue != null) {
+            if (propertyDescriptor.multiplicity() == PropertyDescriptor.Multiplicity.LIST) {
+                checkPropertyValueList(propertyDescriptor, propertyValue);
+            } else if (propertyDescriptor.multiplicity() == PropertyDescriptor.Multiplicity.SET) {
+                checkPropertyValueSet(propertyDescriptor, propertyValue);
+            } else {
+                checkPropertyValue(propertyDescriptor, propertyValue);
+            }
         }
+        return new Property(propertyDescriptor, propertyValue);
     }
 
-    public Object getValue() throws PropertyException {
-        if (propertyDescriptor.type() == PropertyDescriptor.Type.UUID) {
-            if (propertyDescriptor.isList()) {
-                return getUuidList();
-            } else {
-                return getUuid();
-            }
-        } else {
-            return rawValue;
-        }
+    public static Property fromUnchecked(PropertyDescriptor propertyDescriptor, Object propertyValue) {
+        return new Property(propertyDescriptor, propertyValue);
     }
 
     public Boolean getBoolean() throws PropertyException {
         if (propertyDescriptor.type() != PropertyDescriptor.Type.Boolean) {
             throw new PropertyException(PropertyException.Type.TypeMismatch,
-                    propertyDescriptor.name(), propertyDescriptor, rawValue,
+                    propertyDescriptor.name(), propertyDescriptor, value,
                     PropertyDescriptor.Type.Boolean);
         }
 
-        if (rawValue == null) {
+        if (value == null) {
             return null;
         }
 
-        return (Boolean) rawValue;
+        return (Boolean) value;
     }
 
     public String getString() throws PropertyException {
         if (propertyDescriptor.type() != PropertyDescriptor.Type.String) {
             throw new PropertyException(PropertyException.Type.TypeMismatch,
-                    propertyDescriptor.name(), propertyDescriptor, rawValue,
+                    propertyDescriptor.name(), propertyDescriptor, value,
                     PropertyDescriptor.Type.String);
         }
 
-        if (rawValue == null) {
+        if (value == null) {
             return null;
         }
 
-        return (String) rawValue;
+        return (String) value;
     }
 
     public UUID getUuid() throws PropertyException {
         if (propertyDescriptor.type() != PropertyDescriptor.Type.UUID) {
             throw new PropertyException(PropertyException.Type.TypeMismatch,
-                    propertyDescriptor.name(), propertyDescriptor, rawValue,
+                    propertyDescriptor.name(), propertyDescriptor, value,
                     PropertyDescriptor.Type.UUID);
         }
 
-        if (rawValue == null) {
+        if (value == null) {
             return null;
         }
 
-        try {
-            return UUID.fromString((String) rawValue);
-        } catch (IllegalArgumentException e) {
-            throw new RuntimeException("This should not happen");
-        }
+        return (UUID) value;
     }
 
     public List<UUID> getUuidList() throws PropertyException {
         if (propertyDescriptor.type() != PropertyDescriptor.Type.UUID) {
             throw new PropertyException(PropertyException.Type.TypeMismatch,
-                    propertyDescriptor.name(), propertyDescriptor, rawValue,
+                    propertyDescriptor.name(), propertyDescriptor, value,
                     PropertyDescriptor.Type.UUID);
-        } else if (!propertyDescriptor.isList()) {
-            throw new PropertyException(PropertyException.Type.NotAList,
-                    propertyDescriptor.name(), propertyDescriptor, rawValue,
+        } else if (propertyDescriptor.multiplicity() != PropertyDescriptor.Multiplicity.LIST) {
+            throw new PropertyException(PropertyException.Type.WrongMultiplicity,
+                    propertyDescriptor.name(), propertyDescriptor, value,
                     PropertyDescriptor.Type.UUID);
         }
 
-        if (rawValue == null) {
+        if (value == null) {
             return null;
         }
 
-        List<UUID> propertyValues = new ArrayList<>();
-        for (Object uuidStr : (List<?>) rawValue) {
-            propertyValues.add(UUID.fromString((String) uuidStr));
+        List<UUID> valueList = new ArrayList<>();
+        for (Object value : (List<?>) value) {
+            valueList.add((UUID) value);
         }
-        return propertyValues;
+        return valueList;
     }
 
-    private static List<?> convertPropertyValues(Object propertyValues,
-        PropertyDescriptor propertyDescriptor, boolean fromRaw) throws PropertyException {
-        if (!(propertyValues instanceof List<?>)) {
-            throw new PropertyException(PropertyException.Type.WrongValueType,
-                propertyDescriptor.name(), propertyDescriptor, propertyValues,
-                propertyDescriptor.type());
+    public List<String> getStringList() throws PropertyException {
+        if (propertyDescriptor.type() != PropertyDescriptor.Type.String) {
+            throw new PropertyException(PropertyException.Type.TypeMismatch,
+                    propertyDescriptor.name(), propertyDescriptor, value,
+                    PropertyDescriptor.Type.String);
+        } else if (propertyDescriptor.multiplicity() != PropertyDescriptor.Multiplicity.LIST) {
+            throw new PropertyException(PropertyException.Type.WrongMultiplicity,
+                    propertyDescriptor.name(), propertyDescriptor, value,
+                    PropertyDescriptor.Type.String);
         }
 
-        List<Object> convertedPropertyValues = new ArrayList<>();
-        for (Object propertyValue : (List<?>) propertyValues) {
-            if (propertyValue == null) {
-                convertedPropertyValues.add(null);
-            } else if (fromRaw) {
-                convertedPropertyValues
-                    .add(getRawPropertyValueFromRaw(propertyValue, propertyDescriptor));
-            } else {
-                convertedPropertyValues
-                    .add(getRawPropertyValue(propertyValue, propertyDescriptor));
-            }
+        if (value == null) {
+            return null;
         }
-        return convertedPropertyValues;
+
+        List<String> valueList = new ArrayList<>();
+        for (Object value : (List<?>) value) {
+            valueList.add((String) value);
+        }
+        return valueList;
     }
 
-    private static Object getRawPropertyValueFromRaw(Object propertyValue,
-            PropertyDescriptor propertyDescriptor) throws PropertyException {
-        if ((propertyDescriptor.type().equals(PropertyDescriptor.Type.String)
-                && propertyValue instanceof String)
-                || (propertyDescriptor.type().equals(PropertyDescriptor.Type.Boolean)
-                        && propertyValue instanceof Boolean)
-                || (propertyDescriptor.type().equals(PropertyDescriptor.Type.UUID)
-                        && propertyValue instanceof String)) {
-            return propertyValue;
-        } else {
+    public List<Boolean> getBooleanList() throws PropertyException {
+        if (propertyDescriptor.type() != PropertyDescriptor.Type.Boolean) {
+            throw new PropertyException(PropertyException.Type.TypeMismatch,
+                    propertyDescriptor.name(), propertyDescriptor, value,
+                    PropertyDescriptor.Type.Boolean);
+        } else if (propertyDescriptor.multiplicity() != PropertyDescriptor.Multiplicity.LIST) {
+            throw new PropertyException(PropertyException.Type.WrongMultiplicity,
+                    propertyDescriptor.name(), propertyDescriptor, value,
+                    PropertyDescriptor.Type.Boolean);
+        }
+
+        if (value == null) {
+            return null;
+        }
+
+        List<Boolean> valueList = new ArrayList<>();
+        for (Object value : (List<?>) value) {
+            valueList.add((Boolean) value);
+        }
+        return valueList;
+    }
+
+    public LinkedHashSet<UUID> getUuidSet() throws PropertyException {
+        if (propertyDescriptor.type() != PropertyDescriptor.Type.UUID) {
+            throw new PropertyException(PropertyException.Type.TypeMismatch,
+                    propertyDescriptor.name(), propertyDescriptor, value,
+                    PropertyDescriptor.Type.UUID);
+        } else if (propertyDescriptor.multiplicity() != PropertyDescriptor.Multiplicity.SET) {
+            throw new PropertyException(PropertyException.Type.WrongMultiplicity,
+                    propertyDescriptor.name(), propertyDescriptor, value,
+                    PropertyDescriptor.Type.UUID);
+        }
+
+        if (value == null) {
+            return null;
+        }
+
+        LinkedHashSet<UUID> valueSet = new LinkedHashSet<>();
+        for (Object value : (LinkedHashSet<?>) value) {
+            valueSet.add((UUID) value);
+        }
+        return valueSet;
+    }
+
+    public LinkedHashSet<String> getStringSet() throws PropertyException {
+        if (propertyDescriptor.type() != PropertyDescriptor.Type.String) {
+            throw new PropertyException(PropertyException.Type.TypeMismatch,
+                    propertyDescriptor.name(), propertyDescriptor, value,
+                    PropertyDescriptor.Type.String);
+        } else if (propertyDescriptor.multiplicity() != PropertyDescriptor.Multiplicity.SET) {
+            throw new PropertyException(PropertyException.Type.WrongMultiplicity,
+                    propertyDescriptor.name(), propertyDescriptor, value,
+                    PropertyDescriptor.Type.String);
+        }
+
+        if (value == null) {
+            return null;
+        }
+
+        LinkedHashSet<String> valueSet = new LinkedHashSet<>();
+        for (Object value : (LinkedHashSet<?>) value) {
+            valueSet.add((String) value);
+        }
+        return valueSet;
+    }
+
+    public LinkedHashSet<Boolean> getBooleanSet() throws PropertyException {
+        if (propertyDescriptor.type() != PropertyDescriptor.Type.Boolean) {
+            throw new PropertyException(PropertyException.Type.TypeMismatch,
+                    propertyDescriptor.name(), propertyDescriptor, value,
+                    PropertyDescriptor.Type.Boolean);
+        } else if (propertyDescriptor.multiplicity() != PropertyDescriptor.Multiplicity.SET) {
+            throw new PropertyException(PropertyException.Type.WrongMultiplicity,
+                    propertyDescriptor.name(), propertyDescriptor, value,
+                    PropertyDescriptor.Type.Boolean);
+        }
+
+        if (value == null) {
+            return null;
+        }
+
+        LinkedHashSet<Boolean> valueSet = new LinkedHashSet<>();
+        for (Object value : (LinkedHashSet<?>) value) {
+            valueSet.add((Boolean) value);
+        }
+        return valueSet;
+    }
+
+    public List<Object> getList() throws PropertyException {
+        if (propertyDescriptor.multiplicity() != PropertyDescriptor.Multiplicity.LIST) {
+            throw new PropertyException(PropertyException.Type.WrongMultiplicity,
+                    propertyDescriptor.name(), propertyDescriptor, value,
+                    PropertyDescriptor.Type.UUID);
+        }
+
+        if (value == null) {
+            return null;
+        }
+
+        return new ArrayList<>((List<?>) value);
+    }
+
+    public LinkedHashSet<Object> getSet() throws PropertyException {
+        if (propertyDescriptor.multiplicity() != PropertyDescriptor.Multiplicity.SET) {
+            throw new PropertyException(PropertyException.Type.WrongMultiplicity,
+                    propertyDescriptor.name(), propertyDescriptor, value,
+                    PropertyDescriptor.Type.UUID);
+        }
+
+        if (value == null) {
+            return null;
+        }
+        return new LinkedHashSet<>((LinkedHashSet<?>) value);
+    }
+
+    private static void checkPropertyValue(PropertyDescriptor propertyDescriptor, Object propertyValue) throws PropertyException {
+        if ( propertyDescriptor.type().equals(PropertyDescriptor.Type.String) &&
+                    !(propertyValue instanceof String) ||
+                propertyDescriptor.type().equals(PropertyDescriptor.Type.Boolean) &&
+                    !(propertyValue instanceof Boolean) ||
+                propertyDescriptor.type().equals(PropertyDescriptor.Type.UUID) &&
+                    !(propertyValue instanceof UUID)) {
+
             throw new PropertyException(PropertyException.Type.WrongValueType,
                     propertyDescriptor.name(), propertyDescriptor, propertyValue,
                     propertyDescriptor.type());
         }
     }
 
-    private static Object getRawPropertyValue(Object propertyValue,
-        PropertyDescriptor propertyDescriptor) throws PropertyException {
-        if ((propertyDescriptor.type().equals(PropertyDescriptor.Type.String)
-            && propertyValue instanceof String)
-            || (propertyDescriptor.type().equals(PropertyDescriptor.Type.Boolean)
-                && propertyValue instanceof Boolean)) {
-            return propertyValue;
-        } else if (propertyDescriptor.type().equals(PropertyDescriptor.Type.UUID)
-            && propertyValue instanceof UUID) {
-            return propertyValue.toString();
-        } else {
+    private static void checkPropertyValueList(PropertyDescriptor propertyDescriptor, Object propertyValues) throws PropertyException {
+        if (!(propertyValues instanceof List<?>)) {
             throw new PropertyException(PropertyException.Type.WrongValueType,
-                propertyDescriptor.name(), propertyDescriptor, propertyValue,
+                propertyDescriptor.name(), propertyDescriptor, propertyValues,
                 propertyDescriptor.type());
+        }
+
+        for (Object propertyValue : (List<?>) propertyValues) {
+            if (propertyValue != null) {
+                checkPropertyValue(propertyDescriptor, propertyValue);
+            }
+        }
+    }
+
+    private static void checkPropertyValueSet(PropertyDescriptor propertyDescriptor, Object propertyValues) throws PropertyException {
+        if (!(propertyValues instanceof Set<?>)) {
+            throw new PropertyException(PropertyException.Type.WrongValueType,
+                    propertyDescriptor.name(), propertyDescriptor, propertyValues,
+                    propertyDescriptor.type());
+        }
+
+        for (Object propertyValue : (Set<?>) propertyValues) {
+            if (propertyValue != null) {
+                checkPropertyValue(propertyDescriptor, propertyValue);
+            }
         }
     }
 
     @Getter private final PropertyDescriptor propertyDescriptor;
-    @Getter private final Object rawValue;
+    @Getter private final Object value;
 
 }

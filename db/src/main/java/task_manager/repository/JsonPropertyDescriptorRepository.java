@@ -50,7 +50,7 @@ public class JsonPropertyDescriptorRepository implements PropertyDescriptorRepos
         HashMap<String, Object> propertyDescriptorMap = new HashMap<>();
         propertyDescriptorMap.put("name", propertyDescriptor.name());
         propertyDescriptorMap.put("type", propertyDescriptor.type().toString());
-        propertyDescriptorMap.put("isList", propertyDescriptor.isList());
+        propertyDescriptorMap.put("multiplicity", propertyDescriptor.multiplicity().toString());
         propertyDescriptorMap.put("defaultValue", propertyDescriptor.defaultValue());
         propertyDescriptorMaps.put(propertyDescriptor.name(), propertyDescriptorMap);
         JsonMapper.writeJsonMap(jsonFile, propertyDescriptorMaps);
@@ -65,7 +65,7 @@ public class JsonPropertyDescriptorRepository implements PropertyDescriptorRepos
             default -> null;
         };
 
-        return new PropertyDescriptor(name, type, (boolean) propertyDescriptorMap.get("isList"),
+        return new PropertyDescriptor(name, type, PropertyDescriptor.Multiplicity.valueOf((String) propertyDescriptorMap.get("multiplicity")),
                 propertyDescriptorMap.get("defaultValue"));
     }
 

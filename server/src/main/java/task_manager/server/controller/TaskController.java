@@ -33,15 +33,15 @@ public class TaskController {
 
 		if (propertyDescriptors.get("uuid") == null) {
 			propertyDescriptorUseCase.createPropertyDescriptor(
-				new PropertyDescriptor("name", PropertyDescriptor.Type.String, false, ""));
+				new PropertyDescriptor("name", PropertyDescriptor.Type.String, PropertyDescriptor.Multiplicity.SINGLE, ""));
 			propertyDescriptorUseCase.createPropertyDescriptor(
-				new PropertyDescriptor("uuid", PropertyDescriptor.Type.UUID, false, ""));
+				new PropertyDescriptor("uuid", PropertyDescriptor.Type.UUID, PropertyDescriptor.Multiplicity.SINGLE, ""));
 			propertyDescriptorUseCase.createPropertyDescriptor(
-				new PropertyDescriptor("done", PropertyDescriptor.Type.Boolean, false, false));
+				new PropertyDescriptor("done", PropertyDescriptor.Type.Boolean, PropertyDescriptor.Multiplicity.SINGLE, false));
 			propertyDescriptorUseCase.createPropertyDescriptor(
-				new PropertyDescriptor("tags", PropertyDescriptor.Type.UUID, true, List.of()));
+				new PropertyDescriptor("tags", PropertyDescriptor.Type.UUID, PropertyDescriptor.Multiplicity.LIST, List.of()));
 			propertyDescriptorUseCase.createPropertyDescriptor(
-				new PropertyDescriptor("status", PropertyDescriptor.Type.UUID, false, null));
+				new PropertyDescriptor("status", PropertyDescriptor.Type.UUID, PropertyDescriptor.Multiplicity.SINGLE, null));
 		}
 
 		this.taskUseCase = taskUseCase;
@@ -78,7 +78,7 @@ public class TaskController {
 	@PostMapping(consumes = "application/json")
 	public Object postTask(@RequestBody Task task) {
 		try {
-			if (propertyManager.hasRawProperty(task, "uuid")) {
+			if (propertyManager.hasProperty(task, "uuid")) {
 				handleUuidInPostRequest();
 			}
 			return taskUseCase.addTask(task);
@@ -90,7 +90,7 @@ public class TaskController {
 	@PutMapping(consumes = "application/json")
 	public Object putTask(@RequestBody Task task) {
 		try {
-			if (!propertyManager.hasRawProperty(task, "uuid")) {
+			if (!propertyManager.hasProperty(task, "uuid")) {
 				handleNoUuidInPutRequest();
 			}
 			UUID uuid = task.getUUID();

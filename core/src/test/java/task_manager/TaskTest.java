@@ -14,7 +14,7 @@ public class TaskTest {
 
     @Test
     public void test_getUUID_successful() {
-        assertEquals(Task.fromMap(new HashMap<>(Map.of("uuid", uuid.toString()))).getUUID(), uuid);
+        assertEquals(Task.fromMap(new HashMap<>(Map.of("uuid", uuid))).getUUID(), uuid);
     }
 
     @Test

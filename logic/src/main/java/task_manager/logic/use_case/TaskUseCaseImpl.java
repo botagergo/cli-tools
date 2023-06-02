@@ -19,7 +19,7 @@ public class TaskUseCaseImpl implements TaskUseCase {
 
     @Override
     public Task addTask(Task task) throws IOException {
-        task.getRawProperties().put("uuid", uuidGenerator.getUUID().toString());
+        task.getProperties().put("uuid", uuidGenerator.getUUID());
         return taskRepository.create(task);
     }
 

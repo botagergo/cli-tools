@@ -7,6 +7,7 @@ import task_manager.property.PropertyException;
 import task_manager.util.RoundRobinUUIDGenerator;
 import task_manager.util.UUIDGenerator;
 
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.UUID;
 
@@ -15,87 +16,74 @@ import static org.testng.Assert.*;
 public class PropertyTest {
 
         @Test
-        public void test_fromRaw_nonNull_successful() throws PropertyException {
-                assertFromRawEquals("string_property", PropertyDescriptor.Type.String, false, "property_value", "property_value");
-                assertFromRawEquals("boolean_property", PropertyDescriptor.Type.Boolean, false, true, true);
-                assertFromRawEquals("uuid_property", PropertyDescriptor.Type.UUID, false, uuid1.toString(), uuid1);
-                assertFromRawEquals("uuid_list_property", PropertyDescriptor.Type.UUID, true, List.of(uuid1.toString(), uuid2.toString()), List.of(uuid1, uuid2));
-        }
-
-        @Test
-        public void test_fromRaw_null_successful() throws PropertyException {
-                assertFromRawEquals("string_property", PropertyDescriptor.Type.String, false, null, null);
-                assertFromRawEquals("boolean_property", PropertyDescriptor.Type.Boolean, false, null, null);
-                assertFromRawEquals("uuid_property", PropertyDescriptor.Type.UUID, false, null, null);
-                assertFromRawEquals("uuid_list_property", PropertyDescriptor.Type.UUID, true, null, null);
-        }
-
-        @Test
-        public void test_fromRaw_throwsPropertyException_typeMismatch() {
-                assertFromRawThrowsWrongValueTypePropertyException("string_property", PropertyDescriptor.Type.String, false, 123);
-                assertFromRawThrowsWrongValueTypePropertyException("boolean_property", PropertyDescriptor.Type.Boolean, false, 123);
-                assertFromRawThrowsWrongValueTypePropertyException("uuid_property", PropertyDescriptor.Type.UUID, false, 123);
-                assertFromRawThrowsWrongValueTypePropertyException("uuid_list_property", PropertyDescriptor.Type.UUID, true, 123);
-        }
-
-        @Test
         public void test_from_nonNull_successful() throws PropertyException {
-                assertFromEquals("string_property", PropertyDescriptor.Type.String, false, "property_value");
-                assertFromEquals("boolean_property", PropertyDescriptor.Type.Boolean, false, true);
-                assertFromEquals("uuid_property", PropertyDescriptor.Type.UUID, false, uuid1);
-                assertFromEquals("uuid_list_property", PropertyDescriptor.Type.UUID, true, List.of(uuid1, uuid2));
+                assertFromEquals("string_property", PropertyDescriptor.Type.String, PropertyDescriptor.Multiplicity.SINGLE, "property_value");
+                assertFromEquals("boolean_property", PropertyDescriptor.Type.Boolean, PropertyDescriptor.Multiplicity.SINGLE, true);
+                assertFromEquals("uuid_property", PropertyDescriptor.Type.UUID, PropertyDescriptor.Multiplicity.SINGLE, uuid1);
+                assertFromEquals("string_list_property", PropertyDescriptor.Type.String, PropertyDescriptor.Multiplicity.LIST, List.of("value1", "value2"));
+                assertFromEquals("boolean_list_property", PropertyDescriptor.Type.Boolean, PropertyDescriptor.Multiplicity.LIST, List.of(false, true));
+                assertFromEquals("uuid_list_property", PropertyDescriptor.Type.UUID, PropertyDescriptor.Multiplicity.LIST, List.of(uuid1, uuid2));
+                assertFromEquals("string_set_property", PropertyDescriptor.Type.String, PropertyDescriptor.Multiplicity.SET, new LinkedHashSet<>(List.of("value1", "value2")));
+                assertFromEquals("boolean_set_property", PropertyDescriptor.Type.Boolean, PropertyDescriptor.Multiplicity.SET, new LinkedHashSet<>(List.of(false, true)));
+                assertFromEquals("uuid_set_property", PropertyDescriptor.Type.UUID, PropertyDescriptor.Multiplicity.SET, new LinkedHashSet<>(List.of(uuid1, uuid2)));
         }
 
         @Test
         public void test_from_null_successful() throws PropertyException {
-                assertFromEquals("string_property", PropertyDescriptor.Type.String, false, null);
-                assertFromEquals("boolean_property", PropertyDescriptor.Type.Boolean, false, null);
-                assertFromEquals("uuid_property", PropertyDescriptor.Type.UUID, false, null);
-                assertFromEquals("uuid_list_property", PropertyDescriptor.Type.UUID, true, null);
+                assertFromEquals("string_property", PropertyDescriptor.Type.String, PropertyDescriptor.Multiplicity.SINGLE, null);
+                assertFromEquals("boolean_property", PropertyDescriptor.Type.Boolean, PropertyDescriptor.Multiplicity.SINGLE, null);
+                assertFromEquals("uuid_property", PropertyDescriptor.Type.UUID, PropertyDescriptor.Multiplicity.SINGLE, null);
+                assertFromEquals("uuid_list_property", PropertyDescriptor.Type.UUID, PropertyDescriptor.Multiplicity.LIST, null);
+                assertFromEquals("uuid_set_property", PropertyDescriptor.Type.UUID, PropertyDescriptor.Multiplicity.SET, null);
         }
 
         @Test
-        public void test_from_throwsPropertyException_typeMismatch() {
-                assertFromRawThrowsWrongValueTypePropertyException("string_property", PropertyDescriptor.Type.String, false, 123);
-                assertFromRawThrowsWrongValueTypePropertyException("boolean_property", PropertyDescriptor.Type.Boolean, false, 123);
-                assertFromRawThrowsWrongValueTypePropertyException("uuid_property", PropertyDescriptor.Type.UUID, false, true);
-                assertFromRawThrowsWrongValueTypePropertyException("uuid_list_property", PropertyDescriptor.Type.UUID, true, 123);
-                assertFromRawThrowsWrongValueTypePropertyException("uuid_list_property", PropertyDescriptor.Type.UUID, true, 123);
+        public void test_from_throwsPropertyException_typeMismatch_singleValue() {
+                assertFromThrowsWrongValueTypePropertyException("string_property", PropertyDescriptor.Type.String, PropertyDescriptor.Multiplicity.SINGLE, 123);
+                assertFromThrowsWrongValueTypePropertyException("boolean_property", PropertyDescriptor.Type.Boolean, PropertyDescriptor.Multiplicity.SINGLE, 123);
+                assertFromThrowsWrongValueTypePropertyException("uuid_property", PropertyDescriptor.Type.UUID, PropertyDescriptor.Multiplicity.SINGLE, true);
+                assertFromThrowsWrongValueTypePropertyException("boolean_property", PropertyDescriptor.Type.Boolean, PropertyDescriptor.Multiplicity.SINGLE, List.of("value1", "value2"));
+                assertFromThrowsWrongValueTypePropertyException("boolean_property", PropertyDescriptor.Type.Boolean, PropertyDescriptor.Multiplicity.SINGLE, new LinkedHashSet<>(List.of("value1", "value2")));
+        }
+
+        @Test
+        public void test_from_throwsPropertyException_typeMismatch_multiplicity() {
+                assertFromThrowsWrongValueTypePropertyException("uuid_list_property", PropertyDescriptor.Type.UUID, PropertyDescriptor.Multiplicity.LIST, uuid1);
+                assertFromThrowsWrongValueTypePropertyException("uuid_list_property", PropertyDescriptor.Type.UUID, PropertyDescriptor.Multiplicity.LIST, new LinkedHashSet<>(List.of(uuid1, uuid2)));
+                assertFromThrowsWrongValueTypePropertyException("string_set_property", PropertyDescriptor.Type.String, PropertyDescriptor.Multiplicity.SET, "value");
+                assertFromThrowsWrongValueTypePropertyException("string_set_property", PropertyDescriptor.Type.String, PropertyDescriptor.Multiplicity.SET, List.of("value1", "value2"));
+                assertFromThrowsWrongValueTypePropertyException("boolean_property", PropertyDescriptor.Type.Boolean, PropertyDescriptor.Multiplicity.SINGLE, List.of(true, false));
+                assertFromThrowsWrongValueTypePropertyException("boolean_property", PropertyDescriptor.Type.Boolean, PropertyDescriptor.Multiplicity.SINGLE, new LinkedHashSet<>(List.of(true, false)));
+        }
+
+        @Test
+        public void test_from_throwsPropertyException_typeMismatch_collectionItem() {
+                assertFromThrowsWrongValueTypePropertyException("string_list_property", PropertyDescriptor.Type.String, PropertyDescriptor.Multiplicity.LIST, List.of(true, false));
+                assertFromThrowsWrongValueTypePropertyException("string_set_property", PropertyDescriptor.Type.String, PropertyDescriptor.Multiplicity.SET, new LinkedHashSet<>(List.of(true, false)));
+                assertFromThrowsWrongValueTypePropertyException("boolean_list_property", PropertyDescriptor.Type.Boolean, PropertyDescriptor.Multiplicity.LIST, List.of("value1", "value2"));
+                assertFromThrowsWrongValueTypePropertyException("boolean_set_property", PropertyDescriptor.Type.Boolean, PropertyDescriptor.Multiplicity.SET, new LinkedHashSet<>(List.of("value1", "value2")));
+                assertFromThrowsWrongValueTypePropertyException("uuid_list_property", PropertyDescriptor.Type.UUID, PropertyDescriptor.Multiplicity.LIST, List.of(true, false));
+                assertFromThrowsWrongValueTypePropertyException("uuid_set_property", PropertyDescriptor.Type.UUID, PropertyDescriptor.Multiplicity.SET, new LinkedHashSet<>(List.of(true, false)));
         }
 
         @Test
         public void test_getValue_successful() throws PropertyException {
-                assertGetValueEquals("string_property", PropertyDescriptor.Type.String, false, "property_value");
-                assertGetValueEquals("boolean_property", PropertyDescriptor.Type.Boolean, false, true);
-                assertGetValueEquals("uuid_property", PropertyDescriptor.Type.UUID, false, uuid1);
-                assertGetValueEquals("uuid_list_property", PropertyDescriptor.Type.UUID, true, List.of(uuid1, uuid2));
+                assertGetValueEquals("string_property", PropertyDescriptor.Type.String, PropertyDescriptor.Multiplicity.SINGLE, "property_value");
+                assertGetValueEquals("boolean_property", PropertyDescriptor.Type.Boolean, PropertyDescriptor.Multiplicity.SINGLE, true);
+                assertGetValueEquals("uuid_property", PropertyDescriptor.Type.UUID, PropertyDescriptor.Multiplicity.SINGLE, uuid1);
+                assertGetValueEquals("uuid_list_property", PropertyDescriptor.Type.UUID, PropertyDescriptor.Multiplicity.LIST, List.of(uuid1, uuid2));
         }
 
-        @Test
-        public void test_getValueRaw_successful() throws PropertyException {
-                assertGetRawValueEquals("string_property", PropertyDescriptor.Type.String, false, "property_value");
-                assertGetRawValueEquals("boolean_property", PropertyDescriptor.Type.Boolean, false, true);
-                assertGetRawValueEquals("uuid_property", PropertyDescriptor.Type.UUID, false, uuid1.toString());
-                assertGetRawValueEquals("uuid_list_property", PropertyDescriptor.Type.String, true, List.of(uuid1.toString(), uuid2.toString()));
-        }
-
-
-        private void assertFromRawEquals(String propertyName, PropertyDescriptor.Type propertyType, boolean isList, Object rawPropertyValue, Object propertyValue) throws PropertyException {
-                PropertyDescriptor propertyDescriptor = new PropertyDescriptor(propertyName, propertyType, isList, null);
-                Property property = Property.fromRaw(propertyDescriptor, rawPropertyValue);
-                assertEquals(getPropertyValue(property, propertyType, isList), propertyValue);
-        }
-
-        private void assertFromEquals(String propertyName, PropertyDescriptor.Type propertyType, boolean isList, Object propertyValue) throws PropertyException {
-                PropertyDescriptor propertyDescriptor = new PropertyDescriptor(propertyName, propertyType, isList, null);
+        private void assertFromEquals(String propertyName, PropertyDescriptor.Type propertyType, PropertyDescriptor.Multiplicity multiplicity, Object propertyValue) throws PropertyException {
+                PropertyDescriptor propertyDescriptor = new PropertyDescriptor(propertyName, propertyType, multiplicity, null);
                 Property property = Property.from(propertyDescriptor, propertyValue);
-                assertEquals(getPropertyValue(property, propertyType, isList), propertyValue);
+                assertEquals(getPropertyValue(property, propertyType, multiplicity), propertyValue);
         }
 
-        private void assertFromRawThrowsWrongValueTypePropertyException(String propertyName, PropertyDescriptor.Type propertyType, boolean isList, Object propertyValue) {
-                PropertyDescriptor propertyDescriptor = new PropertyDescriptor(propertyName, propertyType, isList, null);
+        private void assertFromThrowsWrongValueTypePropertyException(String propertyName, PropertyDescriptor.Type propertyType, PropertyDescriptor.Multiplicity multiplicity, Object propertyValue) {
+                PropertyDescriptor propertyDescriptor = new PropertyDescriptor(propertyName, propertyType, multiplicity, null);
                 try {
-                        Property.fromRaw(propertyDescriptor, propertyValue);
+                        Property.from(propertyDescriptor, propertyValue);
                 } catch (PropertyException e) {
                         assertEquals(e.getExceptionType(), PropertyException.Type.WrongValueType);
                         assertEquals(e.getPropertyName(), propertyName);
@@ -104,22 +92,30 @@ public class PropertyTest {
                 }
         }
 
-        private void assertGetValueEquals(String propertyName, PropertyDescriptor.Type propertyType, boolean isList, Object propertyValue) throws PropertyException {
-                PropertyDescriptor propertyDescriptor = new PropertyDescriptor(propertyName, propertyType, isList, null);
+        private void assertGetValueEquals(String propertyName, PropertyDescriptor.Type propertyType, PropertyDescriptor.Multiplicity multiplicity, Object propertyValue) throws PropertyException {
+                PropertyDescriptor propertyDescriptor = new PropertyDescriptor(propertyName, propertyType, multiplicity, null);
                 Property property = Property.from(propertyDescriptor, propertyValue);
                 assertEquals(property.getValue(), propertyValue);
         }
 
-        private void assertGetRawValueEquals(String propertyName, PropertyDescriptor.Type propertyType, boolean isList, Object propertyValue) throws PropertyException {
-                PropertyDescriptor propertyDescriptor = new PropertyDescriptor(propertyName, propertyType, isList, null);
-                Property property = Property.fromRaw(propertyDescriptor, propertyValue);
-                assertEquals(property.getRawValue(), propertyValue);
-        }
-
-        private Object getPropertyValue(Property property, PropertyDescriptor.Type propertyType, boolean isList) throws PropertyException {
-                if (isList) {
-                        if (propertyType == PropertyDescriptor.Type.UUID) {
+        private Object getPropertyValue(Property property, PropertyDescriptor.Type propertyType, PropertyDescriptor.Multiplicity multiplicity) throws PropertyException {
+                if (multiplicity == PropertyDescriptor.Multiplicity.LIST) {
+                        if (propertyType == PropertyDescriptor.Type.String) {
+                                return property.getStringList();
+                        } else if (propertyType == PropertyDescriptor.Type.Boolean) {
+                                return property.getBooleanList();
+                        } if (propertyType == PropertyDescriptor.Type.UUID) {
                                 return property.getUuidList();
+                        } else {
+                                throw new RuntimeException();
+                        }
+                } else if (multiplicity == PropertyDescriptor.Multiplicity.SET) {
+                        if (propertyType == PropertyDescriptor.Type.String) {
+                                return property.getStringSet();
+                        } else if (propertyType == PropertyDescriptor.Type.Boolean) {
+                                return property.getBooleanSet();
+                        } if (propertyType == PropertyDescriptor.Type.UUID) {
+                                return property.getUuidSet();
                         } else {
                                 throw new RuntimeException();
                         }
