@@ -22,6 +22,7 @@ public class ArgumentList {
 
     public ArgumentList() {
         this(null, new ArrayList<>(), new LinkedHashMap<>(), new ArrayList<>());
+        this.optionArguments = new ArrayList<>();
     }
 
     public static ArgumentList from(TokenList tokenList) {
@@ -41,11 +42,15 @@ public class ArgumentList {
                 if (token.charAt(j) == ':' && !tokenList.escapedPositions().contains(Pair.of(i, j))) {
                     int startInd = 0;
                     PropertySpec.Affinity affinity = PropertySpec.Affinity.NEUTRAL;
+                    boolean isOption = false;
                     if (token.charAt(0) == '-') {
                         affinity = PropertySpec.Affinity.NEGATIVE;
                         startInd = 1;
                     } else if (token.charAt(0) == '+') {
                         affinity = PropertySpec.Affinity.POSITIVE;
+                        startInd = 1;
+                    } else if (token.charAt(0) == '.') {
+                        isOption = true;
                         startInd = 1;
                     }
                     String name = token.substring(startInd, j);
@@ -61,7 +66,11 @@ public class ArgumentList {
                         colonPos = value.indexOf(',', colonPos+1);
                     }
                     valueList.add(value.substring(fromPos));
-                    argList.propertyArguments.add(Triple.of(affinity, name, valueList));
+                    if (isOption) {
+                        argList.optionArguments.add(Pair.of(name, valueList));
+                    } else {
+                        argList.propertyArguments.add(Triple.of(affinity, name, valueList));
+                    }
                     break;
                 }
             }
@@ -77,4 +86,5 @@ public class ArgumentList {
     @Getter @Setter private List<String> normalArguments;
     @Getter @Setter private LinkedHashMap<Character, List<SpecialArgument>> specialArguments;
     @Getter @Setter private List<Triple<PropertySpec.Affinity, String, List<String>>> propertyArguments;
+    @Getter @Setter private List<Pair<String, List<String>>> optionArguments;
 }

@@ -197,4 +197,24 @@ public class ArgumentListTest {
         ));
     }
 
+    @Test
+    public void test_from_oneOptionArg() {
+        ArgumentList argList = ArgumentList.from(new TokenList(List.of("command", ".option:value"), new HashSet<>()));
+        assertEquals(argList.getCommandName(), "command");
+        assertEquals(argList.getNormalArguments().size(), 0);
+        assertEquals(argList.getSpecialArguments().size(), 0);
+        assertEquals(argList.getPropertyArguments().size(), 0);
+        assertEquals(argList.getOptionArguments(), List.of(Pair.of("option", List.of("value"))));
+    }
+
+    @Test
+    public void test_from_oneOptionArgWithCommas() {
+        ArgumentList argList = ArgumentList.from(new TokenList(List.of("command", ".option:value1,value2"), new HashSet<>()));
+        assertEquals(argList.getCommandName(), "command");
+        assertEquals(argList.getNormalArguments().size(), 0);
+        assertEquals(argList.getSpecialArguments().size(), 0);
+        assertEquals(argList.getPropertyArguments().size(), 0);
+        assertEquals(argList.getOptionArguments(), List.of(Pair.of("option", List.of("value1", "value2"))));
+    }
+
 }
