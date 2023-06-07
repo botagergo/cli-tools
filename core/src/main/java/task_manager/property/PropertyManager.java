@@ -25,8 +25,12 @@ public class PropertyManager {
         log.debug("getProperty - {}", propertyName);
 
         PropertyDescriptor propertyDescriptor = getPropertyDescriptor(propertyName);
-        Object propertyValue = getPropertyValue(propertyOwner, propertyDescriptor);
+        return getProperty(propertyOwner, propertyDescriptor);
+    }
 
+    public Property getProperty(PropertyOwner propertyOwner, PropertyDescriptor propertyDescriptor)
+            throws PropertyException {
+        Object propertyValue = getPropertyValue(propertyOwner, propertyDescriptor);
         return Property.from(propertyDescriptor, propertyValue);
     }
 
@@ -111,7 +115,7 @@ public class PropertyManager {
         return propertyOwner.getProperties().containsKey(propertyName);
     }
 
-    private PropertyDescriptor getPropertyDescriptor(String propertyName) throws PropertyException, IOException {
+    public PropertyDescriptor getPropertyDescriptor(String propertyName) throws PropertyException, IOException {
         PropertyDescriptor propertyDescriptor =
                 propertyDescriptorRepository.get(propertyName);
         if (propertyDescriptor == null) {

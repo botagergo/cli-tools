@@ -12,17 +12,25 @@ import task_manager.data.Status;
 import task_manager.data.Tag;
 import task_manager.data.Task;
 import task_manager.property.PropertyException;
+import task_manager.sorter.PropertySorter;
 import task_manager.ui.cli.Context;
 
 @Log4j2
-public record ListTasksCommand(List<String> queries, String nameQuery) implements Command {
+public record ListTasksCommand(List<String> queries, String nameQuery, List<PropertySorter.SortingCriterion> sortingCriteria) implements Command {
 
     @Override
     public void execute(Context context) {
         log.traceEntry();
 
         try {
-            for (Task task : context.getTaskUseCase().getTasks(nameQuery, queries)) {
+            List<Task> tasks = context.getTaskUseCase().getTasks(nameQuery, queries);
+
+            if (sortingCriteria != null && !sortingCriteria.isEmpty()) {
+                PropertySorter<Task> sorter = new PropertySorter<>(sortingCriteria);
+                tasks = sorter.sort(tasks, context.getPropertyManager());
+            }
+
+            for (Task task : tasks) {
                 int tempID = context.getTempIDMappingRepository().getOrCreateID(task.getUUID());
                 printTask(context, task, tempID);
             }

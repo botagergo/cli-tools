@@ -1,9 +1,6 @@
 package task_manager.property;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
+import lombok.*;
 
 import java.util.*;
 
@@ -35,11 +32,13 @@ public class Property {
                     propertyDescriptor.name(), propertyDescriptor, value,
                     PropertyDescriptor.Type.Boolean);
         }
+        return getBooleanUnchecked();
+    }
 
+    public Boolean getBooleanUnchecked() {
         if (value == null) {
             return null;
         }
-
         return (Boolean) value;
     }
 
@@ -50,6 +49,10 @@ public class Property {
                     PropertyDescriptor.Type.String);
         }
 
+        return getStringUnchecked();
+    }
+
+    public String getStringUnchecked() {
         if (value == null) {
             return null;
         }
