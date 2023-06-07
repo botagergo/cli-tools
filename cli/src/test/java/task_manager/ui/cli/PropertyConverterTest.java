@@ -9,6 +9,7 @@ import task_manager.data.Label;
 import task_manager.logic.use_case.PropertyDescriptorUseCase;
 import task_manager.property.Property;
 import task_manager.property.PropertyDescriptor;
+import task_manager.property.PropertyException;
 import task_manager.property.PropertySpec;
 import task_manager.repository.LabelRepository;
 import task_manager.repository.LabelRepositoryFactory;
@@ -182,7 +183,7 @@ public class PropertyConverterTest {
     }
 
     @Test
-    public void test_convertProperties() throws IOException, PropertyConverterException {
+    public void test_convertProperties() throws IOException, PropertyConverterException, PropertyException {
         mockitoPropertyDescriptor("boolean_property", PropertyDescriptor.Type.Boolean, PropertyDescriptor.Multiplicity.SINGLE);
         mockitoPropertyDescriptor("string_list_property", PropertyDescriptor.Type.String, PropertyDescriptor.Multiplicity.LIST);
         mockitoPropertyDescriptor("uuid_set_property", PropertyDescriptor.Type.UUID, PropertyDescriptor.Multiplicity.SET);
@@ -217,7 +218,7 @@ public class PropertyConverterTest {
         System.setIn(new ByteArrayInputStream(str.getBytes()));
     }
 
-    private void mockitoPropertyDescriptor(String name, PropertyDescriptor.Type type, PropertyDescriptor.Multiplicity multiplicity) throws IOException {
+    private void mockitoPropertyDescriptor(String name, PropertyDescriptor.Type type, PropertyDescriptor.Multiplicity multiplicity) throws IOException, PropertyException {
         Mockito.when(propertyDescriptorUseCase.getPropertyDescriptor(name)).thenReturn(new PropertyDescriptor(name,
                 type, multiplicity, null));
     }

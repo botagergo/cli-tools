@@ -1,6 +1,7 @@
 package task_manager.logic.use_case;
 
 import task_manager.data.Task;
+import task_manager.filter.FilterCriterion;
 import task_manager.property.PropertyException;
 
 import java.io.IOException;
@@ -16,7 +17,7 @@ public interface TaskUseCase {
 
     List<Task> getTasks() throws IOException;
 
-    List<Task> getTasks(String nameQuery, List<String> queries) throws IOException, PropertyException;
+    List<Task> getTasks(String nameQuery, List<String> queries, List<FilterCriterion> filterCriteria) throws IOException, PropertyException;
 
     Task getTask(UUID uuid) throws IOException;
 

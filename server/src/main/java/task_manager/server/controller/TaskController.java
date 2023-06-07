@@ -51,7 +51,7 @@ public class TaskController {
 	@GetMapping
 	public Object getTasks(@RequestParam(value = "query", defaultValue = "") String query) {
 		try {
-			return taskUseCase.getTasks(query, null);
+			return taskUseCase.getTasks(query, null, null);
 		} catch (PropertyException e) {
 			return null;
 		}

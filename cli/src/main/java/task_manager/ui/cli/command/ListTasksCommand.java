@@ -1,9 +1,11 @@
 package task_manager.ui.cli.command;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.apache.commons.lang3.tuple.Triple;
 import org.fusesource.jansi.Ansi;
 import org.fusesource.jansi.Ansi.Color;
 
@@ -11,19 +13,41 @@ import lombok.extern.log4j.Log4j2;
 import task_manager.data.Status;
 import task_manager.data.Tag;
 import task_manager.data.Task;
+import task_manager.filter.*;
 import task_manager.property.PropertyException;
+import task_manager.property.PropertySpec;
 import task_manager.sorter.PropertySorter;
 import task_manager.ui.cli.Context;
 
 @Log4j2
-public record ListTasksCommand(List<String> queries, String nameQuery, List<PropertySorter.SortingCriterion> sortingCriteria) implements Command {
+public record ListTasksCommand(
+        List<String> queries, String nameQuery,
+        List<PropertySorter.SortingCriterion> sortingCriteria,
+        List<Triple<PropertySpec.Affinity, String, List<String>>> properties
+) implements Command {
 
     @Override
     public void execute(Context context) {
         log.traceEntry();
 
         try {
-            List<Task> tasks = context.getTaskUseCase().getTasks(nameQuery, queries);
+            ArrayList<FilterCriterion> filterCriteria = null;
+
+            if (properties != null) {
+                List<PropertySpec> propertySpecs = context.getPropertyConverter().convertProperties(properties);
+                filterCriteria = new ArrayList<>();
+                for (PropertySpec propertySpec : propertySpecs) {
+                    FilterCriterion filterCriterion = new EqualsFilterCriterion(
+                            propertySpec.property().getPropertyDescriptor().name(),
+                            propertySpec.property().getValue());
+                    if (propertySpec.affinity() == PropertySpec.Affinity.NEGATIVE) {
+                        filterCriterion = new NotFilterCriterion(filterCriterion);
+                    }
+                    filterCriteria.add(filterCriterion);
+                }
+            }
+
+            List<Task> tasks = context.getTaskUseCase().getTasks(nameQuery, queries, filterCriteria);
 
             if (sortingCriteria != null && !sortingCriteria.isEmpty()) {
                 PropertySorter<Task> sorter = new PropertySorter<>(sortingCriteria);

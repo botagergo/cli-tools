@@ -5,6 +5,7 @@ import java.util.*;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import lombok.NonNull;
 import org.apache.commons.lang3.tuple.Pair;
 import task_manager.ui.cli.command_line.CommandLine;
 import task_manager.ui.cli.command_line.Executor;
@@ -12,7 +13,7 @@ import task_manager.ui.cli.tokenizer.TokenList;
 
 public class TaskManagerCLI {
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String @NonNull [] args) throws IOException {
         Injector injector = Guice.createInjector(new AppModule());
 
         if (args.length >= 1) {
@@ -24,7 +25,7 @@ public class TaskManagerCLI {
         }
     }
 
-    private static TokenList getTokenList(String[] args) {
+    private static @NonNull TokenList getTokenList(String[] args) {
         List<String> argList = new ArrayList<>();
         HashSet<Pair<Integer, Integer>> escapedIndices = new HashSet<>();
 

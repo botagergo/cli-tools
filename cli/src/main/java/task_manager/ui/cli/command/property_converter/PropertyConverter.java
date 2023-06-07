@@ -24,7 +24,7 @@ public class PropertyConverter {
         this.uuidGenerator = uuidGenerator;
     }
 
-    public List<PropertySpec> convertProperties(List<Triple<PropertySpec.Affinity, String, List<String>>> properties) throws IOException, PropertyConverterException {
+    public List<PropertySpec> convertProperties(List<Triple<PropertySpec.Affinity, String, List<String>>> properties) throws IOException, PropertyConverterException, PropertyException {
         List<PropertySpec> propertySpecs = new ArrayList<>();
 
         for (Triple<PropertySpec.Affinity, String, List<String>> entry : properties) {

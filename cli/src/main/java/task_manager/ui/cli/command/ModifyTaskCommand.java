@@ -15,7 +15,10 @@ import java.util.List;
 import java.util.UUID;
 
 @Log4j2
-public record ModifyTaskCommand(@NonNull List<Integer> taskIDs, List<Triple<PropertySpec.Affinity, String, List<String>>> properties) implements Command {
+public record ModifyTaskCommand(
+        @NonNull List<Integer> taskIDs,
+        List<Triple<PropertySpec.Affinity, String, List<String>>> properties
+) implements Command {
 
     @Override
     public void execute(Context context) {

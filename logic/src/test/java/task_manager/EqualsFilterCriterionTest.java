@@ -13,6 +13,7 @@ import task_manager.property.PropertyManager;
 import task_manager.property.PropertyOwner;
 import task_manager.repository.PropertyDescriptorRepository;
 import task_manager.util.RoundRobinUUIDGenerator;
+import task_manager.util.Utils;
 
 import static org.testng.Assert.*;
 
@@ -36,34 +37,34 @@ public class EqualsFilterCriterionTest {
 
     @Test
     public void test_check_string_equals() throws PropertyException, IOException {
-        Mockito.when(propertyOwner.getProperties()).thenReturn(new HashMap<>(Map.of("test_string", "string_value")));
+        Mockito.when(propertyOwner.getProperties()).thenReturn(Utils.newHashMap("test_string", "string_value"));
         checkEquals("test_string", "string_value");
     }
 
     @Test
     public void test_check_boolean_equals() throws PropertyException, IOException {
-        Mockito.when(propertyOwner.getProperties()).thenReturn(new HashMap<>(Map.of("test_boolean", true)));
+        Mockito.when(propertyOwner.getProperties()).thenReturn(Utils.newHashMap("test_boolean", true));
         assertTrue(checkEquals("test_boolean", true));
     }
 
     @Test
     public void test_check_uuid_equals() throws PropertyException, IOException {
-        Mockito.when(propertyOwner.getProperties()).thenReturn(new HashMap<>(Map.of("test_uuid", uuid1)));
+        Mockito.when(propertyOwner.getProperties()).thenReturn(Utils.newHashMap("test_uuid", uuid1));
         assertTrue(checkEquals("test_uuid", uuid1));
     }
 
     @Test
     public void test_check_list_equals() throws PropertyException, IOException {
-        Mockito.when(propertyOwner.getProperties()).thenReturn(new HashMap<>(Map.of("test_string_list", List.of("string_value1", "string_value2"))));
+        Mockito.when(propertyOwner.getProperties()).thenReturn(Utils.newHashMap("test_string_list", List.of("string_value1", "string_value2")));
         assertTrue(checkEquals("test_string_list", List.of("string_value1", "string_value2")));
     }
 
     @Test
     public void test_check_string_not_equal() throws PropertyException, IOException {
-        Mockito.when(propertyOwner.getProperties()).thenReturn(new HashMap<>(Map.of("test_string", "string_value")));
+        Mockito.when(propertyOwner.getProperties()).thenReturn(Utils.newHashMap("test_string", "string_value"));
         assertFalse(checkEquals("test_string", "other_string_value"));
 
-        Mockito.when(propertyOwner.getProperties()).thenReturn(new HashMap<>(Map.of("test_string", "string_value")));
+        Mockito.when(propertyOwner.getProperties()).thenReturn(Utils.newHashMap("test_string", "string_value"));
         assertFalse(checkEquals("test_string", null));
 
         Mockito.when(propertyOwner.getProperties()).thenReturn(new HashMap<>());
@@ -72,10 +73,10 @@ public class EqualsFilterCriterionTest {
 
     @Test
     public void test_check_boolean_not_equal() throws PropertyException, IOException {
-        Mockito.when(propertyOwner.getProperties()).thenReturn(new HashMap<>(Map.of("test_boolean", true)));
+        Mockito.when(propertyOwner.getProperties()).thenReturn(Utils.newHashMap("test_boolean", true));
         assertFalse(checkEquals("test_boolean", false));
 
-        Mockito.when(propertyOwner.getProperties()).thenReturn(new HashMap<>(Map.of("test_boolean", true)));
+        Mockito.when(propertyOwner.getProperties()).thenReturn(Utils.newHashMap("test_boolean", true));
         assertFalse(checkEquals("test_boolean", null));
 
         Mockito.when(propertyOwner.getProperties()).thenReturn(new HashMap<>());
@@ -84,10 +85,10 @@ public class EqualsFilterCriterionTest {
 
     @Test
     public void test_check_uuid_not_equal() throws PropertyException, IOException {
-        Mockito.when(propertyOwner.getProperties()).thenReturn(new HashMap<>(Map.of("test_uuid", uuid1)));
+        Mockito.when(propertyOwner.getProperties()).thenReturn(Utils.newHashMap("test_uuid", uuid1));
         assertFalse(checkEquals("test_uuid", uuid2));
 
-        Mockito.when(propertyOwner.getProperties()).thenReturn(new HashMap<>(Map.of("test_uuid", uuid1)));
+        Mockito.when(propertyOwner.getProperties()).thenReturn(Utils.newHashMap("test_uuid", uuid1));
         assertFalse(checkEquals("test_uuid", null));
 
         Mockito.when(propertyOwner.getProperties()).thenReturn(new HashMap<>());
@@ -97,22 +98,22 @@ public class EqualsFilterCriterionTest {
 
     @Test
     public void test_check_list_not_equal() throws PropertyException, IOException {
-        Mockito.when(propertyOwner.getProperties()).thenReturn(new HashMap<>(Map.of("test_string_list", List.of("string_value1", "string_value3"))));
+        Mockito.when(propertyOwner.getProperties()).thenReturn(Utils.newHashMap("test_string_list", List.of("string_value1", "string_value3")));
         assertFalse(
             checkEquals("test_string_list",
                 List.of("string_value1", "string_value2")));
 
-        Mockito.when(propertyOwner.getProperties()).thenReturn(new HashMap<>(Map.of("test_string_list", listOfFuckingNull(null, "string_value3"))));
+        Mockito.when(propertyOwner.getProperties()).thenReturn(Utils.newHashMap("test_string_list", listOfFuckingNull(null, "string_value3")));
         assertFalse(
             checkEquals("test_string_list",
                 listOfFuckingNull(null, "string_value2")));
 
-        Mockito.when(propertyOwner.getProperties()).thenReturn(new HashMap<>(Map.of("test_string_list", listOfFuckingNull(null, "string_value3"))));
+        Mockito.when(propertyOwner.getProperties()).thenReturn(Utils.newHashMap("test_string_list", listOfFuckingNull(null, "string_value3")));
         assertFalse(
             checkEquals("test_string_list",
                 List.of("string_value1", "string_value2")));
 
-        Mockito.when(propertyOwner.getProperties()).thenReturn(new HashMap<>(Map.of("test_string_list", List.of("string_value1", "string_value3"))));
+        Mockito.when(propertyOwner.getProperties()).thenReturn(Utils.newHashMap("test_string_list", List.of("string_value1", "string_value3")));
         assertFalse(
             checkEquals("test_string_list", null));
 

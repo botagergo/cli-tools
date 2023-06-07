@@ -56,7 +56,7 @@ public class ListTasksCommandParser implements CommandParser {
             }
         }
 
-        return new ListTasksCommand(queries, nameQuery, sortingCriteria);
+        return new ListTasksCommand(queries, nameQuery, sortingCriteria, argList.getPropertyArguments());
     }
 
 }

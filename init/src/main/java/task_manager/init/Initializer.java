@@ -42,7 +42,7 @@ public class Initializer {
         propertyDescriptorRepository.create(
                 new PropertyDescriptor("done", PropertyDescriptor.Type.Boolean, PropertyDescriptor.Multiplicity.SINGLE, false));
         propertyDescriptorRepository.create(
-                new PropertyDescriptor("tags", PropertyDescriptor.Type.UUID, PropertyDescriptor.Multiplicity.LIST, List.of()));
+                new PropertyDescriptor("tags", PropertyDescriptor.Type.UUID, PropertyDescriptor.Multiplicity.SET, List.of()));
         propertyDescriptorRepository.create(
                 new PropertyDescriptor("status", PropertyDescriptor.Type.UUID, PropertyDescriptor.Multiplicity.SINGLE, null));
     }

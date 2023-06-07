@@ -11,12 +11,11 @@ import task_manager.property.PropertyException;
 import task_manager.property.PropertyManager;
 import task_manager.property.PropertyOwner;
 import task_manager.repository.PropertyDescriptorRepository;
+import task_manager.util.Utils;
 
 import static org.testng.Assert.*;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 public class ContainsCaseInsensitiveFilterCriterionTest {
 
@@ -35,7 +34,7 @@ public class ContainsCaseInsensitiveFilterCriterionTest {
 
     @Test
     public void test_check_contains() throws PropertyException, IOException {
-        Mockito.when(propertyOwner.getProperties()).thenReturn(new HashMap<>(Map.of("test_string", "string_value")));
+        Mockito.when(propertyOwner.getProperties()).thenReturn(Utils.newHashMap("test_string", "string_value"));
         assertTrue(new ContainsCaseInsensitiveFilterCriterion("test_string", "string").check(propertyOwner, propertyManager));
         assertTrue(new ContainsCaseInsensitiveFilterCriterion("test_string", "VaLuE").check(propertyOwner, propertyManager));
         assertTrue(new ContainsCaseInsensitiveFilterCriterion("test_string", "").check(propertyOwner, propertyManager));
@@ -44,7 +43,7 @@ public class ContainsCaseInsensitiveFilterCriterionTest {
 
     @Test
     public void test_check_doesNotContain() throws PropertyException, IOException {
-        Mockito.when(propertyOwner.getProperties()).thenReturn(new HashMap<>(Map.of("test_string", "string_value")));
+        Mockito.when(propertyOwner.getProperties()).thenReturn(Utils.newHashMap("test_string", "string_value"));
         assertFalse(new ContainsCaseInsensitiveFilterCriterion("test_string", "value1").check(propertyOwner, propertyManager));
     }
 
