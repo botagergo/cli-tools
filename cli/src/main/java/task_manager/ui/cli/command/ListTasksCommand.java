@@ -2,6 +2,7 @@ package task_manager.ui.cli.command;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.UUID;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -85,7 +86,7 @@ public record ListTasksCommand(
     private String getTagsStr(Context context, Task task) throws IOException, PropertyException {
         StringBuilder tagsStr = new StringBuilder();
 
-        List<UUID> tagUuids = context.getPropertyManager().getProperty(task, "tags").getUuidList();
+        LinkedHashSet<UUID> tagUuids = context.getPropertyManager().getProperty(task, "tags").getUuidSet();
         for (UUID tagUuid : tagUuids) {
             Tag tag = context.getTagUseCase().getTag(tagUuid);
 

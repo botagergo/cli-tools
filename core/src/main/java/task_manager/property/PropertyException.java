@@ -31,7 +31,7 @@ public class PropertyException extends Exception {
                     + propertyName + "' as " + requestedType.name();
         } else if (exceptionType == Type.WrongValueType) {
             return "The value of property '" + propertyName + "' does not have the required type "
-                    + propertyDescriptor.type().name() + ": " + propertyValue;
+                    + propertyDescriptor.type().name() + " " + propertyDescriptor.multiplicity() + ": " + propertyValue;
         } else {
             return null;
         }

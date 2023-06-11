@@ -19,6 +19,7 @@ import task_manager.server.repository.MongoLabelRepositoryFactory;
 import task_manager.server.repository.MongoPropertyDescriptorRepository;
 import task_manager.server.repository.MongoTaskRepository;
 import task_manager.util.RandomUUIDGenerator;
+import task_manager.util.UUIDGenerator;
 
 @SpringBootApplication
 public class Application {
@@ -41,8 +42,7 @@ public class Application {
 
     @Bean
     JsonLabelRepository statusRepository() {
-        return new JsonLabelRepository("statuses",
-            new File(System.getProperty("user.home") + "/.config/task_manager/"));
+        return new JsonLabelRepository(new File(System.getProperty("user.home") + "/.config/task_manager/"));
     }
 
     @Bean
@@ -57,7 +57,7 @@ public class Application {
 
     @Bean
     StatusUseCaseImpl statusUseCase() {
-        return new StatusUseCaseImpl(labelRepositoryFactory());
+        return new StatusUseCaseImpl(labelRepositoryFactory(), uuidGenerator());
     }
 
     @Bean
@@ -78,6 +78,11 @@ public class Application {
     }
 
     @Bean
+    UUIDGenerator uuidGenerator() {
+        return new RandomUUIDGenerator();
+    }
+
+    @Bean
     public CommonsRequestLoggingFilter requestLoggingFilter() {
         CommonsRequestLoggingFilter loggingFilter = new CommonsRequestLoggingFilter();
         loggingFilter.setIncludeClientInfo(true);
@@ -89,7 +94,7 @@ public class Application {
 
     @Bean
     public Initializer initializer() {
-        return new Initializer(propertyDescriptorRepository(), labelRepositoryFactory(), new RandomUUIDGenerator());
+        return new Initializer(propertyDescriptorUseCase(), statusUseCase());
     }
 
     @Bean

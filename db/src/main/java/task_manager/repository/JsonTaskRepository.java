@@ -3,39 +3,42 @@ package task_manager.repository;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
-import java.util.stream.Collectors;
 
+import com.fasterxml.jackson.databind.JavaType;
+import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fasterxml.jackson.databind.type.TypeFactory;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import jakarta.inject.Singleton;
 import task_manager.data.Task;
 
 @Singleton
-public class JsonTaskRepository implements TaskRepository {
+public class JsonTaskRepository extends JsonRepository<ArrayList<Task>> implements TaskRepository {
 
     @Inject
-    public JsonTaskRepository(@Named("basePath") File basePath) {
-        final String jsonFileName = "task.json";
-        this.basePath = basePath;
-        this.jsonFile = new File(basePath, jsonFileName);
+    public JsonTaskRepository(@Named("taskJsonFile") File jsonPath) {
+        super(jsonPath);
+
+        SimpleModule module = new SimpleModule();
+        module.addSerializer(new MapSerializer());
+        module.addDeserializer(HashMap.class, new MapDeserializer());
+
+        getObjectMapper().registerModule(module);
     }
 
     @Override
     public Task create(Task task) throws IOException, IllegalArgumentException {
-        if (tasks == null) {
-            tasks = getTasks();
-        }
+        List<Task> tasks = getData();
 
         tasks.add(task);
-        JsonMapper.writeTaskJson(jsonFile, tasks.stream().map(Task::getProperties).collect(Collectors.toList()));
+        writeData();
+
         return task;
     }
 
     @Override
     public Task get(UUID uuid) throws IOException {
-        if (tasks == null) {
-            tasks = getTasks();
-        }
+        ArrayList<Task> tasks = getData();
 
         for (Task task : tasks) {
             if (Objects.equals(uuid, task.getUUID())) {
@@ -48,17 +51,12 @@ public class JsonTaskRepository implements TaskRepository {
 
     @Override
     public List<Task> getAll() throws IOException {
-        if (tasks == null) {
-            tasks = getTasks();
-        }
-        return tasks;
+        return getData();
     }
 
     @Override
     public Task update(Task task) throws IOException {
-        if (tasks == null) {
-            tasks = getTasks();
-        }
+        ArrayList<Task> tasks = getData();
 
         Task taskToUpdate = null;
         for (Task taskToUpdate_ : tasks) {
@@ -75,21 +73,19 @@ public class JsonTaskRepository implements TaskRepository {
                 taskToUpdate.getProperties().put(pair.getKey(), pair.getValue());
             }
         }
-        writeTasks(tasks);
+        writeData();
         return taskToUpdate;
 
     }
 
     @Override
     public boolean delete(UUID uuid) throws IOException {
-        if (tasks == null) {
-            tasks = getTasks();
-        }
+        ArrayList<Task> tasks = getData();
 
         for (Task task : tasks) {
             if (task.getUUID().equals(uuid)) {
                 tasks.remove(task);
-                writeTasks(tasks);
+                writeData();
                 return true;
             }
         }
@@ -99,45 +95,16 @@ public class JsonTaskRepository implements TaskRepository {
 
     @Override
     public void deleteAll() throws IOException {
-        writeTasks(List.of());
+        writeData();
     }
 
-    private void writeTasks(List<Task> tasks) throws IOException {
-        if (!basePath.exists()) {
-            //noinspection ResultOfMethodCallIgnored
-            basePath.mkdirs();
-        }
-
-        this.tasks = tasks;
-
-        List<HashMap<String, Object>> converted_tasks =
-            tasks.stream().map(Task::getProperties).collect(Collectors.toList());
-
-        JsonMapper.writeTaskJson(jsonFile, converted_tasks);
+    @Override
+    public ArrayList<Task> getEmptyData() {
+        return new ArrayList<>();
     }
 
-    private List<Task> getTasks() throws IOException {
-        if (!basePath.exists()) {
-            //noinspection ResultOfMethodCallIgnored
-            basePath.mkdirs();
-        }
-
-        if (!jsonFile.exists()) {
-            return new ArrayList<>();
-        }
-
-        List<Task> tasks = new ArrayList<>();
-        Iterator<HashMap<String, Object>> taskIter = JsonMapper.readTaskJson(jsonFile).stream().iterator();
-        while (taskIter.hasNext()) {
-            tasks.add(Task.fromMap(taskIter.next()));
-        }
-
-        return tasks;
+    @Override
+    protected JavaType constructType(TypeFactory typeFactory) {
+        return typeFactory.constructCollectionType(ArrayList.class, Task.class);
     }
-
-    private List<Task> tasks = null;
-    private final File basePath;
-    private final File jsonFile;
-
-
 }

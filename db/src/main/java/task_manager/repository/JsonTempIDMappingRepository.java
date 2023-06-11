@@ -1,107 +1,85 @@
 package task_manager.repository;
 
+import com.fasterxml.jackson.databind.JavaType;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.type.TypeFactory;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
+import lombok.AllArgsConstructor;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
-import java.util.stream.Collectors;
 
-public class JsonTempIDMappingRepository implements TempIDMappingRepository {
+public class JsonTempIDMappingRepository extends JsonRepository<TempIDMappings> implements TempIDMappingRepository {
 
     @Inject
-    public JsonTempIDMappingRepository(@Named("basePath") File basePath) {
-        final String jsonFileName = "temp_id_mapping.json";
-        this.basePath = basePath;
-        this.jsonFile = new File(basePath, jsonFileName);
+    public JsonTempIDMappingRepository(@Named("tempIdMappingJsonFile") File jsonFile) {
+        super(jsonFile);
     }
 
     @Override
     public int getOrCreateID(UUID uuid) throws IOException {
-        if (mappings == null) {
-            loadMappings();
-        }
+        TempIDMappings mappings = getData();
 
-        int id = mappings.getOrDefault(uuid, -1);
+        int id = mappings.mappings.getOrDefault(uuid, -1);
 
         if (id == -1) {
-            Integer newID = freeIDs.pollFirst();
-            id = Objects.requireNonNullElseGet(newID, () -> nextID++);
+            Integer newID = mappings.freeIDs.pollFirst();
+            id = Objects.requireNonNullElseGet(newID, () -> mappings.nextID++);
         }
 
-        mappings.put(uuid, id);
-        writeMappings();
+        mappings.mappings.put(uuid, id);
 
+        writeData();
         return id;
     }
 
     @Override
     public UUID getUUID(int id) throws IOException {
-        if (mappings == null) {
-            loadMappings();
-        }
-
-        Optional<Map.Entry<UUID, Integer>> mapping = mappings.entrySet().stream().filter(entry -> entry.getValue() == id).findAny();
+        Optional<Map.Entry<UUID, Integer>> mapping = getData().mappings.entrySet().stream().filter(entry -> entry.getValue() == id).findAny();
         return mapping.map(Map.Entry::getKey).orElse(null);
     }
 
     @Override
     public boolean delete(UUID uuid) throws IOException {
-        if (mappings == null) {
-            loadMappings();
-        }
+        TempIDMappings mappings = getData();
 
-        Integer id = mappings.remove(uuid);
+        Integer id = mappings.mappings.remove(uuid);
 
         if (id == null) {
             return false;
         }
 
-        if (id == nextID) {
-            nextID--;
+        if (id == mappings.nextID) {
+            mappings.nextID--;
         } else {
-            freeIDs.add(id);
+            mappings.freeIDs.add(id);
         }
 
-        writeMappings();
-
+        writeData();
         return true;
     }
 
-    public void loadMappings() throws IOException {
-        if (!basePath.exists()) {
-            //noinspection ResultOfMethodCallIgnored
-            basePath.mkdirs();
-        }
-
-        if (!jsonFile.exists()) {
-            mappings = new HashMap<>();
-            nextID = 1;
-            freeIDs = new TreeSet<>();
-        } else {
-            HashMap<String, Object> data = JsonMapper.readJsonMap(jsonFile);
-            HashMap<String, Integer> mappingsRaw = (HashMap<String, Integer>) data.get("mappings");
-
-            mappings = new HashMap<>(mappingsRaw.entrySet().stream()
-                    .collect(Collectors.toMap(e -> UUID.fromString(e.getKey()), Map.Entry::getValue)));
-            freeIDs = new TreeSet<>((List<Integer>) data.get("freeIDs"));
-            nextID = (int) data.get("nextID");
-        }
+    @Override
+    public TempIDMappings getEmptyData() {
+        return new TempIDMappings();
     }
 
-    private void writeMappings() throws IOException {
-        Map<String, Object> rawMappings = Map.of(
-                "freeIDs", freeIDs.stream().toList(),
-                "nextID", nextID,
-                "mappings", mappings
-        );
-        JsonMapper.writeJsonMap(jsonFile, rawMappings);
+    @Override
+    protected JavaType constructType(TypeFactory typeFactory) {
+        return typeFactory.constructType(TempIDMappings.class);
     }
 
-    private HashMap<UUID, Integer> mappings = null;
-    private TreeSet<Integer> freeIDs;
-    private int nextID;
-    private final File basePath;
-    private final File jsonFile;
+}
+
+@JsonSerialize
+@AllArgsConstructor
+class TempIDMappings {
+    public TempIDMappings() {
+        this(new HashMap<>(), new TreeSet<>(), 1);
+    }
+    public HashMap<UUID, Integer> mappings;
+    public TreeSet<Integer> freeIDs;
+    public int nextID;
 }

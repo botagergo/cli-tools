@@ -42,6 +42,11 @@ public class Task implements PropertyOwner {
         return (UUID) uuid;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof Task t && properties.equals(t.properties);
+    }
+
     private final HashMap<String, Object> properties;
 
 }

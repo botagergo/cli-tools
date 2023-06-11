@@ -33,6 +33,9 @@ public class AppModule extends AbstractModule {
         bind(CommandParserFactory.class).to(CommandParserFactoryImpl.class);
         bind(CommandLine.class).to(JlineCommandLine.class);
         bind(Executor.class).to(ExecutorImpl.class);
+        bind(File.class).annotatedWith(Names.named("taskJsonFile")).toInstance(new File(System.getProperty("user.home") + "/.config/task_manager/task.json"));
+        bind(File.class).annotatedWith(Names.named("tempIdMappingJsonFile")).toInstance(new File(System.getProperty("user.home") + "/.config/task_manager/temp_id_mapping.json"));
+        bind(File.class).annotatedWith(Names.named("propertyDescriptorJsonFile")).toInstance(new File(System.getProperty("user.home") + "/.config/task_manager/property_descriptor.json"));
         bind(File.class).annotatedWith(Names.named("basePath")).toInstance(new File(System.getProperty("user.home") + "/.config/task_manager/"));
     }
 

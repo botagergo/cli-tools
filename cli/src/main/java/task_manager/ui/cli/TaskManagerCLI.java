@@ -6,22 +6,30 @@ import java.util.*;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import lombok.NonNull;
+import lombok.extern.log4j.Log4j2;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import task_manager.ui.cli.command_line.CommandLine;
 import task_manager.ui.cli.command_line.Executor;
 import task_manager.ui.cli.tokenizer.TokenList;
 
+@Log4j2
 public class TaskManagerCLI {
 
-    public static void main(String @NonNull [] args) throws IOException {
+    public static void main(String @NonNull [] args) {
         Injector injector = Guice.createInjector(new AppModule());
 
-        if (args.length >= 1) {
-            Executor executor = injector.getInstance(Executor.class);
-            executor.execute(getTokenList(args));
-        } else {
-            CommandLine commandLine = injector.getInstance(CommandLine.class);
-            commandLine.run();
+        try {
+            if (args.length >= 1) {
+                Executor executor = injector.getInstance(Executor.class);
+                executor.execute(getTokenList(args));
+            } else {
+                CommandLine commandLine = injector.getInstance(CommandLine.class);
+                commandLine.run();
+            }
+        } catch (IOException e) {
+            System.out.println("ERROR: " + e.getMessage());
+            log.error(ExceptionUtils.getStackTrace(e));
         }
     }
 

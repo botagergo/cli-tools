@@ -1,5 +1,11 @@
 package task_manager.data;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.With;
+
 import java.util.UUID;
 
-public record Label(UUID uuid, String name) {}
+@With
+public record Label(@JsonProperty(required = true) UUID uuid,
+                    @JsonProperty(required = true) String name)
+{}

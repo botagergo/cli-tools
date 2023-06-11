@@ -11,11 +11,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class MongoLabelRepository extends LabelRepository {
+public class MongoLabelRepository implements LabelRepository {
 
     public MongoLabelRepository(MongoClient mongoClient, String databaseName,
         String labelName) {
-        super(labelName);
         MongoDatabase mongoDatabase = mongoClient.getDatabase(databaseName);
         mongoCollection = mongoDatabase.getCollection(labelName);
     }

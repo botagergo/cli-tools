@@ -1,31 +1,26 @@
 package task_manager.init;
 
 import jakarta.inject.Inject;
-import task_manager.data.Label;
+import task_manager.logic.use_case.PropertyDescriptorUseCase;
+import task_manager.logic.use_case.StatusUseCase;
 import task_manager.property.PropertyDescriptor;
-import task_manager.property.PropertyDescriptorCollection;
-import task_manager.repository.LabelRepository;
-import task_manager.repository.LabelRepositoryFactory;
-import task_manager.repository.PropertyDescriptorRepository;
-import task_manager.util.UUIDGenerator;
 
 import java.io.IOException;
+import java.util.LinkedHashSet;
 import java.util.List;
 
 public class Initializer {
 
     @Inject
     public Initializer(
-            PropertyDescriptorRepository propertyDescriptorRepository,
-            LabelRepositoryFactory labelRepositoryFactory,
-            UUIDGenerator uuidGenerator) {
-        this.propertyDescriptorRepository = propertyDescriptorRepository;
-        this.statusRepository = labelRepositoryFactory.getLabelRepository("statuses");
-        this.uuidGenerator = uuidGenerator;
+            PropertyDescriptorUseCase propertyDescriptorUseCase,
+            StatusUseCase statusUseCase) {
+        this.propertyDescriptorUseCase = propertyDescriptorUseCase;
+        this.statusUseCase = statusUseCase;
     }
 
     public boolean needsInitialization() throws IOException {
-        PropertyDescriptorCollection propertyDescriptorCollection = propertyDescriptorRepository.getAll();
+        List<PropertyDescriptor> propertyDescriptorCollection = propertyDescriptorUseCase.getPropertyDescriptors();
         return propertyDescriptorCollection.isEmpty();
     }
 
@@ -35,27 +30,26 @@ public class Initializer {
     }
 
     private void initializePropertyDescriptors() throws IOException {
-        propertyDescriptorRepository.create(
+        propertyDescriptorUseCase.createPropertyDescriptor(
                 new PropertyDescriptor("name", PropertyDescriptor.Type.String, PropertyDescriptor.Multiplicity.SINGLE, ""));
-        propertyDescriptorRepository.create(
+        propertyDescriptorUseCase.createPropertyDescriptor(
                 new PropertyDescriptor("uuid", PropertyDescriptor.Type.UUID, PropertyDescriptor.Multiplicity.SINGLE, ""));
-        propertyDescriptorRepository.create(
+        propertyDescriptorUseCase.createPropertyDescriptor(
                 new PropertyDescriptor("done", PropertyDescriptor.Type.Boolean, PropertyDescriptor.Multiplicity.SINGLE, false));
-        propertyDescriptorRepository.create(
-                new PropertyDescriptor("tags", PropertyDescriptor.Type.UUID, PropertyDescriptor.Multiplicity.SET, List.of()));
-        propertyDescriptorRepository.create(
+        propertyDescriptorUseCase.createPropertyDescriptor(
+                new PropertyDescriptor("tags", PropertyDescriptor.Type.UUID, PropertyDescriptor.Multiplicity.SET, new LinkedHashSet<>()));
+        propertyDescriptorUseCase.createPropertyDescriptor(
                 new PropertyDescriptor("status", PropertyDescriptor.Type.UUID, PropertyDescriptor.Multiplicity.SINGLE, null));
     }
 
     private void initializeStatuses() throws IOException {
-        statusRepository.create(new Label(uuidGenerator.getUUID(), "NextAction"));
-        statusRepository.create(new Label(uuidGenerator.getUUID(), "Waiting"));
-        statusRepository.create(new Label(uuidGenerator.getUUID(), "Planning"));
-        statusRepository.create(new Label(uuidGenerator.getUUID(), "OnHold"));
+        statusUseCase.createStatus("NextAction");
+        statusUseCase.createStatus("Waiting");
+        statusUseCase.createStatus("Planning");
+        statusUseCase.createStatus("OnHold");
     }
 
-    private final PropertyDescriptorRepository propertyDescriptorRepository;
-    private final LabelRepository statusRepository;
-    private final UUIDGenerator uuidGenerator;
+    private final PropertyDescriptorUseCase propertyDescriptorUseCase;
+    private final StatusUseCase statusUseCase;
 
 }

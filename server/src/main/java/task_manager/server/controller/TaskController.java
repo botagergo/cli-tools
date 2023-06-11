@@ -4,18 +4,14 @@ import org.springframework.web.ErrorResponseException;
 import org.springframework.web.bind.annotation.*;
 import com.google.inject.Inject;
 import lombok.extern.log4j.Log4j2;
-import task_manager.logic.use_case.PropertyDescriptorUseCase;
 import task_manager.logic.use_case.TaskUseCase;
 import task_manager.server.ProblemDetails;
 import task_manager.data.Task;
-import task_manager.property.PropertyDescriptor;
-import task_manager.property.PropertyDescriptorCollection;
 import task_manager.property.PropertyException;
 import task_manager.property.PropertyManager;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import java.io.IOException;
-import java.util.List;
 import java.util.UUID;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
@@ -25,25 +21,7 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 public class TaskController {
 
 	@Inject
-	public TaskController(PropertyDescriptorUseCase propertyDescriptorUseCase,
-						  TaskUseCase taskUseCase, PropertyManager propertyManager)
-		throws IOException {
-		PropertyDescriptorCollection propertyDescriptors =
-			propertyDescriptorUseCase.getPropertyDescriptors();
-
-		if (propertyDescriptors.get("uuid") == null) {
-			propertyDescriptorUseCase.createPropertyDescriptor(
-				new PropertyDescriptor("name", PropertyDescriptor.Type.String, PropertyDescriptor.Multiplicity.SINGLE, ""));
-			propertyDescriptorUseCase.createPropertyDescriptor(
-				new PropertyDescriptor("uuid", PropertyDescriptor.Type.UUID, PropertyDescriptor.Multiplicity.SINGLE, ""));
-			propertyDescriptorUseCase.createPropertyDescriptor(
-				new PropertyDescriptor("done", PropertyDescriptor.Type.Boolean, PropertyDescriptor.Multiplicity.SINGLE, false));
-			propertyDescriptorUseCase.createPropertyDescriptor(
-				new PropertyDescriptor("tags", PropertyDescriptor.Type.UUID, PropertyDescriptor.Multiplicity.LIST, List.of()));
-			propertyDescriptorUseCase.createPropertyDescriptor(
-				new PropertyDescriptor("status", PropertyDescriptor.Type.UUID, PropertyDescriptor.Multiplicity.SINGLE, null));
-		}
-
+	public TaskController(TaskUseCase taskUseCase, PropertyManager propertyManager) {
 		this.taskUseCase = taskUseCase;
 		this.propertyManager = propertyManager;
 	}

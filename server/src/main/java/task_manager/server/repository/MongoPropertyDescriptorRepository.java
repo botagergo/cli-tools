@@ -2,12 +2,14 @@ package task_manager.server.repository;
 
 import org.apache.commons.lang3.NotImplementedException;
 import task_manager.property.PropertyDescriptor;
-import task_manager.property.PropertyDescriptorCollection;
 import org.bson.Document;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import task_manager.repository.PropertyDescriptorRepository;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MongoPropertyDescriptorRepository implements PropertyDescriptorRepository {
 
@@ -22,11 +24,11 @@ public class MongoPropertyDescriptorRepository implements PropertyDescriptorRepo
         throw new NotImplementedException();
     }
 
-    public PropertyDescriptorCollection getAll() {
-        PropertyDescriptorCollection propertyDescriptorCollection =
-            new PropertyDescriptorCollection();
+    public List<PropertyDescriptor> getAll() {
+        List<PropertyDescriptor> propertyDescriptorCollection =
+            new ArrayList<>();
         mongoCollection.find().map(this::documentToPropertyDescriptor)
-            .forEach(propertyDescriptorCollection::addPropertyDescriptor);
+            .forEach(propertyDescriptorCollection::add);
         return propertyDescriptorCollection;
     }
 
