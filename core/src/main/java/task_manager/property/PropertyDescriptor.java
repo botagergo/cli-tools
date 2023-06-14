@@ -22,6 +22,11 @@ public record PropertyDescriptor(
         return multiplicity == Multiplicity.LIST || multiplicity == Multiplicity.SET;
     }
 
+    @Override
+    public String toString() {
+        return type.toString() + " " + multiplicity;
+    }
+
     public enum Type {
         String, UUID, Boolean
     }

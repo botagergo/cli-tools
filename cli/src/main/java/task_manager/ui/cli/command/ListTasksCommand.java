@@ -6,7 +6,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.UUID;
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.apache.commons.lang3.tuple.Triple;
 import org.fusesource.jansi.Ansi;
 import org.fusesource.jansi.Ansi.Color;
 
@@ -15,16 +14,18 @@ import task_manager.data.Status;
 import task_manager.data.Tag;
 import task_manager.data.Task;
 import task_manager.filter.*;
+import task_manager.property.PropertyDescriptor;
 import task_manager.property.PropertyException;
 import task_manager.property.PropertySpec;
 import task_manager.sorter.PropertySorter;
 import task_manager.ui.cli.Context;
+import task_manager.ui.cli.argument.PropertyArgument;
 
 @Log4j2
 public record ListTasksCommand(
         List<String> queries, String nameQuery,
         List<PropertySorter.SortingCriterion> sortingCriteria,
-        List<Triple<PropertySpec.Affinity, String, List<String>>> properties
+        List<PropertyArgument> properties
 ) implements Command {
 
     @Override
@@ -35,12 +36,31 @@ public record ListTasksCommand(
             ArrayList<FilterCriterion> filterCriteria = null;
 
             if (properties != null) {
-                List<PropertySpec> propertySpecs = context.getPropertyConverter().convertProperties(properties);
+                List<PropertySpec> propertySpecs = context.getPropertyConverter().convertProperties(properties, false);
                 filterCriteria = new ArrayList<>();
                 for (PropertySpec propertySpec : propertySpecs) {
-                    FilterCriterion filterCriterion = new EqualsFilterCriterion(
-                            propertySpec.property().getPropertyDescriptor().name(),
-                            propertySpec.property().getValue());
+                    FilterCriterion filterCriterion;
+
+                    if (propertySpec.predicate() == PropertySpec.Predicate.CONTAINS) {
+                        if (propertySpec.property().getPropertyDescriptor().type() == PropertyDescriptor.Type.String) {
+                            filterCriterion = new ContainsCaseInsensitiveFilterCriterion(
+                                    propertySpec.property().getPropertyDescriptor().name(),
+                                    propertySpec.property().getString());
+                        } else if (propertySpec.property().getPropertyDescriptor().isCollection()) {
+                            filterCriterion = new CollectionContainsFilterCriterion(
+                                    propertySpec.property().getPropertyDescriptor().name(),
+                                    propertySpec.property().getCollection());
+                        } else {
+                            System.out.println("Illegal type for CONTAINS predicate: "
+                                    + propertySpec.property().getPropertyDescriptor());
+                            return;
+                        }
+                    } else {
+                        filterCriterion = new EqualsFilterCriterion(
+                                propertySpec.property().getPropertyDescriptor().name(),
+                                propertySpec.property().getValue());
+                    }
+
                     if (propertySpec.affinity() == PropertySpec.Affinity.NEGATIVE) {
                         filterCriterion = new NotFilterCriterion(filterCriterion);
                     }

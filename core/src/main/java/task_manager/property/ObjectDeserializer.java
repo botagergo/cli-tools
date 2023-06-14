@@ -44,7 +44,7 @@ public class ObjectDeserializer extends StdDeserializer<Object> {
             return jsonNode.asBoolean();
         } else if (jsonNode.isObject()) {
             if (jsonNode.get("type").asText().equals("list")) {
-                List<Object> list = new ArrayList<>();
+                ArrayList<Object> list = new ArrayList<>();
                 for (int i = 0; i < jsonNode.get("value").size(); i++) {
                     JsonNode element = jsonNode.get("value").get(i);
                     if (element.isTextual()) {

@@ -6,13 +6,14 @@ import java.util.List;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
 import lombok.extern.log4j.Log4j2;
-import org.apache.commons.lang3.tuple.Triple;
 import task_manager.data.Task;
 import task_manager.property.PropertySpec;
 import task_manager.ui.cli.Context;
+import task_manager.ui.cli.argument.PropertyArgument;
+import task_manager.ui.cli.command.property_modifier.PropertyModifier;
 
 @Log4j2
-public record AddTaskCommand(String name, List<Triple<PropertySpec.Affinity, String, List<String>>> properties) implements Command {
+public record AddTaskCommand(String name, List<PropertyArgument> properties) implements Command {
 
     @Override
     public void execute(Context context) {
@@ -22,8 +23,8 @@ public record AddTaskCommand(String name, List<Triple<PropertySpec.Affinity, Str
             Task task = new Task();
 
             if (properties != null) {
-                List<PropertySpec> propertySpecs = context.getPropertyConverter().convertProperties(properties);
-                context.getPropertyManager().modifyProperties(task, propertySpecs);
+                List<PropertySpec> propertySpecs = context.getPropertyConverter().convertProperties(properties, true);
+                PropertyModifier.modifyProperties(context.getPropertyManager(), task, propertySpecs);
             }
 
             context.getPropertyManager().setProperty(task, "name", name);

@@ -8,9 +8,7 @@ import lombok.extern.log4j.Log4j2;
 import task_manager.repository.PropertyDescriptorRepository;
 
 import java.io.IOException;
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Log4j2
 public class PropertyManager {
@@ -55,7 +53,7 @@ public class PropertyManager {
             newProperty = Lists.newArrayList(Iterables.concat(origList, propertyValue));
         } else if (origProperty.getPropertyDescriptor().multiplicity() == PropertyDescriptor.Multiplicity.SET) {
             Set<Object> origSet = origProperty.getSet();
-            newProperty = Sets.newHashSet(Iterables.concat(origSet, propertyValue));
+            newProperty = Sets.newLinkedHashSet(Iterables.concat(origSet, propertyValue));
         } else {
             throw new PropertyException(PropertyException.Type.NotACollection,
                 origProperty.getPropertyDescriptor().name(), origProperty.getPropertyDescriptor(), null,
@@ -71,11 +69,12 @@ public class PropertyManager {
         Object newProperty;
 
         if (origProperty.getPropertyDescriptor().multiplicity() == PropertyDescriptor.Multiplicity.LIST) {
-            List<Object> origList = origProperty.getList();
+            ArrayList<Object> origList = origProperty.getList();
             newProperty = Lists.newArrayList(Iterables.removeAll(origList, propertyValue));
         } else if (origProperty.getPropertyDescriptor().multiplicity() == PropertyDescriptor.Multiplicity.SET) {
-            Set<Object> origSet = origProperty.getSet();
-            newProperty = Sets.newHashSet(Iterables.removeAll(origSet, propertyValue));
+            LinkedHashSet<Object> origSet = origProperty.getSet();
+            Iterables.removeAll(origSet, propertyValue);
+            newProperty = origSet;
         } else {
             throw new PropertyException(PropertyException.Type.NotACollection,
                     origProperty.getPropertyDescriptor().name(), origProperty.getPropertyDescriptor(), null,
@@ -83,32 +82,6 @@ public class PropertyManager {
         }
 
         propertyOwner.getProperties().put(propertyName, newProperty);
-    }
-
-    public void modifyProperties(PropertyOwner propertyOwner, List<PropertySpec> propertySpecs) throws PropertyException, IOException {
-        for (PropertySpec propertySpec : propertySpecs) {
-            PropertyDescriptor propertyDescriptor = propertySpec.property().getPropertyDescriptor();
-            Property property = propertySpec.property();
-            if ((propertySpec.affinity() == PropertySpec.Affinity.POSITIVE
-                    || propertySpec.affinity() == PropertySpec.Affinity.NEGATIVE)
-                    && propertyDescriptor.multiplicity() == PropertyDescriptor.Multiplicity.SINGLE) {
-                throw new PropertyException(PropertyException.Type.NotACollection,
-                        property.getPropertyDescriptor().name(), property.getPropertyDescriptor(), null,
-                        PropertyDescriptor.Type.UUID);
-            }
-        }
-
-        for (PropertySpec propertySpec : propertySpecs) {
-            PropertyDescriptor propertyDescriptor = propertySpec.property().getPropertyDescriptor();
-            Property property = propertySpec.property();
-            if (propertySpec.affinity() == PropertySpec.Affinity.POSITIVE) {
-                addProperty(propertyOwner, propertyDescriptor.name(), property.getList());
-            } else if (propertySpec.affinity() == PropertySpec.Affinity.NEGATIVE) {
-                removeProperty(propertyOwner, propertyDescriptor.name(), property.getList());
-            } else {
-                setProperty(propertyOwner, propertyDescriptor.name(), propertySpec.property().getValue());
-            }
-        }
     }
 
     public boolean hasProperty(PropertyOwner propertyOwner, String propertyName) {

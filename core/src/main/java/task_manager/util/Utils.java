@@ -1,5 +1,6 @@
 package task_manager.util;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -60,6 +61,27 @@ public class Utils {
         ret.add(key1);
         ret.add(key2);
         ret.add(key3);
+        return ret;
+    }
+
+    public static <K> ArrayList<K> newArrayList(K value1) {
+        ArrayList<K> ret = new ArrayList<>();
+        ret.add(value1);
+        return ret;
+    }
+
+    public static <K> ArrayList<K> newArrayList(K value1, K value2) {
+        ArrayList<K> ret = new ArrayList<>();
+        ret.add(value1);
+        ret.add(value2);
+        return ret;
+    }
+
+    public static <K> ArrayList<K> newArrayList(K value1, K value2, K value3) {
+        ArrayList<K> ret = new ArrayList<>();
+        ret.add(value1);
+        ret.add(value2);
+        ret.add(value3);
         return ret;
     }
 

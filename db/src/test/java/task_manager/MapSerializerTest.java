@@ -11,6 +11,7 @@ import org.testng.collections.Sets;
 import task_manager.repository.MapDeserializer;
 import task_manager.repository.MapSerializer;
 import task_manager.util.RoundRobinUUIDGenerator;
+import task_manager.util.Utils;
 
 import java.util.*;
 
@@ -58,19 +59,19 @@ public class MapSerializerTest {
     @Test
     public void test_serializer_emptyList() throws JsonProcessingException {
         assertJsonStrEquals(objectMapper.writeValueAsString(
-                new HashMap<>(Map.of("string_list", List.of(), "tags", List.of()))),
+                new HashMap<>(Map.of("string_list", new ArrayList<>(), "tags", new ArrayList<>()))),
                 new HashMap<>(Map.of(
-                        "string_list", Map.of("type", "list", "value", List.of()),
-                        "tags", Map.of("type", "list", "value", List.of()))));
+                        "string_list", Map.of("type", "list", "value", new ArrayList<>()),
+                        "tags", Map.of("type", "list", "value", new ArrayList<>()))));
     }
 
     @Test
     public void test_serializer_list() throws JsonProcessingException {
         assertJsonStrEquals(objectMapper.writeValueAsString(
-                new HashMap<>(Map.of("string_list", List.of("value1", "value2"), "tags", List.of(uuid1, uuid2)))),
+                new HashMap<>(Map.of("string_list", Utils.newArrayList("value1", "value2"), "tags", Utils.newArrayList(uuid1, uuid2)))),
                 new HashMap<>(Map.of(
-                        "string_list", Map.of("type", "list", "value", List.of("s:value1", "s:value2")),
-                        "tags", Map.of("type", "list", "value", List.of("u:" + uuid1, "u:" + uuid2)))));
+                        "string_list", Map.of("type", "list", "value", Utils.newArrayList("s:value1", "s:value2")),
+                        "tags", Map.of("type", "list", "value", Utils.newArrayList("u:" + uuid1, "u:" + uuid2)))));
     }
 
     @Test
@@ -78,26 +79,26 @@ public class MapSerializerTest {
         assertJsonStrEquals(objectMapper.writeValueAsString(
                         new HashMap<>(Map.of("string_list", Lists.newArrayList("value1", null, "value2"), "tags", Lists.newArrayList(uuid1, null, uuid2)))),
                 new HashMap<>(Map.of(
-                        "string_list", Map.of("type", "list", "value", Lists.newArrayList("s:value1", null, "s:value2")),
-                        "tags", Map.of("type", "list", "value", Lists.newArrayList("u:" + uuid1, null, "u:" + uuid2)))));
+                        "string_list", Map.of("type", "list", "value", Utils.newArrayList("s:value1", null, "s:value2")),
+                        "tags", Map.of("type", "list", "value", Utils.newArrayList("u:" + uuid1, null, "u:" + uuid2)))));
     }
 
     @Test
     public void test_serializer_emptySet() throws JsonProcessingException {
         HashMap<String, Object> mapToSerialize = new HashMap<>(Map.of("string_set", Sets.newLinkedHashSet(), "tags", Sets.newLinkedHashSet()));
         HashMap<String, Object> expectedMap = new HashMap<>(Map.of(
-                "string_set", Map.of("type", "set", "value", List.of()),
-                "tags", Map.of("type", "set", "value", List.of())));
+                "string_set", Map.of("type", "set", "value", new ArrayList<>()),
+                "tags", Map.of("type", "set", "value", new ArrayList<>())));
         assertJsonStrEquals(objectMapper.writeValueAsString(mapToSerialize), expectedMap);
     }
 
     @Test
     public void test_serializer_set() throws JsonProcessingException {
-        HashMap<String, Object> mapToSerialize = new HashMap<>(Map.of("string_set", Sets.newLinkedHashSet(List.of("value2", "value1")), "tags", Sets.newLinkedHashSet(List.of(uuid1, uuid2))));
+        HashMap<String, Object> mapToSerialize = new HashMap<>(Map.of("string_set", Sets.newLinkedHashSet(Utils.newArrayList("value2", "value1")), "tags", Sets.newLinkedHashSet(Utils.newArrayList(uuid1, uuid2))));
         String jsonStr = objectMapper.writeValueAsString(mapToSerialize);
         HashMap<String, Object> expectedMap = new HashMap<>(Map.of(
-                "string_set", Map.of("type", "set", "value", List.of("s:value2", "s:value1")),
-                "tags", Map.of("type", "set", "value", List.of("u:" + uuid1, "u:" + uuid2))));
+                "string_set", Map.of("type", "set", "value", Utils.newArrayList("s:value2", "s:value1")),
+                "tags", Map.of("type", "set", "value", Utils.newArrayList("u:" + uuid1, "u:" + uuid2))));
         assertJsonStrEquals(jsonStr, expectedMap);
     }
 

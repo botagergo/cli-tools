@@ -206,31 +206,46 @@ public class Property {
         return valueSet;
     }
 
-    public List<Object> getList() throws PropertyException {
+    @SuppressWarnings("unchecked")
+    public ArrayList<Object> getList() throws PropertyException {
         if (propertyDescriptor.multiplicity() != PropertyDescriptor.Multiplicity.LIST) {
             throw new PropertyException(PropertyException.Type.WrongMultiplicity,
-                    propertyDescriptor.name(), propertyDescriptor, value,
-                    PropertyDescriptor.Type.UUID);
+                    propertyDescriptor.name(), propertyDescriptor, value, null);
         }
 
         if (value == null) {
             return null;
         }
 
-        return new ArrayList<>((List<?>) value);
+        return (ArrayList<Object>) value;
     }
 
+    @SuppressWarnings("unchecked")
     public LinkedHashSet<Object> getSet() throws PropertyException {
         if (propertyDescriptor.multiplicity() != PropertyDescriptor.Multiplicity.SET) {
             throw new PropertyException(PropertyException.Type.WrongMultiplicity,
-                    propertyDescriptor.name(), propertyDescriptor, value,
-                    PropertyDescriptor.Type.UUID);
+                    propertyDescriptor.name(), propertyDescriptor, value, null);
         }
 
         if (value == null) {
             return null;
         }
-        return new LinkedHashSet<>((LinkedHashSet<?>) value);
+        return (LinkedHashSet<Object>) value;
+    }
+
+    @SuppressWarnings("unchecked")
+    public Collection<Object> getCollection() throws PropertyException {
+        if (propertyDescriptor.multiplicity() != PropertyDescriptor.Multiplicity.SET
+        && propertyDescriptor.multiplicity() != PropertyDescriptor.Multiplicity.LIST) {
+            throw new PropertyException(PropertyException.Type.WrongMultiplicity,
+                    propertyDescriptor.name(), propertyDescriptor, value, null);
+        }
+
+        if (value == null) {
+            return null;
+        }
+
+        return (Collection<Object>) value;
     }
 
     private static void checkPropertyValue(PropertyDescriptor propertyDescriptor, Object propertyValue) throws PropertyException {

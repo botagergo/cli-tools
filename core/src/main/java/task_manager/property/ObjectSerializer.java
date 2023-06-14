@@ -5,9 +5,7 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 public class ObjectSerializer extends StdSerializer<Object> {
 
@@ -34,7 +32,7 @@ public class ObjectSerializer extends StdSerializer<Object> {
             jgen.writeString("u:" + uuid);
         } else if (value instanceof Boolean b) {
             jgen.writeBoolean(b);
-        } else if (value instanceof List<?> list) {
+        } else if (value instanceof ArrayList<?> list) {
             jgen.writeStartObject();
             jgen.writeStringField("type", "list");
             jgen.writeFieldName("value");
@@ -52,7 +50,7 @@ public class ObjectSerializer extends StdSerializer<Object> {
             }
             jgen.writeEndArray();
             jgen.writeEndObject();
-        } else if (value instanceof Set<?> set) {
+        } else if (value instanceof LinkedHashSet<?> set) {
             jgen.writeStartObject();
             jgen.writeStringField("type", "set");
             jgen.writeFieldName("value");

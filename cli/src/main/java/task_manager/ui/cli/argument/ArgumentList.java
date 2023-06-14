@@ -3,17 +3,17 @@ package task_manager.ui.cli.argument;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.tuple.Pair;
-import org.apache.commons.lang3.tuple.Triple;
 import task_manager.property.PropertySpec;
 import task_manager.ui.cli.tokenizer.TokenList;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Set;
 
 public class ArgumentList {
     public ArgumentList(String commandName, List<String> normalArguments,
-            LinkedHashMap<Character, List<SpecialArgument>> specialArguments, List<Triple<PropertySpec.Affinity, String, List<String>>> propertyArguments) {
+            LinkedHashMap<Character, List<SpecialArgument>> specialArguments, List<PropertyArgument> propertyArguments) {
         this.commandName = commandName;
         this.normalArguments = normalArguments;
         this.specialArguments = specialArguments;
@@ -53,23 +53,37 @@ public class ArgumentList {
                         isOption = true;
                         startInd = 1;
                     }
+
                     String name = token.substring(startInd, j);
                     String value = token.substring(j+1);
-                    ArrayList<String> valueList = new ArrayList<>();
-                    int fromPos = 0;
-                    int colonPos = value.indexOf(',', fromPos);
-                    while(colonPos != -1) {
-                        if (!tokenList.escapedPositions().contains(Pair.of(i, j+colonPos+1))) {
-                            valueList.add(value.substring(fromPos, colonPos));
-                            fromPos = colonPos+1;
-                        }
-                        colonPos = value.indexOf(',', colonPos+1);
-                    }
-                    valueList.add(value.substring(fromPos));
+
+                    ArrayList<String> valueList = getValues(
+                            value, ',',
+                            tokenList.escapedPositions(),
+                            i, j+1
+                    );
+
                     if (isOption) {
                         argList.optionArguments.add(Pair.of(name, valueList));
                     } else {
-                        argList.propertyArguments.add(Triple.of(affinity, name, valueList));
+                        ArrayList<String> nameList = getValues(
+                                name, '.',
+                                tokenList.escapedPositions(),
+                                i, startInd
+                        );
+
+                        String propertyName = "";
+                        String predicate = null;
+
+                        if (!nameList.isEmpty()) {
+                            propertyName = nameList.get(0);
+                        }
+
+                        if (nameList.size() >= 2) {
+                            predicate = nameList.get(1);
+                        }
+
+                        argList.propertyArguments.add(new PropertyArgument(affinity, propertyName, predicate, valueList));
                     }
                     break;
                 }
@@ -82,9 +96,31 @@ public class ArgumentList {
         return argList;
     }
 
+    private static ArrayList<String> getValues(String valueListStr,
+                                   char separator,
+                                   Set<Pair<Integer, Integer>> escapedPositions,
+                                   int argIndex,
+                                   int baseIndex
+    ) {
+        ArrayList<String> valueList = new ArrayList<>();
+
+        int fromPos = 0;
+        int separatorPos = valueListStr.indexOf(separator, fromPos);
+        while(separatorPos != -1) {
+            if (!escapedPositions.contains(Pair.of(argIndex, baseIndex+separatorPos))) {
+                valueList.add(valueListStr.substring(fromPos, separatorPos));
+                fromPos = separatorPos+1;
+            }
+            separatorPos = valueListStr.indexOf(separator, separatorPos+1);
+        }
+        valueList.add(valueListStr.substring(fromPos));
+
+        return valueList;
+    }
+
     @Getter @Setter private String commandName;
     @Getter @Setter private List<String> normalArguments;
     @Getter @Setter private LinkedHashMap<Character, List<SpecialArgument>> specialArguments;
-    @Getter @Setter private List<Triple<PropertySpec.Affinity, String, List<String>>> propertyArguments;
+    @Getter @Setter private List<PropertyArgument> propertyArguments;
     @Getter @Setter private List<Pair<String, List<String>>> optionArguments;
 }

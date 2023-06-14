@@ -3,11 +3,12 @@ package task_manager.ui.cli.command;
 import lombok.NonNull;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.apache.commons.lang3.tuple.Triple;
 import task_manager.data.Task;
 import task_manager.property.PropertySpec;
 import task_manager.ui.cli.Context;
+import task_manager.ui.cli.argument.PropertyArgument;
 import task_manager.ui.cli.command.property_converter.PropertyConverterException;
+import task_manager.ui.cli.command.property_modifier.PropertyModifier;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -17,7 +18,7 @@ import java.util.UUID;
 @Log4j2
 public record ModifyTaskCommand(
         @NonNull List<Integer> taskIDs,
-        List<Triple<PropertySpec.Affinity, String, List<String>>> properties
+        List<PropertyArgument> properties
 ) implements Command {
 
     @Override
@@ -43,8 +44,8 @@ public record ModifyTaskCommand(
 
             for (Task task : tasks) {
                 if (properties != null) {
-                    List<PropertySpec> propertySpecs = context.getPropertyConverter().convertProperties(properties);
-                    context.getPropertyManager().modifyProperties(task, propertySpecs);
+                    List<PropertySpec> propertySpecs = context.getPropertyConverter().convertProperties(properties, true);
+                    PropertyModifier.modifyProperties(context.getPropertyManager(), task, propertySpecs);
                 }
                 context.getTaskUseCase().modifyTask(task);
             }
