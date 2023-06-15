@@ -3,7 +3,7 @@ package task_manager;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import task_manager.data.Label;
-import task_manager.repository.JsonLabelRepository;
+import task_manager.repository.label.JsonLabelRepository;
 import task_manager.util.RoundRobinUUIDGenerator;
 
 import java.io.File;

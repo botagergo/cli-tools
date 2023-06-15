@@ -4,7 +4,7 @@ import com.beust.jcommander.internal.Lists;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import task_manager.data.Task;
-import task_manager.repository.JsonTaskRepository;
+import task_manager.repository.task.JsonTaskRepository;
 import task_manager.util.Utils;
 
 import java.io.File;

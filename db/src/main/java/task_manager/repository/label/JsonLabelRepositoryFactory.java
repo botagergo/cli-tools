@@ -1,16 +1,18 @@
-package task_manager.repository;
+package task_manager.repository.label;
 
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import jakarta.inject.Singleton;
 import lombok.NonNull;
+import task_manager.repository.LabelRepository;
+import task_manager.repository.LabelRepositoryFactory;
 
 import java.io.File;
 import java.nio.file.Paths;
 import java.util.HashMap;
 
 @Singleton
-public class JsonLabelRepositoryFactory implements LabelRepositoryFactory{
+public class JsonLabelRepositoryFactory implements LabelRepositoryFactory {
 
     @Inject
     public JsonLabelRepositoryFactory(@Named("basePath") @NonNull File basePath) {

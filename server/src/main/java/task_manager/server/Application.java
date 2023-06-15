@@ -14,7 +14,7 @@ import task_manager.logic.use_case.PropertyDescriptorUseCaseImpl;
 import task_manager.logic.use_case.StatusUseCaseImpl;
 import task_manager.logic.use_case.TagUseCaseImpl;
 import task_manager.logic.use_case.TaskUseCaseImpl;
-import task_manager.repository.*;
+import task_manager.repository.label.JsonLabelRepository;
 import task_manager.server.repository.MongoLabelRepositoryFactory;
 import task_manager.server.repository.MongoPropertyDescriptorRepository;
 import task_manager.server.repository.MongoTaskRepository;

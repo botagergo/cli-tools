@@ -1,4 +1,4 @@
-package task_manager.repository;
+package task_manager.repository.property_descriptor;
 
 import java.io.File;
 import java.io.IOException;
@@ -10,12 +10,15 @@ import com.fasterxml.jackson.databind.type.TypeFactory;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import task_manager.property.PropertyDescriptor;
+import task_manager.repository.JsonRepository;
+import task_manager.repository.PropertyDescriptorRepository;
 
 public class JsonPropertyDescriptorRepository extends JsonRepository<HashMap<String, PropertyDescriptor>> implements PropertyDescriptorRepository {
 
     @Inject
     public JsonPropertyDescriptorRepository(@Named("propertyDescriptorJsonFile") File jsonFile) {
         super(jsonFile);
+        getObjectMapper().addMixIn(PropertyDescriptor.class, PropertyDescriptorMixIn.class);
     }
 
     @Override

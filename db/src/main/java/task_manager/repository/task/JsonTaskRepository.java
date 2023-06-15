@@ -1,16 +1,17 @@
-package task_manager.repository;
+package task_manager.repository.task;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
 import com.fasterxml.jackson.databind.JavaType;
-import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import jakarta.inject.Singleton;
 import task_manager.data.Task;
+import task_manager.repository.JsonRepository;
+import task_manager.repository.TaskRepository;
 
 @Singleton
 public class JsonTaskRepository extends JsonRepository<ArrayList<Task>> implements TaskRepository {
@@ -18,12 +19,7 @@ public class JsonTaskRepository extends JsonRepository<ArrayList<Task>> implemen
     @Inject
     public JsonTaskRepository(@Named("taskJsonFile") File jsonPath) {
         super(jsonPath);
-
-        SimpleModule module = new SimpleModule();
-        module.addSerializer(new MapSerializer());
-        module.addDeserializer(HashMap.class, new MapDeserializer());
-
-        getObjectMapper().registerModule(module);
+        getObjectMapper().addMixIn(Task.class, TaskMixIn.class);
     }
 
     @Override

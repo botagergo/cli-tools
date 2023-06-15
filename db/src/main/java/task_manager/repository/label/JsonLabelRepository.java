@@ -1,8 +1,10 @@
-package task_manager.repository;
+package task_manager.repository.label;
 
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import task_manager.data.Label;
+import task_manager.repository.JsonRepository;
+import task_manager.repository.LabelRepository;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,6 +15,7 @@ public class JsonLabelRepository extends JsonRepository<ArrayList<Label>> implem
 
     public JsonLabelRepository(File jsonFile) {
         super(jsonFile);
+        getObjectMapper().addMixIn(Label.class, LabelMixIn.class);
     }
 
     @Override

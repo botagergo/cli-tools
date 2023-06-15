@@ -3,16 +3,8 @@ package task_manager.data;
 import java.util.HashMap;
 import java.util.UUID;
 
-import com.fasterxml.jackson.annotation.*;
-import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import task_manager.property.PropertyOwner;
 
-@JsonAutoDetect(
-    fieldVisibility = Visibility.NONE,
-    setterVisibility = Visibility.NONE,
-    getterVisibility = Visibility.NONE,
-    isGetterVisibility = Visibility.NONE,
-    creatorVisibility = Visibility.NONE)
 public class Task implements PropertyOwner {
 
     public Task() {
@@ -28,8 +20,6 @@ public class Task implements PropertyOwner {
     }
 
     @Override
-    @JsonSetter
-    @JsonGetter
     public HashMap<String, Object> getProperties() {
         return properties;
     }

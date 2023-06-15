@@ -1,4 +1,4 @@
-package task_manager.repository;
+package task_manager.repository.temp_id_mapping;
 
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -6,6 +6,8 @@ import com.fasterxml.jackson.databind.type.TypeFactory;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import lombok.AllArgsConstructor;
+import task_manager.repository.JsonRepository;
+import task_manager.repository.TempIDMappingRepository;
 
 import java.io.File;
 import java.io.IOException;
