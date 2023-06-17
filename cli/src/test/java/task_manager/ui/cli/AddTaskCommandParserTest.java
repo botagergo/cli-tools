@@ -74,11 +74,11 @@ public class AddTaskCommandParserTest {
     }
 
     private ArgumentList getArgList(String... normalArgs) {
-        return new ArgumentList("add", Arrays.asList(normalArgs), new LinkedHashMap<>(), new ArrayList<>());
+        return new ArgumentList("add", Arrays.asList(normalArgs), new LinkedHashMap<>(), new ArrayList<>(), new ArrayList<>());
     }
 
     private ArgumentList getArgList(List<String> normalArgs, List<PropertyArgument> propertyArgs) {
-        return new ArgumentList("add", normalArgs, new LinkedHashMap<>(), propertyArgs);
+        return new ArgumentList("add", normalArgs, new LinkedHashMap<>(), propertyArgs, new ArrayList<>());
     }
     
     private AddTaskCommand parse(ArgumentList argumentList) {

@@ -49,7 +49,7 @@ public class JsonRepository <T> {
         return null;
     }
 
-    private T loadData() throws IOException {
+    protected T loadData() throws IOException {
         try {
             if (jsonFile.exists()) {
                 JavaType javaType = constructType(objectMapper.getTypeFactory());

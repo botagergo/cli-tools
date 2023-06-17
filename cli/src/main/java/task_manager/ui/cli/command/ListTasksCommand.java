@@ -10,6 +10,7 @@ import org.fusesource.jansi.Ansi;
 import org.fusesource.jansi.Ansi.Color;
 
 import lombok.extern.log4j.Log4j2;
+import task_manager.data.SortingCriterion;
 import task_manager.data.Status;
 import task_manager.data.Tag;
 import task_manager.data.Task;
@@ -24,8 +25,9 @@ import task_manager.ui.cli.argument.PropertyArgument;
 @Log4j2
 public record ListTasksCommand(
         List<String> queries, String nameQuery,
-        List<PropertySorter.SortingCriterion> sortingCriteria,
-        List<PropertyArgument> properties
+        List<SortingCriterion> sortingCriteria,
+        List<PropertyArgument> properties,
+        String viewName
 ) implements Command {
 
     @Override
@@ -34,9 +36,10 @@ public record ListTasksCommand(
 
         try {
             ArrayList<FilterCriterion> filterCriteria = null;
+            PropertySorter<Task> sorter = null;
 
             if (properties != null) {
-                List<PropertySpec> propertySpecs = context.getPropertyConverter().convertProperties(properties, false);
+                List<PropertySpec> propertySpecs = context.getStringToPropertyConverter().convertProperties(properties, false);
                 filterCriteria = new ArrayList<>();
                 for (PropertySpec propertySpec : propertySpecs) {
                     FilterCriterion filterCriterion;
@@ -68,12 +71,11 @@ public record ListTasksCommand(
                 }
             }
 
-            List<Task> tasks = context.getTaskUseCase().getTasks(nameQuery, queries, filterCriteria);
-
             if (sortingCriteria != null && !sortingCriteria.isEmpty()) {
-                PropertySorter<Task> sorter = new PropertySorter<>(sortingCriteria);
-                tasks = sorter.sort(tasks, context.getPropertyManager());
+                sorter = new PropertySorter<>(sortingCriteria);
             }
+
+            List<Task> tasks = context.getTaskUseCase().getTasks(nameQuery, queries, filterCriteria, sorter, viewName);
 
             for (Task task : tasks) {
                 int tempID = context.getTempIDMappingRepository().getOrCreateID(task.getUUID());

@@ -1,4 +1,4 @@
-package task_manager.logic.use_case;
+package task_manager.logic.use_case.task;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -7,13 +7,20 @@ import java.util.UUID;
 
 import jakarta.inject.Inject;
 import lombok.AllArgsConstructor;
+import lombok.NonNull;
 import task_manager.filter.*;
 import task_manager.filter.grammar.FilterBuilder;
+import task_manager.logic.use_case.view.PropertyConverterException;
+import task_manager.logic.use_case.view.View;
+import task_manager.logic.use_case.view.ViewUseCase;
 import task_manager.property.PropertyException;
 import task_manager.property.PropertyManager;
+import task_manager.property.PropertyNotComparableException;
 import task_manager.repository.TaskRepository;
 import task_manager.data.Task;
+import task_manager.sorter.PropertySorter;
 import task_manager.util.UUIDGenerator;
+
 @AllArgsConstructor(onConstructor = @__(@Inject))
 public class TaskUseCaseImpl implements TaskUseCase {
 
@@ -39,9 +46,20 @@ public class TaskUseCaseImpl implements TaskUseCase {
     }
 
     @Override
-    public List<Task> getTasks(String nameQuery, List<String> queries, List<FilterCriterion> filterCriteria) throws IOException, PropertyException {
+    public List<Task> getTasks(String nameQuery, List<String> queries, List<FilterCriterion> filterCriteria, PropertySorter<Task> sorter, String viewName)
+            throws IOException, TaskUseCaseException {
         List<Task> tasks = getTasks();
         List<FilterCriterion> finalFilterCriteria = new ArrayList<>();
+
+        if (viewName != null) {
+            View view = getView(viewName);
+            if (sorter == null) {
+                sorter = view.sorter();
+            }
+            if (view.filterCriterion() != null) {
+                finalFilterCriteria.add(view.filterCriterion());
+            }
+        }
 
         if (queries != null) {
             for (String query : queries) {
@@ -59,7 +77,19 @@ public class TaskUseCaseImpl implements TaskUseCase {
 
         if (finalFilterCriteria.size() != 0) {
             Filter filter = new SimpleFilter(new AndFilterCriterion(finalFilterCriteria));
-            tasks = filter.doFilter(tasks, propertyManager);
+            try {
+                tasks = filter.doFilter(tasks, propertyManager);
+            } catch (PropertyException e) {
+                throw new TaskUseCaseException("Failed to filter tasks: " + e.getMessage());
+            }
+        }
+
+        if (sorter != null) {
+            try {
+                tasks = sorter.sort(tasks, propertyManager);
+            } catch (PropertyException|PropertyNotComparableException e) {
+                throw new TaskUseCaseException("Failed to sort tasks: " + e.getMessage());
+            }
         }
 
         return tasks;
@@ -75,7 +105,20 @@ public class TaskUseCaseImpl implements TaskUseCase {
         taskRepository.deleteAll();
     }
 
+    private @NonNull View getView(String viewName) throws TaskUseCaseException, IOException {
+        try {
+            View view = viewUseCase.getView(viewName, propertyManager);
+            if (view == null) {
+                throw new TaskUseCaseException("View '" + viewName + "' does not exist");
+            }
+            return view;
+        } catch (PropertyException|PropertyConverterException|FilterCriterionException e) {
+            throw new TaskUseCaseException("Failed to get view '" + viewName + "': " + e.getMessage());
+        }
+    }
+
     private final TaskRepository taskRepository;
+    private final ViewUseCase viewUseCase;
     private final PropertyManager propertyManager;
     private final UUIDGenerator uuidGenerator;
 

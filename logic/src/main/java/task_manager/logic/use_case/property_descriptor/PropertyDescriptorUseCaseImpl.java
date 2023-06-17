@@ -1,4 +1,4 @@
-package task_manager.logic.use_case;
+package task_manager.logic.use_case.property_descriptor;
 
 import java.io.IOException;
 import java.util.List;

@@ -1,6 +1,8 @@
 package task_manager.server;
 
 import java.io.File;
+
+import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -8,13 +10,16 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.web.filter.CommonsRequestLoggingFilter;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
+import task_manager.logic.use_case.property_descriptor.PropertyDescriptorUseCaseImpl;
+import task_manager.logic.use_case.status.StatusUseCaseImpl;
+import task_manager.logic.use_case.tag.TagUseCaseImpl;
+import task_manager.logic.use_case.task.TaskUseCaseImpl;
+import task_manager.logic.use_case.view.PropertyConverter;
+import task_manager.logic.use_case.view.ViewUseCaseImpl;
 import task_manager.property.PropertyManager;
 import task_manager.init.Initializer;
-import task_manager.logic.use_case.PropertyDescriptorUseCaseImpl;
-import task_manager.logic.use_case.StatusUseCaseImpl;
-import task_manager.logic.use_case.TagUseCaseImpl;
-import task_manager.logic.use_case.TaskUseCaseImpl;
 import task_manager.repository.label.JsonLabelRepository;
+import task_manager.repository.view.JsonViewInfoRepository;
 import task_manager.server.repository.MongoLabelRepositoryFactory;
 import task_manager.server.repository.MongoPropertyDescriptorRepository;
 import task_manager.server.repository.MongoTaskRepository;
@@ -46,8 +51,13 @@ public class Application {
     }
 
     @Bean
+    JsonViewInfoRepository viewInfoRepository() {
+        throw new NotImplementedException();
+    }
+
+    @Bean
     TaskUseCaseImpl taskUseCase() {
-        return new TaskUseCaseImpl(taskRepository(), propertyManager(), new RandomUUIDGenerator());
+        return new TaskUseCaseImpl(taskRepository(), viewUseCase(), propertyManager(), new RandomUUIDGenerator());
     }
 
     @Bean
@@ -58,6 +68,11 @@ public class Application {
     @Bean
     StatusUseCaseImpl statusUseCase() {
         return new StatusUseCaseImpl(labelRepositoryFactory(), uuidGenerator());
+    }
+
+    @Bean
+    ViewUseCaseImpl viewUseCase() {
+        return new ViewUseCaseImpl(viewInfoRepository(), new PropertyConverter(labelRepositoryFactory()));
     }
 
     @Bean

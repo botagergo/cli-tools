@@ -16,10 +16,11 @@ public class ArgumentListTest {
     @Test
     public void test_from_empty() {
         ArgumentList argList = ArgumentList.from(new TokenList(List.of(), new HashSet<>()));
-        assertNull(argList.getCommandName());
+        assertEquals(argList.getCommandName(), "");
         assertEquals(argList.getNormalArguments().size(), 0);
         assertEquals(argList.getSpecialArguments().size(), 0);
         assertEquals(argList.getPropertyArguments().size(), 0);
+        assertEquals(argList.getOptionArguments().size(), 0);
     }
 
     @Test
@@ -29,6 +30,7 @@ public class ArgumentListTest {
         assertEquals(argList.getNormalArguments().size(), 0);
         assertEquals(argList.getSpecialArguments().size(), 0);
         assertEquals(argList.getPropertyArguments().size(), 0);
+        assertEquals(argList.getOptionArguments().size(), 0);
     }
 
     @Test
@@ -38,6 +40,7 @@ public class ArgumentListTest {
         assertEquals(argList.getNormalArguments(), List.of("arg"));
         assertEquals(argList.getSpecialArguments().size(), 0);
         assertEquals(argList.getPropertyArguments().size(), 0);
+        assertEquals(argList.getOptionArguments().size(), 0);
     }
 
     @Test
@@ -47,6 +50,7 @@ public class ArgumentListTest {
         assertEquals(argList.getNormalArguments(), List.of("arg1", "arg2", "arg3"));
         assertEquals(argList.getSpecialArguments().size(), 0);
         assertEquals(argList.getPropertyArguments().size(), 0);
+        assertEquals(argList.getOptionArguments().size(), 0);
     }
 
     @Test
@@ -56,6 +60,7 @@ public class ArgumentListTest {
         assertEquals(argList.getNormalArguments(), List.of("+arg1", "!arg2", "+arg3", "!arg4", "?arg5"));
         assertEquals(argList.getSpecialArguments().size(), 0);
         assertEquals(argList.getPropertyArguments().size(), 0);
+        assertEquals(argList.getOptionArguments().size(), 0);
     }
 
     @Test
@@ -65,6 +70,7 @@ public class ArgumentListTest {
         assertEquals(argList.getNormalArguments(), List.of("arg1", "+arg2", "arg3", "!arg4"));
         assertEquals(argList.getSpecialArguments().size(), 0);
         assertEquals(argList.getPropertyArguments().size(), 0);
+        assertEquals(argList.getOptionArguments().size(), 0);
     }
 
     @Test
@@ -74,6 +80,7 @@ public class ArgumentListTest {
         assertEquals(argList.getNormalArguments().size(), 0);
         assertEquals(argList.getSpecialArguments().size(), 0);
         assertEquals(argList.getPropertyArguments(), List.of(new PropertyArgument(PropertySpec.Affinity.NEUTRAL, "prop", null, List.of("value"))));
+        assertEquals(argList.getOptionArguments().size(), 0);
     }
 
     @Test
@@ -82,6 +89,7 @@ public class ArgumentListTest {
         assertEquals(argList.getCommandName(), "command");
         assertEquals(argList.getNormalArguments().size(), 0);
         assertEquals(argList.getSpecialArguments().size(), 0);
+        assertEquals(argList.getOptionArguments().size(), 0);
         assertEquals(argList.getPropertyArguments(), List.of(new PropertyArgument(PropertySpec.Affinity.NEUTRAL, "prop", null, List.of("value1", "value2", "value3"))));
     }
 
@@ -91,6 +99,7 @@ public class ArgumentListTest {
         assertEquals(argList.getCommandName(), "command");
         assertEquals(argList.getNormalArguments().size(), 0);
         assertEquals(argList.getSpecialArguments().size(), 0);
+        assertEquals(argList.getOptionArguments().size(), 0);
         assertEquals(argList.getPropertyArguments(), List.of(new PropertyArgument(PropertySpec.Affinity.NEUTRAL, "prop", null, List.of("", "", ""))));
     }
 
@@ -100,6 +109,7 @@ public class ArgumentListTest {
         assertEquals(argList.getCommandName(), "command");
         assertEquals(argList.getNormalArguments().size(), 0);
         assertEquals(argList.getSpecialArguments().size(), 0);
+        assertEquals(argList.getOptionArguments().size(), 0);
         assertEquals(argList.getPropertyArguments(), List.of(new PropertyArgument(PropertySpec.Affinity.NEUTRAL, "prop", null, List.of("value1", "", "value3"))));
     }
 
@@ -110,6 +120,7 @@ public class ArgumentListTest {
         assertEquals(argList.getNormalArguments(), List.of("prop\\:value"));
         assertEquals(argList.getSpecialArguments().size(), 0);
         assertEquals(argList.getPropertyArguments().size(), 0);
+        assertEquals(argList.getOptionArguments().size(), 0);
     }
 
     @Test
@@ -118,6 +129,7 @@ public class ArgumentListTest {
         assertEquals(argList.getCommandName(), "command");
         assertEquals(argList.getNormalArguments().size(), 0);
         assertEquals(argList.getSpecialArguments().size(), 0);
+        assertEquals(argList.getOptionArguments().size(), 0);
         assertEquals(argList.getPropertyArguments(), List.of(new PropertyArgument(PropertySpec.Affinity.NEUTRAL, "prop", null, List.of("value1\\,value2"))));
     }
 
@@ -127,6 +139,7 @@ public class ArgumentListTest {
         assertEquals(argList.getCommandName(), "command");
         assertEquals(argList.getNormalArguments().size(), 0);
         assertEquals(argList.getSpecialArguments().size(), 0);
+        assertEquals(argList.getOptionArguments().size(), 0);
         assertEquals(argList.getPropertyArguments(), List.of(new PropertyArgument(PropertySpec.Affinity.NEUTRAL, "prop", null, List.of("\\,\\,\\,"))));
     }
 
@@ -136,6 +149,7 @@ public class ArgumentListTest {
         assertEquals(argList.getCommandName(), "command");
         assertEquals(argList.getNormalArguments().size(), 0);
         assertEquals(argList.getSpecialArguments().size(), 0);
+        assertEquals(argList.getOptionArguments().size(), 0);
         assertEquals(argList.getPropertyArguments(), List.of(new PropertyArgument(PropertySpec.Affinity.NEUTRAL, "prop", null, List.of("value1", "value2\\,value3"))));
     }
 
@@ -145,6 +159,7 @@ public class ArgumentListTest {
         assertEquals(argList.getCommandName(), "command");
         assertEquals(argList.getNormalArguments().size(), 0);
         assertEquals(argList.getSpecialArguments().size(), 0);
+        assertEquals(argList.getOptionArguments().size(), 0);
         assertEquals(argList.getPropertyArguments(), List.of(new PropertyArgument(PropertySpec.Affinity.NEUTRAL, "prop", null, List.of("value1\\,value2", "value3"))));
     }
 
@@ -154,6 +169,7 @@ public class ArgumentListTest {
         assertEquals(argList.getCommandName(), "command");
         assertEquals(argList.getNormalArguments().size(), 0);
         assertEquals(argList.getSpecialArguments().size(), 0);
+        assertEquals(argList.getOptionArguments().size(), 0);
         assertEquals(argList.getPropertyArguments(), List.of(new PropertyArgument(PropertySpec.Affinity.NEGATIVE, "prop", null, List.of("value"))));
     }
 
@@ -163,6 +179,7 @@ public class ArgumentListTest {
         assertEquals(argList.getCommandName(), "command");
         assertEquals(argList.getNormalArguments().size(), 0);
         assertEquals(argList.getSpecialArguments().size(), 0);
+        assertEquals(argList.getOptionArguments().size(), 0);
         assertEquals(argList.getPropertyArguments(), List.of(new PropertyArgument(PropertySpec.Affinity.NEGATIVE, "prop", null, List.of("value1", "value2", "value3"))));
     }
 
@@ -172,6 +189,7 @@ public class ArgumentListTest {
         assertEquals(argList.getCommandName(), "command");
         assertEquals(argList.getNormalArguments().size(), 0);
         assertEquals(argList.getSpecialArguments().size(), 0);
+        assertEquals(argList.getOptionArguments().size(), 0);
         assertEquals(argList.getPropertyArguments(), List.of(new PropertyArgument(PropertySpec.Affinity.POSITIVE, "prop", null, List.of("value"))));
     }
 
@@ -181,6 +199,7 @@ public class ArgumentListTest {
         assertEquals(argList.getCommandName(), "command");
         assertEquals(argList.getNormalArguments().size(), 0);
         assertEquals(argList.getSpecialArguments().size(), 0);
+        assertEquals(argList.getOptionArguments().size(), 0);
         assertEquals(argList.getPropertyArguments(), List.of(new PropertyArgument(PropertySpec.Affinity.POSITIVE, "prop", null, List.of("value1", "value2", "value3"))));
     }
 
@@ -190,6 +209,7 @@ public class ArgumentListTest {
         assertEquals(argList.getCommandName(), "command");
         assertEquals(argList.getNormalArguments().size(), 0);
         assertEquals(argList.getSpecialArguments().size(), 0);
+        assertEquals(argList.getOptionArguments().size(), 0);
         assertEquals(argList.getPropertyArguments(), List.of(
                 new PropertyArgument(PropertySpec.Affinity.NEUTRAL, "prop1", null, List.of("value1")),
                 new PropertyArgument(PropertySpec.Affinity.POSITIVE, "prop2", null, List.of("value2")),
@@ -204,6 +224,7 @@ public class ArgumentListTest {
         assertEquals(argList.getCommandName(), "command");
         assertEquals(argList.getNormalArguments().size(), 0);
         assertEquals(argList.getSpecialArguments().size(), 0);
+        assertEquals(argList.getOptionArguments().size(), 0);
         assertEquals(argList.getPropertyArguments(), List.of(
                 new PropertyArgument(PropertySpec.Affinity.NEUTRAL, "prop1", "equals", List.of("value1")),
                 new PropertyArgument(PropertySpec.Affinity.POSITIVE, "prop2", "contains", List.of("value2")),

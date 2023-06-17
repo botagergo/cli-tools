@@ -1,4 +1,4 @@
-package task_manager.logic.use_case;
+package task_manager.logic.use_case.tag;
 
 import task_manager.data.Tag;
 

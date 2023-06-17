@@ -4,7 +4,11 @@ import org.springframework.web.ErrorResponseException;
 import org.springframework.web.bind.annotation.*;
 import com.google.inject.Inject;
 import lombok.extern.log4j.Log4j2;
-import task_manager.logic.use_case.TaskUseCase;
+import task_manager.filter.FilterCriterionException;
+import task_manager.logic.use_case.task.TaskUseCaseException;
+import task_manager.logic.use_case.view.PropertyConverterException;
+import task_manager.logic.use_case.task.TaskUseCase;
+import task_manager.property.PropertyNotComparableException;
 import task_manager.server.ProblemDetails;
 import task_manager.data.Task;
 import task_manager.property.PropertyException;
@@ -27,14 +31,15 @@ public class TaskController {
 	}
 
 	@GetMapping
-	public Object getTasks(@RequestParam(value = "query", defaultValue = "") String query) {
+	public Object getTasks(@RequestParam(value = "query", defaultValue = "") String query) throws PropertyNotComparableException {
 		try {
-			return taskUseCase.getTasks(query, null, null);
-		} catch (PropertyException e) {
+			return taskUseCase.getTasks(query, null, null, null, null);
+		} catch (PropertyException | PropertyConverterException e) {
 			return null;
-		}
-		catch (IOException e) {
+		} catch (IOException e) {
 			return handleInternalServerError(e);
+		} catch (FilterCriterionException | TaskUseCaseException e) {
+			throw new RuntimeException(e);
 		}
 	}
 

@@ -1,4 +1,4 @@
-package task_manager.logic.use_case;
+package task_manager.logic.use_case.status;
 
 import task_manager.data.Label;
 import task_manager.data.Status;

@@ -1,27 +1,40 @@
 package task_manager.sorter;
 
-import lombok.AllArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.apache.commons.lang3.tuple.Pair;
+import task_manager.data.SortingCriterion;
 import task_manager.property.*;
 
 import java.io.IOException;
 import java.util.*;
 
-@AllArgsConstructor
+//@AllArgsConstructor(onConstructor = @__(@JsonCreator))
+@JsonSerialize
+@JsonDeserialize
+@NoArgsConstructor
 public class PropertySorter <T extends PropertyOwner> {
+
+    @JsonCreator
+    public PropertySorter(@JsonProperty("sortingCriteria") List<SortingCriterion> sortingCriteria) {
+        this.sortingCriteria = sortingCriteria;
+    }
 
     public ArrayList<T> sort(List<T> propertyOwners, PropertyManager propertyManager) throws PropertyException, IOException, PropertyNotComparableException {
         List<Pair<List<Property>, Boolean>> valuesToCompare = new ArrayList<>();
 
         for (SortingCriterion sortingCriterion : sortingCriteria) {
-            PropertyDescriptor propertyDescriptor = propertyManager.getPropertyDescriptor(sortingCriterion.propertyName);
+            PropertyDescriptor propertyDescriptor = propertyManager.getPropertyDescriptor(sortingCriterion.propertyName());
             if (!PropertyComparator.isComparable(propertyDescriptor)) {
                 throw new PropertyNotComparableException(propertyDescriptor);
             }
 
-            Pair<List<Property>, Boolean> values = Pair.of(new ArrayList<>(), sortingCriterion.ascending);
+            Pair<List<Property>, Boolean> values = Pair.of(new ArrayList<>(), sortingCriterion.ascending());
             for (T propertyOwner : propertyOwners) {
                 Property propertyValue = propertyManager.getProperty(propertyOwner, propertyDescriptor);
                 values.getLeft().add(propertyValue);
@@ -43,8 +56,6 @@ public class PropertySorter <T extends PropertyOwner> {
     }
 
     @Getter @Setter private List<SortingCriterion> sortingCriteria;
-
-    public record SortingCriterion(String propertyName, boolean ascending) { }
 
     private static class ListIndexComparator implements Comparator<Integer> {
 

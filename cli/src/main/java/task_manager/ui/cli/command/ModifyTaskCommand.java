@@ -7,7 +7,7 @@ import task_manager.data.Task;
 import task_manager.property.PropertySpec;
 import task_manager.ui.cli.Context;
 import task_manager.ui.cli.argument.PropertyArgument;
-import task_manager.ui.cli.command.property_converter.PropertyConverterException;
+import task_manager.ui.cli.command.property_converter.StringToPropertyConverterException;
 import task_manager.ui.cli.command.property_modifier.PropertyModifier;
 
 import java.io.IOException;
@@ -44,13 +44,13 @@ public record ModifyTaskCommand(
 
             for (Task task : tasks) {
                 if (properties != null) {
-                    List<PropertySpec> propertySpecs = context.getPropertyConverter().convertProperties(properties, true);
+                    List<PropertySpec> propertySpecs = context.getStringToPropertyConverter().convertProperties(properties, true);
                     PropertyModifier.modifyProperties(context.getPropertyManager(), task, propertySpecs);
                 }
                 context.getTaskUseCase().modifyTask(task);
             }
 
-        } catch (PropertyConverterException e) {
+        } catch (StringToPropertyConverterException e) {
             switch (e.getExceptionType()) {
                 case NotAList -> System.out.println("A list of values was provided, but property '" + e.getPropertyDescriptor().name() + "' is not a list");
                 case EmptyList -> System.out.println("No value was provided for property '" + e.getPropertyDescriptor().name() + "'");

@@ -4,7 +4,9 @@ import task_manager.property.Property;
 
 public class EqualsFilterCriterion extends PropertyFilterCriterion {
 
-    public EqualsFilterCriterion(String propertyName, Object operand) {
+    public EqualsFilterCriterion(
+            String propertyName,
+            Object operand) {
         super(propertyName);
         this.operand = operand;
     }

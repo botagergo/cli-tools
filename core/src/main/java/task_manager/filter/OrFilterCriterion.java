@@ -1,21 +1,29 @@
 package task_manager.filter;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.List;
+
+import lombok.Getter;
 import task_manager.property.PropertyException;
 import task_manager.property.PropertyManager;
 import task_manager.property.PropertyOwner;
 
 public class OrFilterCriterion extends FilterCriterion {
-    public OrFilterCriterion(FilterCriterion... criteria) {
-        this.criterions = List.of(criteria);
+
+    public OrFilterCriterion(Collection<FilterCriterion> criteria) {
+        this.criteria = criteria;
     }
 
-    final List<FilterCriterion> criterions;
+    public OrFilterCriterion(FilterCriterion... criteria) {
+        this.criteria = List.of(criteria);
+    }
+
+    @Getter final Collection<FilterCriterion> criteria;
 
     @Override
     protected boolean check_(PropertyOwner propertyOwner, PropertyManager propertyManager) throws PropertyException, IOException {
-        for (FilterCriterion criterion : criterions) {
+        for (FilterCriterion criterion : criteria) {
             if (criterion.check(propertyOwner, propertyManager)) {
                 return true;
             }

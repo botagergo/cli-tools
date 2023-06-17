@@ -1,8 +1,8 @@
 package task_manager.init;
 
 import jakarta.inject.Inject;
-import task_manager.logic.use_case.PropertyDescriptorUseCase;
-import task_manager.logic.use_case.StatusUseCase;
+import task_manager.logic.use_case.property_descriptor.PropertyDescriptorUseCase;
+import task_manager.logic.use_case.status.StatusUseCase;
 import task_manager.property.PropertyDescriptor;
 
 import java.io.IOException;

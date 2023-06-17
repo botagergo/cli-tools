@@ -1,4 +1,4 @@
-package task_manager.logic.use_case;
+package task_manager.logic.use_case.status;
 
 import java.io.IOException;
 import java.util.UUID;

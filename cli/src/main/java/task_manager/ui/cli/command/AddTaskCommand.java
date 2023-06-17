@@ -23,7 +23,7 @@ public record AddTaskCommand(String name, List<PropertyArgument> properties) imp
             Task task = new Task();
 
             if (properties != null) {
-                List<PropertySpec> propertySpecs = context.getPropertyConverter().convertProperties(properties, true);
+                List<PropertySpec> propertySpecs = context.getStringToPropertyConverter().convertProperties(properties, true);
                 PropertyModifier.modifyProperties(context.getPropertyManager(), task, propertySpecs);
             }
 

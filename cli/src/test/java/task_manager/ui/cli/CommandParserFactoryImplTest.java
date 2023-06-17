@@ -33,7 +33,7 @@ public class CommandParserFactoryImplTest {
     @Test
     public void testUnknown() {
         assertNull(commandParserFactory.getParser(getArgList("unknown")));
-        assertNull(commandParserFactory.getParser(getArgList(null)));
+        assertNull(commandParserFactory.getParser(getArgList("")));
     }
 
     private ArgumentList getArgList(String commandName) {

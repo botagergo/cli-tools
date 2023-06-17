@@ -3,9 +3,9 @@ package task_manager.ui.cli.command.property_converter;
 import lombok.Getter;
 import task_manager.property.PropertyDescriptor;
 
-public class PropertyConverterException extends Exception {
+public class StringToPropertyConverterException extends Exception {
 
-    public PropertyConverterException(Type exceptionType, PropertyDescriptor propertyDescriptor, Object propertyValue) {
+    public StringToPropertyConverterException(Type exceptionType, PropertyDescriptor propertyDescriptor, Object propertyValue) {
         super(getMsg(exceptionType, propertyDescriptor, propertyValue, null));
 
         this.exceptionType = exceptionType;
@@ -14,7 +14,7 @@ public class PropertyConverterException extends Exception {
         this.predicate = null;
     }
 
-    public PropertyConverterException(String predicate) {
+    public StringToPropertyConverterException(String predicate) {
         super(getMsg(Type.InvalidPredicate, null, null, predicate));
 
         this.exceptionType = Type.InvalidPredicate;

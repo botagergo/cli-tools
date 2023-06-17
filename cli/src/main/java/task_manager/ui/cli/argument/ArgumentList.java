@@ -1,6 +1,7 @@
 package task_manager.ui.cli.argument;
 
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.Setter;
 import org.apache.commons.lang3.tuple.Pair;
 import task_manager.property.PropertySpec;
@@ -12,23 +13,29 @@ import java.util.List;
 import java.util.Set;
 
 public class ArgumentList {
-    public ArgumentList(String commandName, List<String> normalArguments,
-            LinkedHashMap<Character, List<SpecialArgument>> specialArguments, List<PropertyArgument> propertyArguments) {
+    public ArgumentList(
+            @NonNull String commandName,
+            @NonNull List<String> normalArguments,
+            @NonNull LinkedHashMap<Character,List<SpecialArgument>> specialArguments,
+            @NonNull List<PropertyArgument> propertyArguments,
+            @NonNull List<Pair<String, List<String>>> optionArguments
+    ) {
         this.commandName = commandName;
         this.normalArguments = normalArguments;
         this.specialArguments = specialArguments;
         this.propertyArguments = propertyArguments;
+        this.optionArguments = optionArguments;
     }
 
     public ArgumentList() {
-        this(null, new ArrayList<>(), new LinkedHashMap<>(), new ArrayList<>());
+        this("", new ArrayList<>(), new LinkedHashMap<>(), new ArrayList<>(), new ArrayList<>());
         this.optionArguments = new ArrayList<>();
     }
 
     public static ArgumentList from(TokenList tokenList) {
         if (tokenList.tokens().isEmpty()) {
-            return new ArgumentList(null, List.of(),
-                    new LinkedHashMap<>(), new ArrayList<>());
+            return new ArgumentList("", List.of(),
+                    new LinkedHashMap<>(), new ArrayList<>(), new ArrayList<>());
         }
 
         ArgumentList argList = new ArgumentList();
@@ -118,9 +125,9 @@ public class ArgumentList {
         return valueList;
     }
 
-    @Getter @Setter private String commandName;
-    @Getter @Setter private List<String> normalArguments;
-    @Getter @Setter private LinkedHashMap<Character, List<SpecialArgument>> specialArguments;
-    @Getter @Setter private List<PropertyArgument> propertyArguments;
-    @Getter @Setter private List<Pair<String, List<String>>> optionArguments;
+    @Getter @Setter @NonNull private String commandName;
+    @Getter @Setter @NonNull private List<String> normalArguments;
+    @Getter @Setter @NonNull private LinkedHashMap<Character, List<SpecialArgument>> specialArguments;
+    @Getter @Setter @NonNull private List<PropertyArgument> propertyArguments;
+    @Getter @Setter @NonNull private List<Pair<String, List<String>>> optionArguments;
 }

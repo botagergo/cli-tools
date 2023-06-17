@@ -8,6 +8,7 @@ import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+import task_manager.data.SortingCriterion;
 import task_manager.property.*;
 import task_manager.repository.PropertyDescriptorRepository;
 import task_manager.sorter.PropertySorter;
@@ -44,7 +45,7 @@ public class PropertySorterTest {
     @Test
     public void test_PropertySorter_sort_strings() throws IOException, PropertyException, PropertyNotComparableException {
         PropertySorter<PropertyOwnerImpl> sorter = new PropertySorter<>(List.of(
-                new PropertySorter.SortingCriterion("test_string1", true)
+                new SortingCriterion("test_string1", true)
         ));
 
         ArrayList<PropertyOwnerImpl> propertyOwners = Lists.newArrayList(
@@ -59,7 +60,7 @@ public class PropertySorterTest {
     @Test
     public void test_PropertySorter_sort_booleans() throws IOException, PropertyException, PropertyNotComparableException {
         PropertySorter<PropertyOwnerImpl> sorter = new PropertySorter<>(List.of(
-                new PropertySorter.SortingCriterion("test_boolean", true)
+                new SortingCriterion("test_boolean", true)
         ));
 
         ArrayList<PropertyOwnerImpl> propertyOwners = Lists.newArrayList(
@@ -73,7 +74,7 @@ public class PropertySorterTest {
     @Test
     public void test_PropertySorter_sort_stringsWithDuplicate() throws IOException, PropertyException, PropertyNotComparableException {
         PropertySorter<PropertyOwnerImpl> sorter = new PropertySorter<>(List.of(
-                new PropertySorter.SortingCriterion("test_string1", true)
+                new SortingCriterion("test_string1", true)
         ));
 
         ArrayList<PropertyOwnerImpl> propertyOwners = Lists.newArrayList(
@@ -90,7 +91,7 @@ public class PropertySorterTest {
     @Test
     public void test_PropertySorter_sort_stringsWithNulls() throws IOException, PropertyException, PropertyNotComparableException {
         PropertySorter<PropertyOwnerImpl> sorter = new PropertySorter<>(List.of(
-                new PropertySorter.SortingCriterion("test_string1", true)
+                new SortingCriterion("test_string1", true)
         ));
 
         ArrayList<PropertyOwnerImpl> propertyOwners = Lists.newArrayList(
@@ -106,7 +107,7 @@ public class PropertySorterTest {
     @Test
     public void test_PropertySorter_sort_booleansWithDuplicate() throws IOException, PropertyException, PropertyNotComparableException {
         PropertySorter<PropertyOwnerImpl> sorter = new PropertySorter<>(List.of(
-                new PropertySorter.SortingCriterion("test_boolean", true)
+                new SortingCriterion("test_boolean", true)
         ));
 
         ArrayList<PropertyOwnerImpl> propertyOwners = Lists.newArrayList(
@@ -123,7 +124,7 @@ public class PropertySorterTest {
     @Test
     public void test_PropertySorter_sort_booleansWithNulls() throws IOException, PropertyException, PropertyNotComparableException {
         PropertySorter<PropertyOwnerImpl> sorter = new PropertySorter<>(List.of(
-                new PropertySorter.SortingCriterion("test_boolean", true)
+                new SortingCriterion("test_boolean", true)
         ));
 
         ArrayList<PropertyOwnerImpl> propertyOwners = Lists.newArrayList(
@@ -140,7 +141,7 @@ public class PropertySorterTest {
     @Test
     public void test_PropertySorter_sort_descending() throws IOException, PropertyException, PropertyNotComparableException {
         PropertySorter<PropertyOwnerImpl> sorter = new PropertySorter<>(List.of(
-                new PropertySorter.SortingCriterion("test_string1", false)
+                new SortingCriterion("test_string1", false)
         ));
 
         ArrayList<PropertyOwnerImpl> propertyOwners = Lists.newArrayList(
@@ -155,9 +156,9 @@ public class PropertySorterTest {
     @Test
     public void test_PropertySorter_sort_multipleCriteria() throws IOException, PropertyException, PropertyNotComparableException {
         PropertySorter<PropertyOwnerImpl> sorter = new PropertySorter<>(List.of(
-                new PropertySorter.SortingCriterion("test_string1", false),
-                new PropertySorter.SortingCriterion("test_string2", true),
-                new PropertySorter.SortingCriterion("test_boolean", false)
+                new SortingCriterion("test_string1", false),
+                new SortingCriterion("test_string2", true),
+                new SortingCriterion("test_boolean", false)
         ));
 
         ArrayList<PropertyOwnerImpl> propertyOwners = Lists.newArrayList(
@@ -179,25 +180,25 @@ public class PropertySorterTest {
     @Test
     public void test_PropertySorter_sort_propertyNotComparable() {
         assertThrows(PropertyNotComparableException.class, () ->
-                new PropertySorter<PropertyOwnerImpl>(List.of(new PropertySorter.SortingCriterion("test_string_list", false)))
+                new PropertySorter<PropertyOwnerImpl>(List.of(new SortingCriterion("test_string_list", false)))
                         .sort(Lists.newArrayList(new PropertyOwnerImpl()), propertyManager));
         assertThrows(PropertyNotComparableException.class, () ->
-                new PropertySorter<PropertyOwnerImpl>(List.of(new PropertySorter.SortingCriterion("test_string_set", false)))
+                new PropertySorter<PropertyOwnerImpl>(List.of(new SortingCriterion("test_string_set", false)))
                         .sort(Lists.newArrayList(new PropertyOwnerImpl()), propertyManager));
         assertThrows(PropertyNotComparableException.class, () ->
-                new PropertySorter<PropertyOwnerImpl>(List.of(new PropertySorter.SortingCriterion("test_boolean_list", false)))
+                new PropertySorter<PropertyOwnerImpl>(List.of(new SortingCriterion("test_boolean_list", false)))
                         .sort(Lists.newArrayList(new PropertyOwnerImpl()), propertyManager));
         assertThrows(PropertyNotComparableException.class, () ->
-                new PropertySorter<PropertyOwnerImpl>(List.of(new PropertySorter.SortingCriterion("test_boolean_set", false)))
+                new PropertySorter<PropertyOwnerImpl>(List.of(new SortingCriterion("test_boolean_set", false)))
                         .sort(Lists.newArrayList(new PropertyOwnerImpl()), propertyManager));
         assertThrows(PropertyNotComparableException.class, () ->
-                new PropertySorter<PropertyOwnerImpl>(List.of(new PropertySorter.SortingCriterion("test_uuid", false)))
+                new PropertySorter<PropertyOwnerImpl>(List.of(new SortingCriterion("test_uuid", false)))
                         .sort(Lists.newArrayList(new PropertyOwnerImpl()), propertyManager));
         assertThrows(PropertyNotComparableException.class, () ->
-                new PropertySorter<PropertyOwnerImpl>(List.of(new PropertySorter.SortingCriterion("test_uuid_list", false)))
+                new PropertySorter<PropertyOwnerImpl>(List.of(new SortingCriterion("test_uuid_list", false)))
                         .sort(Lists.newArrayList(new PropertyOwnerImpl()), propertyManager));
         assertThrows(PropertyNotComparableException.class, () ->
-                new PropertySorter<PropertyOwnerImpl>(List.of(new PropertySorter.SortingCriterion("test_uuid_set", false)))
+                new PropertySorter<PropertyOwnerImpl>(List.of(new SortingCriterion("test_uuid_set", false)))
                         .sort(Lists.newArrayList(new PropertyOwnerImpl()), propertyManager));
     }
 

@@ -4,7 +4,7 @@ import org.springframework.web.ErrorResponseException;
 import org.springframework.web.bind.annotation.*;
 import com.google.inject.Inject;
 import lombok.extern.log4j.Log4j2;
-import task_manager.logic.use_case.TagUseCase;
+import task_manager.logic.use_case.tag.TagUseCase;
 import task_manager.server.ProblemDetails;
 import task_manager.data.Tag;
 import org.springframework.http.HttpStatus;

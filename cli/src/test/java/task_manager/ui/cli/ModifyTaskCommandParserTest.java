@@ -8,6 +8,7 @@ import task_manager.ui.cli.command.ModifyTaskCommand;
 import task_manager.ui.cli.command_parser.CommandParserException;
 import task_manager.ui.cli.command_parser.ModifyTaskCommandParser;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -59,7 +60,7 @@ public class ModifyTaskCommandParserTest {
     }
 
     private ArgumentList getArgList(List<String> normalArgs, List<PropertyArgument> propertyArgs) {
-        return new ArgumentList("modify", normalArgs, new LinkedHashMap<>(), propertyArgs);
+        return new ArgumentList("modify", normalArgs, new LinkedHashMap<>(), propertyArgs, new ArrayList<>());
     }
 
     final ModifyTaskCommandParser parser = new ModifyTaskCommandParser();
