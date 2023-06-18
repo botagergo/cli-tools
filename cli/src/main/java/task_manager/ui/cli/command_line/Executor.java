@@ -8,4 +8,6 @@ public interface Executor {
 
     void execute(TokenList tokenList);
 
+    boolean shouldExit();
+
 }

@@ -33,6 +33,7 @@ public class ExecutorImpl implements Executor {
     public void execute(TokenList tokenList) {
         ArgumentList argList = ArgumentList.from(tokenList);
         if (argList.getCommandName().equals("exit")) {
+            _shouldExit = true;
             return;
         }
 
@@ -51,6 +52,13 @@ public class ExecutorImpl implements Executor {
             System.out.println(e.getMessage());
         }
     }
+
+    @Override
+    public boolean shouldExit() {
+        return _shouldExit;
+    }
+
+    @Getter private boolean _shouldExit = false;
 
     @Getter @Setter @Inject Tokenizer tokenizer;
 

@@ -75,13 +75,13 @@ public class PropertyTest {
         }
 
         private void assertFromEquals(String propertyName, PropertyDescriptor.Type propertyType, PropertyDescriptor.Multiplicity multiplicity, Object propertyValue) throws PropertyException {
-                PropertyDescriptor propertyDescriptor = new PropertyDescriptor(propertyName, propertyType, multiplicity, null);
+                PropertyDescriptor propertyDescriptor = new PropertyDescriptor(propertyName, propertyType, null, multiplicity, null);
                 Property property = Property.from(propertyDescriptor, propertyValue);
                 assertEquals(getPropertyValue(property, propertyType, multiplicity), propertyValue);
         }
 
         private void assertFromThrowsWrongValueTypePropertyException(String propertyName, PropertyDescriptor.Type propertyType, PropertyDescriptor.Multiplicity multiplicity, Object propertyValue) {
-                PropertyDescriptor propertyDescriptor = new PropertyDescriptor(propertyName, propertyType, multiplicity, null);
+                PropertyDescriptor propertyDescriptor = new PropertyDescriptor(propertyName, propertyType, null, multiplicity, null);
                 try {
                         Property.from(propertyDescriptor, propertyValue);
                 } catch (PropertyException e) {
@@ -93,7 +93,7 @@ public class PropertyTest {
         }
 
         private void assertGetValueEquals(String propertyName, PropertyDescriptor.Type propertyType, PropertyDescriptor.Multiplicity multiplicity, Object propertyValue) throws PropertyException {
-                PropertyDescriptor propertyDescriptor = new PropertyDescriptor(propertyName, propertyType, multiplicity, null);
+                PropertyDescriptor propertyDescriptor = new PropertyDescriptor(propertyName, propertyType, null, multiplicity, null);
                 Property property = Property.from(propertyDescriptor, propertyValue);
                 assertEquals(property.getValue(), propertyValue);
         }

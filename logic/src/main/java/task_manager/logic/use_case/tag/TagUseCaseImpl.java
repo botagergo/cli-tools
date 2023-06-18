@@ -16,7 +16,7 @@ public class TagUseCaseImpl implements TagUseCase {
 
     @Inject
     public TagUseCaseImpl(LabelRepositoryFactory labelRepositoryFactory, UUIDGenerator uuidGenerator) {
-        this.labelRepository = labelRepositoryFactory.getLabelRepository("tags");
+        this.labelRepository = labelRepositoryFactory.getLabelRepository("tag");
         this.uuidGenerator = uuidGenerator;
     }
 

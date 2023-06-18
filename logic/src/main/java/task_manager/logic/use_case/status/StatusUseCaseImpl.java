@@ -17,7 +17,7 @@ public class StatusUseCaseImpl implements StatusUseCase {
             LabelRepositoryFactory labelRepositoryFactory,
             UUIDGenerator uuidGenerator
     ) {
-        this.labelRepository = labelRepositoryFactory.getLabelRepository("statuses");
+        this.labelRepository = labelRepositoryFactory.getLabelRepository("status");
         this.uuidGenerator = uuidGenerator;
     }
 

@@ -101,7 +101,7 @@ public record ListTasksCommand(
             done = Ansi.ansi().a("•");
         }
 
-        System.out.format("%s [%d] %-32s%-15s%s\n", done, tempID, name, getStatusStr(context, task),
+        System.out.format("%s [%d] %-50s\t%-15s\t%s\n", done, tempID, name, getStatusStr(context, task),
                 getTagsStr(context, task));
     }
 

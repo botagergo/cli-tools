@@ -53,6 +53,7 @@ public class MongoPropertyDescriptorRepository implements PropertyDescriptorRepo
         return new PropertyDescriptor(
             document.getString("name"),
             type,
+            null,
             PropertyDescriptor.Multiplicity.valueOf(document.getString("multiplicity")),
             document.get("defaultValue"));
     }

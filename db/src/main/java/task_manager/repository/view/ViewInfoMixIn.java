@@ -1,9 +1,15 @@
 package task_manager.repository.view;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import task_manager.data.FilterCriterionInfo;
+import task_manager.data.SortingInfo;
 
-public record ViewInfoMixIn(String name,
-         @JsonDeserialize(using = FilterCriterionInfoDeserializer.class)
-         FilterCriterionInfo filterCriterionInfo
+public record ViewInfoMixIn(
+        @JsonProperty(required = true) String name,
+        @JsonProperty("sort")
+        SortingInfo sortingInfo,
+        @JsonProperty("filter")
+        @JsonDeserialize(using = FilterCriterionInfoDeserializer.class)
+        FilterCriterionInfo filterCriterionInfo
 ) {}

@@ -19,6 +19,7 @@ public class JsonPropertyDescriptorRepository extends JsonRepository<HashMap<Str
     public JsonPropertyDescriptorRepository(@Named("propertyDescriptorJsonFile") File jsonFile) {
         super(jsonFile);
         getObjectMapper().addMixIn(PropertyDescriptor.class, PropertyDescriptorMixIn.class);
+        getObjectMapper().addMixIn(PropertyDescriptor.Extra.class, ExtraMixIn.class);
     }
 
     @Override

@@ -1,13 +1,12 @@
 package task_manager.data;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.NonNull;
 
 import java.util.List;
 
 public record FilterCriterionInfo(
         String name,
-        @JsonProperty(required = true) @NonNull Type type,
+        @NonNull Type type,
         String propertyName,
         List<FilterCriterionInfo> children,
         Predicate predicate,

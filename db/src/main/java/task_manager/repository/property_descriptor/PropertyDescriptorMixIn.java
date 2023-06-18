@@ -1,6 +1,7 @@
 package task_manager.repository.property_descriptor;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -13,10 +14,12 @@ import task_manager.property.PropertyDescriptor;
         setterVisibility = JsonAutoDetect.Visibility.NONE,
         getterVisibility = JsonAutoDetect.Visibility.NONE,
         isGetterVisibility = JsonAutoDetect.Visibility.NONE)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public record PropertyDescriptorMixIn(
-        @JsonSerialize @JsonDeserialize @JsonProperty(required = true) String name,
-        @JsonSerialize @JsonDeserialize @JsonProperty(required = true) PropertyDescriptor.Type type,
-        @JsonSerialize @JsonDeserialize @JsonProperty(required = true) PropertyDescriptor.Multiplicity multiplicity,
+        @JsonProperty(required = true) String name,
+        @JsonProperty(required = true) PropertyDescriptor.Type type,
+        @JsonProperty PropertyDescriptor.Extra extra,
+        @JsonProperty(required = true) PropertyDescriptor.Multiplicity multiplicity,
         @JsonSerialize(using = ObjectSerializer.class)
         @JsonDeserialize(using = ObjectDeserializer.class)
         @JsonProperty(required = true)

@@ -10,7 +10,7 @@ import task_manager.logic.use_case.task.TaskUseCase;
 import task_manager.property.PropertyManager;
 import task_manager.repository.LabelRepositoryFactory;
 import task_manager.repository.TempIDMappingRepository;
-import task_manager.ui.cli.command.property_converter.StringToPropertyConverter;
+import task_manager.ui.cli.command.string_to_property_converter.StringToPropertyConverter;
 
 public class Context {
 

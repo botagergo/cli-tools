@@ -25,8 +25,8 @@ public class JsonPropertyDescriptorRepositoryTest {
         Files.writeString(tempFile, "{\"name\":{\"name\":\"name\",\"type\":\"String\",\"multiplicity\":\"SINGLE\",\"defaultValue\":null},\"other_name\":{\"name\":\"other_name\",\"type\":\"UUID\",\"multiplicity\":\"SET\",\"defaultValue\":null}}");
         repository = new JsonPropertyDescriptorRepository(tempFile.toFile());
         assertEquals(repository.getAll(), List.of(
-                        new PropertyDescriptor("name", PropertyDescriptor.Type.String, PropertyDescriptor.Multiplicity.SINGLE, null),
-                        new PropertyDescriptor("other_name", PropertyDescriptor.Type.UUID, PropertyDescriptor.Multiplicity.SET, null)
+                new PropertyDescriptor("name", PropertyDescriptor.Type.String, null, PropertyDescriptor.Multiplicity.SINGLE, null),
+                new PropertyDescriptor("other_name", PropertyDescriptor.Type.UUID, null, PropertyDescriptor.Multiplicity.SET, null)
         ));
     }
 
@@ -36,12 +36,12 @@ public class JsonPropertyDescriptorRepositoryTest {
         Files.writeString(tempFile, "{\"name\":{\"name\":\"name\",\"type\":\"String\",\"multiplicity\":\"SINGLE\",\"defaultValue\":null},\"other_name\":{\"name\":\"other_name\",\"type\":\"UUID\",\"multiplicity\":\"SET\",\"defaultValue\":null}}");
 
         repository = new JsonPropertyDescriptorRepository(tempFile.toFile());
-        repository.create(new PropertyDescriptor("name", PropertyDescriptor.Type.String, PropertyDescriptor.Multiplicity.SINGLE, null));
-        repository.create(new PropertyDescriptor("other_name", PropertyDescriptor.Type.UUID, PropertyDescriptor.Multiplicity.SET, null));
+        repository.create(new PropertyDescriptor("name", PropertyDescriptor.Type.String, null, PropertyDescriptor.Multiplicity.SINGLE, null));
+        repository.create(new PropertyDescriptor("other_name", PropertyDescriptor.Type.UUID, null, PropertyDescriptor.Multiplicity.SET, null));
 
         String content = Files.readString(tempFile);
         assertEquals(content,
-                "{\"name\":{\"name\":\"name\",\"type\":\"String\",\"multiplicity\":\"SINGLE\",\"defaultValue\":null},\"other_name\":{\"name\":\"other_name\",\"type\":\"UUID\",\"multiplicity\":\"SET\",\"defaultValue\":null}}"
+                "{\"name\":{\"name\":\"name\",\"type\":\"String\",\"multiplicity\":\"SINGLE\"},\"other_name\":{\"name\":\"other_name\",\"type\":\"UUID\",\"multiplicity\":\"SET\"}}"
         );
     }
 
@@ -82,6 +82,22 @@ public class JsonPropertyDescriptorRepositoryTest {
     public void test_wrongFieldType_throwsException() throws IOException {
         Path tempFile = Files.createTempFile(tempDir, "wrong_field_type", ".json");
         Files.writeString(tempFile, "{\"name\":{\"name\":\"name\",\"type\":123,\"multiplicity\":\"SINGLE\",\"defaultValue\":null},\"other_name\":{\"name\":\"other_name\",\"type\":\"UUID\",\"multiplicity\":\"SET\",\"defaultValue\":null}}");
+        repository = new JsonPropertyDescriptorRepository(tempFile.toFile());
+        assertThrows(IOException.class, () -> repository.get("property"));
+    }
+
+    @Test
+    public void test_UUIDExtra_successful() throws IOException {
+        Path tempFile = Files.createTempFile(tempDir, "uuid_extra", ".json");
+        Files.writeString(tempFile, "{\"other_name\":{\"name\":\"other_name\",\"type\":\"UUID\",\"multiplicity\":\"SET\",\"extra\":{\"@type\":\"UUIDExtra\", \"labelName\":\"label1\"},\"defaultValue\":null}}");
+        repository = new JsonPropertyDescriptorRepository(tempFile.toFile());
+        assertEquals(repository.get("other_name"), new PropertyDescriptor("other_name", PropertyDescriptor.Type.UUID, new PropertyDescriptor.UUIDExtra("label1"), PropertyDescriptor.Multiplicity.SET, null));
+    }
+
+    @Test
+    public void test_wrongExtraType_throws() throws IOException {
+        Path tempFile = Files.createTempFile(tempDir, "wrong_field_type", ".json");
+        Files.writeString(tempFile, "{\"name\":{\"name\":\"other_name\",\"type\":\"UUID\",\"multiplicity\":\"SET\",\"extra\":{\"@type\":\"StringExtra\"},\"defaultValue\":null}}");
         repository = new JsonPropertyDescriptorRepository(tempFile.toFile());
         assertThrows(IOException.class, () -> repository.get("property"));
     }

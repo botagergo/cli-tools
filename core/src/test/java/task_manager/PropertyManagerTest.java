@@ -235,7 +235,7 @@ public class PropertyManagerTest {
 
         private void mockitoPropertyDescriptor(String name, PropertyDescriptor.Type type, PropertyDescriptor.Multiplicity multiplicity, Object defaultValue) throws IOException {
                 Mockito.when(propertyDescriptorRepository.get(name)).thenReturn(new PropertyDescriptor(name,
-                        type, multiplicity, defaultValue));
+                        type, null, multiplicity, defaultValue));
         }
 
         private void assertProperty(String propertyName, Object propertyValue) throws PropertyException, IOException {
@@ -332,7 +332,7 @@ public class PropertyManagerTest {
                 } catch (PropertyException e) {
                         assertEquals(e.getExceptionType(), PropertyException.Type.TypeMismatch);
                         assertEquals(e.getPropertyName(), propertyName);
-                        assertEquals(e.getPropertyDescriptor(), new PropertyDescriptor(propertyName, actualPropertyType, PropertyDescriptor.Multiplicity.SINGLE, defaultValue));
+                        assertEquals(e.getPropertyDescriptor(), new PropertyDescriptor(propertyName, actualPropertyType, null, PropertyDescriptor.Multiplicity.SINGLE, defaultValue));
                         assertEquals(e.getRequestedType(), requestedPropertyType);
                 }
         }
@@ -347,7 +347,7 @@ public class PropertyManagerTest {
                 } catch (PropertyException e) {
                         assertEquals(e.getExceptionType(), PropertyException.Type.WrongValueType);
                         assertEquals(e.getPropertyName(), propertyName);
-                        assertEquals(e.getPropertyDescriptor(), new PropertyDescriptor(propertyName, propertyType, multiplicity, defaultValue));
+                        assertEquals(e.getPropertyDescriptor(), new PropertyDescriptor(propertyName, propertyType, null, multiplicity, defaultValue));
                         assertEquals(e.getRequestedType(), propertyType);
                 }
         }
@@ -362,7 +362,7 @@ public class PropertyManagerTest {
                 } catch (PropertyException e) {
                         assertEquals(e.getExceptionType(), PropertyException.Type.WrongMultiplicity);
                         assertEquals(e.getPropertyName(), propertyName);
-                        assertEquals(e.getPropertyDescriptor(), new PropertyDescriptor(propertyName, propertyType, actualMultiplicity, null));
+                        assertEquals(e.getPropertyDescriptor(), new PropertyDescriptor(propertyName, propertyType, null, actualMultiplicity, null));
                         assertEquals(e.getRequestedType(), propertyType);
                 }
         }

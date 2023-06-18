@@ -127,7 +127,7 @@ public class CollectionContainsFilterCriterionTest {
 
     private void mockitoPropertyDescriptor(String name, PropertyDescriptor.Type type, PropertyDescriptor.Multiplicity multiplicity) throws IOException {
         Mockito.when(propertyDescriptorRepository.get(name)).thenReturn(new PropertyDescriptor(name,
-                type, multiplicity, null));
+                type, null, multiplicity, null));
     }
 
     @Mock

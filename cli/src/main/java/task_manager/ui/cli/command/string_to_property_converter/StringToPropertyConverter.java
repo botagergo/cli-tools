@@ -1,4 +1,4 @@
-package task_manager.ui.cli.command.property_converter;
+package task_manager.ui.cli.command.string_to_property_converter;
 
 import jakarta.inject.Inject;
 import task_manager.data.Label;
@@ -106,7 +106,12 @@ public class StringToPropertyConverter {
         try {
             return UUID.fromString(propertyValueStr);
         } catch (IllegalArgumentException e1) {
-            LabelRepository labelRepository = labelRepositoryFactory.getLabelRepository(propertyDescriptor.name());
+            PropertyDescriptor.UUIDExtra uuidExtra = propertyDescriptor.getUuidExtraUnchecked();
+            if (uuidExtra == null || uuidExtra.labelName() == null) {
+                throw new StringToPropertyConverterException(StringToPropertyConverterException.Type.NoAssociatedLabel, propertyDescriptor, propertyValueStr);
+            }
+
+            LabelRepository labelRepository = labelRepositoryFactory.getLabelRepository(uuidExtra.labelName());
             Label label = labelRepository.find(propertyValueStr);
             if (label == null && createUuidIfNotExists
                     && Util.yesNo("Label '" + propertyValueStr + "' does not exist. Do you want to create it?")) {

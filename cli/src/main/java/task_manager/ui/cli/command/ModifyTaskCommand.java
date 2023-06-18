@@ -7,7 +7,7 @@ import task_manager.data.Task;
 import task_manager.property.PropertySpec;
 import task_manager.ui.cli.Context;
 import task_manager.ui.cli.argument.PropertyArgument;
-import task_manager.ui.cli.command.property_converter.StringToPropertyConverterException;
+import task_manager.ui.cli.command.string_to_property_converter.StringToPropertyConverterException;
 import task_manager.ui.cli.command.property_modifier.PropertyModifier;
 
 import java.io.IOException;

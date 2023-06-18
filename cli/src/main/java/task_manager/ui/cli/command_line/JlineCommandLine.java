@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import org.jline.reader.LineReader;
 import org.jline.reader.LineReaderBuilder;
 import org.jline.reader.LineReader.Option;
+import org.jline.reader.UserInterruptException;
 import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
 import task_manager.init.Initializer;
@@ -20,18 +21,29 @@ public class JlineCommandLine implements CommandLine {
             initializer.initialize();
         }
 
-        Terminal terminal = TerminalBuilder.terminal();
+        Terminal terminal = TerminalBuilder.builder()
+                .nativeSignals(true)
+                .signalHandler(Terminal.SignalHandler.SIG_IGN)
+                .build();
+
         LineReader reader = LineReaderBuilder.builder().terminal(terminal)
             .option(Option.DISABLE_EVENT_EXPANSION, true).build();
 
         String line;
         String prompt = "> ";
-        while ((line = reader.readLine(prompt)) != null) {
-            line = line.trim();
-            if (line.isEmpty()) {
-                continue;
+        while (true) {
+            try {
+                line = reader.readLine(prompt).trim();
+                if (line.isEmpty()) {
+                    continue;
+                }
+                executor.execute(line);
+                if (executor.shouldExit()) {
+                    break;
+                }
+            } catch (UserInterruptException ignored) {
+
             }
-            executor.execute(line);
         }
     }
 

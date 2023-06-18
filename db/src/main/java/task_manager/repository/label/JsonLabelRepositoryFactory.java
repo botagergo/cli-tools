@@ -21,7 +21,7 @@ public class JsonLabelRepositoryFactory implements LabelRepositoryFactory {
 
     @Override
     public LabelRepository getLabelRepository(String labelName) {
-        return repositories.computeIfAbsent(labelName, (key) -> new JsonLabelRepository(Paths.get(basePath.toString(), labelName).toFile()));
+        return repositories.computeIfAbsent(labelName, (key) -> new JsonLabelRepository(Paths.get(basePath.toString(), labelName + ".json").toFile()));
     }
 
     @NonNull private final File basePath;

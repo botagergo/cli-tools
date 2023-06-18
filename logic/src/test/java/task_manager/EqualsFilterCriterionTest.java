@@ -103,12 +103,12 @@ public class EqualsFilterCriterionTest {
             checkEquals("test_string_list",
                 List.of("string_value1", "string_value2")));
 
-        Mockito.when(propertyOwner.getProperties()).thenReturn(Utils.newHashMap("test_string_list", listOfFuckingNull(null, "string_value3")));
+        Mockito.when(propertyOwner.getProperties()).thenReturn(Utils.newHashMap("test_string_list", Utils.newArrayList(null, "string_value3")));
         assertFalse(
             checkEquals("test_string_list",
-                listOfFuckingNull(null, "string_value2")));
+                Utils.newArrayList(null, "string_value2")));
 
-        Mockito.when(propertyOwner.getProperties()).thenReturn(Utils.newHashMap("test_string_list", listOfFuckingNull(null, "string_value3")));
+        Mockito.when(propertyOwner.getProperties()).thenReturn(Utils.newHashMap("test_string_list", Utils.newArrayList(null, "string_value3")));
         assertFalse(
             checkEquals("test_string_list",
                 List.of("string_value1", "string_value2")));
@@ -137,13 +137,7 @@ public class EqualsFilterCriterionTest {
 
     private void mockitoPropertyDescriptor(String propertyName, PropertyDescriptor.Type propertyType, PropertyDescriptor.Multiplicity multiplicity) throws IOException {
         Mockito.when(propertyDescriptorRepository.get(propertyName)).thenReturn(new PropertyDescriptor(propertyName,
-                propertyType, multiplicity, null));
-    }
-
-    // Fucking java doesn't allow fucking nulls in fucking List.of...
-    @SafeVarargs
-    final <T> List<T> listOfFuckingNull(T... items) {
-        return new ArrayList<>(Arrays.asList(items));
+                propertyType, null, multiplicity, null));
     }
 
     @Mock

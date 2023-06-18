@@ -13,8 +13,8 @@ import task_manager.property.PropertySpec;
 import task_manager.repository.LabelRepository;
 import task_manager.repository.LabelRepositoryFactory;
 import task_manager.ui.cli.argument.PropertyArgument;
-import task_manager.ui.cli.command.property_converter.StringToPropertyConverter;
-import task_manager.ui.cli.command.property_converter.StringToPropertyConverterException;
+import task_manager.ui.cli.command.string_to_property_converter.StringToPropertyConverter;
+import task_manager.ui.cli.command.string_to_property_converter.StringToPropertyConverterException;
 import task_manager.util.RoundRobinUUIDGenerator;
 import task_manager.util.UUIDGenerator;
 
@@ -41,34 +41,34 @@ public class StringToPropertyConverterTest {
     @Test
     public void test_stringToProperty_string_successful() throws IOException, StringToPropertyConverterException {
         assertEquals(propertyConverter.stringToProperty(
-                getPropertyDescriptor(PropertyDescriptor.Type.String, PropertyDescriptor.Multiplicity.SINGLE), List.of("value"), true), "value");
+                getPropertyDescriptor(PropertyDescriptor.Type.String, null, PropertyDescriptor.Multiplicity.SINGLE), List.of("value"), true), "value");
     }
 
     @Test
     public void test_stringToProperty_boolean_successful() throws IOException, StringToPropertyConverterException {
         assertEquals(propertyConverter.stringToProperty(
-                getPropertyDescriptor(PropertyDescriptor.Type.Boolean, PropertyDescriptor.Multiplicity.SINGLE), List.of("true"), true), true);
+                getPropertyDescriptor(PropertyDescriptor.Type.Boolean, null, PropertyDescriptor.Multiplicity.SINGLE), List.of("true"), true), true);
         assertEquals(propertyConverter.stringToProperty(
-                getPropertyDescriptor(PropertyDescriptor.Type.Boolean, PropertyDescriptor.Multiplicity.SINGLE), List.of("false"), true), false);
+                getPropertyDescriptor(PropertyDescriptor.Type.Boolean, null, PropertyDescriptor.Multiplicity.SINGLE), List.of("false"), true), false);
     }
 
     @Test
     public void test_stringToProperty_boolean_invalidBoolean_throwsPropertyConverterException() throws IOException {
         try {
             propertyConverter.stringToProperty(
-                    getPropertyDescriptor(PropertyDescriptor.Type.Boolean, PropertyDescriptor.Multiplicity.SINGLE), List.of("invalid"), true);
+                    getPropertyDescriptor(PropertyDescriptor.Type.Boolean, null, PropertyDescriptor.Multiplicity.SINGLE), List.of("invalid"), true);
             fail();
         } catch (StringToPropertyConverterException e) {
             assertEquals(e.getExceptionType(), StringToPropertyConverterException.Type.InvalidBoolean);
             assertEquals(e.getPropertyValue(), "invalid");
-            assertEquals(e.getPropertyDescriptor(), getPropertyDescriptor(PropertyDescriptor.Type.Boolean, PropertyDescriptor.Multiplicity.SINGLE));
+            assertEquals(e.getPropertyDescriptor(), getPropertyDescriptor(PropertyDescriptor.Type.Boolean, null, PropertyDescriptor.Multiplicity.SINGLE));
         }
     }
 
     @Test
     public void test_stringToProperty_uuid_successful() throws IOException, StringToPropertyConverterException {
         assertEquals(propertyConverter.stringToProperty(
-                getPropertyDescriptor(PropertyDescriptor.Type.UUID, PropertyDescriptor.Multiplicity.SINGLE), List.of(uuid1.toString()), true), uuid1);
+                getPropertyDescriptor(PropertyDescriptor.Type.UUID, null, PropertyDescriptor.Multiplicity.SINGLE), List.of(uuid1.toString()), true), uuid1);
     }
 
     @Test
@@ -77,7 +77,7 @@ public class StringToPropertyConverterTest {
         Mockito.when(labelRepository.find("tag")).thenReturn(new Label(uuid1, "tag"));
 
         assertEquals(propertyConverter.stringToProperty(
-                        getPropertyDescriptor(PropertyDescriptor.Type.UUID, PropertyDescriptor.Multiplicity.SINGLE), List.of("tag"), true), uuid1);
+                        getPropertyDescriptor(PropertyDescriptor.Type.UUID, new PropertyDescriptor.UUIDExtra("test"), PropertyDescriptor.Multiplicity.SINGLE), List.of("tag"), true), uuid1);
     }
 
     @Test
@@ -88,7 +88,7 @@ public class StringToPropertyConverterTest {
         setStdin("y");
 
         assertEquals(propertyConverter.stringToProperty(
-                        getPropertyDescriptor(PropertyDescriptor.Type.UUID, PropertyDescriptor.Multiplicity.SINGLE), List.of("tag2"), true), uuid1);
+                        getPropertyDescriptor(PropertyDescriptor.Type.UUID, new PropertyDescriptor.UUIDExtra("test"), PropertyDescriptor.Multiplicity.SINGLE), List.of("tag2"), true), uuid1);
     }
 
     @Test
@@ -99,11 +99,11 @@ public class StringToPropertyConverterTest {
 
         try {
             propertyConverter.stringToProperty(
-                    getPropertyDescriptor(PropertyDescriptor.Type.UUID, PropertyDescriptor.Multiplicity.SINGLE), List.of("tag"), true);
+                    getPropertyDescriptor(PropertyDescriptor.Type.UUID, new PropertyDescriptor.UUIDExtra("test"), PropertyDescriptor.Multiplicity.SINGLE), List.of("tag"), true);
             fail();
         } catch (StringToPropertyConverterException e) {
             assertEquals(e.getExceptionType(), StringToPropertyConverterException.Type.LabelNotFound);
-            assertEquals(e.getPropertyDescriptor(), getPropertyDescriptor(PropertyDescriptor.Type.UUID, PropertyDescriptor.Multiplicity.SINGLE));
+            assertEquals(e.getPropertyDescriptor(), getPropertyDescriptor(PropertyDescriptor.Type.UUID, new PropertyDescriptor.UUIDExtra("test"), PropertyDescriptor.Multiplicity.SINGLE));
             assertEquals(e.getPropertyValue(), "tag");
         }
     }
@@ -111,37 +111,37 @@ public class StringToPropertyConverterTest {
     @Test
     public void test_stringToProperty_stringList_successful() throws IOException, StringToPropertyConverterException {
         assertEquals(propertyConverter.stringToProperty(
-                getPropertyDescriptor(PropertyDescriptor.Type.String, PropertyDescriptor.Multiplicity.LIST), List.of("value1"), true), List.of("value1"));
+                getPropertyDescriptor(PropertyDescriptor.Type.String, null, PropertyDescriptor.Multiplicity.LIST), List.of("value1"), true), List.of("value1"));
         assertEquals(propertyConverter.stringToProperty(
-                getPropertyDescriptor(PropertyDescriptor.Type.String, PropertyDescriptor.Multiplicity.LIST), List.of("value1", "value2", "value3"), true), List.of("value1", "value2", "value3"));
+                getPropertyDescriptor(PropertyDescriptor.Type.String, null, PropertyDescriptor.Multiplicity.LIST), List.of("value1", "value2", "value3"), true), List.of("value1", "value2", "value3"));
         assertEquals(propertyConverter.stringToProperty(
-                getPropertyDescriptor(PropertyDescriptor.Type.String, PropertyDescriptor.Multiplicity.LIST), List.of("value1", "", "value3"), true), List.of("value1", "", "value3"));
+                getPropertyDescriptor(PropertyDescriptor.Type.String, null, PropertyDescriptor.Multiplicity.LIST), List.of("value1", "", "value3"), true), List.of("value1", "", "value3"));
         assertEquals(propertyConverter.stringToProperty(
-                getPropertyDescriptor(PropertyDescriptor.Type.String, PropertyDescriptor.Multiplicity.LIST), List.of("", "", ""), true), List.of("", "", ""));
+                getPropertyDescriptor(PropertyDescriptor.Type.String, null, PropertyDescriptor.Multiplicity.LIST), List.of("", "", ""), true), List.of("", "", ""));
     }
 
     @Test
     public void test_stringToProperty_booleanList_successful() throws IOException, StringToPropertyConverterException {
         assertEquals(propertyConverter.stringToProperty(
-                getPropertyDescriptor(PropertyDescriptor.Type.Boolean, PropertyDescriptor.Multiplicity.LIST), List.of("true"), true), List.of(true));
+                getPropertyDescriptor(PropertyDescriptor.Type.Boolean, null, PropertyDescriptor.Multiplicity.LIST), List.of("true"), true), List.of(true));
         assertEquals(propertyConverter.stringToProperty(
-                getPropertyDescriptor(PropertyDescriptor.Type.Boolean, PropertyDescriptor.Multiplicity.LIST), List.of("true", "false"), true), List.of(true, false));
+                getPropertyDescriptor(PropertyDescriptor.Type.Boolean, null, PropertyDescriptor.Multiplicity.LIST), List.of("true", "false"), true), List.of(true, false));
     }
 
     @Test
     public void test_stringToProperty_booleanList_invalidBoolean_throwsPropertyConverterException() throws IOException {
         try {
             assertEquals(propertyConverter.stringToProperty(
-                    getPropertyDescriptor(PropertyDescriptor.Type.Boolean, PropertyDescriptor.Multiplicity.LIST), List.of("ttrueee", "false"), true), List.of("value1", "", "value3"));
+                    getPropertyDescriptor(PropertyDescriptor.Type.Boolean, null, PropertyDescriptor.Multiplicity.LIST), List.of("ttrueee", "false"), true), List.of("value1", "", "value3"));
             fail();
         } catch (StringToPropertyConverterException e) {
             assertEquals(e.getExceptionType(), StringToPropertyConverterException.Type.InvalidBoolean);
-            assertEquals(e.getPropertyDescriptor(), getPropertyDescriptor(PropertyDescriptor.Type.Boolean, PropertyDescriptor.Multiplicity.LIST));
+            assertEquals(e.getPropertyDescriptor(), getPropertyDescriptor(PropertyDescriptor.Type.Boolean, null, PropertyDescriptor.Multiplicity.LIST));
             assertEquals(e.getPropertyValue(), "ttrueee");
         }
         try {
             assertEquals(propertyConverter.stringToProperty(
-                    getPropertyDescriptor(PropertyDescriptor.Type.Boolean, PropertyDescriptor.Multiplicity.LIST), List.of("true", "falllllse"), true), List.of("value1", "", "value3"));
+                    getPropertyDescriptor(PropertyDescriptor.Type.Boolean, null, PropertyDescriptor.Multiplicity.LIST), List.of("true", "falllllse"), true), List.of("value1", "", "value3"));
             fail();
         } catch (StringToPropertyConverterException e) {
             assertEquals(e.getExceptionType(), StringToPropertyConverterException.Type.InvalidBoolean);
@@ -151,7 +151,7 @@ public class StringToPropertyConverterTest {
     @Test
     public void test_stringToProperty_uuidList_successful() throws IOException, StringToPropertyConverterException {
         assertEquals(propertyConverter.stringToProperty(
-                getPropertyDescriptor(PropertyDescriptor.Type.UUID, PropertyDescriptor.Multiplicity.LIST),
+                getPropertyDescriptor(PropertyDescriptor.Type.UUID, null, PropertyDescriptor.Multiplicity.LIST),
                 List.of(uuid1.toString(), uuid2.toString(), uuid3.toString()), true),
                 List.of(uuid1, uuid2, uuid3));
     }
@@ -160,12 +160,12 @@ public class StringToPropertyConverterTest {
     public void test_stringToProperty_emptyList_throwsPropertyConverterException() throws IOException {
         try {
             propertyConverter.stringToProperty(
-                    getPropertyDescriptor(PropertyDescriptor.Type.Boolean, PropertyDescriptor.Multiplicity.SINGLE), List.of(), true);
+                    getPropertyDescriptor(PropertyDescriptor.Type.Boolean, null, PropertyDescriptor.Multiplicity.SINGLE), List.of(), true);
             fail();
         } catch (StringToPropertyConverterException e) {
             assertEquals(e.getExceptionType(), StringToPropertyConverterException.Type.EmptyList);
             assertNull(e.getPropertyValue());
-            assertEquals(e.getPropertyDescriptor(), getPropertyDescriptor(PropertyDescriptor.Type.Boolean, PropertyDescriptor.Multiplicity.SINGLE));
+            assertEquals(e.getPropertyDescriptor(), getPropertyDescriptor(PropertyDescriptor.Type.Boolean, null, PropertyDescriptor.Multiplicity.SINGLE));
         }
     }
 
@@ -173,12 +173,12 @@ public class StringToPropertyConverterTest {
     public void test_stringToProperty_notAList_throwsPropertyConverterException() throws IOException {
         try {
             propertyConverter.stringToProperty(
-                    getPropertyDescriptor(PropertyDescriptor.Type.Boolean, PropertyDescriptor.Multiplicity.SINGLE), List.of("true", "false"), true);
+                    getPropertyDescriptor(PropertyDescriptor.Type.Boolean, null, PropertyDescriptor.Multiplicity.SINGLE), List.of("true", "false"), true);
             fail();
         } catch (StringToPropertyConverterException e) {
             assertEquals(e.getExceptionType(), StringToPropertyConverterException.Type.NotAList);
             assertNull(e.getPropertyValue());
-            assertEquals(e.getPropertyDescriptor(), getPropertyDescriptor(PropertyDescriptor.Type.Boolean, PropertyDescriptor.Multiplicity.SINGLE));
+            assertEquals(e.getPropertyDescriptor(), getPropertyDescriptor(PropertyDescriptor.Type.Boolean, null, PropertyDescriptor.Multiplicity.SINGLE));
         }
     }
 
@@ -214,22 +214,22 @@ public class StringToPropertyConverterTest {
         List<PropertySpec> propertySpecs = propertyConverter.convertProperties(properties, true);
         assertEquals(propertySpecs, List.of(
                 new PropertySpec(Property.fromUnchecked(
-                        new PropertyDescriptor("boolean_property", PropertyDescriptor.Type.Boolean, PropertyDescriptor.Multiplicity.SINGLE, null),
+                        new PropertyDescriptor("boolean_property", PropertyDescriptor.Type.Boolean, null, PropertyDescriptor.Multiplicity.SINGLE, null),
                         true
                 ), PropertySpec.Affinity.NEUTRAL, PropertySpec.Predicate.CONTAINS),
                 new PropertySpec(Property.fromUnchecked(
-                        new PropertyDescriptor("string_list_property", PropertyDescriptor.Type.String, PropertyDescriptor.Multiplicity.LIST, null),
+                        new PropertyDescriptor("string_list_property", PropertyDescriptor.Type.String, null, PropertyDescriptor.Multiplicity.LIST, null),
                         List.of("true", "false")
                 ), PropertySpec.Affinity.POSITIVE, PropertySpec.Predicate.EQUALS),
                 new PropertySpec(Property.fromUnchecked(
-                        new PropertyDescriptor("uuid_set_property", PropertyDescriptor.Type.UUID, PropertyDescriptor.Multiplicity.SET, null),
+                        new PropertyDescriptor("uuid_set_property", PropertyDescriptor.Type.UUID, null, PropertyDescriptor.Multiplicity.SET, null),
                         Set.of(uuid1, uuid2)
                 ), PropertySpec.Affinity.NEGATIVE, null)
         ));
     }
 
-    private PropertyDescriptor getPropertyDescriptor(PropertyDescriptor.Type type, PropertyDescriptor.Multiplicity multiplicity) {
-        return new PropertyDescriptor("test", type, multiplicity, null);
+    private PropertyDescriptor getPropertyDescriptor(PropertyDescriptor.Type type, PropertyDescriptor.Extra extra, PropertyDescriptor.Multiplicity multiplicity) {
+        return new PropertyDescriptor("test", type, extra, multiplicity, null);
     }
 
     private void setStdin(String str) {
@@ -238,7 +238,7 @@ public class StringToPropertyConverterTest {
 
     private void mockitoPropertyDescriptor(String name, PropertyDescriptor.Type type, PropertyDescriptor.Multiplicity multiplicity) throws IOException, PropertyException {
         Mockito.when(propertyDescriptorUseCase.getPropertyDescriptor(name)).thenReturn(new PropertyDescriptor(name,
-                type, multiplicity, null));
+                type, null, multiplicity, null));
     }
 
     @Mock private LabelRepositoryFactory labelRepositoryFactory;

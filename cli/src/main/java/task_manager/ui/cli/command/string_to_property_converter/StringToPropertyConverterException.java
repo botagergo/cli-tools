@@ -1,4 +1,4 @@
-package task_manager.ui.cli.command.property_converter;
+package task_manager.ui.cli.command.string_to_property_converter;
 
 import lombok.Getter;
 import task_manager.property.PropertyDescriptor;
@@ -34,6 +34,8 @@ public class StringToPropertyConverterException extends Exception {
             return "Invalid boolean value: " + propertyValue;
         } else if (exceptionType == Type.InvalidPredicate) {
             return "Invalid predicate: " + predicate;
+        } else if (exceptionType == Type.NoAssociatedLabel) {
+            return "UUID property '" + propertyDescriptor.name() + "' does not have an associated label";
         }else {
             return null;
         }
@@ -45,7 +47,7 @@ public class StringToPropertyConverterException extends Exception {
     @Getter final String predicate;
 
     public enum Type {
-        NotAList, EmptyList, InvalidBoolean, LabelNotFound, InvalidPredicate
+        NotAList, EmptyList, InvalidBoolean, LabelNotFound, InvalidPredicate, NoAssociatedLabel
     }
 
 }

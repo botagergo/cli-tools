@@ -4,6 +4,9 @@ import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
+import task_manager.data.FilterCriterionInfo;
+import task_manager.data.SortingCriterion;
+import task_manager.data.SortingInfo;
 import task_manager.data.ViewInfo;
 import task_manager.repository.JsonRepository;
 import task_manager.repository.ViewInfoRepository;
@@ -18,6 +21,9 @@ public class JsonViewInfoRepository extends JsonRepository<HashMap<String, ViewI
     public JsonViewInfoRepository(@Named("viewInfoJsonFile") File jsonFile) {
         super(jsonFile);
         getObjectMapper().addMixIn(ViewInfo.class, ViewInfoMixIn.class);
+        getObjectMapper().addMixIn(SortingInfo.class, SortingInfoMixIn.class);
+        getObjectMapper().addMixIn(SortingCriterion.class, SortingCriterionMixIn.class);
+        getObjectMapper().addMixIn(FilterCriterionInfo.class, FilterCriterionInfoMixIn.class);
     }
 
     @Override

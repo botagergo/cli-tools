@@ -31,15 +31,15 @@ public class Initializer {
 
     private void initializePropertyDescriptors() throws IOException {
         propertyDescriptorUseCase.createPropertyDescriptor(
-                new PropertyDescriptor("name", PropertyDescriptor.Type.String, PropertyDescriptor.Multiplicity.SINGLE, ""));
+                new PropertyDescriptor("name", PropertyDescriptor.Type.String, null, PropertyDescriptor.Multiplicity.SINGLE, ""));
         propertyDescriptorUseCase.createPropertyDescriptor(
-                new PropertyDescriptor("uuid", PropertyDescriptor.Type.UUID, PropertyDescriptor.Multiplicity.SINGLE, ""));
+                new PropertyDescriptor("uuid", PropertyDescriptor.Type.UUID, null, PropertyDescriptor.Multiplicity.SINGLE, ""));
         propertyDescriptorUseCase.createPropertyDescriptor(
-                new PropertyDescriptor("done", PropertyDescriptor.Type.Boolean, PropertyDescriptor.Multiplicity.SINGLE, false));
+                new PropertyDescriptor("done", PropertyDescriptor.Type.Boolean, null, PropertyDescriptor.Multiplicity.SINGLE, false));
         propertyDescriptorUseCase.createPropertyDescriptor(
-                new PropertyDescriptor("tags", PropertyDescriptor.Type.UUID, PropertyDescriptor.Multiplicity.SET, new LinkedHashSet<>()));
+                new PropertyDescriptor("tags", PropertyDescriptor.Type.UUID, new PropertyDescriptor.UUIDExtra("tag"), PropertyDescriptor.Multiplicity.SET, new LinkedHashSet<>()));
         propertyDescriptorUseCase.createPropertyDescriptor(
-                new PropertyDescriptor("status", PropertyDescriptor.Type.UUID, PropertyDescriptor.Multiplicity.SINGLE, null));
+                new PropertyDescriptor("status", PropertyDescriptor.Type.UUID, new PropertyDescriptor.UUIDExtra("status"), PropertyDescriptor.Multiplicity.SINGLE, null));
     }
 
     private void initializeStatuses() throws IOException {
