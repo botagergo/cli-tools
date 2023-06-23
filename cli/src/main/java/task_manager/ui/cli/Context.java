@@ -3,14 +3,14 @@ package task_manager.ui.cli;
 import jakarta.inject.Inject;
 import lombok.Getter;
 import lombok.Setter;
+import task_manager.core.property.PropertyManager;
+import task_manager.core.repository.TempIDMappingRepository;
 import task_manager.logic.use_case.label.LabelUseCase;
 import task_manager.logic.use_case.ordered_label.OrderedLabelUseCase;
 import task_manager.logic.use_case.property_descriptor.PropertyDescriptorUseCase;
 import task_manager.logic.use_case.status.StatusUseCase;
 import task_manager.logic.use_case.tag.TagUseCase;
 import task_manager.logic.use_case.task.TaskUseCase;
-import task_manager.property.PropertyManager;
-import task_manager.repository.TempIDMappingRepository;
 import task_manager.ui.cli.command.string_to_property_converter.StringToPropertyConverter;
 
 public class Context {

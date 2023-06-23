@@ -1,10 +1,10 @@
 package task_manager.logic.use_case.view;
 
 import jakarta.inject.Inject;
-import task_manager.data.Label;
-import task_manager.property.PropertyDescriptor;
-import task_manager.repository.LabelRepository;
-import task_manager.repository.LabelRepositoryFactory;
+import task_manager.core.data.Label;
+import task_manager.core.property.PropertyDescriptor;
+import task_manager.core.repository.LabelRepository;
+import task_manager.core.repository.LabelRepositoryFactory;
 
 import java.io.IOException;
 import java.util.ArrayList;

@@ -1,17 +1,17 @@
 package task_manager.server.controller;
 
-import org.springframework.web.ErrorResponseException;
-import org.springframework.web.bind.annotation.*;
 import com.google.inject.Inject;
 import lombok.extern.log4j.Log4j2;
-import task_manager.logic.use_case.tag.TagUseCase;
-import task_manager.server.ProblemDetails;
-import task_manager.data.Tag;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.ErrorResponseException;
+import org.springframework.web.bind.annotation.*;
+import task_manager.core.data.Tag;
+import task_manager.logic.use_case.tag.TagUseCase;
+import task_manager.server.ProblemDetails;
 
 import java.util.UUID;
-import org.apache.commons.lang3.exception.ExceptionUtils;
 
 @RestController
 @RequestMapping(path = "${apiPrefix}/tags")

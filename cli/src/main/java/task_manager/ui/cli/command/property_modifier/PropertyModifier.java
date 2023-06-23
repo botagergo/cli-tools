@@ -1,12 +1,11 @@
 package task_manager.ui.cli.command.property_modifier;
 
-import task_manager.property.*;
+import task_manager.core.property.*;
 
 import java.io.IOException;
 import java.util.List;
 
 public class PropertyModifier {
-
 
     public static void modifyProperties(PropertyManager propertyManager, PropertyOwner propertyOwner, List<PropertySpec> propertySpecs) throws PropertyException, IOException, PropertyModifierException {
         for (PropertySpec propertySpec : propertySpecs) {

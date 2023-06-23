@@ -1,14 +1,14 @@
 package task_manager.ui.cli.command_parser;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import org.apache.commons.lang3.tuple.Pair;
-import task_manager.data.SortingCriterion;
+import task_manager.core.data.SortingCriterion;
 import task_manager.ui.cli.argument.ArgumentList;
 import task_manager.ui.cli.command.Command;
 import task_manager.ui.cli.command.ListTasksCommand;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class ListTasksCommandParser implements CommandParser {
 

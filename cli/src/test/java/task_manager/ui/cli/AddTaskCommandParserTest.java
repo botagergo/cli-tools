@@ -1,13 +1,16 @@
 package task_manager.ui.cli;
 
 import org.testng.annotations.Test;
+import task_manager.core.property.PropertySpec;
 import task_manager.ui.cli.argument.ArgumentList;
 import task_manager.ui.cli.argument.PropertyArgument;
 import task_manager.ui.cli.command.AddTaskCommand;
-import task_manager.property.PropertySpec;
 import task_manager.ui.cli.command_parser.AddTaskCommandParser;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.List;
 
 import static org.testng.Assert.assertEquals;
 

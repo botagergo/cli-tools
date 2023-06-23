@@ -8,6 +8,9 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.filter.CommonsRequestLoggingFilter;
+import task_manager.core.property.PropertyManager;
+import task_manager.core.util.RandomUUIDGenerator;
+import task_manager.core.util.UUIDGenerator;
 import task_manager.init.Initializer;
 import task_manager.logic.use_case.ordered_label.OrderedLabelUseCaseImpl;
 import task_manager.logic.use_case.property_descriptor.PropertyDescriptorUseCaseImpl;
@@ -16,15 +19,12 @@ import task_manager.logic.use_case.tag.TagUseCaseImpl;
 import task_manager.logic.use_case.task.TaskUseCaseImpl;
 import task_manager.logic.use_case.view.PropertyConverter;
 import task_manager.logic.use_case.view.ViewUseCaseImpl;
-import task_manager.property.PropertyManager;
 import task_manager.repository.label.JsonLabelRepository;
 import task_manager.repository.ordered_label.JsonOrderedLabelRepositoryFactory;
 import task_manager.repository.view.JsonViewInfoRepository;
 import task_manager.server.repository.MongoLabelRepositoryFactory;
 import task_manager.server.repository.MongoPropertyDescriptorRepository;
 import task_manager.server.repository.MongoTaskRepository;
-import task_manager.util.RandomUUIDGenerator;
-import task_manager.util.UUIDGenerator;
 
 import java.io.File;
 

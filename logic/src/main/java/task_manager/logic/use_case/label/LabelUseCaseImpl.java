@@ -2,9 +2,9 @@ package task_manager.logic.use_case.label;
 
 import jakarta.inject.Inject;
 import lombok.AllArgsConstructor;
-import task_manager.data.Label;
-import task_manager.repository.LabelRepositoryFactory;
-import task_manager.util.UUIDGenerator;
+import task_manager.core.data.Label;
+import task_manager.core.repository.LabelRepositoryFactory;
+import task_manager.core.util.UUIDGenerator;
 
 import java.io.IOException;
 import java.util.UUID;
@@ -12,17 +12,22 @@ import java.util.UUID;
 @AllArgsConstructor(onConstructor = @__(@Inject))
 public class LabelUseCaseImpl implements LabelUseCase {
 
-    private final LabelRepositoryFactory labelRepositoryFactory;
-    private final UUIDGenerator uuidGenerator;
-
     @Override
     public Label getLabel(String labelType, UUID labelUuid) throws IOException {
         return labelRepositoryFactory.getLabelRepository(labelType).get(labelUuid);
     }
 
+    private final LabelRepositoryFactory labelRepositoryFactory;
+    private final UUIDGenerator uuidGenerator;
+
     @Override
-    public Label createLabel(String labelType, String labelText) throws IOException {
-        return labelRepositoryFactory.getLabelRepository(labelType).create(new Label(uuidGenerator.getUUID(), labelText));
+    public Label findLabel(String labelType, String labelText) throws IOException {
+        return labelRepositoryFactory.getLabelRepository(labelType).find(labelText);
+    }
+
+    @Override
+    public Label createLabel(String labelName, String labelText) throws IOException {
+        return labelRepositoryFactory.getLabelRepository(labelName).create(new Label(uuidGenerator.getUUID(), labelText));
     }
 
 }

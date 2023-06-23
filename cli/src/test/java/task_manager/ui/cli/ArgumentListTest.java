@@ -1,15 +1,17 @@
 package task_manager.ui.cli;
 
 import org.apache.commons.lang3.tuple.Pair;
-import org.testng.annotations.*;
-import task_manager.property.PropertySpec;
+import org.testng.annotations.Test;
+import task_manager.core.property.PropertySpec;
 import task_manager.ui.cli.argument.ArgumentList;
 import task_manager.ui.cli.argument.PropertyArgument;
 import task_manager.ui.cli.tokenizer.TokenList;
 
-import static org.testng.Assert.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
-import java.util.*;
+import static org.testng.Assert.assertEquals;
 
 public class ArgumentListTest {
 

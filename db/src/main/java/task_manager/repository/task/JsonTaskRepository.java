@@ -5,9 +5,9 @@ import com.fasterxml.jackson.databind.type.TypeFactory;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import jakarta.inject.Singleton;
-import task_manager.data.Task;
+import task_manager.core.data.Task;
+import task_manager.core.repository.TaskRepository;
 import task_manager.repository.SimpleJsonRepository;
-import task_manager.repository.TaskRepository;
 
 import java.io.File;
 import java.io.IOException;

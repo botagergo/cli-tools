@@ -1,8 +1,8 @@
 package task_manager.repository.view;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import task_manager.data.FilterCriterionInfo;
-import task_manager.data.Predicate;
+import task_manager.core.data.FilterCriterionInfo;
+import task_manager.core.data.Predicate;
 
 import java.util.List;
 

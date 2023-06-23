@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import org.apache.commons.lang3.tuple.Pair;
-import task_manager.property.PropertySpec;
+import task_manager.core.property.PropertySpec;
 import task_manager.ui.cli.tokenizer.TokenList;
 
 import java.util.ArrayList;

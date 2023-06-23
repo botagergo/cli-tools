@@ -7,9 +7,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
+import task_manager.core.util.RoundRobinUUIDGenerator;
 import task_manager.repository.MapDeserializer;
 import task_manager.repository.MapSerializer;
-import task_manager.util.RoundRobinUUIDGenerator;
 
 import java.util.*;
 
@@ -33,23 +33,23 @@ public class MapDeserializerTest {
 
     @Test
     public void test_deserializer_singleFields() throws JsonProcessingException {
-        assertJsonStrEquals("{\"name\":\"s:test\",\"done\":false,\"uuid\":\"u:" + uuid1 + "\",\"priority\":2}",
-                new HashMap<>(Map.of("name", "test", "done", false, "uuid", uuid1, "priority", 2)));
+        assertJsonStrEquals("{\"text\":\"s:test\",\"done\":false,\"uuid\":\"u:" + uuid1 + "\",\"priority\":2}",
+                new HashMap<>(Map.of("text", "test", "done", false, "uuid", uuid1, "priority", 2)));
     }
 
     @Test
     public void test_serializer_nullField() throws JsonProcessingException {
         HashMap<String, Object> expectedMap = new HashMap<>();
-        expectedMap.put("name", null);
+        expectedMap.put("text", null);
         expectedMap.put("uuid", null);
-        assertJsonStrEquals("{\"name\":null,\"uuid\":null}", expectedMap);
+        assertJsonStrEquals("{\"text\":null,\"uuid\":null}", expectedMap);
     }
 
     @Test
     public void test_deserializer_emptyString() throws JsonProcessingException {
         HashMap<String, Object> expectedMap = new HashMap<>();
-        expectedMap.put("name", "");
-        assertJsonStrEquals("{\"name\":\"s:\"}", expectedMap);
+        expectedMap.put("text", "");
+        assertJsonStrEquals("{\"text\":\"s:\"}", expectedMap);
     }
 
     @Test

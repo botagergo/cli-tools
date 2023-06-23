@@ -2,8 +2,8 @@ package task_manager;
 
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
+import task_manager.core.util.RoundRobinUUIDGenerator;
 import task_manager.repository.temp_id_mapping.JsonTempIDMappingRepository;
-import task_manager.util.RoundRobinUUIDGenerator;
 
 import java.io.IOException;
 import java.nio.file.Files;

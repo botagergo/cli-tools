@@ -1,7 +1,7 @@
 package task_manager.ui.cli.command.string_to_property_converter;
 
 import lombok.Getter;
-import task_manager.property.PropertyDescriptor;
+import task_manager.core.property.PropertyDescriptor;
 
 public class StringToPropertyConverterException extends Exception {
 

@@ -1,12 +1,12 @@
 package task_manager;
 
 import org.testng.annotations.Test;
-import task_manager.property.Property;
-import task_manager.property.PropertyDescriptor;
-import task_manager.property.PropertyException;
-import task_manager.util.RoundRobinUUIDGenerator;
-import task_manager.util.UUIDGenerator;
-import task_manager.util.Utils;
+import task_manager.core.property.Property;
+import task_manager.core.property.PropertyDescriptor;
+import task_manager.core.property.PropertyException;
+import task_manager.core.util.RoundRobinUUIDGenerator;
+import task_manager.core.util.UUIDGenerator;
+import task_manager.core.util.Utils;
 
 import java.util.UUID;
 

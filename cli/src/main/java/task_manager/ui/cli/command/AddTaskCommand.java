@@ -1,16 +1,15 @@
 package task_manager.ui.cli.command;
 
-import java.io.IOException;
-import java.util.List;
-
-import org.apache.commons.lang3.exception.ExceptionUtils;
-
 import lombok.extern.log4j.Log4j2;
-import task_manager.data.Task;
-import task_manager.property.PropertySpec;
+import org.apache.commons.lang3.exception.ExceptionUtils;
+import task_manager.core.data.Task;
+import task_manager.core.property.PropertySpec;
 import task_manager.ui.cli.Context;
 import task_manager.ui.cli.argument.PropertyArgument;
 import task_manager.ui.cli.command.property_modifier.PropertyModifier;
+
+import java.io.IOException;
+import java.util.List;
 
 @Log4j2
 public record AddTaskCommand(String name, List<PropertyArgument> properties) implements Command {

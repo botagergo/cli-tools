@@ -3,9 +3,9 @@ package task_manager;
 import com.beust.jcommander.internal.Lists;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-import task_manager.data.Task;
+import task_manager.core.data.Task;
+import task_manager.core.util.Utils;
 import task_manager.repository.task.JsonTaskRepository;
-import task_manager.util.Utils;
 
 import java.io.File;
 import java.io.IOException;
@@ -61,7 +61,7 @@ public class JsonTaskRepositoryTest {
         repository = new JsonTaskRepository(tempFile.toFile());
         assertThrows(IOException.class, () -> repository.getData());
 
-        Files.writeString(tempFile, "{\"name\":123}");
+        Files.writeString(tempFile, "{\"text\":123}");
         repository = new JsonTaskRepository(tempFile.toFile());
         assertThrows(IOException.class, () -> repository.getData());
     }

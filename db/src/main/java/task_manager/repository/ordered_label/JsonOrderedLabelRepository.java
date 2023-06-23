@@ -2,9 +2,9 @@ package task_manager.repository.ordered_label;
 
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.type.TypeFactory;
-import task_manager.data.OrderedLabel;
+import task_manager.core.data.OrderedLabel;
+import task_manager.core.repository.OrderedLabelRepository;
 import task_manager.repository.JsonRepository;
-import task_manager.repository.OrderedLabelRepository;
 
 import java.io.File;
 import java.io.IOException;

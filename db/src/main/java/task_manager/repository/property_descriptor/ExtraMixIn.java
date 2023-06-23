@@ -2,7 +2,7 @@ package task_manager.repository.property_descriptor;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import task_manager.property.PropertyDescriptor;
+import task_manager.core.property.PropertyDescriptor;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME)
 @JsonSubTypes({

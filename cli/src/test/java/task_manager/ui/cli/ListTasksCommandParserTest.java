@@ -2,18 +2,18 @@ package task_manager.ui.cli;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.testng.annotations.*;
+import org.testng.annotations.Test;
 import task_manager.ui.cli.argument.ArgumentList;
 import task_manager.ui.cli.argument.SpecialArgument;
 import task_manager.ui.cli.command.ListTasksCommand;
 import task_manager.ui.cli.command_parser.CommandParserException;
 import task_manager.ui.cli.command_parser.ListTasksCommandParser;
 
-import static org.testng.Assert.*;
-
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
+import static org.testng.Assert.*;
 
 public class ListTasksCommandParserTest {
 
@@ -37,10 +37,10 @@ public class ListTasksCommandParserTest {
                 getArgList(
                         List.of(),
                         new LinkedHashMap<>(Map.of('?', List.of(
-                                new SpecialArgument('?', "name='my task'")))),
+                                new SpecialArgument('?', "text='my task'")))),
                         List.of()));
         assertNull(command.nameQuery());
-        assertEquals(command.queries(), List.of("name='my task'"));
+        assertEquals(command.queries(), List.of("text='my task'"));
     }
 
     @Test
@@ -49,11 +49,11 @@ public class ListTasksCommandParserTest {
                 getArgList(
                         List.of(),
                         new LinkedHashMap<>(Map.of('?', List.of(
-                                new SpecialArgument('?', "name='my task'"),
-                                new SpecialArgument('?', "name='other task'")))),
+                                new SpecialArgument('?', "text='my task'"),
+                                new SpecialArgument('?', "text='other task'")))),
                         List.of()));
         assertNull(command.nameQuery());
-        assertEquals(command.queries(), List.of("name='my task'", "name='other task'"));
+        assertEquals(command.queries(), List.of("text='my task'", "text='other task'"));
     }
 
     @Test

@@ -4,12 +4,12 @@ import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
-import task_manager.data.FilterCriterionInfo;
-import task_manager.data.SortingCriterion;
-import task_manager.data.SortingInfo;
-import task_manager.data.ViewInfo;
+import task_manager.core.data.FilterCriterionInfo;
+import task_manager.core.data.SortingCriterion;
+import task_manager.core.data.SortingInfo;
+import task_manager.core.data.ViewInfo;
+import task_manager.core.repository.ViewInfoRepository;
 import task_manager.repository.SimpleJsonRepository;
-import task_manager.repository.ViewInfoRepository;
 
 import java.io.File;
 import java.io.IOException;

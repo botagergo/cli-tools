@@ -4,8 +4,8 @@ import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import jakarta.inject.Singleton;
 import lombok.NonNull;
-import task_manager.repository.OrderedLabelRepository;
-import task_manager.repository.OrderedLabelRepositoryFactory;
+import task_manager.core.repository.OrderedLabelRepository;
+import task_manager.core.repository.OrderedLabelRepositoryFactory;
 
 import java.io.File;
 import java.nio.file.Paths;

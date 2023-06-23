@@ -1,6 +1,6 @@
 package task_manager.logic.use_case.tag;
 
-import task_manager.data.Tag;
+import task_manager.core.data.Tag;
 
 import java.io.IOException;
 import java.util.List;

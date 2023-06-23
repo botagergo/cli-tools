@@ -2,6 +2,9 @@ package task_manager.ui.cli;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.name.Names;
+import task_manager.core.repository.*;
+import task_manager.core.util.RandomUUIDGenerator;
+import task_manager.core.util.UUIDGenerator;
 import task_manager.logic.use_case.label.LabelUseCase;
 import task_manager.logic.use_case.label.LabelUseCaseImpl;
 import task_manager.logic.use_case.ordered_label.OrderedLabelUseCase;
@@ -16,7 +19,6 @@ import task_manager.logic.use_case.task.TaskUseCase;
 import task_manager.logic.use_case.task.TaskUseCaseImpl;
 import task_manager.logic.use_case.view.ViewUseCase;
 import task_manager.logic.use_case.view.ViewUseCaseImpl;
-import task_manager.repository.*;
 import task_manager.repository.label.JsonLabelRepositoryFactory;
 import task_manager.repository.ordered_label.JsonOrderedLabelRepositoryFactory;
 import task_manager.repository.property_descriptor.JsonPropertyDescriptorRepository;
@@ -31,8 +33,6 @@ import task_manager.ui.cli.command_parser.CommandParserFactory;
 import task_manager.ui.cli.command_parser.CommandParserFactoryImpl;
 import task_manager.ui.cli.tokenizer.Tokenizer;
 import task_manager.ui.cli.tokenizer.TokenizerImpl;
-import task_manager.util.RandomUUIDGenerator;
-import task_manager.util.UUIDGenerator;
 
 import java.io.File;
 

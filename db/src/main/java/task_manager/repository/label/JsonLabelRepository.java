@@ -2,8 +2,8 @@ package task_manager.repository.label;
 
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.type.TypeFactory;
-import task_manager.data.Label;
-import task_manager.repository.LabelRepository;
+import task_manager.core.data.Label;
+import task_manager.core.repository.LabelRepository;
 import task_manager.repository.SimpleJsonRepository;
 
 import java.io.File;
@@ -19,8 +19,8 @@ public class JsonLabelRepository extends SimpleJsonRepository<ArrayList<Label>> 
     }
 
     @Override
-    public Label find(String name) throws IOException {
-        return getData().stream().filter(t -> t.name().equals(name))
+    public Label find(String labelText) throws IOException {
+        return getData().stream().filter(t -> t.text().equals(labelText))
                 .findAny().orElse(null);
     }
 
@@ -48,7 +48,7 @@ public class JsonLabelRepository extends SimpleJsonRepository<ArrayList<Label>> 
         OptionalInt indexOptional = IntStream.range(0, labels.size()).filter(i -> labels.get(i).uuid().equals(label.uuid())).findAny();
         if (indexOptional.isPresent()) {
             int index = indexOptional.getAsInt();
-            labels.set(index, labels.get(index).withName(label.name()));
+            labels.set(index, labels.get(index).withText(label.text()));
             writeData();
             return labels.get(index);
         } else {

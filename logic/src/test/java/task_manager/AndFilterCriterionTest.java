@@ -4,19 +4,21 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.testng.annotations.*;
-import task_manager.filter.AndFilterCriterion;
-import task_manager.filter.EqualFilterCriterion;
-import task_manager.property.PropertyDescriptor;
-import task_manager.property.PropertyException;
-import task_manager.property.PropertyManager;
-import task_manager.property.PropertyOwner;
-import task_manager.repository.PropertyDescriptorRepository;
-import task_manager.util.Utils;
-
-import static org.testng.Assert.*;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
+import task_manager.core.property.PropertyDescriptor;
+import task_manager.core.property.PropertyException;
+import task_manager.core.property.PropertyManager;
+import task_manager.core.property.PropertyOwner;
+import task_manager.core.repository.PropertyDescriptorRepository;
+import task_manager.core.util.Utils;
+import task_manager.logic.filter.AndFilterCriterion;
+import task_manager.logic.filter.EqualFilterCriterion;
 
 import java.io.IOException;
+
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertTrue;
 
 public class AndFilterCriterionTest {
 

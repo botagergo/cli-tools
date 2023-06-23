@@ -2,7 +2,7 @@ package task_manager.ui.cli.command;
 
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import task_manager.data.Task;
+import task_manager.core.data.Task;
 import task_manager.ui.cli.Context;
 
 import java.io.IOException;

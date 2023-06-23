@@ -1,8 +1,8 @@
 package task_manager.logic.use_case.view;
 
-import task_manager.filter.FilterCriterionException;
-import task_manager.property.PropertyException;
-import task_manager.property.PropertyManager;
+import task_manager.core.property.PropertyException;
+import task_manager.core.property.PropertyManager;
+import task_manager.logic.filter.FilterCriterionException;
 
 import java.io.IOException;
 

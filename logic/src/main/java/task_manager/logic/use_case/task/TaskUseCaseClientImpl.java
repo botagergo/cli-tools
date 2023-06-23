@@ -1,10 +1,10 @@
 package task_manager.logic.use_case.task;
 
 import org.apache.commons.lang3.NotImplementedException;
-import task_manager.data.Task;
-import task_manager.filter.FilterCriterion;
+import task_manager.core.data.SortingCriterion;
+import task_manager.core.data.Task;
+import task_manager.core.property.PropertySpec;
 import task_manager.logic.use_case.TaskManagerClient;
-import task_manager.sorter.PropertySorter;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -42,7 +42,7 @@ public class TaskUseCaseClientImpl implements TaskUseCase {
     }
 
     @Override
-    public List<Task> getTasks(String nameQuery, List<String> queries, List<FilterCriterion> filterCriteria, PropertySorter<Task> propertySorter, String viewName) {
+    public List<Task> getTasks(String nameQuery, List<String> queries, List<PropertySpec> propertySpecs, List<SortingCriterion> sortingCriteria, String viewName) {
         throw new NotImplementedException();
     }
 

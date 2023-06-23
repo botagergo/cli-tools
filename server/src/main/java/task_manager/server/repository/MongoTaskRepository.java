@@ -1,13 +1,13 @@
 package task_manager.server.repository;
 
-import task_manager.data.Task;
-import org.bson.Document;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
-import java.util.*;
+import org.bson.Document;
+import task_manager.core.data.Task;
+import task_manager.core.repository.TaskRepository;
 
-import task_manager.repository.TaskRepository;
+import java.util.*;
 
 public class MongoTaskRepository implements TaskRepository {
 

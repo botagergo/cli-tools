@@ -1,7 +1,7 @@
 package task_manager.logic.use_case.view;
 
 import lombok.Getter;
-import task_manager.property.PropertyDescriptor;
+import task_manager.core.property.PropertyDescriptor;
 
 public class PropertyConverterException extends Exception {
 

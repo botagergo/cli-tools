@@ -3,10 +3,9 @@ package task_manager.repository;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
-import task_manager.property.ObjectSerializer;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.HashMap;
 
 public class MapSerializer extends StdSerializer<HashMap<String, Object>> {
 
@@ -20,6 +19,7 @@ public class MapSerializer extends StdSerializer<HashMap<String, Object>> {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public Class<HashMap<String, Object>> handledType() {
         return (Class<HashMap<String, Object>>) new HashMap<String, Object>().getClass();
     }

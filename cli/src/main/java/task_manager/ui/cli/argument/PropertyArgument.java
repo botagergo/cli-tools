@@ -1,7 +1,7 @@
 package task_manager.ui.cli.argument;
 
 import lombok.NonNull;
-import task_manager.property.PropertySpec;
+import task_manager.core.property.PropertySpec;
 
 import java.util.List;
 

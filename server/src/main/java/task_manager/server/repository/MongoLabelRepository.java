@@ -1,11 +1,11 @@
 package task_manager.server.repository;
 
-import task_manager.data.Label;
-import org.bson.Document;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
-import task_manager.repository.LabelRepository;
+import org.bson.Document;
+import task_manager.core.data.Label;
+import task_manager.core.repository.LabelRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,8 +50,8 @@ public class MongoLabelRepository implements LabelRepository {
             return null;
         }
 
-        mongoCollection.replaceOne(new Document("name", label.name()),
-            document);
+        mongoCollection.replaceOne(new Document("name", label.text()),
+                document);
         return documentToLabel(document);
     }
 
@@ -69,7 +69,7 @@ public class MongoLabelRepository implements LabelRepository {
     private Document labelToDocument(Label label) {
         Document document = new Document();
         document.append("uuid", label.uuid().toString());
-        document.append("name", label.name());
+        document.append("name", label.text());
         return document;
     }
 

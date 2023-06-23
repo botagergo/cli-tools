@@ -1,7 +1,7 @@
 package task_manager.logic.use_case.status;
 
-import task_manager.data.Label;
-import task_manager.data.Status;
+import task_manager.core.data.Label;
+import task_manager.core.data.Status;
 
 import java.io.IOException;
 import java.util.UUID;

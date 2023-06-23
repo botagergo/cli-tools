@@ -8,10 +8,10 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import org.testng.collections.Sets;
+import task_manager.core.util.RoundRobinUUIDGenerator;
+import task_manager.core.util.Utils;
 import task_manager.repository.MapDeserializer;
 import task_manager.repository.MapSerializer;
-import task_manager.util.RoundRobinUUIDGenerator;
-import task_manager.util.Utils;
 
 import java.util.ArrayList;
 import java.util.HashMap;

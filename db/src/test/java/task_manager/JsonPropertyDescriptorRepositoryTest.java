@@ -2,7 +2,7 @@ package task_manager;
 
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-import task_manager.property.PropertyDescriptor;
+import task_manager.core.property.PropertyDescriptor;
 import task_manager.repository.property_descriptor.JsonPropertyDescriptorRepository;
 
 import java.io.IOException;

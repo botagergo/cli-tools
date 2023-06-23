@@ -4,8 +4,8 @@ import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
-import task_manager.property.PropertyDescriptor;
-import task_manager.repository.PropertyDescriptorRepository;
+import task_manager.core.property.PropertyDescriptor;
+import task_manager.core.repository.PropertyDescriptorRepository;
 import task_manager.repository.SimpleJsonRepository;
 
 import java.io.File;

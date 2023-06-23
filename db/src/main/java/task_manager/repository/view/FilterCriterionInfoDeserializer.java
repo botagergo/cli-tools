@@ -1,8 +1,10 @@
 package task_manager.repository.view;
 
 import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.*;
-import task_manager.data.FilterCriterionInfo;
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.JsonDeserializer;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import task_manager.core.data.FilterCriterionInfo;
 
 import java.io.IOException;
 

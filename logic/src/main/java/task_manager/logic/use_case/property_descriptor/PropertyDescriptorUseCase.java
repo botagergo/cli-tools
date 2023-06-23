@@ -1,7 +1,7 @@
 package task_manager.logic.use_case.property_descriptor;
 
-import task_manager.property.PropertyDescriptor;
-import task_manager.property.PropertyException;
+import task_manager.core.property.PropertyDescriptor;
+import task_manager.core.property.PropertyException;
 
 import java.io.IOException;
 import java.util.List;

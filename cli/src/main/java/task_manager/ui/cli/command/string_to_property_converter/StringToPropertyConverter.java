@@ -1,21 +1,18 @@
 package task_manager.ui.cli.command.string_to_property_converter;
 
 import jakarta.inject.Inject;
-import task_manager.data.Label;
-import task_manager.data.OrderedLabel;
-import task_manager.data.Predicate;
+import task_manager.core.data.Label;
+import task_manager.core.data.OrderedLabel;
+import task_manager.core.data.Predicate;
+import task_manager.core.property.Property;
+import task_manager.core.property.PropertyDescriptor;
+import task_manager.core.property.PropertyException;
+import task_manager.core.property.PropertySpec;
+import task_manager.logic.use_case.label.LabelUseCase;
+import task_manager.logic.use_case.ordered_label.OrderedLabelUseCase;
 import task_manager.logic.use_case.property_descriptor.PropertyDescriptorUseCase;
-import task_manager.property.Property;
-import task_manager.property.PropertyDescriptor;
-import task_manager.property.PropertyException;
-import task_manager.property.PropertySpec;
-import task_manager.repository.LabelRepository;
-import task_manager.repository.LabelRepositoryFactory;
-import task_manager.repository.OrderedLabelRepository;
-import task_manager.repository.OrderedLabelRepositoryFactory;
 import task_manager.ui.cli.Util;
 import task_manager.ui.cli.argument.PropertyArgument;
-import task_manager.util.UUIDGenerator;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -25,7 +22,7 @@ import java.util.UUID;
 
 public class StringToPropertyConverter {
 
-    private final OrderedLabelRepositoryFactory orderedLabelRepositoryFactory;
+    private final LabelUseCase labelUseCase;
 
     public List<PropertySpec> convertProperties(List<PropertyArgument> properties, boolean createUuidIfNotExists) throws IOException, StringToPropertyConverterException, PropertyException {
         List<PropertySpec> propertySpecs = new ArrayList<>();
@@ -77,19 +74,6 @@ public class StringToPropertyConverter {
         return convertedPropertyValueSet;
     }
 
-    @Inject
-    public StringToPropertyConverter(
-            LabelRepositoryFactory labelRepositoryFactory,
-            OrderedLabelRepositoryFactory orderedLabelRepositoryFactory,
-            PropertyDescriptorUseCase propertyDescriptorUseCase,
-            UUIDGenerator uuidGenerator
-    ) {
-        this.labelRepositoryFactory = labelRepositoryFactory;
-        this.orderedLabelRepositoryFactory = orderedLabelRepositoryFactory;
-        this.propertyDescriptorUseCase = propertyDescriptorUseCase;
-        this.uuidGenerator = uuidGenerator;
-    }
-
     private boolean stringToBooleanProperty(PropertyDescriptor propertyDescriptor, String propertyValueStr) throws StringToPropertyConverterException {
         String TRUE_STRING = "true";
         String FALSE_STRING = "false";
@@ -101,29 +85,7 @@ public class StringToPropertyConverter {
             throw new StringToPropertyConverterException(StringToPropertyConverterException.Type.InvalidBoolean, propertyDescriptor, propertyValueStr);
         }
     }
-
-    private UUID stringToUuidProperty(PropertyDescriptor propertyDescriptor, String propertyValueStr, boolean createUuidIfNotExists) throws StringToPropertyConverterException, IOException {
-        try {
-            return UUID.fromString(propertyValueStr);
-        } catch (IllegalArgumentException e1) {
-            PropertyDescriptor.UUIDExtra uuidExtra = propertyDescriptor.getUuidExtraUnchecked();
-            if (uuidExtra == null || uuidExtra.labelName() == null) {
-                throw new StringToPropertyConverterException(StringToPropertyConverterException.Type.NoAssociatedLabel, propertyDescriptor, propertyValueStr);
-            }
-
-            LabelRepository labelRepository = labelRepositoryFactory.getLabelRepository(uuidExtra.labelName());
-            Label label = labelRepository.find(propertyValueStr);
-            if (label == null && createUuidIfNotExists
-                    && Util.yesNo("Label '" + propertyValueStr + "' does not exist. Do you want to create it?")) {
-                label = labelRepository.create(new Label(uuidGenerator.getUUID(), propertyValueStr));
-            }
-            if (label != null) {
-                return label.uuid();
-            } else {
-                throw new StringToPropertyConverterException(StringToPropertyConverterException.Type.LabelNotFound, propertyDescriptor, propertyValueStr);
-            }
-        }
-    }
+    private final OrderedLabelUseCase orderedLabelUseCase;
 
     private Object singleStringToProperty(PropertyDescriptor propertyDescriptor, String propertyValue, boolean createUuidIfNotExists) throws StringToPropertyConverterException, IOException {
         if (propertyDescriptor.type() == PropertyDescriptor.Type.String) {
@@ -139,27 +101,16 @@ public class StringToPropertyConverter {
         }
     }
 
-    private Integer stringToIntegerProperty(PropertyDescriptor propertyDescriptor, String propertyValueStr) throws StringToPropertyConverterException, IOException {
-        try {
-            return Integer.parseInt(propertyValueStr);
-        } catch (NumberFormatException e1) {
-            PropertyDescriptor.IntegerExtra integerExtra = propertyDescriptor.getIntegerExtraUnchecked();
-            if (integerExtra == null || integerExtra.orderedLabelName() == null) {
-                throw new StringToPropertyConverterException(StringToPropertyConverterException.Type.NoAssociatedLabel, propertyDescriptor, propertyValueStr);
-            }
-
-            OrderedLabelRepository orderedLabelRepository = orderedLabelRepositoryFactory.getOrderedLabelRepository(integerExtra.orderedLabelName());
-            OrderedLabel orderedLabel = orderedLabelRepository.find(propertyValueStr);
-
-            if (orderedLabel != null) {
-                return orderedLabel.value();
-            } else {
-                throw new StringToPropertyConverterException(StringToPropertyConverterException.Type.OrderedLabelNotFound, propertyDescriptor, propertyValueStr);
-            }
-        }
+    @Inject
+    public StringToPropertyConverter(
+            LabelUseCase labelUseCase,
+            OrderedLabelUseCase orderedLabelUseCase,
+            PropertyDescriptorUseCase propertyDescriptorUseCase
+    ) {
+        this.labelUseCase = labelUseCase;
+        this.orderedLabelUseCase = orderedLabelUseCase;
+        this.propertyDescriptorUseCase = propertyDescriptorUseCase;
     }
-
-    private final LabelRepositoryFactory labelRepositoryFactory;
 
     public Predicate parsePredicate(String predicateStr) throws StringToPropertyConverterException {
         if (predicateStr == null) {
@@ -180,7 +131,47 @@ public class StringToPropertyConverter {
             throw new StringToPropertyConverterException(predicateStr);
         }
     }
+
+    private UUID stringToUuidProperty(PropertyDescriptor propertyDescriptor, String propertyValueStr, boolean createUuidIfNotExists) throws StringToPropertyConverterException, IOException {
+        try {
+            return UUID.fromString(propertyValueStr);
+        } catch (IllegalArgumentException e1) {
+            PropertyDescriptor.UUIDExtra uuidExtra = propertyDescriptor.getUuidExtraUnchecked();
+            if (uuidExtra == null || uuidExtra.labelName() == null) {
+                throw new StringToPropertyConverterException(StringToPropertyConverterException.Type.NoAssociatedLabel, propertyDescriptor, propertyValueStr);
+            }
+
+            Label label = labelUseCase.findLabel(uuidExtra.labelName(), propertyValueStr);
+            if (label == null && createUuidIfNotExists
+                    && Util.yesNo("Label '" + propertyValueStr + "' does not exist. Do you want to create it?")) {
+                label = labelUseCase.createLabel(uuidExtra.labelName(), propertyValueStr);
+            }
+            if (label != null) {
+                return label.uuid();
+            } else {
+                throw new StringToPropertyConverterException(StringToPropertyConverterException.Type.LabelNotFound, propertyDescriptor, propertyValueStr);
+            }
+        }
+    }
+
+    private Integer stringToIntegerProperty(PropertyDescriptor propertyDescriptor, String propertyValueStr) throws StringToPropertyConverterException, IOException {
+        try {
+            return Integer.parseInt(propertyValueStr);
+        } catch (NumberFormatException e1) {
+            PropertyDescriptor.IntegerExtra integerExtra = propertyDescriptor.getIntegerExtraUnchecked();
+            if (integerExtra == null || integerExtra.orderedLabelName() == null) {
+                throw new StringToPropertyConverterException(StringToPropertyConverterException.Type.NoAssociatedLabel, propertyDescriptor, propertyValueStr);
+            }
+
+            OrderedLabel orderedLabel = orderedLabelUseCase.findOrderedLabel(integerExtra.orderedLabelName(), propertyValueStr);
+
+            if (orderedLabel != null) {
+                return orderedLabel.value();
+            } else {
+                throw new StringToPropertyConverterException(StringToPropertyConverterException.Type.OrderedLabelNotFound, propertyDescriptor, propertyValueStr);
+            }
+        }
+    }
     private final PropertyDescriptorUseCase propertyDescriptorUseCase;
-    private final UUIDGenerator uuidGenerator;
 
 }

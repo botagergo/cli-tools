@@ -6,10 +6,11 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-import task_manager.filter.LessEqualFilterCriterion;
-import task_manager.property.*;
-import task_manager.repository.PropertyDescriptorRepository;
-import task_manager.util.Utils;
+import task_manager.core.property.*;
+import task_manager.core.repository.PropertyDescriptorRepository;
+import task_manager.core.util.Utils;
+import task_manager.logic.PropertyComparator;
+import task_manager.logic.filter.LessEqualFilterCriterion;
 
 import java.io.IOException;
 

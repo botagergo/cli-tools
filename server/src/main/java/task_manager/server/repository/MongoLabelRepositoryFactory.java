@@ -2,8 +2,8 @@ package task_manager.server.repository;
 
 import com.mongodb.client.MongoClient;
 import org.springframework.beans.factory.annotation.Value;
-import task_manager.repository.LabelRepository;
-import task_manager.repository.LabelRepositoryFactory;
+import task_manager.core.repository.LabelRepository;
+import task_manager.core.repository.LabelRepositoryFactory;
 
 import javax.inject.Inject;
 

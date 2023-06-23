@@ -2,10 +2,10 @@ package task_manager.init;
 
 import jakarta.inject.Inject;
 import lombok.AllArgsConstructor;
+import task_manager.core.property.PropertyDescriptor;
 import task_manager.logic.use_case.ordered_label.OrderedLabelUseCase;
 import task_manager.logic.use_case.property_descriptor.PropertyDescriptorUseCase;
 import task_manager.logic.use_case.status.StatusUseCase;
-import task_manager.property.PropertyDescriptor;
 
 import java.io.IOException;
 import java.util.LinkedHashSet;

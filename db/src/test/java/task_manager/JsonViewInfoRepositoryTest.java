@@ -2,9 +2,9 @@ package task_manager;
 
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-import task_manager.data.Label;
+import task_manager.core.data.Label;
+import task_manager.core.util.RoundRobinUUIDGenerator;
 import task_manager.repository.label.JsonLabelRepository;
-import task_manager.util.RoundRobinUUIDGenerator;
 
 import java.io.File;
 import java.io.IOException;
@@ -26,7 +26,7 @@ public class JsonViewInfoRepositoryTest {
     @Test
     public void test_read_successful() throws IOException {
         Path tempFile = Files.createTempFile(tempDir, "read_successful", ".json");
-        Files.writeString(tempFile, "[{\"name\":\"label1\",\"uuid\":\"" + uuidGenerator.getUUID(0) + "\"},{\"name\":\"label2\",\"uuid\":\"" + uuidGenerator.getUUID(1) + "\"}]");
+        Files.writeString(tempFile, "[{\"text\":\"label1\",\"uuid\":\"" + uuidGenerator.getUUID(0) + "\"},{\"text\":\"label2\",\"uuid\":\"" + uuidGenerator.getUUID(1) + "\"}]");
         repository = new JsonLabelRepository(tempFile.toFile());
         assertEquals(repository.getAll(), List.of(
                 new Label(uuidGenerator.getUUID(0), "label1"),
@@ -43,8 +43,8 @@ public class JsonViewInfoRepositoryTest {
         String content = Files.readString(tempFile.toPath());
         assertEquals(content,
                 "[{\"uuid\":\"" + uuidGenerator.getUUID(0)
-                        + "\",\"name\":\"label1\"},{\"uuid\":\"" + uuidGenerator.getUUID(1)
-                        + "\",\"name\":\"label2\"}]"
+                        + "\",\"text\":\"label1\"},{\"uuid\":\"" + uuidGenerator.getUUID(1)
+                        + "\",\"text\":\"label2\"}]"
         );
     }
 
@@ -60,7 +60,7 @@ public class JsonViewInfoRepositoryTest {
         repository = new JsonLabelRepository(tempFile.toFile());
         assertThrows(IOException.class, () -> repository.getData());
 
-        Files.writeString(tempFile, "{\"name\":123}");
+        Files.writeString(tempFile, "{\"text\":123}");
         repository = new JsonLabelRepository(tempFile.toFile());
         assertThrows(IOException.class, () -> repository.getData());
     }

@@ -1,16 +1,16 @@
 package task_manager.logic.use_case.tag;
 
+import jakarta.inject.Inject;
+import task_manager.core.data.Label;
+import task_manager.core.data.Tag;
+import task_manager.core.repository.LabelRepository;
+import task_manager.core.repository.LabelRepositoryFactory;
+import task_manager.core.util.UUIDGenerator;
+
 import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
-
-import jakarta.inject.Inject;
-import task_manager.data.Label;
-import task_manager.data.Tag;
-import task_manager.repository.LabelRepository;
-import task_manager.repository.LabelRepositoryFactory;
-import task_manager.util.UUIDGenerator;
 
 public class TagUseCaseImpl implements TagUseCase {
 

@@ -1,7 +1,7 @@
 package task_manager.ui.cli;
 
 import org.testng.annotations.Test;
-import task_manager.property.PropertySpec;
+import task_manager.core.property.PropertySpec;
 import task_manager.ui.cli.argument.ArgumentList;
 import task_manager.ui.cli.argument.PropertyArgument;
 import task_manager.ui.cli.command.ModifyTaskCommand;

@@ -1,12 +1,12 @@
 package task_manager.logic.use_case.property_descriptor;
 
+import jakarta.inject.Inject;
+import task_manager.core.property.PropertyDescriptor;
+import task_manager.core.property.PropertyException;
+import task_manager.core.repository.PropertyDescriptorRepository;
+
 import java.io.IOException;
 import java.util.List;
-
-import jakarta.inject.Inject;
-import task_manager.property.PropertyException;
-import task_manager.repository.PropertyDescriptorRepository;
-import task_manager.property.PropertyDescriptor;
 
 public class PropertyDescriptorUseCaseImpl implements PropertyDescriptorUseCase {
 
