@@ -3,11 +3,7 @@ package task_manager.filter.grammar;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
-import task_manager.filter.AndFilterCriterion;
-import task_manager.filter.ContainsCaseInsensitiveFilterCriterion;
-import task_manager.filter.EqualsFilterCriterion;
-import task_manager.filter.FilterCriterion;
-import task_manager.filter.OrFilterCriterion;
+import task_manager.filter.*;
 
 public class FilterBuilder {
     public static FilterCriterion buildFilter(String query) {
@@ -52,14 +48,14 @@ public class FilterBuilder {
                 String propertyValue = constant.string().SINGLE_STRING() != null
                     ? constant.string().SINGLE_STRING().getText()
                     : constant.string().DOUBLE_STRING().getText();
-                return new EqualsFilterCriterion(propertyName,
-                    propertyValue.substring(1, propertyValue.length() - 1));
+                return new EqualFilterCriterion(propertyName,
+                        propertyValue.substring(1, propertyValue.length() - 1));
             } else if (constant.bool() != null) {
                 QueryParser.BoolContext bool = constant.bool();
                 if (bool.TRUE() != null) {
-                    return new EqualsFilterCriterion(propertyName, true);
+                    return new EqualFilterCriterion(propertyName, true);
                 } else if (bool.FALSE() != null) {
-                    return new EqualsFilterCriterion(propertyName, false);
+                    return new EqualFilterCriterion(propertyName, false);
                 }
             }
         } else if (tree instanceof QueryParser.LikeExprContext) {

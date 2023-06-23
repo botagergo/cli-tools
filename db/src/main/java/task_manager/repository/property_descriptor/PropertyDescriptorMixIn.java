@@ -22,6 +22,6 @@ public record PropertyDescriptorMixIn(
         @JsonProperty(required = true) PropertyDescriptor.Multiplicity multiplicity,
         @JsonSerialize(using = ObjectSerializer.class)
         @JsonDeserialize(using = ObjectDeserializer.class)
-        @JsonProperty(required = true)
+        @JsonProperty
         Object defaultValue
 ) { }

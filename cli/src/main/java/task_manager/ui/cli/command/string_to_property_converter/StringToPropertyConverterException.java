@@ -30,13 +30,15 @@ public class StringToPropertyConverterException extends Exception {
             return "Property value is empty";
         } else if (exceptionType == Type.LabelNotFound) {
             return "Label not found: " + propertyValue;
+        } else if (exceptionType == Type.OrderedLabelNotFound) {
+            return "Label not found: " + propertyValue;
         } else if (exceptionType == Type.InvalidBoolean) {
             return "Invalid boolean value: " + propertyValue;
         } else if (exceptionType == Type.InvalidPredicate) {
             return "Invalid predicate: " + predicate;
         } else if (exceptionType == Type.NoAssociatedLabel) {
             return "UUID property '" + propertyDescriptor.name() + "' does not have an associated label";
-        }else {
+        } else {
             return null;
         }
     }
@@ -47,7 +49,7 @@ public class StringToPropertyConverterException extends Exception {
     @Getter final String predicate;
 
     public enum Type {
-        NotAList, EmptyList, InvalidBoolean, LabelNotFound, InvalidPredicate, NoAssociatedLabel
+        NotAList, EmptyList, InvalidBoolean, LabelNotFound, OrderedLabelNotFound, InvalidPredicate, InvalidInteger, NoAssociatedLabel
     }
 
 }

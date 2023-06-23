@@ -1,20 +1,23 @@
 package task_manager;
 
-import static org.testng.Assert.*;
 import org.testng.annotations.Test;
 import task_manager.data.Task;
 import task_manager.util.RoundRobinUUIDGenerator;
 import task_manager.util.UUIDGenerator;
+import task_manager.util.Utils;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNull;
+
 public class TaskTest {
 
     @Test
     public void test_getUUID_successful() {
-        assertEquals(Task.fromMap(new HashMap<>(Map.of("uuid", uuid))).getUUID(), uuid);
+        assertEquals(Task.fromMap(Utils.newHashMap("uuid", uuid)).getUUID(), uuid);
     }
 
     @Test

@@ -21,9 +21,4 @@ public record FilterCriterionInfo(
         REF
     }
 
-    public enum Predicate {
-        EQUALS,
-        CONTAINS
-    }
-
 }

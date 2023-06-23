@@ -7,6 +7,6 @@ import task_manager.property.PropertyDescriptor;
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME)
 @JsonSubTypes({
         @JsonSubTypes.Type(value = PropertyDescriptor.UUIDExtra.class, name = "UUIDExtra"),
-        @JsonSubTypes.Type(value = PropertyDescriptor.StringExtra.class, name = "StringExtra")
+        @JsonSubTypes.Type(value = PropertyDescriptor.IntegerExtra.class, name = "IntegerExtra")
 })
 public record ExtraMixIn() { }

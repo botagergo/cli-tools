@@ -2,14 +2,14 @@ package task_manager;
 
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.type.TypeFactory;
-import task_manager.repository.JsonRepository;
+import task_manager.repository.SimpleJsonRepository;
 
 import java.io.File;
 import java.util.ArrayList;
 
-public class JsonRepositoryImpl extends JsonRepository<ArrayList<Integer>> {
+public class SimpleJsonRepositoryImpl extends SimpleJsonRepository<ArrayList<Integer>> {
 
-    public JsonRepositoryImpl(File jsonFile) {
+    public SimpleJsonRepositoryImpl(File jsonFile) {
         super(jsonFile);
     }
 

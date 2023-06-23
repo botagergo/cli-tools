@@ -13,7 +13,10 @@ import task_manager.repository.MapSerializer;
 import task_manager.util.RoundRobinUUIDGenerator;
 import task_manager.util.Utils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 import static org.testng.Assert.assertEquals;
 
@@ -37,8 +40,8 @@ public class MapSerializerTest {
     @Test
     public void test_serializer_singleFields() throws JsonProcessingException {
         assertJsonStrEquals(objectMapper.writeValueAsString(
-                new HashMap<>(Map.of("name", "test", "done", false, "uuid", uuid1))),
-                new HashMap<>(Map.of("name", "s:test", "done", false, "uuid", "u:" + uuid1)));
+                        new HashMap<>(Map.of("name", "test", "done", false, "uuid", uuid1, "priority", 2))),
+                new HashMap<>(Map.of("name", "s:test", "done", false, "uuid", "u:" + uuid1, "priority", 2)));
     }
 
     @Test

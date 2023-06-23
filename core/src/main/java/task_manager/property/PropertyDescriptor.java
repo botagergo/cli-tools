@@ -28,13 +28,21 @@ public record PropertyDescriptor(
         }
     }
 
+    public IntegerExtra getIntegerExtraUnchecked() {
+        if (extra == null) {
+            return null;
+        } else {
+            return (IntegerExtra) extra;
+        }
+    }
+
     @Override
     public String toString() {
         return type.toString() + " " + multiplicity;
     }
 
     public enum Type {
-        String, UUID, Boolean
+        String, UUID, Boolean, Integer
     }
 
 
@@ -44,10 +52,17 @@ public record PropertyDescriptor(
         SET
     }
 
-    public interface Extra {}
+    public interface Extra {
+    }
 
-    public record UUIDExtra(String labelName) implements Extra {}
+    public record UUIDExtra(
+            String labelName
+    ) implements Extra {
+    }
 
-    public record StringExtra() implements Extra {}
+    public record IntegerExtra(
+            String orderedLabelName
+    ) implements Extra {
+    }
 
 }

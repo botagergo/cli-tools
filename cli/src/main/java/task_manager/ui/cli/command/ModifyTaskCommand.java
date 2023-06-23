@@ -7,8 +7,8 @@ import task_manager.data.Task;
 import task_manager.property.PropertySpec;
 import task_manager.ui.cli.Context;
 import task_manager.ui.cli.argument.PropertyArgument;
-import task_manager.ui.cli.command.string_to_property_converter.StringToPropertyConverterException;
 import task_manager.ui.cli.command.property_modifier.PropertyModifier;
+import task_manager.ui.cli.command.string_to_property_converter.StringToPropertyConverterException;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -55,7 +55,9 @@ public record ModifyTaskCommand(
                 case NotAList -> System.out.println("A list of values was provided, but property '" + e.getPropertyDescriptor().name() + "' is not a list");
                 case EmptyList -> System.out.println("No value was provided for property '" + e.getPropertyDescriptor().name() + "'");
                 case LabelNotFound -> System.out.println("No changes were made");
+                case OrderedLabelNotFound -> System.out.println("Label not found: " + e.getPropertyValue());
                 case InvalidBoolean -> System.out.println("Invalid boolean value: " + e.getPropertyValue());
+                case InvalidInteger -> System.out.println("Invalid integer value: " + e.getPropertyValue());
             }
         } catch (IOException e) {
             System.out.println("An IO error has occurred: " + e.getMessage());

@@ -1,15 +1,15 @@
 package task_manager.server;
 
-import java.io.File;
-
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
 import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.filter.CommonsRequestLoggingFilter;
-import com.mongodb.client.MongoClient;
-import com.mongodb.client.MongoClients;
+import task_manager.init.Initializer;
+import task_manager.logic.use_case.ordered_label.OrderedLabelUseCaseImpl;
 import task_manager.logic.use_case.property_descriptor.PropertyDescriptorUseCaseImpl;
 import task_manager.logic.use_case.status.StatusUseCaseImpl;
 import task_manager.logic.use_case.tag.TagUseCaseImpl;
@@ -17,14 +17,16 @@ import task_manager.logic.use_case.task.TaskUseCaseImpl;
 import task_manager.logic.use_case.view.PropertyConverter;
 import task_manager.logic.use_case.view.ViewUseCaseImpl;
 import task_manager.property.PropertyManager;
-import task_manager.init.Initializer;
 import task_manager.repository.label.JsonLabelRepository;
+import task_manager.repository.ordered_label.JsonOrderedLabelRepositoryFactory;
 import task_manager.repository.view.JsonViewInfoRepository;
 import task_manager.server.repository.MongoLabelRepositoryFactory;
 import task_manager.server.repository.MongoPropertyDescriptorRepository;
 import task_manager.server.repository.MongoTaskRepository;
 import task_manager.util.RandomUUIDGenerator;
 import task_manager.util.UUIDGenerator;
+
+import java.io.File;
 
 @SpringBootApplication
 public class Application {
@@ -51,6 +53,11 @@ public class Application {
     }
 
     @Bean
+    JsonOrderedLabelRepositoryFactory orderedLabelRepositoryFactory() {
+        return new JsonOrderedLabelRepositoryFactory(new File(System.getProperty("user.home") + "/.config/task_manager/"));
+    }
+
+    @Bean
     JsonViewInfoRepository viewInfoRepository() {
         throw new NotImplementedException();
     }
@@ -71,6 +78,11 @@ public class Application {
     }
 
     @Bean
+    OrderedLabelUseCaseImpl orderedLabelUseCase() {
+        return new OrderedLabelUseCaseImpl(orderedLabelRepositoryFactory());
+    }
+
+    @Bean
     ViewUseCaseImpl viewUseCase() {
         return new ViewUseCaseImpl(viewInfoRepository(), new PropertyConverter(labelRepositoryFactory()));
     }
@@ -78,7 +90,7 @@ public class Application {
     @Bean
     MongoPropertyDescriptorRepository propertyDescriptorRepository() {
         return new MongoPropertyDescriptorRepository(mongoClient(), MONGODB_DATABASE_NAME,
-            MONGODB_PROPERTY_DESCRIPTOR_COLLECTION_NAME);
+                MONGODB_PROPERTY_DESCRIPTOR_COLLECTION_NAME);
     }
 
     @Bean
@@ -109,7 +121,7 @@ public class Application {
 
     @Bean
     public Initializer initializer() {
-        return new Initializer(propertyDescriptorUseCase(), statusUseCase());
+        return new Initializer(orderedLabelUseCase(), propertyDescriptorUseCase(), statusUseCase());
     }
 
     @Bean

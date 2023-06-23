@@ -1,20 +1,20 @@
 package task_manager.repository.task;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.*;
-
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import jakarta.inject.Singleton;
 import task_manager.data.Task;
-import task_manager.repository.JsonRepository;
+import task_manager.repository.SimpleJsonRepository;
 import task_manager.repository.TaskRepository;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.*;
+
 @Singleton
-public class JsonTaskRepository extends JsonRepository<ArrayList<Task>> implements TaskRepository {
+public class JsonTaskRepository extends SimpleJsonRepository<ArrayList<Task>> implements TaskRepository {
 
     @Inject
     public JsonTaskRepository(@Named("taskJsonFile") File jsonPath) {

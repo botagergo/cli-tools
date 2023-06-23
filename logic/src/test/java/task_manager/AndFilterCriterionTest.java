@@ -6,7 +6,7 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.testng.annotations.*;
 import task_manager.filter.AndFilterCriterion;
-import task_manager.filter.EqualsFilterCriterion;
+import task_manager.filter.EqualFilterCriterion;
 import task_manager.property.PropertyDescriptor;
 import task_manager.property.PropertyException;
 import task_manager.property.PropertyManager;
@@ -60,8 +60,8 @@ public class AndFilterCriterionTest {
 
     boolean checkEqual(boolean operand1, boolean operand2) throws PropertyException, IOException {
         return new AndFilterCriterion(
-                new EqualsFilterCriterion("test_boolean1", operand1),
-                new EqualsFilterCriterion("test_boolean2", operand2))
+                new EqualFilterCriterion("test_boolean1", operand1),
+                new EqualFilterCriterion("test_boolean2", operand2))
                 .check(propertyOwner, propertyManager);
     }
 

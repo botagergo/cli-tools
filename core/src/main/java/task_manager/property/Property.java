@@ -1,6 +1,9 @@
 package task_manager.property;
 
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 
 import java.util.*;
 
@@ -74,7 +77,42 @@ public class Property {
         return (UUID) value;
     }
 
-    public List<UUID> getUuidList() throws PropertyException {
+    private static void checkPropertyValue(PropertyDescriptor propertyDescriptor, Object propertyValue) throws PropertyException {
+        if (propertyDescriptor.type().equals(PropertyDescriptor.Type.String) &&
+                !(propertyValue instanceof String) ||
+                propertyDescriptor.type().equals(PropertyDescriptor.Type.Boolean) &&
+                        !(propertyValue instanceof Boolean) ||
+                propertyDescriptor.type().equals(PropertyDescriptor.Type.UUID) &&
+                        !(propertyValue instanceof UUID) ||
+                propertyDescriptor.type().equals(PropertyDescriptor.Type.Integer) &&
+                        !(propertyValue instanceof Integer)) {
+
+            throw new PropertyException(PropertyException.Type.WrongValueType,
+                    propertyDescriptor.name(), propertyDescriptor, propertyValue,
+                    propertyDescriptor.type());
+        }
+    }
+
+    public Integer getInteger() throws PropertyException {
+        if (propertyDescriptor.type() != PropertyDescriptor.Type.Integer) {
+            throw new PropertyException(PropertyException.Type.TypeMismatch,
+                    propertyDescriptor.name(), propertyDescriptor, value,
+                    PropertyDescriptor.Type.Integer);
+        }
+
+        return getIntegerUnchecked();
+    }
+
+    public Integer getIntegerUnchecked() {
+        if (value == null) {
+            return null;
+        }
+
+        return (Integer) value;
+    }
+
+    @SuppressWarnings("unchecked")
+    public ArrayList<UUID> getUuidList() throws PropertyException {
         if (propertyDescriptor.type() != PropertyDescriptor.Type.UUID) {
             throw new PropertyException(PropertyException.Type.TypeMismatch,
                     propertyDescriptor.name(), propertyDescriptor, value,
@@ -89,14 +127,11 @@ public class Property {
             return null;
         }
 
-        List<UUID> valueList = new ArrayList<>();
-        for (Object value : (List<?>) value) {
-            valueList.add((UUID) value);
-        }
-        return valueList;
+        return (ArrayList<UUID>) value;
     }
 
-    public List<String> getStringList() throws PropertyException {
+    @SuppressWarnings("unchecked")
+    public ArrayList<String> getStringList() throws PropertyException {
         if (propertyDescriptor.type() != PropertyDescriptor.Type.String) {
             throw new PropertyException(PropertyException.Type.TypeMismatch,
                     propertyDescriptor.name(), propertyDescriptor, value,
@@ -111,14 +146,11 @@ public class Property {
             return null;
         }
 
-        List<String> valueList = new ArrayList<>();
-        for (Object value : (List<?>) value) {
-            valueList.add((String) value);
-        }
-        return valueList;
+        return (ArrayList<String>) value;
     }
 
-    public List<Boolean> getBooleanList() throws PropertyException {
+    @SuppressWarnings("unchecked")
+    public ArrayList<Boolean> getBooleanList() throws PropertyException {
         if (propertyDescriptor.type() != PropertyDescriptor.Type.Boolean) {
             throw new PropertyException(PropertyException.Type.TypeMismatch,
                     propertyDescriptor.name(), propertyDescriptor, value,
@@ -133,13 +165,10 @@ public class Property {
             return null;
         }
 
-        List<Boolean> valueList = new ArrayList<>();
-        for (Object value : (List<?>) value) {
-            valueList.add((Boolean) value);
-        }
-        return valueList;
+        return (ArrayList<Boolean>) value;
     }
 
+    @SuppressWarnings("unchecked")
     public LinkedHashSet<UUID> getUuidSet() throws PropertyException {
         if (propertyDescriptor.type() != PropertyDescriptor.Type.UUID) {
             throw new PropertyException(PropertyException.Type.TypeMismatch,
@@ -155,13 +184,10 @@ public class Property {
             return null;
         }
 
-        LinkedHashSet<UUID> valueSet = new LinkedHashSet<>();
-        for (Object value : (LinkedHashSet<?>) value) {
-            valueSet.add((UUID) value);
-        }
-        return valueSet;
+        return (LinkedHashSet<UUID>) value;
     }
 
+    @SuppressWarnings("unchecked")
     public LinkedHashSet<String> getStringSet() throws PropertyException {
         if (propertyDescriptor.type() != PropertyDescriptor.Type.String) {
             throw new PropertyException(PropertyException.Type.TypeMismatch,
@@ -177,33 +203,7 @@ public class Property {
             return null;
         }
 
-        LinkedHashSet<String> valueSet = new LinkedHashSet<>();
-        for (Object value : (LinkedHashSet<?>) value) {
-            valueSet.add((String) value);
-        }
-        return valueSet;
-    }
-
-    public LinkedHashSet<Boolean> getBooleanSet() throws PropertyException {
-        if (propertyDescriptor.type() != PropertyDescriptor.Type.Boolean) {
-            throw new PropertyException(PropertyException.Type.TypeMismatch,
-                    propertyDescriptor.name(), propertyDescriptor, value,
-                    PropertyDescriptor.Type.Boolean);
-        } else if (propertyDescriptor.multiplicity() != PropertyDescriptor.Multiplicity.SET) {
-            throw new PropertyException(PropertyException.Type.WrongMultiplicity,
-                    propertyDescriptor.name(), propertyDescriptor, value,
-                    PropertyDescriptor.Type.Boolean);
-        }
-
-        if (value == null) {
-            return null;
-        }
-
-        LinkedHashSet<Boolean> valueSet = new LinkedHashSet<>();
-        for (Object value : (LinkedHashSet<?>) value) {
-            valueSet.add((Boolean) value);
-        }
-        return valueSet;
+        return (LinkedHashSet<String>) value;
     }
 
     @SuppressWarnings("unchecked")
@@ -248,18 +248,23 @@ public class Property {
         return (Collection<Object>) value;
     }
 
-    private static void checkPropertyValue(PropertyDescriptor propertyDescriptor, Object propertyValue) throws PropertyException {
-        if ( propertyDescriptor.type().equals(PropertyDescriptor.Type.String) &&
-                    !(propertyValue instanceof String) ||
-                propertyDescriptor.type().equals(PropertyDescriptor.Type.Boolean) &&
-                    !(propertyValue instanceof Boolean) ||
-                propertyDescriptor.type().equals(PropertyDescriptor.Type.UUID) &&
-                    !(propertyValue instanceof UUID)) {
-
-            throw new PropertyException(PropertyException.Type.WrongValueType,
-                    propertyDescriptor.name(), propertyDescriptor, propertyValue,
-                    propertyDescriptor.type());
+    @SuppressWarnings("unchecked")
+    public LinkedHashSet<Boolean> getBooleanSet() throws PropertyException {
+        if (propertyDescriptor.type() != PropertyDescriptor.Type.Boolean) {
+            throw new PropertyException(PropertyException.Type.TypeMismatch,
+                    propertyDescriptor.name(), propertyDescriptor, value,
+                    PropertyDescriptor.Type.Boolean);
+        } else if (propertyDescriptor.multiplicity() != PropertyDescriptor.Multiplicity.SET) {
+            throw new PropertyException(PropertyException.Type.WrongMultiplicity,
+                    propertyDescriptor.name(), propertyDescriptor, value,
+                    PropertyDescriptor.Type.Boolean);
         }
+
+        if (value == null) {
+            return null;
+        }
+
+        return (LinkedHashSet<Boolean>) value;
     }
 
     private static void checkPropertyValueList(PropertyDescriptor propertyDescriptor, Object propertyValues) throws PropertyException {

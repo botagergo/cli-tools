@@ -3,15 +3,15 @@ package task_manager.repository.label;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import task_manager.data.Label;
-import task_manager.repository.JsonRepository;
 import task_manager.repository.LabelRepository;
+import task_manager.repository.SimpleJsonRepository;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.IntStream;
 
-public class JsonLabelRepository extends JsonRepository<ArrayList<Label>> implements LabelRepository {
+public class JsonLabelRepository extends SimpleJsonRepository<ArrayList<Label>> implements LabelRepository {
 
     public JsonLabelRepository(File jsonFile) {
         super(jsonFile);
@@ -20,8 +20,8 @@ public class JsonLabelRepository extends JsonRepository<ArrayList<Label>> implem
 
     @Override
     public Label find(String name) throws IOException {
-          return getData().stream().filter(t -> t.name().equals(name))
-                  .findAny().orElse(null);
+        return getData().stream().filter(t -> t.name().equals(name))
+                .findAny().orElse(null);
     }
 
     @Override

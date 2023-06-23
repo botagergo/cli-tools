@@ -1,19 +1,19 @@
 package task_manager.repository.property_descriptor;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import task_manager.property.PropertyDescriptor;
-import task_manager.repository.JsonRepository;
 import task_manager.repository.PropertyDescriptorRepository;
+import task_manager.repository.SimpleJsonRepository;
 
-public class JsonPropertyDescriptorRepository extends JsonRepository<HashMap<String, PropertyDescriptor>> implements PropertyDescriptorRepository {
+import java.io.File;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+
+public class JsonPropertyDescriptorRepository extends SimpleJsonRepository<HashMap<String, PropertyDescriptor>> implements PropertyDescriptorRepository {
 
     @Inject
     public JsonPropertyDescriptorRepository(@Named("propertyDescriptorJsonFile") File jsonFile) {

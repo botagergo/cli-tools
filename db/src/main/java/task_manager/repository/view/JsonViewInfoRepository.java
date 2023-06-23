@@ -8,14 +8,14 @@ import task_manager.data.FilterCriterionInfo;
 import task_manager.data.SortingCriterion;
 import task_manager.data.SortingInfo;
 import task_manager.data.ViewInfo;
-import task_manager.repository.JsonRepository;
+import task_manager.repository.SimpleJsonRepository;
 import task_manager.repository.ViewInfoRepository;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.HashMap;
 
-public class JsonViewInfoRepository extends JsonRepository<HashMap<String, ViewInfo>> implements ViewInfoRepository {
+public class JsonViewInfoRepository extends SimpleJsonRepository<HashMap<String, ViewInfo>> implements ViewInfoRepository {
 
     @Inject
     public JsonViewInfoRepository(@Named("viewInfoJsonFile") File jsonFile) {

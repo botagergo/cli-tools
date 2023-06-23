@@ -18,7 +18,7 @@ public class PropertyManager {
         this.propertyDescriptorRepository = propertyDescriptorRepository;
     }
 
-    public Property getProperty(PropertyOwner propertyOwner, String propertyName)
+    public Property getProperty(String propertyName, PropertyOwner propertyOwner)
             throws PropertyException, IOException {
         log.debug("getProperty - {}", propertyName);
 
@@ -45,7 +45,7 @@ public class PropertyManager {
     public void addProperty(PropertyOwner propertyOwner, String propertyName, Collection<Object> propertyValue) throws PropertyException, IOException {
         log.debug("setProperty - {}", propertyName);
 
-        Property origProperty = getProperty(propertyOwner, propertyName);
+        Property origProperty = getProperty(propertyName, propertyOwner);
         Object newProperty;
 
         if (origProperty.getPropertyDescriptor().multiplicity() == PropertyDescriptor.Multiplicity.LIST) {
@@ -65,7 +65,7 @@ public class PropertyManager {
 
     public void removeProperty(PropertyOwner propertyOwner, String propertyName, Collection<Object> propertyValue) throws PropertyException, IOException {
         log.debug("removeProperty - {}", propertyName);
-        Property origProperty = getProperty(propertyOwner, propertyName);
+        Property origProperty = getProperty(propertyName, propertyOwner);
         Object newProperty;
 
         if (origProperty.getPropertyDescriptor().multiplicity() == PropertyDescriptor.Multiplicity.LIST) {

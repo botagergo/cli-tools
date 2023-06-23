@@ -11,22 +11,29 @@ import lombok.Getter;
 import java.io.File;
 import java.io.IOException;
 
-public class JsonRepository <T> {
+public abstract class JsonRepository<T_Json, T_Stored> {
 
     public JsonRepository(File jsonFile) {
         this.jsonFile = jsonFile;
         this.objectMapper = new ObjectMapper();
     }
 
-    public T getData() throws IOException {
-        if (data == null) {
-            data = loadData();
-        }
+    @Getter
+    private final ObjectMapper objectMapper;
+    private T_Stored data = null;
 
+    public T_Stored getData() throws IOException {
+        if (data == null) {
+            data = jsonToStoredData(loadData());
+        }
         return data;
     }
 
-    public T getEmptyData() {
+    protected JavaType constructType(TypeFactory typeFactory) {
+        return null;
+    }
+
+    public T_Json getEmptyData() {
         return null;
     }
 
@@ -39,17 +46,14 @@ public class JsonRepository <T> {
                     parent.mkdirs();
                 }
             }
-            objectMapper.writeValue(jsonFile, data);
+            objectMapper.writeValue(jsonFile, storedToJsonData(data));
         } catch (IOException e) {
             throw new IOException("Failed to write JSON file: " + jsonFile, e);
         }
     }
 
-    protected JavaType constructType(TypeFactory typeFactory) {
-        return null;
-    }
-
-    protected T loadData() throws IOException {
+    protected T_Json loadData() throws IOException {
+        T_Json data;
         try {
             if (jsonFile.exists()) {
                 JavaType javaType = constructType(objectMapper.getTypeFactory());
@@ -78,6 +82,8 @@ public class JsonRepository <T> {
     }
 
     private final File jsonFile;
-    @Getter private final ObjectMapper objectMapper;
-    private T data = null;
+
+    protected abstract T_Stored jsonToStoredData(T_Json data);
+
+    protected abstract T_Json storedToJsonData(T_Stored data);
 }

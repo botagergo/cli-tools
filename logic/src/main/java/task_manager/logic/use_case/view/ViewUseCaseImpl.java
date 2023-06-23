@@ -8,9 +8,7 @@ import task_manager.data.FilterCriterionInfo;
 import task_manager.data.Task;
 import task_manager.data.ViewInfo;
 import task_manager.filter.*;
-import task_manager.property.PropertyDescriptor;
-import task_manager.property.PropertyException;
-import task_manager.property.PropertyManager;
+import task_manager.property.*;
 import task_manager.repository.ViewInfoRepository;
 import task_manager.sorter.PropertySorter;
 
@@ -77,7 +75,7 @@ public class ViewUseCaseImpl implements ViewUseCase {
 
         switch (filterCriterionInfo.predicate()) {
             case EQUALS -> {
-                return new EqualsFilterCriterion(filterCriterionInfo.propertyName(), operand);
+                return new EqualFilterCriterion(filterCriterionInfo.propertyName(), operand);
             }
             case CONTAINS -> {
                 if (propertyDescriptor.isCollection()) {
@@ -88,7 +86,36 @@ public class ViewUseCaseImpl implements ViewUseCase {
                     throw new FilterCriterionException(FilterCriterionException.Type.InvalidTypeForPredicate, propertyDescriptor, filterCriterionInfo.predicate());
                 }
             }
-            default -> throw new NotImplementedException(filterCriterionInfo.type() + " predicate is not yet supported");
+            case LESS -> {
+                if (!PropertyComparator.isComparable(propertyDescriptor)) {
+                    throw new FilterCriterionException(FilterCriterionException.Type.InvalidTypeForPredicate, propertyDescriptor, filterCriterionInfo.predicate());
+                } else {
+                    return new LessFilterCriterion(filterCriterionInfo.propertyName(), Property.fromUnchecked(propertyDescriptor, operand), new PropertyComparator(true));
+                }
+            }
+            case LESS_EQUAL -> {
+                if (!PropertyComparator.isComparable(propertyDescriptor)) {
+                    throw new FilterCriterionException(FilterCriterionException.Type.InvalidTypeForPredicate, propertyDescriptor, filterCriterionInfo.predicate());
+                } else {
+                    return new LessEqualFilterCriterion(filterCriterionInfo.propertyName(), Property.fromUnchecked(propertyDescriptor, operand), new PropertyComparator(true));
+                }
+            }
+            case GREATER -> {
+                if (!PropertyComparator.isComparable(propertyDescriptor)) {
+                    throw new FilterCriterionException(FilterCriterionException.Type.InvalidTypeForPredicate, propertyDescriptor, filterCriterionInfo.predicate());
+                } else {
+                    return new GreaterFilterCriterion(filterCriterionInfo.propertyName(), Property.fromUnchecked(propertyDescriptor, operand), new PropertyComparator(true));
+                }
+            }
+            case GREATER_EQUAL -> {
+                if (!PropertyComparator.isComparable(propertyDescriptor)) {
+                    throw new FilterCriterionException(FilterCriterionException.Type.InvalidTypeForPredicate, propertyDescriptor, filterCriterionInfo.predicate());
+                } else {
+                    return new GreaterEqualFilterCriterion(filterCriterionInfo.propertyName(), Property.fromUnchecked(propertyDescriptor, operand), new PropertyComparator(true));
+                }
+            }
+            default ->
+                    throw new NotImplementedException(filterCriterionInfo.type() + " predicate is not yet supported");
         }
     }
 

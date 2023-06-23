@@ -10,7 +10,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertThrows;
 
 public class JsonPropertyDescriptorRepositoryTest {
 
@@ -65,7 +66,7 @@ public class JsonPropertyDescriptorRepositoryTest {
     @Test
     public void test_missingField_throwsException() throws IOException {
         Path tempFile = Files.createTempFile(tempDir, "missing_field", ".json");
-        Files.writeString(tempFile, "{\"name\":{\"name\":\"name\",\"type\":\"String\",\"multiplicity\":\"SINGLE\"}}");
+        Files.writeString(tempFile, "{\"name\":{\"name\":\"name\",\"type\":\"String\"}}");
         repository = new JsonPropertyDescriptorRepository(tempFile.toFile());
         assertThrows(IOException.class, () -> repository.get("property"));
     }

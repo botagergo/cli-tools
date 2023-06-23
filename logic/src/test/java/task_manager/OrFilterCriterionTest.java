@@ -4,8 +4,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.testng.annotations.*;
-import task_manager.filter.EqualsFilterCriterion;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
+import task_manager.filter.EqualFilterCriterion;
 import task_manager.filter.OrFilterCriterion;
 import task_manager.property.PropertyDescriptor;
 import task_manager.property.PropertyException;
@@ -14,9 +15,10 @@ import task_manager.property.PropertyOwner;
 import task_manager.repository.PropertyDescriptorRepository;
 import task_manager.util.Utils;
 
-import static org.testng.Assert.*;
-
 import java.io.IOException;
+
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertTrue;
 
 public class OrFilterCriterionTest {
 
@@ -54,8 +56,8 @@ public class OrFilterCriterionTest {
 
     boolean checkEqual(boolean operand1, boolean operand2) throws PropertyException, IOException {
         return new OrFilterCriterion(
-            new EqualsFilterCriterion("test_boolean1", operand1),
-            new EqualsFilterCriterion("test_boolean2", operand2))
+                new EqualFilterCriterion("test_boolean1", operand1),
+                new EqualFilterCriterion("test_boolean2", operand2))
                 .check(propertyOwner, propertyManager);
     }
 

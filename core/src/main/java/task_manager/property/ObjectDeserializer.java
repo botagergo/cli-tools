@@ -6,7 +6,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.UUID;
 
 public class ObjectDeserializer extends StdDeserializer<Object> {
 
@@ -42,6 +44,8 @@ public class ObjectDeserializer extends StdDeserializer<Object> {
             }
         } else if (jsonNode.isBoolean()) {
             return jsonNode.asBoolean();
+        } else if (jsonNode.isInt()) {
+            return jsonNode.asInt();
         } else if (jsonNode.isObject()) {
             if (jsonNode.get("type").asText().equals("list")) {
                 ArrayList<Object> list = new ArrayList<>();
@@ -60,6 +64,8 @@ public class ObjectDeserializer extends StdDeserializer<Object> {
                         }
                     } else if (element.isBoolean()) {
                         list.add(element.asBoolean());
+                    } else if (jsonNode.isInt()) {
+                        return jsonNode.asInt();
                     } else {
                         list.add(null);
                     }
@@ -82,6 +88,8 @@ public class ObjectDeserializer extends StdDeserializer<Object> {
                         }
                     } else if (element.isBoolean()) {
                         set.add(element.asBoolean());
+                    } else if (jsonNode.isInt()) {
+                        return jsonNode.asInt();
                     } else {
                         set.add(null);
                     }

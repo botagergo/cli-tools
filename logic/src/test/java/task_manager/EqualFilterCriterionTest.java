@@ -4,9 +4,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.testng.annotations.*;
-
-import task_manager.filter.EqualsFilterCriterion;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
+import task_manager.filter.EqualFilterCriterion;
 import task_manager.property.PropertyDescriptor;
 import task_manager.property.PropertyException;
 import task_manager.property.PropertyManager;
@@ -15,14 +15,17 @@ import task_manager.repository.PropertyDescriptorRepository;
 import task_manager.util.RoundRobinUUIDGenerator;
 import task_manager.util.Utils;
 
-import static org.testng.Assert.*;
-
 import java.io.IOException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.UUID;
 
-public class EqualsFilterCriterionTest {
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertTrue;
 
-    public EqualsFilterCriterionTest() throws IOException {
+public class EqualFilterCriterionTest {
+
+    public EqualFilterCriterionTest() throws IOException {
         MockitoAnnotations.openMocks(this);
         mockitoPropertyDescriptor("test_string", PropertyDescriptor.Type.String, PropertyDescriptor.Multiplicity.SINGLE);
         mockitoPropertyDescriptor("test_boolean", PropertyDescriptor.Type.Boolean, PropertyDescriptor.Multiplicity.SINGLE);
@@ -125,14 +128,14 @@ public class EqualsFilterCriterionTest {
 
     private boolean checkEquals(String propertyName, Object operand)
             throws PropertyException, IOException {
-        return new EqualsFilterCriterion(propertyName, operand)
-            .check(propertyOwner, propertyManager);
+        return new EqualFilterCriterion(propertyName, operand)
+                .check(propertyOwner, propertyManager);
     }
 
     private boolean checkEqualsWithDefault(String propertyName, Object operand)
             throws PropertyException, IOException {
-        return new EqualsFilterCriterion(propertyName, operand)
-            .check(propertyOwner, propertyManager);
+        return new EqualFilterCriterion(propertyName, operand)
+                .check(propertyOwner, propertyManager);
     }
 
     private void mockitoPropertyDescriptor(String propertyName, PropertyDescriptor.Type propertyType, PropertyDescriptor.Multiplicity multiplicity) throws IOException {

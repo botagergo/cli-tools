@@ -9,7 +9,10 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import task_manager.data.SortingCriterion;
-import task_manager.property.*;
+import task_manager.property.PropertyDescriptor;
+import task_manager.property.PropertyException;
+import task_manager.property.PropertyManager;
+import task_manager.property.PropertyNotComparableException;
 import task_manager.repository.PropertyDescriptorRepository;
 import task_manager.sorter.PropertySorter;
 import task_manager.util.Utils;
@@ -18,7 +21,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertThrows;
 
 public class PropertySorterTest {
 
@@ -32,6 +36,7 @@ public class PropertySorterTest {
         mockitoPropertyDescriptor("test_boolean", PropertyDescriptor.Type.Boolean, PropertyDescriptor.Multiplicity.SINGLE);
         mockitoPropertyDescriptor("test_boolean_list", PropertyDescriptor.Type.Boolean, PropertyDescriptor.Multiplicity.LIST);
         mockitoPropertyDescriptor("test_boolean_set", PropertyDescriptor.Type.Boolean, PropertyDescriptor.Multiplicity.SET);
+        mockitoPropertyDescriptor("test_integer", PropertyDescriptor.Type.Integer, PropertyDescriptor.Multiplicity.SINGLE);
         mockitoPropertyDescriptor("test_uuid", PropertyDescriptor.Type.UUID, PropertyDescriptor.Multiplicity.SINGLE);
         mockitoPropertyDescriptor("test_uuid_list", PropertyDescriptor.Type.UUID, PropertyDescriptor.Multiplicity.LIST);
         mockitoPropertyDescriptor("test_uuid_set", PropertyDescriptor.Type.UUID, PropertyDescriptor.Multiplicity.SET);
@@ -69,6 +74,22 @@ public class PropertySorterTest {
         );
 
         assertSorted(propertyOwners, sorter, List.of(1, 0));
+    }
+
+    @Test
+    public void test_PropertySorter_sort_integers() throws IOException, PropertyException, PropertyNotComparableException {
+        PropertySorter<PropertyOwnerImpl> sorter = new PropertySorter<>(List.of(
+                new SortingCriterion("test_integer", true)
+        ));
+
+        ArrayList<PropertyOwnerImpl> propertyOwners = Lists.newArrayList(
+                new PropertyOwnerImpl(Utils.newHashMap("test_integer", 3)),
+                new PropertyOwnerImpl(Utils.newHashMap("test_integer", 4)),
+                new PropertyOwnerImpl(Utils.newHashMap("test_integer", -9999)),
+                new PropertyOwnerImpl(Utils.newHashMap("test_integer", 11))
+        );
+
+        assertSorted(propertyOwners, sorter, List.of(2, 0, 1, 3));
     }
 
     @Test

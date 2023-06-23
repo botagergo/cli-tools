@@ -2,9 +2,9 @@ package task_manager.filter;
 
 import task_manager.property.Property;
 
-public class EqualsFilterCriterion extends PropertyFilterCriterion {
+public class EqualFilterCriterion extends PropertyFilterCriterion {
 
-    public EqualsFilterCriterion(
+    public EqualFilterCriterion(
             String propertyName,
             Object operand) {
         super(propertyName);

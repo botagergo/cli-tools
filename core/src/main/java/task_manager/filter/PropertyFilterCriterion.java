@@ -15,7 +15,7 @@ public abstract class PropertyFilterCriterion extends FilterCriterion {
 
     @Override
     public boolean check_(PropertyOwner propertyOwner, PropertyManager propertyManager) throws PropertyException, IOException {
-        Property property = propertyManager.getProperty(propertyOwner, propertyName);
+        Property property = propertyManager.getProperty(propertyName, propertyOwner);
         return check_(property);
     }
 
