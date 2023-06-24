@@ -4,7 +4,10 @@ import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.fusesource.jansi.Ansi;
 import org.fusesource.jansi.Ansi.Color;
-import task_manager.core.data.*;
+import task_manager.core.data.Label;
+import task_manager.core.data.OrderedLabel;
+import task_manager.core.data.SortingCriterion;
+import task_manager.core.data.Task;
 import task_manager.core.property.PropertyException;
 import task_manager.core.property.PropertySpec;
 import task_manager.ui.cli.Context;
@@ -68,10 +71,10 @@ public record ListTasksCommand(
 
         LinkedHashSet<UUID> tagUuids = context.getPropertyManager().getProperty("tags", task).getUuidSet();
         for (UUID tagUuid : tagUuids) {
-            Tag tag = context.getTagUseCase().getTag(tagUuid);
+            Label tag = context.getLabelUseCase().getLabel("tag", tagUuid);
 
             if (tag != null) {
-                tagsStr.append("/").append(tag.name()).append(" ");
+                tagsStr.append("/").append(tag.text()).append(" ");
             }
         }
 
@@ -84,13 +87,13 @@ public record ListTasksCommand(
             return "";
         }
 
-        Status status = context.getStatusUseCase().getStatus(statusUuid);
+        Label status = context.getLabelUseCase().getLabel("status", statusUuid);
         if (status == null) {
             log.warn("Status with UUID '" + statusUuid + "' does not exist");
             return "";
         }
 
-        return status.name();
+        return status.text();
     }
 
     private String getPriorityStr(Context context, Task task) throws IOException, PropertyException {

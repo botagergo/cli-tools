@@ -11,4 +11,8 @@ public interface LabelUseCase {
     Label findLabel(String labelType, String labelText) throws IOException;
 
     Label createLabel(String labelType, String labelText) throws IOException;
+
+    Label createLabel(String labelName, Label label) throws IOException;
+
+    void deleteAllLabels(String labelName) throws IOException;
 }

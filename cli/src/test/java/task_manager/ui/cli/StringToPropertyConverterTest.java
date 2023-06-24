@@ -159,7 +159,7 @@ public class StringToPropertyConverterTest {
     @Test
     public void test_stringToProperty_uuid_notAnUuid_tagNotFound_y_tagCreated() throws IOException, StringToPropertyConverterException {
         Mockito.when(labelUseCase.findLabel("test", "tag")).thenReturn(null);
-        Mockito.when(labelUseCase.createLabel(any(), any())).thenReturn(new Label(uuid1, "tag"));
+        Mockito.when(labelUseCase.createLabel(any(), (String) any())).thenReturn(new Label(uuid1, "tag"));
         setStdin("y");
 
         assertEquals(propertyConverter.stringToProperty(

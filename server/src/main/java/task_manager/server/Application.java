@@ -12,10 +12,9 @@ import task_manager.core.property.PropertyManager;
 import task_manager.core.util.RandomUUIDGenerator;
 import task_manager.core.util.UUIDGenerator;
 import task_manager.init.Initializer;
+import task_manager.logic.use_case.label.LabelUseCaseImpl;
 import task_manager.logic.use_case.ordered_label.OrderedLabelUseCaseImpl;
 import task_manager.logic.use_case.property_descriptor.PropertyDescriptorUseCaseImpl;
-import task_manager.logic.use_case.status.StatusUseCaseImpl;
-import task_manager.logic.use_case.tag.TagUseCaseImpl;
 import task_manager.logic.use_case.task.TaskUseCaseImpl;
 import task_manager.logic.use_case.view.PropertyConverter;
 import task_manager.logic.use_case.view.ViewUseCaseImpl;
@@ -68,13 +67,8 @@ public class Application {
     }
 
     @Bean
-    TagUseCaseImpl tagUseCase() {
-        return new TagUseCaseImpl(labelRepositoryFactory(), new RandomUUIDGenerator());
-    }
-
-    @Bean
-    StatusUseCaseImpl statusUseCase() {
-        return new StatusUseCaseImpl(labelRepositoryFactory(), uuidGenerator());
+    LabelUseCaseImpl labelUseCase() {
+        return new LabelUseCaseImpl(labelRepositoryFactory(), uuidGenerator());
     }
 
     @Bean
@@ -121,7 +115,7 @@ public class Application {
 
     @Bean
     public Initializer initializer() {
-        return new Initializer(orderedLabelUseCase(), propertyDescriptorUseCase(), statusUseCase());
+        return new Initializer(propertyDescriptorUseCase(), labelUseCase(), orderedLabelUseCase());
     }
 
     @Bean

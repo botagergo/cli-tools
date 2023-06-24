@@ -6,12 +6,12 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.ErrorResponseException;
-import org.springframework.web.bind.annotation.*;
-import task_manager.core.data.Tag;
-import task_manager.logic.use_case.tag.TagUseCase;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import task_manager.logic.use_case.label.LabelUseCase;
 import task_manager.server.ProblemDetails;
-
-import java.util.UUID;
 
 @RestController
 @RequestMapping(path = "${apiPrefix}/tags")
@@ -19,17 +19,18 @@ import java.util.UUID;
 public class TagController {
 
 	@Inject
-	public TagController(TagUseCase tagUseCase) {
-		this.tagUseCase = tagUseCase;
+	public TagController(LabelUseCase labelUseCase) {
+		this.labelUseCase = labelUseCase;
 	}
 
+	/*
 	@GetMapping
 	public Object getTags(@RequestParam(value = "query", defaultValue = "") String query) {
 		try {
 			if (!query.isEmpty()) {
-				return tagUseCase.findTag(query);
+				return labelUseCase.findTag(query);
 			} else {
-				return tagUseCase.getTags();
+				return labelUseCase.getTags();
 			}
 		} catch (Exception e) {
 			return handleInternalServerError(e);
@@ -39,7 +40,7 @@ public class TagController {
 	@GetMapping("{uuid}")
 	public Object getTag(@PathVariable("uuid") String uuid) {
 		try {
-			Tag tag = tagUseCase.getTag(UUID.fromString(uuid));
+			Tag tag = labelUseCase.getTag(UUID.fromString(uuid));
 			if (tag == null) {
 				handleTagNotFound(uuid);
 			}
@@ -57,7 +58,7 @@ public class TagController {
 			if (tag.uuid() != null) {
 				handleUuidInPostRequest();
 			}
-			return tagUseCase.addTag(tag.name());
+			return labelUseCase.addTag(tag.name());
 		} catch (Exception e) {
 			return handleInternalServerError(e);
 		}
@@ -71,19 +72,20 @@ public class TagController {
 				return handleNoUuidInPutRequest();
 			}
 
-			if (tagUseCase.update(tag) == null) {
+			if (labelUseCase.update(tag) == null) {
 				return handleTagNotFound(uuid.toString());
 			}
 			return ResponseEntity.ok().build();
 		} catch (Exception e) {
 			return handleInternalServerError(e);
 		}
-	}
+	} */
 
 	@DeleteMapping(value = "{uuid}", consumes = "application/json")
 	public Object deleteTag(@PathVariable String uuid) {
 		try {
-			boolean result = tagUseCase.delete(UUID.fromString(uuid));
+			// boolean result = labelUseCase.delete(UUID.fromString(uuid));
+			boolean result = false;
 			if (!result) {
 				return handleTagNotFound(uuid);
 			}
@@ -127,6 +129,6 @@ public class TagController {
 			ProblemDetails.noUuidInPutRequest(), null);
 	}
 
-	final TagUseCase tagUseCase;
+	final LabelUseCase labelUseCase;
 
 }

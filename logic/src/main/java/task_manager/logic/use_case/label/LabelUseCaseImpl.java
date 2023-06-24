@@ -27,7 +27,17 @@ public class LabelUseCaseImpl implements LabelUseCase {
 
     @Override
     public Label createLabel(String labelName, String labelText) throws IOException {
-        return labelRepositoryFactory.getLabelRepository(labelName).create(new Label(uuidGenerator.getUUID(), labelText));
+        return createLabel(labelName, new Label(uuidGenerator.getUUID(), labelText));
+    }
+
+    @Override
+    public Label createLabel(String labelName, Label label) throws IOException {
+        return labelRepositoryFactory.getLabelRepository(labelName).create(label);
+    }
+
+    @Override
+    public void deleteAllLabels(String labelName) throws IOException {
+        labelRepositoryFactory.getLabelRepository(labelName).deleteAll();
     }
 
 }

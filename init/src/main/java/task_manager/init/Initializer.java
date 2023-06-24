@@ -2,14 +2,17 @@ package task_manager.init;
 
 import jakarta.inject.Inject;
 import lombok.AllArgsConstructor;
+import task_manager.core.data.Label;
 import task_manager.core.property.PropertyDescriptor;
+import task_manager.logic.use_case.label.LabelUseCase;
 import task_manager.logic.use_case.ordered_label.OrderedLabelUseCase;
 import task_manager.logic.use_case.property_descriptor.PropertyDescriptorUseCase;
-import task_manager.logic.use_case.status.StatusUseCase;
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.UUID;
 
 @AllArgsConstructor(onConstructor = @__(@Inject))
 public class Initializer {
@@ -19,8 +22,6 @@ public class Initializer {
         return propertyDescriptorCollection.isEmpty();
     }
 
-    private final OrderedLabelUseCase orderedLabelUseCase;
-
     public void initialize() throws IOException {
         initializePropertyDescriptors();
         initializeStatuses();
@@ -28,10 +29,10 @@ public class Initializer {
     }
 
     private void initializeStatuses() throws IOException {
-        statusUseCase.createStatus("NextAction");
-        statusUseCase.createStatus("Waiting");
-        statusUseCase.createStatus("Planning");
-        statusUseCase.createStatus("OnHold");
+        labelUseCase.createLabel("status", new Label(UUID.nameUUIDFromBytes(ByteBuffer.allocate(4).putInt(690234862).array()), "NextAction"));
+        labelUseCase.createLabel("status", new Label(UUID.nameUUIDFromBytes(ByteBuffer.allocate(4).putInt(495582995).array()), "Waiting"));
+        labelUseCase.createLabel("status", new Label(UUID.nameUUIDFromBytes(ByteBuffer.allocate(4).putInt(199213821).array()), "Planning"));
+        labelUseCase.createLabel("status", new Label(UUID.nameUUIDFromBytes(ByteBuffer.allocate(4).putInt(314566632).array()), "OnHold"));
     }
 
     private void initializePropertyDescriptors() throws IOException {
@@ -49,13 +50,14 @@ public class Initializer {
                 new PropertyDescriptor("priority", PropertyDescriptor.Type.Integer, new PropertyDescriptor.IntegerExtra("priority"), PropertyDescriptor.Multiplicity.SINGLE, null));
     }
 
-    private final PropertyDescriptorUseCase propertyDescriptorUseCase;
-    private final StatusUseCase statusUseCase;
-
     private void initializePriorities() throws IOException {
         orderedLabelUseCase.createOrderedLabel("priority", "low");
         orderedLabelUseCase.createOrderedLabel("priority", "medium");
         orderedLabelUseCase.createOrderedLabel("priority", "high");
     }
+
+    private final PropertyDescriptorUseCase propertyDescriptorUseCase;
+    private final LabelUseCase labelUseCase;
+    private final OrderedLabelUseCase orderedLabelUseCase;
 
 }

@@ -1,11 +1,10 @@
 package task_manager.ui.cli.command;
 
-import java.io.IOException;
-
-import org.apache.commons.lang3.exception.ExceptionUtils;
-
 import lombok.extern.log4j.Log4j2;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import task_manager.ui.cli.Context;
+
+import java.io.IOException;
 
 @Log4j2
 public class ClearCommand implements Command {
@@ -16,7 +15,7 @@ public class ClearCommand implements Command {
 
         try {
             context.getTaskUseCase().deleteAllTasks();
-            context.getTagUseCase().deleteAllTags();
+            context.getLabelUseCase().deleteAllLabels("tag");
         } catch (IOException e) {
             System.out.println("An IO error has occurred: " + e.getMessage());
             System.out.println("Check the logs for details.");
