@@ -9,5 +9,5 @@ public record PropertyArgument(
         @NonNull PropertySpec.Affinity affinity,
         @NonNull String propertyName,
         String predicate,
-        @NonNull List<String> values
+        List<String> values
 ) { }

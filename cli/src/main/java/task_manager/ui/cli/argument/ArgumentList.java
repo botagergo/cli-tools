@@ -18,7 +18,7 @@ public class ArgumentList {
             @NonNull List<String> normalArguments,
             @NonNull LinkedHashMap<Character,List<SpecialArgument>> specialArguments,
             @NonNull List<PropertyArgument> propertyArguments,
-            @NonNull List<Pair<String, List<String>>> optionArguments
+            @NonNull List<OptionArgument> optionArguments
     ) {
         this.commandName = commandName;
         this.normalArguments = normalArguments;
@@ -44,57 +44,24 @@ public class ArgumentList {
 
         for (int i = 1; i < tokenList.tokens().size(); i++) {
             String token = tokenList.tokens().get(i);
+            boolean isPropertyArg = false;
             int j;
             for (j = 0; j < token.length(); j++) {
-                if (token.charAt(j) == ':' && !tokenList.escapedPositions().contains(Pair.of(i, j))) {
-                    int startInd = 0;
-                    PropertySpec.Affinity affinity = PropertySpec.Affinity.NEUTRAL;
-                    boolean isOption = false;
-                    if (token.charAt(0) == '-') {
-                        affinity = PropertySpec.Affinity.NEGATIVE;
-                        startInd = 1;
-                    } else if (token.charAt(0) == '+') {
-                        affinity = PropertySpec.Affinity.POSITIVE;
-                        startInd = 1;
-                    } else if (token.charAt(0) == '.') {
-                        isOption = true;
-                        startInd = 1;
-                    }
+                char currChar = token.charAt(j);
+                if ((currChar == '.' || currChar == '+' || currChar == '-')
+                        && !tokenList.escapedPositions().contains(Pair.of(i, j))) {
+                    isPropertyArg = true;
+                }
 
-                    String name = token.substring(startInd, j);
-                    String value = token.substring(j+1);
-
-                    ArrayList<String> valueList = getValues(
-                            value, ',',
-                            tokenList.escapedPositions(),
-                            i, j+1
-                    );
-
-                    if (isOption) {
-                        argList.optionArguments.add(Pair.of(name, valueList));
-                    } else {
-                        ArrayList<String> nameList = getValues(
-                                name, '.',
-                                tokenList.escapedPositions(),
-                                i, startInd
-                        );
-
-                        String propertyName = "";
-                        String predicate = null;
-
-                        if (!nameList.isEmpty()) {
-                            propertyName = nameList.get(0);
-                        }
-
-                        if (nameList.size() >= 2) {
-                            predicate = nameList.get(1);
-                        }
-
-                        argList.propertyArguments.add(new PropertyArgument(affinity, propertyName, predicate, valueList));
-                    }
+                if (currChar == ':' && !tokenList.escapedPositions().contains(Pair.of(i, j))) {
+                    parsePropertyArgument(i, tokenList, argList, j);
+                    break;
+                } else if (isPropertyArg && j == token.length() - 1) {
+                    parsePropertyArgument(i, tokenList, argList, -1);
                     break;
                 }
             }
+
             if (j >= token.length()) {
                 argList.normalArguments.add(token);
             }
@@ -103,11 +70,65 @@ public class ArgumentList {
         return argList;
     }
 
+    private static void parsePropertyArgument(int tokenIndex, TokenList tokenList, ArgumentList argList, int colonIndex) {
+        String token = tokenList.tokens().get(tokenIndex);
+        int startInd = 0;
+        PropertySpec.Affinity affinity = PropertySpec.Affinity.NEUTRAL;
+        boolean isOption = false;
+        if (token.charAt(0) == '-') {
+            affinity = PropertySpec.Affinity.NEGATIVE;
+            startInd = 1;
+        } else if (token.charAt(0) == '+') {
+            affinity = PropertySpec.Affinity.POSITIVE;
+            startInd = 1;
+        } else if (token.charAt(0) == '.') {
+            isOption = true;
+            startInd = 1;
+        }
+
+        String name = colonIndex != -1
+                ? token.substring(startInd, colonIndex)
+                : token.substring(startInd);
+
+        ArrayList<String> valueList = null;
+        if (colonIndex != -1) {
+            valueList = getValues(
+                    token.substring(colonIndex + 1), ',',
+                    tokenList.escapedPositions(),
+                    tokenIndex, colonIndex + 1
+            );
+        }
+
+        if (isOption) {
+            argList.optionArguments.add(new OptionArgument(name, valueList));
+        } else {
+            ArrayList<String> nameList = getValues(
+                    name, '.',
+                    tokenList.escapedPositions(),
+                    tokenIndex, startInd
+            );
+
+            String propertyName = "";
+            String predicate = null;
+
+            if (!nameList.isEmpty()) {
+                propertyName = nameList.get(0);
+            }
+
+            if (nameList.size() >= 2) {
+                predicate = nameList.get(1);
+            }
+
+            argList.propertyArguments.add(new PropertyArgument(affinity, propertyName, predicate, valueList));
+        }
+    }
+
+
     private static ArrayList<String> getValues(String valueListStr,
-                                   char separator,
-                                   Set<Pair<Integer, Integer>> escapedPositions,
-                                   int argIndex,
-                                   int baseIndex
+                                               char separator,
+                                               Set<Pair<Integer, Integer>> escapedPositions,
+                                               int argIndex,
+                                               int baseIndex
     ) {
         ArrayList<String> valueList = new ArrayList<>();
 
@@ -129,5 +150,5 @@ public class ArgumentList {
     @Getter @Setter @NonNull private List<String> normalArguments;
     @Getter @Setter @NonNull private LinkedHashMap<Character, List<SpecialArgument>> specialArguments;
     @Getter @Setter @NonNull private List<PropertyArgument> propertyArguments;
-    @Getter @Setter @NonNull private List<Pair<String, List<String>>> optionArguments;
+    @Getter @Setter @NonNull private List<OptionArgument> optionArguments;
 }

@@ -1,8 +1,8 @@
 package task_manager.ui.cli.command_parser;
 
-import org.apache.commons.lang3.tuple.Pair;
 import task_manager.core.data.SortingCriterion;
 import task_manager.ui.cli.argument.ArgumentList;
+import task_manager.ui.cli.argument.OptionArgument;
 import task_manager.ui.cli.command.Command;
 import task_manager.ui.cli.command.ListTasksCommand;
 
@@ -27,13 +27,13 @@ public class ListTasksCommandParser implements CommandParser {
             nameQuery = String.join(" ", argList.getNormalArguments());
         }
 
-        for (Pair<String, List<String>> option : argList.getOptionArguments()) {
-            if (option.getLeft().equals("sort")) {
-                sortingCriteria = parseSortingCriteria(option.getRight());
-            } else if (option.getLeft().equals("view")) {
-                viewName = parseViewName(option.getRight());
+        for (OptionArgument optionArg : argList.getOptionArguments()) {
+            if (optionArg.optionName().equals("sort")) {
+                sortingCriteria = parseSortingCriteria(optionArg.values());
+            } else if (optionArg.optionName().equals("view")) {
+                viewName = parseViewName(optionArg.values());
             } else {
-                throw new CommandParserException("Invalid option: " + option.getLeft());
+                throw new CommandParserException("Invalid option: " + optionArg.optionName());
             }
         }
 

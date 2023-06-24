@@ -1,9 +1,9 @@
 package task_manager.ui.cli;
 
-import org.apache.commons.lang3.tuple.Pair;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.testng.annotations.Test;
 import task_manager.ui.cli.argument.ArgumentList;
+import task_manager.ui.cli.argument.OptionArgument;
 import task_manager.ui.cli.argument.SpecialArgument;
 import task_manager.ui.cli.command.ListTasksCommand;
 import task_manager.ui.cli.command_parser.CommandParserException;
@@ -62,7 +62,7 @@ public class ListTasksCommandParserTest {
                 parse(getArgList(
                     List.of("my", "task"),
                     new LinkedHashMap<>(),
-                    List.of(Pair.of("invalid-option", List.of("some-value"))))));
+                    List.of(new OptionArgument("invalid-option", List.of("some-value"))))));
     }
 
     @Test
@@ -70,7 +70,7 @@ public class ListTasksCommandParserTest {
         ListTasksCommand command = parse(getArgList(
                 List.of("my", "task"),
                 new LinkedHashMap<>(),
-                List.of(Pair.of("view", List.of("test-view")))));
+                List.of(new OptionArgument("view", List.of("test-view")))));
         assertEquals(command.nameQuery(), "my task");
         assertEquals(command.viewName(), "test-view");
         assertNull(command.queries());
@@ -83,7 +83,7 @@ public class ListTasksCommandParserTest {
     private ArgumentList getArgList(
             @NonNull List<String> normalArgs,
             @NonNull LinkedHashMap<Character, List<SpecialArgument>> specialArgs,
-            @NonNull List<Pair<String, List<String>>> optionArgs
+            @NonNull List<OptionArgument> optionArgs
     ) {
         ArgumentList argList = new ArgumentList();
         argList.setCommandName("list");
