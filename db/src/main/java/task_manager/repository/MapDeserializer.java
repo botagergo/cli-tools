@@ -30,7 +30,7 @@ public class MapDeserializer extends StdDeserializer<HashMap<String, Object>> {
         Iterator<Map.Entry<String, JsonNode>> fieldsIter = node.fields();
         while (fieldsIter.hasNext()) {
             Map.Entry<String, JsonNode> entry = fieldsIter.next();
-            properties.put(entry.getKey(), objectDeserializer.deserialize(entry.getValue()));
+            properties.put(entry.getKey(), objectDeserializer.deserialize(jp, entry.getValue()));
         }
         return properties;
     }

@@ -43,6 +43,10 @@ public class Utils {
         return ret;
     }
 
+    public static <K> LinkedHashSet<K> newLinkedHashSet() {
+        return new LinkedHashSet<>();
+    }
+
     public static <K> LinkedHashSet<K> newLinkedHashSet(K key1) {
         LinkedHashSet<K> ret = new LinkedHashSet<>();
         ret.add(key1);
@@ -62,6 +66,10 @@ public class Utils {
         ret.add(key2);
         ret.add(key3);
         return ret;
+    }
+
+    public static <K> ArrayList<K> newArrayList() {
+        return new ArrayList<>();
     }
 
     public static <K> ArrayList<K> newArrayList(K value1) {

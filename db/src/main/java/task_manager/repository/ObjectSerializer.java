@@ -5,7 +5,9 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 
 import java.io.IOException;
+import java.io.NotSerializableException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.UUID;
 
@@ -37,47 +39,35 @@ public class ObjectSerializer extends StdSerializer<Object> {
         } else if (value instanceof Integer i) {
             jgen.writeNumber(i);
         } else if (value instanceof ArrayList<?> list) {
-            jgen.writeStartObject();
-            jgen.writeStringField("type", "list");
-            jgen.writeFieldName("value");
-            jgen.writeStartArray();
-            for (Object item : list) {
-                if (item instanceof String str) {
-                    jgen.writeString("s:" + str);
-                } else if (item instanceof UUID uuid) {
-                    jgen.writeString("u:" + uuid);
-                } else if (item instanceof Boolean b) {
-                    jgen.writeBoolean(b);
-                } else if (item instanceof Integer i) {
-                    jgen.writeNumber(i);
-                } else {
-                    jgen.writeNull();
-                }
-            }
-            jgen.writeEndArray();
-            jgen.writeEndObject();
+            writeObject(jgen, "list", list);
         } else if (value instanceof LinkedHashSet<?> set) {
-            jgen.writeStartObject();
-            jgen.writeStringField("type", "set");
-            jgen.writeFieldName("value");
-            jgen.writeStartArray();
-            for (Object item : set) {
-                if (item instanceof String str) {
-                    jgen.writeString("s:" + str);
-                } else if (item instanceof UUID uuid) {
-                    jgen.writeString("u:" + uuid);
-                } else if (item instanceof Boolean b) {
-                    jgen.writeBoolean(b);
-                } else if (item instanceof Integer i) {
-                    jgen.writeNumber(i);
-                } else {
-                    jgen.writeNull();
-                }
-            }
-            jgen.writeEndArray();
-            jgen.writeEndObject();
+            writeObject(jgen, "set", set);
         } else {
-            jgen.writeNull();
+            throw new NotSerializableException("Type '" + value.getClass() + " is not serializable");
         }
+    }
+
+    private void writeObject(JsonGenerator jgen, String type, Collection<?> collection) throws IOException {
+        jgen.writeStartObject();
+        jgen.writeStringField("type", type);
+        jgen.writeFieldName("value");
+        jgen.writeStartArray();
+        for (Object item : collection) {
+            if (item instanceof String str) {
+                jgen.writeString("s:" + str);
+            } else if (item instanceof UUID uuid) {
+                jgen.writeString("u:" + uuid);
+            } else if (item instanceof Boolean b) {
+                jgen.writeBoolean(b);
+            } else if (item instanceof Integer i) {
+                jgen.writeNumber(i);
+            } else if (item == null) {
+                jgen.writeNull();
+            } else {
+                throw new NotSerializableException("Type '" + item.getClass() + " is not serializable");
+            }
+        }
+        jgen.writeEndArray();
+        jgen.writeEndObject();
     }
 }

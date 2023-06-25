@@ -33,7 +33,14 @@ public class MapDeserializerTest {
 
     @Test
     public void test_deserializer_singleFields() throws JsonProcessingException {
-        assertJsonStrEquals("{\"text\":\"s:test\",\"done\":false,\"uuid\":\"u:" + uuid1 + "\",\"priority\":2}",
+        assertJsonStrEquals(String.format("""
+                {
+                    "text": "s:test",
+                    "done": false,
+                    "uuid": "u:%s",
+                    "priority": 2
+                }
+                """, uuid1),
                 new HashMap<>(Map.of("text", "test", "done", false, "uuid", uuid1, "priority", 2)));
     }
 
