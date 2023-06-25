@@ -63,7 +63,7 @@ public class Application {
 
     @Bean
     TaskUseCaseImpl taskUseCase() {
-        return new TaskUseCaseImpl(taskRepository(), viewUseCase(), propertyManager(), new RandomUUIDGenerator());
+        throw new NotImplementedException();
     }
 
     @Bean

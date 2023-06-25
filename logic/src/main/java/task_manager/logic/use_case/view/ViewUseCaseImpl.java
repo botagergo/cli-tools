@@ -23,6 +23,7 @@ import java.util.Collection;
 @AllArgsConstructor(onConstructor = @__(@Inject))
 public class ViewUseCaseImpl implements ViewUseCase {
 
+    @Override
     public View getView(String name, PropertyManager propertyManager)
             throws IOException, PropertyException, PropertyConverterException, FilterCriterionException {
         ViewInfo viewInfo = viewInfoRepository.get(name);

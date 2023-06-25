@@ -33,15 +33,13 @@ public record DoneTaskCommand(@NonNull List<Integer> taskIDs) implements Command
 
             for (Task task : tasks) {
                 context.getTempIDMappingRepository().delete(task.getUUID());
-                boolean result = context.getTaskUseCase().deleteTask(task.getUUID());
-                //context.getPropertyManager().setProperty(task, "done", true);
-                //Task updatedTask = context.getTaskUseCase().modifyTask(task);
-                if (!result) {
+                context.getPropertyManager().setProperty(task, "done", true);
+                Task updatedTask = context.getTaskUseCase().modifyTask(task);
+                if (updatedTask == null) {
                     System.out.println("Failed to mark task '" + task.getUUID() + "' as done");
                     log.info("failed to mark task as done: {}", task.getUUID());
                 }
             }
-
         } catch (IOException e) {
             System.out.println("An IO error has occurred: " + e.getMessage());
             System.out.println("Check the logs for details.");

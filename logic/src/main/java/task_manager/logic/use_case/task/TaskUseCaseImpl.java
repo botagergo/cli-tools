@@ -11,6 +11,7 @@ import task_manager.core.property.PropertyDescriptor;
 import task_manager.core.property.PropertyException;
 import task_manager.core.property.PropertyManager;
 import task_manager.core.property.PropertySpec;
+import task_manager.core.repository.ConfigurationRepository;
 import task_manager.core.repository.TaskRepository;
 import task_manager.core.util.UUIDGenerator;
 import task_manager.logic.PropertyComparator;
@@ -57,6 +58,10 @@ public class TaskUseCaseImpl implements TaskUseCase {
         List<Task> tasks = getTasks();
         List<FilterCriterion> finalFilterCriteria = new ArrayList<>();
         PropertySorter<Task> sorter = null;
+
+        if (viewName == null) {
+            viewName = configurationRepository.defaultView();
+        }
 
         if (viewName != null) {
             View view = getView(viewName);
@@ -193,6 +198,7 @@ public class TaskUseCaseImpl implements TaskUseCase {
     private final TaskRepository taskRepository;
     private final ViewUseCase viewUseCase;
     private final PropertyManager propertyManager;
+    private final ConfigurationRepository configurationRepository;
     private final UUIDGenerator uuidGenerator;
 
 }
