@@ -42,6 +42,8 @@ public class ObjectSerializer extends StdSerializer<Object> {
             writeObject(jgen, "list", list);
         } else if (value instanceof LinkedHashSet<?> set) {
             writeObject(jgen, "set", set);
+        } else if (value == null) {
+            jgen.writeNull();
         } else {
             throw new NotSerializableException("Type '" + value.getClass() + " is not serializable");
         }
