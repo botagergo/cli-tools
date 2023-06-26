@@ -32,30 +32,10 @@ public class JsonViewInfoRepository extends SimpleJsonRepository<HashMap<String,
     }
 
     @Override
-    public HashMap<String, ViewInfo> getAll() throws IOException {
-        return getData();
-    }
-
-    @Override
     public ViewInfo create(ViewInfo viewInfo) throws IOException {
         getData().put(viewInfo.name(), viewInfo);
         writeData();
         return viewInfo;
-    }
-
-    @Override
-    public ViewInfo update(ViewInfo viewInfo) throws IOException {
-        HashMap<String, ViewInfo> viewInfos = getData();
-        if (!viewInfos.containsKey(viewInfo.name())) {
-            return null;
-        } else {
-            return viewInfos.put(viewInfo.name(), new ViewInfo(viewInfo.name(), viewInfo.sortingInfo(), viewInfo.filterCriterionInfo()));
-        }
-    }
-
-    @Override
-    public boolean delete(String name) throws IOException {
-        return getData().remove(name) != null;
     }
 
     @Override

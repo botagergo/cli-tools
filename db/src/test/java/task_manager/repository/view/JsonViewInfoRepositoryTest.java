@@ -1,9 +1,7 @@
 package task_manager.repository.view;
 
 import org.testng.annotations.Test;
-import task_manager.core.data.Label;
-import task_manager.core.util.RoundRobinUUIDGenerator;
-import task_manager.repository.label.JsonLabelRepository;
+import task_manager.core.data.*;
 import task_manager.repository.util.JsonRepositoryCreator;
 
 import java.io.File;
@@ -11,8 +9,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.List;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertThrows;
+import static org.testng.Assert.*;
 
 public class JsonViewInfoRepositoryTest {
 
@@ -21,121 +18,227 @@ public class JsonViewInfoRepositoryTest {
     }
 
     @Test
-    public void test_read_successful() throws IOException {
-        File tempFile = rc.makeTempFile("read_successful", String.format("""
-        [
-            {
-                "text":"label1",
-                "uuid":"%s"
+    public void test_get_existing() throws IOException {
+        File tempFile = rc.makeTempFile("test_get_existing", """
+        {
+            "view1": {
+                "name": "view1",
+                "sort": {
+                    "criteria": [
+                        {"property": "name", "ascending": true},
+                        {"property": "done", "ascending": false}
+                    ]
+                },
+                "filter": {
+                    "type": "AND",
+                    "children": [
+                        {"type": "PROPERTY", "property":"done", "predicate": "EQUALS", "operands":[false]},
+                        {"type": "PROPERTY", "property":"name", "predicate": "CONTAINS", "operands":["str"]},
+                        {"type": "PROPERTY", "property":"priority", "predicate": "LESS", "operands":["medium"]},
+                        {"type": "PROPERTY", "property":"priority", "predicate": "LESS_EQUAL", "operands":["medium"]},
+                        {"type": "PROPERTY", "property":"priority", "predicate": "GREATER", "operands":["medium"]},
+                        {"type": "PROPERTY", "property":"priority", "predicate": "GREATER_EQUAL", "operands":["medium"]}
+                    ]
+                }
             },
-            {
-                "text":"label2",
-                "uuid":"%s"
+            "view2": {
+                "name": "view2",
+                "filter": {
+                    "name": "filter1",
+                    "type": "OR",
+                    "children": [
+                        {"type": "PROPERTY", "property":"done", "predicate": "EQUALS", "operands":[false]},
+                        {"type": "NOT", "children": [
+                            {"type": "PROPERTY", "property":"name", "predicate": "CONTAINS", "operands":["str"]}
+                            ]
+                        }
+                    ]
+                }
+            },
+            "view3": {
+                "name": "view3",
+                "sort": {
+                    "criteria": [
+                        {"property": "name", "ascending": true}
+                    ]
+                }
+            },
+            "view4": {
+                "name": "view4"
             }
-        ]
-        """, uuidGenerator.getUUID(0), uuidGenerator.getUUID(1)));
-        repository = new JsonLabelRepository(tempFile);
-        assertEquals(repository.getAll(), List.of(
-                new Label(uuidGenerator.getUUID(0), "label1"),
-                new Label(uuidGenerator.getUUID(1), "label2")
+        }
+        """);
+        repository = new JsonViewInfoRepository(tempFile);
+        assertEquals(repository.get("view1"),
+                new ViewInfo(
+                        "view1",
+                        new SortingInfo(
+                                List.of(
+                                        new SortingCriterion("name", true),
+                                        new SortingCriterion("done", false)
+                                )
+                        ),
+                        new FilterCriterionInfo(
+                                null, FilterCriterionInfo.Type.AND, null,
+                                List.of(
+                                        new FilterCriterionInfo(null, FilterCriterionInfo.Type.PROPERTY, "done", null, Predicate.EQUALS, List.of(false)),
+                                        new FilterCriterionInfo(null, FilterCriterionInfo.Type.PROPERTY, "name", null, Predicate.CONTAINS, List.of("str")),
+                                        new FilterCriterionInfo(null, FilterCriterionInfo.Type.PROPERTY, "priority", null, Predicate.LESS, List.of("medium")),
+                                        new FilterCriterionInfo(null, FilterCriterionInfo.Type.PROPERTY, "priority", null, Predicate.LESS_EQUAL, List.of("medium")),
+                                        new FilterCriterionInfo(null, FilterCriterionInfo.Type.PROPERTY, "priority", null, Predicate.GREATER, List.of("medium")),
+                                        new FilterCriterionInfo(null, FilterCriterionInfo.Type.PROPERTY, "priority", null, Predicate.GREATER_EQUAL, List.of("medium"))
+                                        ),
+                                null, null)));
+        assertEquals(repository.get("view2"),
+                new ViewInfo(
+                        "view2",
+                        null,
+                        new FilterCriterionInfo(
+                                "filter1",
+                                FilterCriterionInfo.Type.OR,
+                                null,
+                                List.of(
+                                        new FilterCriterionInfo(null, FilterCriterionInfo.Type.PROPERTY, "done", null, Predicate.EQUALS, List.of(false)),
+                                        new FilterCriterionInfo(null, FilterCriterionInfo.Type.NOT, null,
+                                                List.of(
+                                                        new FilterCriterionInfo(null, FilterCriterionInfo.Type.PROPERTY, "name", null, Predicate.CONTAINS, List.of("str"))
+                                                ),
+                                                null, null)),
+                                null, null)));
+        assertEquals(repository.get("view3"),
+                new ViewInfo(
+                        "view3",
+                        new SortingInfo(
+                                List.of(new SortingCriterion("name", true))
+                        ),
+                        null
+                ));
+        assertEquals(repository.get("view4"), new ViewInfo("view4", null, null));
+    }
+
+    @Test
+    public void test_get_empty() throws IOException {
+        File tempFile = rc.makeTempFile("test_get_empty", "{}");
+        repository = new JsonViewInfoRepository(tempFile);
+        assertNull(repository.get("view1"));
+    }
+
+    @Test
+    public void test_get_notExist() throws IOException {
+        File tempFile = rc.getTempFile("test_get_notExist");
+        repository = new JsonViewInfoRepository(tempFile);
+        assertNull(repository.get("view1"));
+    }
+
+    @Test
+    public void test_create() throws IOException {
+        File tempFile = rc.getTempFile("test_create");
+        repository = new JsonViewInfoRepository(tempFile);
+        repository.create(new ViewInfo(
+                "view1",
+                new SortingInfo(
+                        List.of(
+                                new SortingCriterion("name", true),
+                                new SortingCriterion("done", false)
+                        )
+                ),
+                new FilterCriterionInfo(
+                        null, FilterCriterionInfo.Type.AND, null,
+                        List.of(
+                                new FilterCriterionInfo(null, FilterCriterionInfo.Type.PROPERTY, "done", null, Predicate.EQUALS, List.of(false)),
+                                new FilterCriterionInfo(null, FilterCriterionInfo.Type.PROPERTY, "name", null, Predicate.CONTAINS, List.of("str")),
+                                new FilterCriterionInfo(null, FilterCriterionInfo.Type.PROPERTY, "priority", null, Predicate.LESS, List.of("medium")),
+                                new FilterCriterionInfo(null, FilterCriterionInfo.Type.PROPERTY, "priority", null, Predicate.LESS_EQUAL, List.of("medium")),
+                                new FilterCriterionInfo(null, FilterCriterionInfo.Type.PROPERTY, "priority", null, Predicate.GREATER, List.of("medium")),
+                                new FilterCriterionInfo(null, FilterCriterionInfo.Type.PROPERTY, "priority", null, Predicate.GREATER_EQUAL, List.of("medium"))
+                        ),
+                        null, null)));
+        repository.create(new ViewInfo(
+                        "view2",
+                        null,
+                        new FilterCriterionInfo(
+                                "filter1",
+                                FilterCriterionInfo.Type.OR,
+                                null,
+                                List.of(
+                                        new FilterCriterionInfo(null, FilterCriterionInfo.Type.PROPERTY, "done", null, Predicate.EQUALS, List.of(false)),
+                                        new FilterCriterionInfo(null, FilterCriterionInfo.Type.NOT, null,
+                                                List.of(
+                                                        new FilterCriterionInfo(null, FilterCriterionInfo.Type.PROPERTY, "name", null, Predicate.CONTAINS, List.of("str"))
+                                                ),
+                                                null, null)),
+                                null, null))
+        );
+        repository.create(new ViewInfo(
+                "view3",
+                new SortingInfo(
+                        List.of(new SortingCriterion("name", true))
+                ),
+                null
         ));
-    }
+        repository.create(new ViewInfo("view4", null, null));
 
-    @Test
-    public void test_write_successful() throws IOException {
-        File tempFile = rc.getTempFile("write_successful");
-        repository = new JsonLabelRepository(tempFile);
-        repository.create(new Label(uuidGenerator.getUUID(0), "label1"));
-        repository.create(new Label(uuidGenerator.getUUID(1), "label2"));
-        String content = Files.readString(tempFile.toPath());
-        assertEquals(content, String.format("""
-        [
-            {
-                "uuid":"%s",
-                "text":"label1"
+        assertEquals(Files.readString(tempFile.toPath()), """
+        {
+            "view1": {
+                "name": "view1",
+                "sort": {
+                    "criteria": [
+                        {"property": "name", "ascending": true},
+                        {"property": "done", "ascending": false}
+                    ]
+                },
+                "filter": {
+                    "type": "AND",
+                    "children": [
+                        {"type": "PROPERTY", "property":"done", "predicate": "EQUALS", "operands":[false]},
+                        {"type": "PROPERTY", "property":"name", "predicate": "CONTAINS", "operands":["str"]},
+                        {"type": "PROPERTY", "property":"priority", "predicate": "LESS", "operands":["medium"]},
+                        {"type": "PROPERTY", "property":"priority", "predicate": "LESS_EQUAL", "operands":["medium"]},
+                        {"type": "PROPERTY", "property":"priority", "predicate": "GREATER", "operands":["medium"]},
+                        {"type": "PROPERTY", "property":"priority", "predicate": "GREATER_EQUAL", "operands":["medium"]}
+                    ]
+                }
             },
-            {
-                "uuid":"%s",
-                "text":"label2"
-            }
-        ]
-        """.replaceAll("\\s+", ""), uuidGenerator.getUUID(0), uuidGenerator.getUUID(1)));
-    }
-
-    @Test
-    public void test_badFormat_throwsException() throws IOException {
-        File tempFile = rc.getTempFile("bad_format");
-
-        Files.writeString(tempFile.toPath(), "[1, 2, 3]");
-        repository = new JsonLabelRepository(tempFile);
-        assertThrows(IOException.class, () -> repository.getData());
-
-        Files.writeString(tempFile.toPath(), "\"some string\"");
-        repository = new JsonLabelRepository(tempFile);
-        assertThrows(IOException.class, () -> repository.getData());
-
-        Files.writeString(tempFile.toPath(), "{\"text\":123}");
-        repository = new JsonLabelRepository(tempFile);
-        assertThrows(IOException.class, () -> repository.getData());
-    }
-
-    @Test
-    public void test_missingField_throwsException() throws IOException {
-        File tempFile = rc.makeTempFile("missing_field", String.format("""
-        [
-            {
-                "uuid":"%s"
+            "view2": {
+                "name": "view2",
+                "filter": {
+                    "name": "filter1",
+                    "type": "OR",
+                    "children": [
+                        {"type": "PROPERTY", "property":"done", "predicate": "EQUALS", "operands":[false]},
+                        {"type": "NOT", "children": [
+                            {"type": "PROPERTY", "property":"name", "predicate": "CONTAINS", "operands":["str"]}
+                            ]
+                        }
+                    ]
+                }
             },
-            {
-                "name":"label2",
-                "uuid":"%s"
+            "view3": {
+                "name": "view3",
+                "sort": {
+                    "criteria": [
+                        {"property": "name", "ascending": true}
+                    ]
+                }
+            },
+            "view4": {
+                "name": "view4"
             }
-        ]
-        """, uuidGenerator.getUUID(0), uuidGenerator.getUUID(1)));
-        
-        repository = new JsonLabelRepository(tempFile);
-        assertThrows(IOException.class, () -> repository.getData());
+        }
+        """.replaceAll("\\s", ""));
     }
 
     @Test
-    public void test_extraFields_throwsException() throws IOException {
-        File tempFile = rc.makeTempFile("extra_fields", String.format("""
-        [
-            {
-                "name":"label1",
-                "type":"asd",
-                "uuid":"%s"
-            },
-            {
-                "name":"label2",
-                "uuid":"%s"
-            }
-        ]
-        """, uuidGenerator.getUUID(0), uuidGenerator.getUUID(1)));
-        repository = new JsonLabelRepository(tempFile);
-        assertThrows(IOException.class, () -> repository.getData());
+    public void test_get_invalidFormat_throws() throws IOException {
+        File tempFile = rc.makeTempFile("test_getAll_invalidFormat_throws", """
+            [{"view1":{}]
+        """);
+        repository = new JsonViewInfoRepository(tempFile);
+        assertThrows(IOException.class, () -> repository.get("view1"));
     }
 
-    @Test
-    public void test_wrongFieldType_throwsException() throws IOException {
-        File tempFile = rc.makeTempFile("wrong_field_type", String.format("""
-        [
-            {
-                "name":"label1",
-                "uuid":true
-            },
-            {
-                "name":"label2",
-                "uuid":"%s"
-            }
-        ]
-        """, uuidGenerator.getUUID(1)));
-        repository = new JsonLabelRepository(tempFile);
-        assertThrows(IOException.class, () -> repository.getData());
-    }
-
-    private JsonLabelRepository repository;
-    RoundRobinUUIDGenerator uuidGenerator = new RoundRobinUUIDGenerator();
+    private JsonViewInfoRepository repository;
     private final JsonRepositoryCreator rc;
 
 }
