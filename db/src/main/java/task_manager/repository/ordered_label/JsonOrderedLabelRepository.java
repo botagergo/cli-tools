@@ -29,7 +29,7 @@ public class JsonOrderedLabelRepository extends JsonRepository<ArrayList<String>
     @Override
     public OrderedLabel get(int value) throws IOException {
         ArrayList<OrderedLabel> orderedLabels = getData();
-        if (value < 0 || value > orderedLabels.size()) {
+        if (value < 0 || value >= orderedLabels.size()) {
             return null;
         }
         return orderedLabels.get(value);
@@ -52,32 +52,6 @@ public class JsonOrderedLabelRepository extends JsonRepository<ArrayList<String>
         data.add(orderedLabel);
         writeData();
         return orderedLabel;
-    }
-
-    @Override
-    public OrderedLabel update(OrderedLabel orderedLabel) throws IOException {
-        ArrayList<OrderedLabel> orderedLabels = getData();
-
-        int value = orderedLabel.value();
-        if (value < 0 || value > orderedLabels.size()) {
-            return null;
-        }
-
-        OrderedLabel updatedOrderedLabel = orderedLabels.get(value).withText(orderedLabel.text());
-        orderedLabels.set(value, updatedOrderedLabel);
-        return updatedOrderedLabel;
-    }
-
-    @Override
-    public boolean delete(int value) throws IOException {
-        ArrayList<OrderedLabel> orderedLabels = getData();
-
-        if (value < 0 || value > orderedLabels.size()) {
-            return false;
-        }
-
-        orderedLabels.remove(value);
-        return true;
     }
 
     @Override

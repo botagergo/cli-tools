@@ -15,8 +15,4 @@ public interface OrderedLabelRepository {
 
     OrderedLabel find(String text) throws IOException;
 
-    OrderedLabel update(OrderedLabel orderedLabel) throws IOException;
-
-    boolean delete(int value) throws IOException;
-
 }
