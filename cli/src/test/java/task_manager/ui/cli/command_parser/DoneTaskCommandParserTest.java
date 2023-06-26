@@ -1,0 +1,50 @@
+package task_manager.ui.cli.command_parser;
+
+import org.testng.annotations.Test;
+import task_manager.ui.cli.argument.ArgumentList;
+import task_manager.ui.cli.command.DoneTaskCommand;
+
+import java.util.Arrays;
+import java.util.List;
+
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertThrows;
+
+public class DoneTaskCommandParserTest {
+
+    @Test
+    public void test_parse_noArgs() throws CommandParserException {
+        DoneTaskCommand command = parse(getArgList());
+        assertEquals(command.taskIDs().size(), 0);
+    }
+
+    @Test
+    public void test_parse_oneTaskID() throws CommandParserException {
+        DoneTaskCommand command = parse(getArgList("1"));
+        assertEquals(command.taskIDs(), List.of(1));
+    }
+
+    @Test
+    public void test_parse_multipleTaskIDs() throws CommandParserException {
+        DoneTaskCommand command = parse(getArgList("3", "111", "333"));
+        assertEquals(command.taskIDs(), List.of(3, 111, 333));
+    }
+
+    @Test
+    public void test_parse_invalidTaskID() {
+        assertThrows(CommandParserException.class, () -> parse(getArgList("1", "asdf", "2")));
+    }
+
+    private DoneTaskCommand parse(ArgumentList argList) throws CommandParserException {
+        return (DoneTaskCommand) parser.parse(argList);
+    }
+
+    private ArgumentList getArgList(String... param) {
+        ArgumentList argList = new ArgumentList();
+        argList.setCommandName("done");
+        argList.setNormalArguments(Arrays.asList(param));
+        return argList;
+    }
+
+    final DoneTaskCommandParser parser = new DoneTaskCommandParser();
+}
