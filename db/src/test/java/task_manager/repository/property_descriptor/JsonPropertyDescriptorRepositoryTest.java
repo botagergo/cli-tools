@@ -44,6 +44,67 @@ public class JsonPropertyDescriptorRepositoryTest {
     }
 
     @Test
+    public void test_find() throws IOException {
+        File tempFile = rc.makeTempFile("test_find", """
+        {
+            "name": {
+                "name":"name",
+                "type":"String",
+                "multiplicity":"SINGLE",
+                "defaultValue":null
+            },
+            "name1": {
+                "name":"name1",
+                "type":"UUID",
+                "multiplicity":"SET",
+                "defaultValue":null
+            },
+            "nam": {
+                "name":"nam",
+                "type":"UUID",
+                "multiplicity":"SET",
+                "defaultValue":null
+            }
+        }
+        """);
+        repository = new JsonPropertyDescriptorRepository(tempFile);
+        assertEquals(repository.find("name"), List.of(
+                new PropertyDescriptor("name", PropertyDescriptor.Type.String, null, PropertyDescriptor.Multiplicity.SINGLE, null),
+                new PropertyDescriptor("name1", PropertyDescriptor.Type.UUID, null, PropertyDescriptor.Multiplicity.SET, null)
+        ));
+    }
+
+    @Test
+    public void test_find_notFound() throws IOException {
+        File tempFile = rc.makeTempFile("test_find_notFound", """
+        {
+            "name": {
+                "name":"name",
+                "type":"String",
+                "multiplicity":"SINGLE",
+                "defaultValue":null
+            }
+        }
+        """);
+        repository = new JsonPropertyDescriptorRepository(tempFile);
+        assertEquals(repository.find("name3").size(), 0);
+    }
+
+    @Test
+    public void test_find_empty() throws IOException {
+        File tempFile = rc.makeTempFile("test_find_empty", "{}");
+        repository = new JsonPropertyDescriptorRepository(tempFile);
+        assertEquals(repository.find("name3").size(), 0);
+    }
+
+    @Test
+    public void test_find_fileNotExist() throws IOException {
+        File tempFile = rc.getTempFile("test_find_fileNotExist");
+        repository = new JsonPropertyDescriptorRepository(tempFile);
+        assertEquals(repository.find("name3").size(), 0);
+    }
+
+    @Test
     public void test_write_successful() throws IOException {
         File tempFile = rc.makeTempFile("write_successful", """
         {

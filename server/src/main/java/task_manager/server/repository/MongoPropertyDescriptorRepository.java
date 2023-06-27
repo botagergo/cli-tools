@@ -24,6 +24,11 @@ public class MongoPropertyDescriptorRepository implements PropertyDescriptorRepo
         throw new NotImplementedException();
     }
 
+    @Override
+    public List<PropertyDescriptor> find(String name) {
+        return null;
+    }
+
     public List<PropertyDescriptor> getAll() {
         List<PropertyDescriptor> propertyDescriptorCollection =
             new ArrayList<>();

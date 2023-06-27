@@ -24,14 +24,17 @@ public class StringToPropertyConverter {
 
     private final LabelUseCase labelUseCase;
 
-    public List<PropertySpec> convertProperties(List<PropertyArgument> properties, boolean createUuidIfNotExists) throws IOException, StringToPropertyConverterException, PropertyException {
+    public List<PropertySpec> convertProperties(
+            List<PropertyArgument> properties,
+            boolean createUuidIfNotExists
+    ) throws IOException, StringToPropertyConverterException, PropertyException {
         List<PropertySpec> propertySpecs = new ArrayList<>();
 
         for (PropertyArgument entry : properties) {
             String propertyName = entry.propertyName();
             List<String> propertyValue = entry.values();
 
-            PropertyDescriptor propertyDescriptor = propertyDescriptorUseCase.getPropertyDescriptor(propertyName);
+            PropertyDescriptor propertyDescriptor = propertyDescriptorUseCase.findPropertyDescriptor(propertyName);
 
             Object property = stringToProperty(propertyDescriptor, propertyValue, createUuidIfNotExists);
             propertySpecs.add(new PropertySpec(Property.fromUnchecked(propertyDescriptor, property), entry.affinity(), parsePredicate(entry.predicate())));

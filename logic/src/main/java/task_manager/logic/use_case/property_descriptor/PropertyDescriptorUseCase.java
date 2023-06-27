@@ -11,5 +11,7 @@ public interface PropertyDescriptorUseCase {
 
     PropertyDescriptor getPropertyDescriptor(String name) throws IOException, PropertyException;
 
+    PropertyDescriptor findPropertyDescriptor(String name) throws PropertyException, IOException;
+
     List<PropertyDescriptor> getPropertyDescriptors() throws IOException;
 }

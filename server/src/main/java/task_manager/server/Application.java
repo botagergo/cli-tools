@@ -89,8 +89,7 @@ public class Application {
 
     @Bean
     PropertyDescriptorUseCaseImpl propertyDescriptorUseCase() {
-        return new PropertyDescriptorUseCaseImpl(
-            propertyDescriptorRepository());
+        throw new NotImplementedException();
     }
 
     @Bean

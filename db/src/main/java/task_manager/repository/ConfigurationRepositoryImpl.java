@@ -25,10 +25,20 @@ public class ConfigurationRepositoryImpl implements ConfigurationRepository {
     }
 
     public String defaultView() {
+        return getProperty("defaultView", String.class, null);
+    }
+
+    public boolean allowPropertyPrefix() {
+        return getProperty("allowPropertyPrefix", Boolean.class, true);
+    }
+
+    private <T> T getProperty(String propertyName, Class<T> type, T defValue) {
         try {
-            return configProvider.getProperty("defaultView", String.class);
+            return configProvider.getProperty(propertyName, type);
         } catch (NoSuchElementException|IllegalStateException e) {
-            return null;
+            return defValue;
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Unable to get config parameter '" + propertyName + "': " + e.getMessage());
         }
     }
 

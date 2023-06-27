@@ -32,6 +32,8 @@ public class PropertyException extends Exception {
         } else if (exceptionType == Type.WrongValueType) {
             return "The value of property '" + propertyName + "' does not have the required type "
                     + propertyDescriptor.type().name() + " " + propertyDescriptor.multiplicity() + ": " + propertyValue;
+        } else if (exceptionType == Type.MultipleMatches) {
+            return "Multiple matching properties found for '" + propertyName + "'";
         } else {
             return null;
         }
@@ -44,7 +46,7 @@ public class PropertyException extends Exception {
     @Getter final PropertyDescriptor.Type requestedType;
 
     public enum Type {
-        NotExist, TypeMismatch, WrongValueType, NotACollection, WrongMultiplicity
+        NotExist, TypeMismatch, WrongValueType, NotACollection, WrongMultiplicity, MultipleMatches
     }
 
 }

@@ -325,7 +325,7 @@ public class StringToPropertyConverterTest {
     }
 
     private void mockitoPropertyDescriptor(String name, PropertyDescriptor.Type type, PropertyDescriptor.Multiplicity multiplicity) throws IOException, PropertyException {
-        Mockito.when(propertyDescriptorUseCase.getPropertyDescriptor(name)).thenReturn(new PropertyDescriptor(name,
+        Mockito.when(propertyDescriptorUseCase.findPropertyDescriptor(name)).thenReturn(new PropertyDescriptor(name,
                 type, null, multiplicity, null));
     }
     private final UUID uuid1 = uuidGenerator.getUUID();
