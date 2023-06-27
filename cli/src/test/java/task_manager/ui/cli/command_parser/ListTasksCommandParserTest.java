@@ -18,15 +18,21 @@ public class ListTasksCommandParserTest {
     @Test
     public void test_parse_noArgs() throws CommandParserException {
         ListTasksCommand command = parse(getArgList(List.of(), new LinkedHashMap<>(), List.of()));
-        assertNull(command.nameQuery());
+        assertNull(command.viewName());
         assertNull(command.queries());
     }
 
     @Test
-    public void test_parse_twoNormalArgs() throws CommandParserException {
-        ListTasksCommand command = parse(getArgList(List.of("my", "task"), new LinkedHashMap<>(), List.of()));
-        assertEquals(command.nameQuery(), "my task");
+    public void test_parse_oneNormalArg() throws CommandParserException {
+        ListTasksCommand command = parse(getArgList(List.of("viewName"), new LinkedHashMap<>(), List.of()));
+        assertEquals(command.viewName(), "viewName");
         assertNull(command.queries());
+    }
+
+    @Test
+    public void test_parse_twoNormalArgs_throws() {
+        assertThrows(CommandParserException.class, () ->
+                parse(getArgList(List.of("view1", "view2"), new LinkedHashMap<>(), List.of())));
     }
 
     @Test
@@ -37,7 +43,7 @@ public class ListTasksCommandParserTest {
                         new LinkedHashMap<>(Map.of('?', List.of(
                                 new SpecialArgument('?', "text='my task'")))),
                         List.of()));
-        assertNull(command.nameQuery());
+        assertNull(command.viewName());
         assertEquals(command.queries(), List.of("text='my task'"));
     }
 
@@ -50,7 +56,7 @@ public class ListTasksCommandParserTest {
                                 new SpecialArgument('?', "text='my task'"),
                                 new SpecialArgument('?', "text='other task'")))),
                         List.of()));
-        assertNull(command.nameQuery());
+        assertNull(command.viewName());
         assertEquals(command.queries(), List.of("text='my task'", "text='other task'"));
     }
 
@@ -61,17 +67,6 @@ public class ListTasksCommandParserTest {
                     List.of("my", "task"),
                     new LinkedHashMap<>(),
                     List.of(new OptionArgument("invalid-option", List.of("some-value"))))));
-    }
-
-    @Test
-    public void test_parse_view() throws CommandParserException {
-        ListTasksCommand command = parse(getArgList(
-                List.of("my", "task"),
-                new LinkedHashMap<>(),
-                List.of(new OptionArgument("view", List.of("test-view")))));
-        assertEquals(command.nameQuery(), "my task");
-        assertEquals(command.viewName(), "test-view");
-        assertNull(command.queries());
     }
 
     private ListTasksCommand parse(ArgumentList argList) throws CommandParserException {

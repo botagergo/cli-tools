@@ -32,9 +32,9 @@ public class TaskController {
 	}
 
 	@GetMapping
-	public Object getTasks(@RequestParam(value = "query", defaultValue = "") String query) throws PropertyNotComparableException {
+	public Object getTasks() throws PropertyNotComparableException {
 		try {
-			return taskUseCase.getTasks(query, null, null, null, null);
+			return taskUseCase.getTasks(null, null, null, null);
 		} catch (PropertyException | PropertyConverterException e) {
 			return null;
 		} catch (IOException e) {

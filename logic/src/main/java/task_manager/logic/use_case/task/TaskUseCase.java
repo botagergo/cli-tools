@@ -21,7 +21,7 @@ public interface TaskUseCase {
 
     List<Task> getTasks() throws IOException;
 
-    List<Task> getTasks(String nameQuery, List<String> queries, List<PropertySpec> propertySpecs, List<SortingCriterion> sortingCriteria, String viewName) throws IOException, PropertyException, PropertyNotComparableException, PropertyConverterException, FilterCriterionException, TaskUseCaseException;
+    List<Task> getTasks(List<String> queries, List<PropertySpec> propertySpecs, List<SortingCriterion> sortingCriteria, String viewName) throws IOException, PropertyException, PropertyNotComparableException, PropertyConverterException, FilterCriterionException, TaskUseCaseException;
 
     Task getTask(UUID uuid) throws IOException;
 

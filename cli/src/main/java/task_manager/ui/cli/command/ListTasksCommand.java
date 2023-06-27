@@ -24,7 +24,7 @@ import java.util.UUID;
 
 @Log4j2
 public record ListTasksCommand(
-        List<String> queries, String nameQuery,
+        List<String> queries,
         List<SortingCriterion> sortingCriteria,
         List<PropertyArgument> properties,
         String viewName
@@ -40,7 +40,7 @@ public record ListTasksCommand(
                 propertySpecs = context.getStringToPropertyConverter().convertProperties(properties, false);
             }
 
-            List<Task> tasks = context.getTaskUseCase().getTasks(nameQuery, queries, propertySpecs, sortingCriteria, viewName);
+            List<Task> tasks = context.getTaskUseCase().getTasks(queries, propertySpecs, sortingCriteria, viewName);
 
             SimpleTable table = SimpleTable.of().nextRow()
                     .nextCell().addLine("ID")

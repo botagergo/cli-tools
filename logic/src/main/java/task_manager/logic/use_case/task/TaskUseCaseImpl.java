@@ -53,7 +53,7 @@ public class TaskUseCaseImpl implements TaskUseCase {
     }
 
     @Override
-    public List<Task> getTasks(String nameQuery, List<String> queries, List<PropertySpec> propertySpecs, List<SortingCriterion> sortingCriteria, String viewName)
+    public List<Task> getTasks(List<String> queries, List<PropertySpec> propertySpecs, List<SortingCriterion> sortingCriteria, String viewName)
             throws IOException, TaskUseCaseException {
         List<Task> tasks = getTasks();
         List<FilterCriterion> finalFilterCriteria = new ArrayList<>();
@@ -75,10 +75,6 @@ public class TaskUseCaseImpl implements TaskUseCase {
             for (String query : queries) {
                 finalFilterCriteria.add(FilterBuilder.buildFilter(query));
             }
-        }
-
-        if (nameQuery != null) {
-            finalFilterCriteria.add(new ContainsCaseInsensitiveFilterCriterion("name", nameQuery));
         }
 
         if (propertySpecs != null) {

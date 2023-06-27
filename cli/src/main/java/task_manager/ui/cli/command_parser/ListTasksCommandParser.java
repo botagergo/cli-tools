@@ -15,7 +15,6 @@ public class ListTasksCommandParser implements CommandParser {
     @Override
     public Command parse(ArgumentList argList) throws CommandParserException {
         List<String> queries = null;
-        String nameQuery = null;
         List<SortingCriterion> sortingCriteria = null;
         String viewName = null;
         
@@ -23,8 +22,10 @@ public class ListTasksCommandParser implements CommandParser {
             queries = argList.getSpecialArguments().get('?').stream().map(SpecialArgument -> SpecialArgument.value).collect(Collectors.toList());
         }
 
-        if (argList.getNormalArguments().size() >= 1) {
-            nameQuery = String.join(" ", argList.getNormalArguments());
+        if (argList.getNormalArguments().size() == 1) {
+            viewName = String.join(" ", argList.getNormalArguments());
+        } else if (argList.getNormalArguments().size() > 1) {
+            throw new CommandParserException("One normal argument expected: view name");
         }
 
         for (OptionArgument optionArg : argList.getOptionArguments()) {
@@ -37,7 +38,7 @@ public class ListTasksCommandParser implements CommandParser {
             }
         }
 
-        return new ListTasksCommand(queries, nameQuery, sortingCriteria, argList.getPropertyArguments(), viewName);
+        return new ListTasksCommand(queries, sortingCriteria, argList.getPropertyArguments(), viewName);
     }
 
     private List<SortingCriterion> parseSortingCriteria(List<String> values) throws CommandParserException {
