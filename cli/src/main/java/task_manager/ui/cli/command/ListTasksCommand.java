@@ -1,9 +1,12 @@
 package task_manager.ui.cli.command;
 
+import com.inamik.text.tables.GridTable;
+import com.inamik.text.tables.SimpleTable;
+import com.inamik.text.tables.grid.Border;
+import com.inamik.text.tables.grid.Util;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.fusesource.jansi.Ansi;
-import org.fusesource.jansi.Ansi.Color;
 import task_manager.core.data.Label;
 import task_manager.core.data.OrderedLabel;
 import task_manager.core.data.SortingCriterion;
@@ -14,6 +17,7 @@ import task_manager.ui.cli.Context;
 import task_manager.ui.cli.argument.PropertyArgument;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.UUID;
@@ -38,10 +42,21 @@ public record ListTasksCommand(
 
             List<Task> tasks = context.getTaskUseCase().getTasks(nameQuery, queries, propertySpecs, sortingCriteria, viewName);
 
+            SimpleTable table = SimpleTable.of().nextRow()
+                    .nextCell().addLine("ID")
+                    .nextCell().addLine("Name")
+                    .nextCell().addLine("Priority")
+                    .nextCell().addLine("Effort")
+                    .nextCell().addLine("Status")
+                    .nextCell().addLine("Tags");
+
             for (Task task : tasks) {
                 int tempID = context.getTempIDMappingRepository().getOrCreateID(task.getUUID());
-                printTask(context, task, tempID);
+                addTaskToTable(table, context, task, tempID);
             }
+
+            GridTable gridTable = Border.of(Border.Chars.of('+', '-', '|')).apply(table.toGrid());
+            Util.print(gridTable, new PrintWriter(System.out, true));
         } catch (IOException e) {
             System.out.println("An IO error has occurred: " + e.getMessage());
             System.out.println("Check the logs for details.");
@@ -52,21 +67,23 @@ public record ListTasksCommand(
         }
     }
 
-    private void printTask(Context context, Task task, int tempID) throws IOException, PropertyException {
+    private void addTaskToTable(SimpleTable table, Context context, Task task, int tempID) throws IOException, PropertyException {
         String name = context.getPropertyManager().getProperty("name", task).getString();
 
         Ansi done;
         if (context.getPropertyManager().getProperty("done", task).getBoolean()) {
-            done = Ansi.ansi().fg(Color.GREEN).a("✓").reset();
+            done = Ansi.ansi().a("✓ ");
         } else {
-            done = Ansi.ansi().a("•");
+            done = Ansi.ansi().a("");
         }
 
-        System.out.format("%s [%-2d] %-50s\t%-10s\t%-10s\t%-15s\t%s\n", done, tempID, name,
-                getLabelStr(context, task, "priority"),
-                getLabelStr(context, task, "effort"),
-                getStatusStr(context, task),
-                getTagsStr(context, task));
+        table.nextRow()
+                .nextCell().addLine(Integer.toString(tempID))
+                .nextCell().addLine(done + name)
+                .nextCell().addLine(getLabelStr(context, task, "priority"))
+                .nextCell().addLine(getLabelStr(context, task, "effort"))
+                .nextCell().addLine(getStatusStr(context, task))
+                .nextCell().addLine(getTagsStr(context, task));
     }
 
     private String getTagsStr(Context context, Task task) throws IOException, PropertyException {

@@ -5,6 +5,7 @@ plugins {
 dependencies {
     implementation          'com.fasterxml.jackson.core:jackson-databind:2.14.2'
     testImplementation      'com.fasterxml.jackson.core:jackson-databind:2.14.2'
+    implementation          'com.github.inamik.text.tables:inamik-text-tables:0.8'
     implementation          'com.google.inject:guice:7.0.0'
     implementation          'jakarta.inject:jakarta.inject-api:2.0.1'
     implementation          'org.apache.commons:commons-lang3:3.12.0'
