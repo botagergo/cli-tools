@@ -26,6 +26,7 @@ public class Initializer {
         initializePropertyDescriptors();
         initializeStatuses();
         initializePriorities();
+        initializeEfforts();
     }
 
     private void initializeStatuses() throws IOException {
@@ -48,12 +49,22 @@ public class Initializer {
                 new PropertyDescriptor("status", PropertyDescriptor.Type.UUID, new PropertyDescriptor.UUIDExtra("status"), PropertyDescriptor.Multiplicity.SINGLE, null));
         propertyDescriptorUseCase.createPropertyDescriptor(
                 new PropertyDescriptor("priority", PropertyDescriptor.Type.Integer, new PropertyDescriptor.IntegerExtra("priority"), PropertyDescriptor.Multiplicity.SINGLE, null));
+        propertyDescriptorUseCase.createPropertyDescriptor(
+                new PropertyDescriptor("effort", PropertyDescriptor.Type.Integer, new PropertyDescriptor.IntegerExtra("effort"), PropertyDescriptor.Multiplicity.SINGLE, null));
+
     }
 
     private void initializePriorities() throws IOException {
         orderedLabelUseCase.createOrderedLabel("priority", "low");
         orderedLabelUseCase.createOrderedLabel("priority", "medium");
         orderedLabelUseCase.createOrderedLabel("priority", "high");
+    }
+
+    private void initializeEfforts() throws IOException {
+        orderedLabelUseCase.createOrderedLabel("effort", "trivial");
+        orderedLabelUseCase.createOrderedLabel("effort", "low");
+        orderedLabelUseCase.createOrderedLabel("effort", "medium");
+        orderedLabelUseCase.createOrderedLabel("effort", "high");
     }
 
     private final PropertyDescriptorUseCase propertyDescriptorUseCase;

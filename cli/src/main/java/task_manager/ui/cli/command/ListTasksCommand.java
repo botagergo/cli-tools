@@ -62,7 +62,10 @@ public record ListTasksCommand(
             done = Ansi.ansi().a("•");
         }
 
-        System.out.format("%s [%-2d] %-50s\t%-15s\t%-15s\t%s\n", done, tempID, name, getPriorityStr(context, task), getStatusStr(context, task),
+        System.out.format("%s [%-2d] %-50s\t%-10s\t%-10s\t%-15s\t%s\n", done, tempID, name,
+                getLabelStr(context, task, "priority"),
+                getLabelStr(context, task, "effort"),
+                getStatusStr(context, task),
                 getTagsStr(context, task));
     }
 
@@ -96,15 +99,15 @@ public record ListTasksCommand(
         return status.text();
     }
 
-    private String getPriorityStr(Context context, Task task) throws IOException, PropertyException {
-        Integer priorityInteger = context.getPropertyManager().getProperty("priority", task).getInteger();
-        if (priorityInteger == null) {
+    private String getLabelStr(Context context, Task task, String propertyName) throws IOException, PropertyException {
+        Integer value = context.getPropertyManager().getProperty(propertyName, task).getInteger();
+        if (value == null) {
             return "";
         }
 
-        OrderedLabel priority = context.getOrderedLabelUseCase().getOrderedLabel("priority", priorityInteger);
+        OrderedLabel priority = context.getOrderedLabelUseCase().getOrderedLabel(propertyName, value);
         if (priority == null) {
-            log.warn("Priority with value '" + priorityInteger + "' does not exist");
+            log.warn("Label with value '" + value + "' does not exist");
             return "";
         }
 
