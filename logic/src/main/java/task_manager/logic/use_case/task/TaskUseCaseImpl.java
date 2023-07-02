@@ -4,14 +4,11 @@ import jakarta.inject.Inject;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import org.apache.commons.lang3.NotImplementedException;
+import task_manager.core.data.FilterCriterionInfo;
 import task_manager.core.data.Predicate;
-import task_manager.core.data.SortingCriterion;
+import task_manager.core.data.SortingInfo;
 import task_manager.core.data.Task;
-import task_manager.core.property.PropertyDescriptor;
-import task_manager.core.property.PropertyException;
-import task_manager.core.property.PropertyManager;
-import task_manager.core.property.PropertySpec;
-import task_manager.core.repository.ConfigurationRepository;
+import task_manager.core.property.*;
 import task_manager.core.repository.TaskRepository;
 import task_manager.core.util.UUIDGenerator;
 import task_manager.logic.PropertyComparator;
@@ -19,12 +16,10 @@ import task_manager.logic.PropertyNotComparableException;
 import task_manager.logic.filter.*;
 import task_manager.logic.filter.grammar.FilterBuilder;
 import task_manager.logic.sorter.PropertySorter;
-import task_manager.logic.use_case.view.PropertyConverterException;
-import task_manager.logic.use_case.view.View;
-import task_manager.logic.use_case.view.ViewUseCase;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
@@ -53,22 +48,22 @@ public class TaskUseCaseImpl implements TaskUseCase {
     }
 
     @Override
-    public List<Task> getTasks(List<String> queries, List<PropertySpec> propertySpecs, List<SortingCriterion> sortingCriteria, String viewName)
-            throws IOException, TaskUseCaseException {
+    public List<Task> getTasks(
+            List<String> queries,
+            List<PropertySpec> propertySpecs,
+            SortingInfo sortingInfo,
+            FilterCriterionInfo filterCriterionInfo
+    ) throws IOException, TaskUseCaseException, PropertyException, PropertyConverterException, FilterCriterionException {
         List<Task> tasks = getTasks();
         List<FilterCriterion> finalFilterCriteria = new ArrayList<>();
         PropertySorter<Task> sorter = null;
 
-        if (viewName == null) {
-            viewName = configurationRepository.defaultView();
+        if (sortingInfo != null) {
+            sorter = new PropertySorter<>(sortingInfo.sortingCriteria());
         }
 
-        if (viewName != null) {
-            View view = getView(viewName);
-            sorter = view.sorter();
-            if (view.filterCriterion() != null) {
-                finalFilterCriteria.add(view.filterCriterion());
-            }
+        if (filterCriterionInfo != null) {
+            finalFilterCriteria.add(createFilterCriterion(filterCriterionInfo, propertyManager));
         }
 
         if (queries != null) {
@@ -98,10 +93,6 @@ public class TaskUseCaseImpl implements TaskUseCase {
             }
         }
 
-        if (sortingCriteria != null && !sortingCriteria.isEmpty()) {
-            sorter = new PropertySorter<>(sortingCriteria);
-        }
-
         if (sorter != null) {
             try {
                 tasks = sorter.sort(tasks, propertyManager);
@@ -122,19 +113,6 @@ public class TaskUseCaseImpl implements TaskUseCase {
     public void deleteAllTasks() throws IOException {
         taskRepository.deleteAll();
     }
-
-    private @NonNull View getView(String viewName) throws TaskUseCaseException, IOException {
-        try {
-            View view = viewUseCase.getView(viewName, propertyManager);
-            if (view == null) {
-                throw new TaskUseCaseException("View '" + viewName + "' does not exist");
-            }
-            return view;
-        } catch (PropertyException | PropertyConverterException | FilterCriterionException e) {
-            throw new TaskUseCaseException("Failed to get view '" + viewName + "': " + e.getMessage());
-        }
-    }
-
 
     private FilterCriterion getFilterCriterion(PropertySpec propertySpec) throws TaskUseCaseException {
         if (propertySpec.predicate() == Predicate.CONTAINS) {
@@ -191,10 +169,87 @@ public class TaskUseCaseImpl implements TaskUseCase {
         }
     }
 
+    private FilterCriterion createFilterCriterion(@NonNull FilterCriterionInfo filterCriterionInfo, @NonNull PropertyManager propertyManager) throws PropertyException, IOException, PropertyConverterException, FilterCriterionException {
+        switch (filterCriterionInfo.type()) {
+            case PROPERTY -> {
+                return createPropertyFilterCriterion(filterCriterionInfo, propertyManager);
+            }
+            case AND -> {
+                ArrayList<FilterCriterion> filterCriteria = new ArrayList<>();
+                for (FilterCriterionInfo filterCriterionInfo_ : filterCriterionInfo.children()) {
+                    filterCriteria.add(createFilterCriterion(filterCriterionInfo_, propertyManager));
+                }
+                return new AndFilterCriterion(filterCriteria);
+            }
+            case OR -> {
+                ArrayList<FilterCriterion> filterCriteria = new ArrayList<>();
+                for (FilterCriterionInfo filterCriterionInfo_ : filterCriterionInfo.children()) {
+                    filterCriteria.add(createFilterCriterion(filterCriterionInfo_, propertyManager));
+                }
+                return new OrFilterCriterion(filterCriteria);
+            }
+            case NOT -> {
+                return new NotFilterCriterion(createFilterCriterion(
+                        filterCriterionInfo.children().get(0), propertyManager));
+            }
+            default -> throw new NotImplementedException(filterCriterionInfo.type() + " filter criterion is not yet supported");
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private FilterCriterion createPropertyFilterCriterion(FilterCriterionInfo filterCriterionInfo, PropertyManager propertyManager) throws PropertyException, IOException, PropertyConverterException, FilterCriterionException {
+        PropertyDescriptor propertyDescriptor = propertyManager.getPropertyDescriptor(filterCriterionInfo.propertyName());
+        Object operand = propertyConverter.convertProperty(propertyDescriptor, filterCriterionInfo.operands());
+
+        switch (filterCriterionInfo.predicate()) {
+            case EQUALS -> {
+                return new EqualFilterCriterion(filterCriterionInfo.propertyName(), operand);
+            }
+            case CONTAINS -> {
+                if (propertyDescriptor.isCollection()) {
+                    return new CollectionContainsFilterCriterion(filterCriterionInfo.propertyName(), (Collection<Object>) operand);
+                } else if (propertyDescriptor.type() == PropertyDescriptor.Type.String) {
+                    return new ContainsCaseInsensitiveFilterCriterion(filterCriterionInfo.propertyName(), (String) operand);
+                } else {
+                    throw new FilterCriterionException(FilterCriterionException.Type.InvalidTypeForPredicate, propertyDescriptor, filterCriterionInfo.predicate());
+                }
+            }
+            case LESS -> {
+                if (!PropertyComparator.isComparable(propertyDescriptor)) {
+                    throw new FilterCriterionException(FilterCriterionException.Type.InvalidTypeForPredicate, propertyDescriptor, filterCriterionInfo.predicate());
+                } else {
+                    return new LessFilterCriterion(filterCriterionInfo.propertyName(), Property.fromUnchecked(propertyDescriptor, operand), new PropertyComparator(true));
+                }
+            }
+            case LESS_EQUAL -> {
+                if (!PropertyComparator.isComparable(propertyDescriptor)) {
+                    throw new FilterCriterionException(FilterCriterionException.Type.InvalidTypeForPredicate, propertyDescriptor, filterCriterionInfo.predicate());
+                } else {
+                    return new LessEqualFilterCriterion(filterCriterionInfo.propertyName(), Property.fromUnchecked(propertyDescriptor, operand), new PropertyComparator(true));
+                }
+            }
+            case GREATER -> {
+                if (!PropertyComparator.isComparable(propertyDescriptor)) {
+                    throw new FilterCriterionException(FilterCriterionException.Type.InvalidTypeForPredicate, propertyDescriptor, filterCriterionInfo.predicate());
+                } else {
+                    return new GreaterFilterCriterion(filterCriterionInfo.propertyName(), Property.fromUnchecked(propertyDescriptor, operand), new PropertyComparator(true));
+                }
+            }
+            case GREATER_EQUAL -> {
+                if (!PropertyComparator.isComparable(propertyDescriptor)) {
+                    throw new FilterCriterionException(FilterCriterionException.Type.InvalidTypeForPredicate, propertyDescriptor, filterCriterionInfo.predicate());
+                } else {
+                    return new GreaterEqualFilterCriterion(filterCriterionInfo.propertyName(), Property.fromUnchecked(propertyDescriptor, operand), new PropertyComparator(true));
+                }
+            }
+            default ->
+                    throw new NotImplementedException(filterCriterionInfo.type() + " predicate is not yet supported");
+        }
+    }
+
     private final TaskRepository taskRepository;
-    private final ViewUseCase viewUseCase;
     private final PropertyManager propertyManager;
-    private final ConfigurationRepository configurationRepository;
     private final UUIDGenerator uuidGenerator;
+    private final PropertyConverter propertyConverter;
 
 }

@@ -10,11 +10,10 @@ import org.springframework.web.bind.annotation.*;
 import task_manager.core.data.Task;
 import task_manager.core.property.PropertyException;
 import task_manager.core.property.PropertyManager;
-import task_manager.logic.PropertyNotComparableException;
 import task_manager.logic.filter.FilterCriterionException;
+import task_manager.logic.use_case.task.PropertyConverterException;
 import task_manager.logic.use_case.task.TaskUseCase;
 import task_manager.logic.use_case.task.TaskUseCaseException;
-import task_manager.logic.use_case.view.PropertyConverterException;
 import task_manager.server.ProblemDetails;
 
 import java.io.IOException;
@@ -32,7 +31,7 @@ public class TaskController {
 	}
 
 	@GetMapping
-	public Object getTasks() throws PropertyNotComparableException {
+	public Object getTasks() {
 		try {
 			return taskUseCase.getTasks(null, null, null, null);
 		} catch (PropertyException | PropertyConverterException e) {

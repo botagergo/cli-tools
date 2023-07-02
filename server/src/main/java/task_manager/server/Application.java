@@ -16,8 +16,7 @@ import task_manager.logic.use_case.label.LabelUseCaseImpl;
 import task_manager.logic.use_case.ordered_label.OrderedLabelUseCaseImpl;
 import task_manager.logic.use_case.property_descriptor.PropertyDescriptorUseCaseImpl;
 import task_manager.logic.use_case.task.TaskUseCaseImpl;
-import task_manager.logic.use_case.view.PropertyConverter;
-import task_manager.logic.use_case.view.ViewUseCaseImpl;
+import task_manager.logic.use_case.view.ViewInfoUseCaseImpl;
 import task_manager.repository.label.JsonLabelRepository;
 import task_manager.repository.ordered_label.JsonOrderedLabelRepositoryFactory;
 import task_manager.repository.view.JsonViewInfoRepository;
@@ -77,8 +76,8 @@ public class Application {
     }
 
     @Bean
-    ViewUseCaseImpl viewUseCase() {
-        return new ViewUseCaseImpl(viewInfoRepository(), new PropertyConverter(labelRepositoryFactory()));
+    ViewInfoUseCaseImpl viewUseCase() {
+        return new ViewInfoUseCaseImpl(viewInfoRepository());
     }
 
     @Bean

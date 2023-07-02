@@ -13,8 +13,8 @@ import task_manager.logic.use_case.property_descriptor.PropertyDescriptorUseCase
 import task_manager.logic.use_case.property_descriptor.PropertyDescriptorUseCaseImpl;
 import task_manager.logic.use_case.task.TaskUseCase;
 import task_manager.logic.use_case.task.TaskUseCaseImpl;
-import task_manager.logic.use_case.view.ViewUseCase;
-import task_manager.logic.use_case.view.ViewUseCaseImpl;
+import task_manager.logic.use_case.view.ViewInfoUseCase;
+import task_manager.logic.use_case.view.ViewInfoUseCaseImpl;
 import task_manager.repository.ConfigurationRepositoryImpl;
 import task_manager.repository.label.JsonLabelRepositoryFactory;
 import task_manager.repository.ordered_label.JsonOrderedLabelRepositoryFactory;
@@ -48,7 +48,7 @@ public class AppModule extends AbstractModule {
         bind(TaskUseCase.class).to(TaskUseCaseImpl.class);
         bind(LabelUseCase.class).to(LabelUseCaseImpl.class);
         bind(OrderedLabelUseCase.class).to(OrderedLabelUseCaseImpl.class);
-        bind(ViewUseCase.class).to(ViewUseCaseImpl.class);
+        bind(ViewInfoUseCase.class).to(ViewInfoUseCaseImpl.class);
         bind(PropertyDescriptorUseCase.class).to(PropertyDescriptorUseCaseImpl.class);
         bind(TempIDMappingRepository.class).to(JsonTempIDMappingRepository.class);
         bind(CommandParserFactory.class).to(CommandParserFactoryImpl.class);

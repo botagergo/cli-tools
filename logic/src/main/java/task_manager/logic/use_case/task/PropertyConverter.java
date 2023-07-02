@@ -1,4 +1,4 @@
-package task_manager.logic.use_case.view;
+package task_manager.logic.use_case.task;
 
 import jakarta.inject.Inject;
 import task_manager.core.data.Label;

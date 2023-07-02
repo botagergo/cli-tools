@@ -1,7 +1,8 @@
 package task_manager.logic.use_case.task;
 
 import org.apache.commons.lang3.NotImplementedException;
-import task_manager.core.data.SortingCriterion;
+import task_manager.core.data.FilterCriterionInfo;
+import task_manager.core.data.SortingInfo;
 import task_manager.core.data.Task;
 import task_manager.core.property.PropertySpec;
 import task_manager.logic.use_case.TaskManagerClient;
@@ -42,7 +43,7 @@ public class TaskUseCaseClientImpl implements TaskUseCase {
     }
 
     @Override
-    public List<Task> getTasks(List<String> queries, List<PropertySpec> propertySpecs, List<SortingCriterion> sortingCriteria, String viewName) {
+    public List<Task> getTasks(List<String> queries, List<PropertySpec> propertySpecs, SortingInfo sortingInfo, FilterCriterionInfo filterCriterionInfo) {
         throw new NotImplementedException();
     }
 

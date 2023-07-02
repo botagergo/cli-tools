@@ -4,15 +4,17 @@ import com.inamik.text.tables.GridTable;
 import com.inamik.text.tables.SimpleTable;
 import com.inamik.text.tables.grid.Border;
 import com.inamik.text.tables.grid.Util;
+import lombok.NonNull;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.fusesource.jansi.Ansi;
-import task_manager.core.data.Label;
-import task_manager.core.data.OrderedLabel;
-import task_manager.core.data.SortingCriterion;
-import task_manager.core.data.Task;
+import task_manager.core.data.*;
+import task_manager.core.property.Property;
 import task_manager.core.property.PropertyException;
 import task_manager.core.property.PropertySpec;
+import task_manager.logic.filter.FilterCriterionException;
+import task_manager.logic.use_case.task.PropertyConverterException;
+import task_manager.logic.use_case.task.TaskUseCaseException;
 import task_manager.ui.cli.Context;
 import task_manager.ui.cli.argument.PropertyArgument;
 
@@ -35,24 +37,52 @@ public record ListTasksCommand(
         log.traceEntry();
 
         try {
+            FilterCriterionInfo filterCriterionInfo = null;
+            SortingInfo sortingInfo = null;
+            List<String> propertiesToList = null;
+            String actualViewName = viewName;
+
             List<PropertySpec> propertySpecs = null;
             if (properties != null) {
                 propertySpecs = context.getStringToPropertyConverter().convertProperties(properties, false);
             }
 
-            List<Task> tasks = context.getTaskUseCase().getTasks(queries, propertySpecs, sortingCriteria, viewName);
+            if (actualViewName == null) {
+                actualViewName = context.getConfigurationRepository().defaultView();
+            }
+
+            if (actualViewName != null) {
+                ViewInfo viewInfo = getView(context, actualViewName);
+
+                if (viewInfo.sortingInfo() != null) {
+                    sortingInfo = viewInfo.sortingInfo();
+                }
+
+                if (viewInfo.filterCriterionInfo() != null) {
+                    filterCriterionInfo = viewInfo.filterCriterionInfo();
+                }
+
+                if (viewInfo.propertiesToList() != null) {
+                    propertiesToList = viewInfo.propertiesToList();
+                }
+            }
+
+            List<Task> tasks = context.getTaskUseCase().getTasks(queries, propertySpecs, sortingInfo, filterCriterionInfo);
+
+            if (propertiesToList == null) {
+                propertiesToList = List.of("name", "status", "tags");
+            }
 
             SimpleTable table = SimpleTable.of().nextRow()
-                    .nextCell().addLine("ID")
-                    .nextCell().addLine("Name")
-                    .nextCell().addLine("Priority")
-                    .nextCell().addLine("Effort")
-                    .nextCell().addLine("Status")
-                    .nextCell().addLine("Tags");
+                    .nextCell().addLine(" ID ");
+
+            for (String propertyName : propertiesToList) {
+                    table.nextCell().addLine(String.format(" %s ", propertyName.toUpperCase()));
+            }
 
             for (Task task : tasks) {
                 int tempID = context.getTempIDMappingRepository().getOrCreateID(task.getUUID());
-                addTaskToTable(table, context, task, tempID);
+                addTaskToTable(table, context, task, tempID, propertiesToList);
             }
 
             GridTable gridTable = Border.of(Border.Chars.of('+', '-', '|')).apply(table.toGrid());
@@ -67,9 +97,7 @@ public record ListTasksCommand(
         }
     }
 
-    private void addTaskToTable(SimpleTable table, Context context, Task task, int tempID) throws IOException, PropertyException {
-        String name = context.getPropertyManager().getProperty("name", task).getString();
-
+    private void addTaskToTable(SimpleTable table, Context context, Task task, int tempID, List<String> propertiesToList) throws IOException, PropertyException {
         Ansi done;
         if (context.getPropertyManager().getProperty("done", task).getBoolean()) {
             done = Ansi.ansi().a("✓ ");
@@ -78,12 +106,32 @@ public record ListTasksCommand(
         }
 
         table.nextRow()
-                .nextCell().addLine(Integer.toString(tempID))
-                .nextCell().addLine(done + name)
-                .nextCell().addLine(getLabelStr(context, task, "priority"))
-                .nextCell().addLine(getLabelStr(context, task, "effort"))
-                .nextCell().addLine(getStatusStr(context, task))
-                .nextCell().addLine(getTagsStr(context, task));
+                .nextCell().addLine(String.format(" %s ", tempID));
+
+        for (String propertyName : propertiesToList) {
+            Property property = context.getPropertyManager().getProperty(propertyName, task);
+            switch (propertyName) {
+                case "name" -> table.nextCell().addLine(String.format(" %s ", done + property.getString()));
+                case "done" -> table.nextCell().addLine(String.format(" %s ", property.getBoolean().toString()));
+                case "priority" -> table.nextCell().addLine(String.format(" %s ", getLabelStr(context, task, "priority")));
+                case "effort" -> table.nextCell().addLine(String.format(" %s ", getLabelStr(context, task, "effort")));
+                case "tags" -> table.nextCell().addLine(String.format(" %s ", getTagsStr(context, task)));
+                case "status" -> table.nextCell().addLine(String.format(" %s ", getStatusStr(context, task)));
+            }
+        }
+    }
+
+
+    private @NonNull ViewInfo getView(Context context, String viewName) throws TaskUseCaseException, IOException {
+        try {
+            ViewInfo viewInfo = context.getViewInfoUseCase().getViewInfo(viewName, context.getPropertyManager());
+            if (viewInfo == null) {
+                throw new TaskUseCaseException("View '" + viewName + "' does not exist");
+            }
+            return viewInfo;
+        } catch (PropertyException | PropertyConverterException | FilterCriterionException e) {
+            throw new TaskUseCaseException("Failed to get view '" + viewName + "': " + e.getMessage());
+        }
     }
 
     private String getTagsStr(Context context, Task task) throws IOException, PropertyException {

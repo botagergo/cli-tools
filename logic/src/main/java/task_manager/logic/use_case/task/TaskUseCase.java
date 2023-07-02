@@ -1,12 +1,11 @@
 package task_manager.logic.use_case.task;
 
-import task_manager.core.data.SortingCriterion;
+import task_manager.core.data.FilterCriterionInfo;
+import task_manager.core.data.SortingInfo;
 import task_manager.core.data.Task;
 import task_manager.core.property.PropertyException;
 import task_manager.core.property.PropertySpec;
-import task_manager.logic.PropertyNotComparableException;
 import task_manager.logic.filter.FilterCriterionException;
-import task_manager.logic.use_case.view.PropertyConverterException;
 
 import java.io.IOException;
 import java.util.List;
@@ -21,7 +20,12 @@ public interface TaskUseCase {
 
     List<Task> getTasks() throws IOException;
 
-    List<Task> getTasks(List<String> queries, List<PropertySpec> propertySpecs, List<SortingCriterion> sortingCriteria, String viewName) throws IOException, PropertyException, PropertyNotComparableException, PropertyConverterException, FilterCriterionException, TaskUseCaseException;
+    List<Task> getTasks(
+            List<String> queries,
+            List<PropertySpec> propertySpecs,
+            SortingInfo sortingInfo,
+            FilterCriterionInfo filterCriterionInfo
+    ) throws IOException, TaskUseCaseException, PropertyException, PropertyConverterException, FilterCriterionException;
 
     Task getTask(UUID uuid) throws IOException;
 

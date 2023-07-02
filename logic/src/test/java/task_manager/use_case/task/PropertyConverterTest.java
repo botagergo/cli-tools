@@ -1,4 +1,4 @@
-package task_manager.use_case.view;
+package task_manager.use_case.task;
 
 import org.mockito.*;
 import org.testng.annotations.BeforeClass;
@@ -12,8 +12,8 @@ import task_manager.core.util.RoundRobinUUIDGenerator;
 import task_manager.core.util.UUIDGenerator;
 import task_manager.core.util.Utils;
 import task_manager.logic.use_case.property_descriptor.PropertyDescriptorUseCase;
-import task_manager.logic.use_case.view.PropertyConverter;
-import task_manager.logic.use_case.view.PropertyConverterException;
+import task_manager.logic.use_case.task.PropertyConverter;
+import task_manager.logic.use_case.task.PropertyConverterException;
 
 import java.io.IOException;
 import java.util.List;
