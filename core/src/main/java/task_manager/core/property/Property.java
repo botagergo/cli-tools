@@ -5,7 +5,10 @@ import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedHashSet;
+import java.util.UUID;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @EqualsAndHashCode
@@ -22,7 +25,7 @@ public class Property {
                 checkPropertyValue(propertyDescriptor, propertyValue);
             }
         }
-        return new Property(propertyDescriptor, propertyValue);
+        return fromUnchecked(propertyDescriptor, propertyValue);
     }
 
     public static Property fromUnchecked(PropertyDescriptor propertyDescriptor, Object propertyValue) {
@@ -268,13 +271,13 @@ public class Property {
     }
 
     private static void checkPropertyValueList(PropertyDescriptor propertyDescriptor, Object propertyValues) throws PropertyException {
-        if (!(propertyValues instanceof List<?>)) {
+        if (!(propertyValues instanceof ArrayList<?>)) {
             throw new PropertyException(PropertyException.Type.WrongValueType,
                 propertyDescriptor.name(), propertyDescriptor, propertyValues,
                 propertyDescriptor.type());
         }
 
-        for (Object propertyValue : (List<?>) propertyValues) {
+        for (Object propertyValue : (ArrayList<?>) propertyValues) {
             if (propertyValue != null) {
                 checkPropertyValue(propertyDescriptor, propertyValue);
             }
@@ -282,13 +285,13 @@ public class Property {
     }
 
     private static void checkPropertyValueSet(PropertyDescriptor propertyDescriptor, Object propertyValues) throws PropertyException {
-        if (!(propertyValues instanceof Set<?>)) {
+        if (!(propertyValues instanceof LinkedHashSet<?>)) {
             throw new PropertyException(PropertyException.Type.WrongValueType,
                     propertyDescriptor.name(), propertyDescriptor, propertyValues,
                     propertyDescriptor.type());
         }
 
-        for (Object propertyValue : (Set<?>) propertyValues) {
+        for (Object propertyValue : (LinkedHashSet<?>) propertyValues) {
             if (propertyValue != null) {
                 checkPropertyValue(propertyDescriptor, propertyValue);
             }

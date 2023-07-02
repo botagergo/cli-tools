@@ -33,7 +33,7 @@ public record DeleteTaskCommand(List<Integer> taskIDs) implements Command {
             for (Task task : tasks) {
                 context.getTempIDMappingRepository().delete(task.getUUID());
                 boolean result = context.getTaskUseCase().deleteTask(
-                        context.getPropertyManager().getProperty("uuid", task).getUuid());
+                        context.getPropertyManager().getProperty(task, "uuid").getUuid());
                 if (!result) {
                     System.out.println("Failed to delete task '" + task.getUUID() + "'");
                     log.info("failed to delete task '" + task.getUUID() + "'");

@@ -99,7 +99,7 @@ public record ListTasksCommand(
 
     private void addTaskToTable(SimpleTable table, Context context, Task task, int tempID, List<String> propertiesToList) throws IOException, PropertyException {
         Ansi done;
-        if (context.getPropertyManager().getProperty("done", task).getBoolean()) {
+        if (context.getPropertyManager().getProperty(task, "done").getBoolean()) {
             done = Ansi.ansi().a("✓ ");
         } else {
             done = Ansi.ansi().a("");
@@ -109,7 +109,7 @@ public record ListTasksCommand(
                 .nextCell().addLine(String.format(" %s ", tempID));
 
         for (String propertyName : propertiesToList) {
-            Property property = context.getPropertyManager().getProperty(propertyName, task);
+            Property property = context.getPropertyManager().getProperty(task, propertyName);
             switch (propertyName) {
                 case "name" -> table.nextCell().addLine(String.format(" %s ", done + property.getString()));
                 case "done" -> table.nextCell().addLine(String.format(" %s ", property.getBoolean().toString()));
@@ -137,7 +137,7 @@ public record ListTasksCommand(
     private String getTagsStr(Context context, Task task) throws IOException, PropertyException {
         StringBuilder tagsStr = new StringBuilder();
 
-        LinkedHashSet<UUID> tagUuids = context.getPropertyManager().getProperty("tags", task).getUuidSet();
+        LinkedHashSet<UUID> tagUuids = context.getPropertyManager().getProperty(task, "tags").getUuidSet();
         for (UUID tagUuid : tagUuids) {
             Label tag = context.getLabelUseCase().getLabel("tag", tagUuid);
 
@@ -150,7 +150,7 @@ public record ListTasksCommand(
     }
 
     private String getStatusStr(Context context, Task task) throws IOException, PropertyException {
-        UUID statusUuid = context.getPropertyManager().getProperty("status", task).getUuid();
+        UUID statusUuid = context.getPropertyManager().getProperty(task, "status").getUuid();
         if (statusUuid == null) {
             return "";
         }
@@ -165,7 +165,7 @@ public record ListTasksCommand(
     }
 
     private String getLabelStr(Context context, Task task, String propertyName) throws IOException, PropertyException {
-        Integer value = context.getPropertyManager().getProperty(propertyName, task).getInteger();
+        Integer value = context.getPropertyManager().getProperty(task, propertyName).getInteger();
         if (value == null) {
             return "";
         }

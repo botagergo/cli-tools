@@ -68,6 +68,15 @@ public class Utils {
         return ret;
     }
 
+    public static <K> LinkedHashSet<K> newLinkedHashSet(K key1, K key2, K key3, K key4) {
+        LinkedHashSet<K> ret = new LinkedHashSet<>();
+        ret.add(key1);
+        ret.add(key2);
+        ret.add(key3);
+        ret.add(key4);
+        return ret;
+    }
+
     public static <K> ArrayList<K> newArrayList() {
         return new ArrayList<>();
     }

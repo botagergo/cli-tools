@@ -58,8 +58,8 @@ public class EqualFilterCriterionTest {
 
     @Test
     public void test_check_list_equals() throws PropertyException, IOException {
-        Mockito.when(propertyOwner.getProperties()).thenReturn(Utils.newHashMap("test_string_list", List.of("string_value1", "string_value2")));
-        assertTrue(checkEquals("test_string_list", List.of("string_value1", "string_value2")));
+        Mockito.when(propertyOwner.getProperties()).thenReturn(Utils.newHashMap("test_string_list", Utils.newArrayList("string_value1", "string_value2")));
+        assertTrue(checkEquals("test_string_list", Utils.newArrayList("string_value1", "string_value2")));
     }
 
     @Test
@@ -101,7 +101,7 @@ public class EqualFilterCriterionTest {
 
     @Test
     public void test_check_list_not_equal() throws PropertyException, IOException {
-        Mockito.when(propertyOwner.getProperties()).thenReturn(Utils.newHashMap("test_string_list", List.of("string_value1", "string_value3")));
+        Mockito.when(propertyOwner.getProperties()).thenReturn(Utils.newHashMap("test_string_list", Utils.newArrayList("string_value1", "string_value3")));
         assertFalse(
             checkEquals("test_string_list",
                 List.of("string_value1", "string_value2")));
@@ -116,7 +116,7 @@ public class EqualFilterCriterionTest {
             checkEquals("test_string_list",
                 List.of("string_value1", "string_value2")));
 
-        Mockito.when(propertyOwner.getProperties()).thenReturn(Utils.newHashMap("test_string_list", List.of("string_value1", "string_value3")));
+        Mockito.when(propertyOwner.getProperties()).thenReturn(Utils.newHashMap("test_string_list", Utils.newArrayList("string_value1", "string_value3")));
         assertFalse(
             checkEquals("test_string_list", null));
 

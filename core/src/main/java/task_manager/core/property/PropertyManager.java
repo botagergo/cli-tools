@@ -18,7 +18,7 @@ public class PropertyManager {
         this.propertyDescriptorRepository = propertyDescriptorRepository;
     }
 
-    public Property getProperty(String propertyName, PropertyOwner propertyOwner)
+    public Property getProperty(PropertyOwner propertyOwner, String propertyName)
             throws PropertyException, IOException {
         log.debug("getProperty - {}", propertyName);
 
@@ -43,21 +43,33 @@ public class PropertyManager {
     }
 
     public void addProperty(PropertyOwner propertyOwner, String propertyName, Collection<Object> propertyValue) throws PropertyException, IOException {
-        log.debug("setProperty - {}", propertyName);
+        log.debug("addProperty - {}", propertyName);
 
-        Property origProperty = getProperty(propertyName, propertyOwner);
+        if (propertyValue == null) {
+            log.debug("null collection is passed, returning");
+            return;
+        }
+
+        Property origProperty = getProperty(propertyOwner, propertyName);
         Object newProperty;
 
         if (origProperty.getPropertyDescriptor().multiplicity() == PropertyDescriptor.Multiplicity.LIST) {
             List<Object> origList = origProperty.getList();
-            newProperty = Lists.newArrayList(Iterables.concat(origList, propertyValue));
+            if (origList == null) {
+                newProperty = propertyValue;
+            } else {
+                newProperty = Lists.newArrayList(Iterables.concat(origList, propertyValue));
+            }
         } else if (origProperty.getPropertyDescriptor().multiplicity() == PropertyDescriptor.Multiplicity.SET) {
             Set<Object> origSet = origProperty.getSet();
-            newProperty = Sets.newLinkedHashSet(Iterables.concat(origSet, propertyValue));
+            if (origSet == null) {
+                newProperty = propertyValue;
+            } else {
+                newProperty = Sets.newLinkedHashSet(Iterables.concat(origSet, propertyValue));
+            }
         } else {
             throw new PropertyException(PropertyException.Type.NotACollection,
-                origProperty.getPropertyDescriptor().name(), origProperty.getPropertyDescriptor(), null,
-                PropertyDescriptor.Type.UUID);
+                origProperty.getPropertyDescriptor().name(), origProperty.getPropertyDescriptor(), null, null);
         }
 
         propertyOwner.getProperties().put(propertyName, newProperty);
@@ -65,20 +77,32 @@ public class PropertyManager {
 
     public void removeProperty(PropertyOwner propertyOwner, String propertyName, Collection<Object> propertyValue) throws PropertyException, IOException {
         log.debug("removeProperty - {}", propertyName);
-        Property origProperty = getProperty(propertyName, propertyOwner);
-        Object newProperty;
+
+        if (propertyValue == null) {
+            log.debug("null collection is passed, returning");
+            return;
+        }
+
+        Property origProperty = getProperty(propertyOwner, propertyName);
+        Collection<Object> newProperty;
 
         if (origProperty.getPropertyDescriptor().multiplicity() == PropertyDescriptor.Multiplicity.LIST) {
             ArrayList<Object> origList = origProperty.getList();
-            newProperty = Lists.newArrayList(Iterables.removeAll(origList, propertyValue));
+            if (origList == null) {
+                return;
+            }
+            newProperty = new ArrayList<>(origList);
+            Iterables.removeAll(newProperty, propertyValue);
         } else if (origProperty.getPropertyDescriptor().multiplicity() == PropertyDescriptor.Multiplicity.SET) {
             LinkedHashSet<Object> origSet = origProperty.getSet();
-            Iterables.removeAll(origSet, propertyValue);
-            newProperty = origSet;
+            if (origSet == null) {
+                return;
+            }
+            newProperty = new LinkedHashSet<>(origSet);
+            Iterables.removeAll(newProperty, propertyValue);
         } else {
             throw new PropertyException(PropertyException.Type.NotACollection,
-                    origProperty.getPropertyDescriptor().name(), origProperty.getPropertyDescriptor(), null,
-                    PropertyDescriptor.Type.UUID);
+                    origProperty.getPropertyDescriptor().name(), origProperty.getPropertyDescriptor(), null, null);
         }
 
         propertyOwner.getProperties().put(propertyName, newProperty);

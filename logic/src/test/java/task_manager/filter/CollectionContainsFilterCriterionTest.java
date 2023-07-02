@@ -115,8 +115,8 @@ public class CollectionContainsFilterCriterionTest {
 
     @Test
     public void test_check_listContainsEmpty() throws PropertyException, IOException {
-        Mockito.when(propertyOwner.getProperties()).thenReturn(Utils.newHashMap("test_string_list", List.of("value1", "value2")));
-        assertTrue(new CollectionContainsFilterCriterion("test_string_list", Lists.newArrayList()).check(propertyOwner, propertyManager));
+        Mockito.when(propertyOwner.getProperties()).thenReturn(Utils.newHashMap("test_string_list", Utils.newArrayList("value1", "value2")));
+        assertTrue(new CollectionContainsFilterCriterion("test_string_list", Utils.newArrayList()).check(propertyOwner, propertyManager));
     }
 
     @Test
