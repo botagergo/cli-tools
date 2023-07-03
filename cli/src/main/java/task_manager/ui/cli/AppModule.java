@@ -37,6 +37,11 @@ public class AppModule extends AbstractModule {
 
     @Override
     protected void configure() {
+        String basePath = System.getenv("TASK_MANAGER_BASE_PATH");
+        if (basePath == null) {
+            basePath = System.getProperty("user.home") + "/.config/task_manager/";
+        }
+
         bind(Tokenizer.class).to(TokenizerImpl.class);
         bind(TaskRepository.class).to(JsonTaskRepository.class);
         bind(ViewInfoRepository.class).to(JsonViewInfoRepository.class);
@@ -55,12 +60,13 @@ public class AppModule extends AbstractModule {
         bind(CommandLine.class).to(JlineCommandLine.class);
         bind(Executor.class).to(ExecutorImpl.class);
         bind(LabelUseCase.class).to(LabelUseCaseImpl.class);
-        bind(File.class).annotatedWith(Names.named("taskJsonFile")).toInstance(new File(System.getProperty("user.home") + "/.config/task_manager/task.json"));
-        bind(File.class).annotatedWith(Names.named("tempIdMappingJsonFile")).toInstance(new File(System.getProperty("user.home") + "/.config/task_manager/temp_id_mapping.json"));
-        bind(File.class).annotatedWith(Names.named("propertyDescriptorJsonFile")).toInstance(new File(System.getProperty("user.home") + "/.config/task_manager/property_descriptor.json"));
-        bind(File.class).annotatedWith(Names.named("viewInfoJsonFile")).toInstance(new File(System.getProperty("user.home") + "/.config/task_manager/view_info.json"));
-        bind(File.class).annotatedWith(Names.named("configurationYamlFile")).toInstance(new File(System.getProperty("user.home") + "/.config/task_manager/config.yaml"));
-        bind(File.class).annotatedWith(Names.named("basePath")).toInstance(new File(System.getProperty("user.home") + "/.config/task_manager/"));
+
+        bind(File.class).annotatedWith(Names.named("taskJsonFile")).toInstance(new File(basePath + "task.json"));
+        bind(File.class).annotatedWith(Names.named("tempIdMappingJsonFile")).toInstance(new File(basePath + "temp_id_mapping.json"));
+        bind(File.class).annotatedWith(Names.named("propertyDescriptorJsonFile")).toInstance(new File(basePath + "property_descriptor.json"));
+        bind(File.class).annotatedWith(Names.named("viewInfoJsonFile")).toInstance(new File(basePath + "view_info.json"));
+        bind(File.class).annotatedWith(Names.named("configurationYamlFile")).toInstance(new File(basePath + "config.yaml"));
+        bind(File.class).annotatedWith(Names.named("basePath")).toInstance(new File(basePath));
     }
 
 }
