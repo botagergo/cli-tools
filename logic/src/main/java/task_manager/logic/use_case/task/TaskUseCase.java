@@ -3,8 +3,8 @@ package task_manager.logic.use_case.task;
 import task_manager.core.data.FilterCriterionInfo;
 import task_manager.core.data.SortingInfo;
 import task_manager.core.data.Task;
+import task_manager.core.property.FilterPropertySpec;
 import task_manager.core.property.PropertyException;
-import task_manager.core.property.PropertySpec;
 import task_manager.logic.filter.FilterCriterionException;
 
 import java.io.IOException;
@@ -22,7 +22,7 @@ public interface TaskUseCase {
 
     List<Task> getTasks(
             List<String> queries,
-            List<PropertySpec> propertySpecs,
+            List<FilterPropertySpec> propertySpecs,
             SortingInfo sortingInfo,
             FilterCriterionInfo filterCriterionInfo
     ) throws IOException, TaskUseCaseException, PropertyException, PropertyConverterException, FilterCriterionException;

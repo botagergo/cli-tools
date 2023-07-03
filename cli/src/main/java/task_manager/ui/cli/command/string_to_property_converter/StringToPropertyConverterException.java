@@ -1,55 +1,28 @@
 package task_manager.ui.cli.command.string_to_property_converter;
 
 import lombok.Getter;
-import task_manager.core.property.PropertyDescriptor;
 
 public class StringToPropertyConverterException extends Exception {
 
-    public StringToPropertyConverterException(Type exceptionType, PropertyDescriptor propertyDescriptor, Object propertyValue) {
-        super(getMsg(exceptionType, propertyDescriptor, propertyValue, null));
-
+    public StringToPropertyConverterException(Type exceptionType, String msg, String argument) {
+        super(msg);
         this.exceptionType = exceptionType;
-        this.propertyDescriptor = propertyDescriptor;
-        this.propertyValue = propertyValue;
-        this.predicate = null;
-    }
-
-    public StringToPropertyConverterException(String predicate) {
-        super(getMsg(Type.InvalidPredicate, null, null, predicate));
-
-        this.exceptionType = Type.InvalidPredicate;
-        this.propertyDescriptor = null;
-        this.propertyValue = null;
-        this.predicate = predicate;
-    }
-
-    private static String getMsg(Type exceptionType, PropertyDescriptor propertyDescriptor, Object propertyValue, String predicate) {
-        if (exceptionType == Type.NotAList) {
-            return "Property '" + propertyDescriptor.name() + "' is not a list";
-        } else if (exceptionType == Type.EmptyList) {
-            return "Property value is empty";
-        } else if (exceptionType == Type.LabelNotFound) {
-            return "Label not found: " + propertyValue;
-        } else if (exceptionType == Type.OrderedLabelNotFound) {
-            return "Label not found: " + propertyValue;
-        } else if (exceptionType == Type.InvalidBoolean) {
-            return "Invalid boolean value: " + propertyValue;
-        } else if (exceptionType == Type.InvalidPredicate) {
-            return "Invalid predicate: " + predicate;
-        } else if (exceptionType == Type.NoAssociatedLabel) {
-            return "UUID property '" + propertyDescriptor.name() + "' does not have an associated label";
-        } else {
-            return null;
-        }
+        this.argument = argument;
     }
 
     @Getter final Type exceptionType;
-    @Getter final PropertyDescriptor propertyDescriptor;
-    @Getter final Object propertyValue;
-    @Getter final String predicate;
+    @Getter final String argument;
 
     public enum Type {
-        NotAList, EmptyList, InvalidBoolean, LabelNotFound, OrderedLabelNotFound, InvalidPredicate, InvalidInteger, NoAssociatedLabel
+        NotAList,
+        EmptyList,
+        InvalidBoolean,
+        LabelNotFound,
+        OrderedLabelNotFound,
+        InvalidPredicate,
+        InvalidInteger,
+        NoAssociatedLabel,
+        InvalidPropertyOption
     }
 
 }

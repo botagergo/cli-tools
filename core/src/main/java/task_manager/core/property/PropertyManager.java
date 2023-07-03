@@ -42,7 +42,7 @@ public class PropertyManager {
         propertyOwner.getProperties().put(propertyName, property.getValue());
     }
 
-    public void addProperty(PropertyOwner propertyOwner, String propertyName, Collection<Object> propertyValue) throws PropertyException, IOException {
+    public void addPropertyValues(PropertyOwner propertyOwner, String propertyName, Collection<Object> propertyValue) throws PropertyException, IOException {
         log.debug("addProperty - {}", propertyName);
 
         if (propertyValue == null) {
@@ -75,7 +75,7 @@ public class PropertyManager {
         propertyOwner.getProperties().put(propertyName, newProperty);
     }
 
-    public void removeProperty(PropertyOwner propertyOwner, String propertyName, Collection<Object> propertyValue) throws PropertyException, IOException {
+    public void removePropertyValues(PropertyOwner propertyOwner, String propertyName, Collection<Object> propertyValue) throws PropertyException, IOException {
         log.debug("removeProperty - {}", propertyName);
 
         if (propertyValue == null) {
@@ -110,6 +110,10 @@ public class PropertyManager {
 
     public boolean hasProperty(PropertyOwner propertyOwner, String propertyName) {
         return propertyOwner.getProperties().containsKey(propertyName);
+    }
+
+    public void removeProperty(PropertyOwner propertyOwner, String propertyName) {
+        propertyOwner.getProperties().remove(propertyName);
     }
 
     public PropertyDescriptor getPropertyDescriptor(String propertyName) throws PropertyException, IOException {

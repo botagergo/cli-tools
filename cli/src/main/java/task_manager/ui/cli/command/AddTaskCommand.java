@@ -3,7 +3,7 @@ package task_manager.ui.cli.command;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import task_manager.core.data.Task;
-import task_manager.core.property.PropertySpec;
+import task_manager.core.property.ModifyPropertySpec;
 import task_manager.ui.cli.Context;
 import task_manager.ui.cli.argument.PropertyArgument;
 import task_manager.ui.cli.command.property_modifier.PropertyModifier;
@@ -22,7 +22,7 @@ public record AddTaskCommand(String name, List<PropertyArgument> properties) imp
             Task task = new Task();
 
             if (properties != null) {
-                List<PropertySpec> propertySpecs = context.getStringToPropertyConverter().convertProperties(properties, true);
+                List<ModifyPropertySpec> propertySpecs = context.getStringToPropertyConverter().convertPropertiesForModification(properties, true);
                 PropertyModifier.modifyProperties(context.getPropertyManager(), task, propertySpecs);
             }
 

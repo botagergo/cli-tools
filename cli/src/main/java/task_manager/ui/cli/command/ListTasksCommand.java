@@ -9,9 +9,9 @@ import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.fusesource.jansi.Ansi;
 import task_manager.core.data.*;
+import task_manager.core.property.FilterPropertySpec;
 import task_manager.core.property.Property;
 import task_manager.core.property.PropertyException;
-import task_manager.core.property.PropertySpec;
 import task_manager.logic.filter.FilterCriterionException;
 import task_manager.logic.use_case.task.PropertyConverterException;
 import task_manager.logic.use_case.task.TaskUseCaseException;
@@ -42,9 +42,9 @@ public record ListTasksCommand(
             List<String> propertiesToList = null;
             String actualViewName = viewName;
 
-            List<PropertySpec> propertySpecs = null;
+            List<FilterPropertySpec> propertySpecs = null;
             if (properties != null) {
-                propertySpecs = context.getStringToPropertyConverter().convertProperties(properties, false);
+                propertySpecs = context.getStringToPropertyConverter().convertPropertiesForFiltering(properties, false);
             }
 
             if (actualViewName == null) {

@@ -7,33 +7,59 @@ import java.util.List;
 
 public class PropertyModifier {
 
-    public static void modifyProperties(PropertyManager propertyManager, PropertyOwner propertyOwner, List<PropertySpec> propertySpecs) throws PropertyException, IOException, PropertyModifierException {
-        for (PropertySpec propertySpec : propertySpecs) {
-            PropertyDescriptor propertyDescriptor = propertySpec.property().getPropertyDescriptor();
-            Property property = propertySpec.property();
+    public static void modifyProperties(PropertyManager propertyManager, PropertyOwner propertyOwner, List<ModifyPropertySpec> modifyPropertySpecs) throws PropertyException, IOException, PropertyModifierException {
+        validateProperties(modifyPropertySpecs);
+        doModifyProperties(propertyManager, propertyOwner, modifyPropertySpecs);
+    }
 
-            if ((propertySpec.affinity() == PropertySpec.Affinity.POSITIVE
-                    || propertySpec.affinity() == PropertySpec.Affinity.NEGATIVE)
+    private static void validateProperties(List<ModifyPropertySpec> modifyPropertySpecs) throws PropertyModifierException {
+        for (ModifyPropertySpec modifyPropertySpec : modifyPropertySpecs) {
+            PropertyDescriptor propertyDescriptor = modifyPropertySpec.propertyDescriptor();
+
+            if ((modifyPropertySpec.modificationType() == ModifyPropertySpec.ModificationType.ADD_VALUES
+                    || modifyPropertySpec.modificationType() == ModifyPropertySpec.ModificationType.REMOVE_VALUES)
                     && propertyDescriptor.multiplicity() == PropertyDescriptor.Multiplicity.SINGLE) {
-                throw new PropertyException(PropertyException.Type.NotACollection,
-                        property.getPropertyDescriptor().name(), property.getPropertyDescriptor(), null,
-                        PropertyDescriptor.Type.UUID);
+                throw new PropertyModifierException(PropertyModifierException.Type.NotACollection,
+                        modifyPropertySpec, "Property '" + modifyPropertySpec.propertyDescriptor().name() + "' is not a collection");
             }
 
-            if (propertySpec.predicate() != null) {
-                throw new PropertyModifierException();
+            if (modifyPropertySpec.option() != null) {
+                //noinspection SwitchStatementWithTooFewBranches
+                switch (modifyPropertySpec.option()) {
+                    case REMOVE -> {
+                        if (modifyPropertySpec.modificationType() == ModifyPropertySpec.ModificationType.ADD_VALUES) {
+                            throw new PropertyModifierException(
+                                    PropertyModifierException.Type.BadModificationType,
+                                    modifyPropertySpec,
+                                    "Cannot use '+' with 'remove' option");
+                        } else if (modifyPropertySpec.modificationType() == ModifyPropertySpec.ModificationType.REMOVE_VALUES) {
+                            throw new PropertyModifierException(
+                                    PropertyModifierException.Type.BadModificationType,
+                                    modifyPropertySpec,
+                                    "Cannot use '-' with 'remove' option");
+                        }
+                    }
+                }
             }
         }
+    }
 
-        for (PropertySpec propertySpec : propertySpecs) {
-            PropertyDescriptor propertyDescriptor = propertySpec.property().getPropertyDescriptor();
-            Property property = propertySpec.property();
-            if (propertySpec.affinity() == PropertySpec.Affinity.POSITIVE) {
-                propertyManager.addProperty(propertyOwner, propertyDescriptor.name(), property.getCollection());
-            } else if (propertySpec.affinity() == PropertySpec.Affinity.NEGATIVE) {
-                propertyManager.removeProperty(propertyOwner, propertyDescriptor.name(), property.getCollection());
+    private static void doModifyProperties(PropertyManager propertyManager, PropertyOwner propertyOwner, List<ModifyPropertySpec> modifyPropertySpecs) throws PropertyException, IOException {
+        for (ModifyPropertySpec modifyPropertySpec : modifyPropertySpecs) {
+            PropertyDescriptor propertyDescriptor = modifyPropertySpec.propertyDescriptor();
+            Property property = modifyPropertySpec.property();
+
+            if (modifyPropertySpec.option() != null) {
+                //noinspection SwitchStatementWithTooFewBranches
+                switch (modifyPropertySpec.option()) {
+                    case REMOVE -> propertyManager.removeProperty(propertyOwner, propertyDescriptor.name());
+                }
+            } else if (modifyPropertySpec.modificationType() == ModifyPropertySpec.ModificationType.ADD_VALUES) {
+                propertyManager.addPropertyValues(propertyOwner, propertyDescriptor.name(), property.getCollection());
+            } else if (modifyPropertySpec.modificationType() == ModifyPropertySpec.ModificationType.REMOVE_VALUES) {
+                propertyManager.removePropertyValues(propertyOwner, propertyDescriptor.name(), property.getCollection());
             } else {
-                propertyManager.setProperty(propertyOwner, propertyDescriptor.name(), propertySpec.property().getValue());
+                propertyManager.setProperty(propertyOwner, propertyDescriptor.name(), modifyPropertySpec.property().getValue());
             }
         }
     }

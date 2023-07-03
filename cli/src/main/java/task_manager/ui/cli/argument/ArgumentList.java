@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import org.apache.commons.lang3.tuple.Pair;
-import task_manager.core.property.PropertySpec;
+import task_manager.core.property.Affinity;
 import task_manager.ui.cli.tokenizer.TokenList;
 
 import java.util.ArrayList;
@@ -73,13 +73,13 @@ public class ArgumentList {
     private static void parsePropertyArgument(int tokenIndex, TokenList tokenList, ArgumentList argList, int colonIndex) {
         String token = tokenList.tokens().get(tokenIndex);
         int startInd = 0;
-        PropertySpec.Affinity affinity = PropertySpec.Affinity.NEUTRAL;
+        Affinity affinity = Affinity.NEUTRAL;
         boolean isOption = false;
         if (token.charAt(0) == '-') {
-            affinity = PropertySpec.Affinity.NEGATIVE;
+            affinity = Affinity.NEGATIVE;
             startInd = 1;
         } else if (token.charAt(0) == '+') {
-            affinity = PropertySpec.Affinity.POSITIVE;
+            affinity = Affinity.POSITIVE;
             startInd = 1;
         } else if (token.charAt(0) == '.') {
             isOption = true;

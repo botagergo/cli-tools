@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import org.apache.commons.lang3.NotImplementedException;
 import task_manager.core.data.FilterCriterionInfo;
-import task_manager.core.data.Predicate;
 import task_manager.core.data.SortingInfo;
 import task_manager.core.data.Task;
 import task_manager.core.property.*;
@@ -50,7 +49,7 @@ public class TaskUseCaseImpl implements TaskUseCase {
     @Override
     public List<Task> getTasks(
             List<String> queries,
-            List<PropertySpec> propertySpecs,
+            List<FilterPropertySpec> propertySpecs,
             SortingInfo sortingInfo,
             FilterCriterionInfo filterCriterionInfo
     ) throws IOException, TaskUseCaseException, PropertyException, PropertyConverterException, FilterCriterionException {
@@ -73,10 +72,10 @@ public class TaskUseCaseImpl implements TaskUseCase {
         }
 
         if (propertySpecs != null) {
-            for (PropertySpec propertySpec : propertySpecs) {
+            for (FilterPropertySpec propertySpec : propertySpecs) {
                 FilterCriterion filterCriterion = getFilterCriterion(propertySpec);
 
-                if (propertySpec.affinity() == PropertySpec.Affinity.NEGATIVE) {
+                if (propertySpec.negate()) {
                     filterCriterion = new NotFilterCriterion(filterCriterion);
                 }
 
@@ -114,59 +113,71 @@ public class TaskUseCaseImpl implements TaskUseCase {
         taskRepository.deleteAll();
     }
 
-    private FilterCriterion getFilterCriterion(PropertySpec propertySpec) throws TaskUseCaseException {
-        if (propertySpec.predicate() == Predicate.CONTAINS) {
-            try {
-                if (propertySpec.property().getPropertyDescriptor().type() == PropertyDescriptor.Type.String) {
-                    return new ContainsCaseInsensitiveFilterCriterion(
-                            propertySpec.property().getPropertyDescriptor().name(),
-                            propertySpec.property().getString());
-                } else if (propertySpec.property().getPropertyDescriptor().isCollection()) {
-                    return new CollectionContainsFilterCriterion(
-                            propertySpec.property().getPropertyDescriptor().name(),
-                            propertySpec.property().getCollection());
-                } else {
-                    throw new TaskUseCaseException("Illegal type for CONTAINS predicate: "
-                            + propertySpec.property().getPropertyDescriptor());
-                }
-            } catch (PropertyException e) {
-                throw new TaskUseCaseException("Failed to filter tasks: " + e.getMessage());
-            }
-        } else if (propertySpec.predicate() == Predicate.LESS) {
-            if (!PropertyComparator.isComparable(propertySpec.property().getPropertyDescriptor())) {
-                throw new TaskUseCaseException("Illegal type for LESS predicate: "
-                        + propertySpec.property().getPropertyDescriptor());
-            }
-            return new LessFilterCriterion(propertySpec.property().getPropertyDescriptor().name(),
-                    propertySpec.property(), new PropertyComparator(true));
-        } else if (propertySpec.predicate() == Predicate.LESS_EQUAL) {
-            if (!PropertyComparator.isComparable(propertySpec.property().getPropertyDescriptor())) {
-                throw new TaskUseCaseException("Illegal type for LESS_EQUAL predicate: "
-                        + propertySpec.property().getPropertyDescriptor());
-            }
-            return new LessEqualFilterCriterion(propertySpec.property().getPropertyDescriptor().name(),
-                    propertySpec.property(), new PropertyComparator(true));
-        } else if (propertySpec.predicate() == Predicate.GREATER) {
-            if (!PropertyComparator.isComparable(propertySpec.property().getPropertyDescriptor())) {
-                throw new TaskUseCaseException("Illegal type for GREATER predicate: "
-                        + propertySpec.property().getPropertyDescriptor());
-            }
-            return new GreaterFilterCriterion(propertySpec.property().getPropertyDescriptor().name(),
-                    propertySpec.property(), new PropertyComparator(false));
-        } else if (propertySpec.predicate() == Predicate.GREATER_EQUAL) {
-            if (!PropertyComparator.isComparable(propertySpec.property().getPropertyDescriptor())) {
-                throw new TaskUseCaseException("Illegal type for GREATER_EQUAL predicate: "
-                        + propertySpec.property().getPropertyDescriptor());
-            }
-            return new GreaterEqualFilterCriterion(propertySpec.property().getPropertyDescriptor().name(),
-                    propertySpec.property(), new PropertyComparator(false));
-        } else if (propertySpec.predicate() == null) {
+    private FilterCriterion getFilterCriterion(FilterPropertySpec propertySpec) throws TaskUseCaseException {
+        if (propertySpec.predicate() == null) {
             return new EqualFilterCriterion(
                     propertySpec.property().getPropertyDescriptor().name(),
                     propertySpec.property().getValue());
-        } else {
-            throw new NotImplementedException(propertySpec.predicate() + " predicate is not yet supported");
         }
+
+        switch (propertySpec.predicate()) {
+            case EQUALS -> {
+                return new EqualFilterCriterion(propertySpec.property().getPropertyDescriptor().name(),
+                        propertySpec.property());
+            }
+            case CONTAINS -> {
+                try {
+                    if (propertySpec.property().getPropertyDescriptor().type() == PropertyDescriptor.Type.String) {
+                        return new ContainsCaseInsensitiveFilterCriterion(
+                                propertySpec.property().getPropertyDescriptor().name(),
+                                propertySpec.property().getString());
+                    } else if (propertySpec.property().getPropertyDescriptor().isCollection()) {
+                        return new CollectionContainsFilterCriterion(
+                                propertySpec.property().getPropertyDescriptor().name(),
+                                propertySpec.property().getCollection());
+                    } else {
+                        throw new TaskUseCaseException("Illegal type for CONTAINS predicate: "
+                                + propertySpec.property().getPropertyDescriptor());
+                    }
+                } catch (PropertyException e) {
+                    throw new TaskUseCaseException("Failed to filter tasks: " + e.getMessage());
+                }
+            }
+            case LESS -> {
+                if (!PropertyComparator.isComparable(propertySpec.property().getPropertyDescriptor())) {
+                    throw new TaskUseCaseException("Illegal type for LESS predicate: "
+                            + propertySpec.property().getPropertyDescriptor());
+                }
+                return new LessFilterCriterion(propertySpec.property().getPropertyDescriptor().name(),
+                        propertySpec.property(), new PropertyComparator(true));
+            }
+            case LESS_EQUAL -> {
+                if (!PropertyComparator.isComparable(propertySpec.property().getPropertyDescriptor())) {
+                    throw new TaskUseCaseException("Illegal type for LESS_EQUAL predicate: "
+                            + propertySpec.property().getPropertyDescriptor());
+                }
+                return new LessEqualFilterCriterion(propertySpec.property().getPropertyDescriptor().name(),
+                        propertySpec.property(), new PropertyComparator(true));
+            }
+            case GREATER -> {
+                if (!PropertyComparator.isComparable(propertySpec.property().getPropertyDescriptor())) {
+                    throw new TaskUseCaseException("Illegal type for GREATER predicate: "
+                            + propertySpec.property().getPropertyDescriptor());
+                }
+                return new GreaterFilterCriterion(propertySpec.property().getPropertyDescriptor().name(),
+                        propertySpec.property(), new PropertyComparator(false));
+            }
+            case GREATER_EQUAL -> {
+                if (!PropertyComparator.isComparable(propertySpec.property().getPropertyDescriptor())) {
+                    throw new TaskUseCaseException("Illegal type for GREATER_EQUAL predicate: "
+                            + propertySpec.property().getPropertyDescriptor());
+                }
+                return new GreaterEqualFilterCriterion(propertySpec.property().getPropertyDescriptor().name(),
+                        propertySpec.property(), new PropertyComparator(false));
+            }
+        }
+
+        throw new RuntimeException();
     }
 
     private FilterCriterion createFilterCriterion(@NonNull FilterCriterionInfo filterCriterionInfo, @NonNull PropertyManager propertyManager) throws PropertyException, IOException, PropertyConverterException, FilterCriterionException {
@@ -242,9 +253,9 @@ public class TaskUseCaseImpl implements TaskUseCase {
                     return new GreaterEqualFilterCriterion(filterCriterionInfo.propertyName(), Property.fromUnchecked(propertyDescriptor, operand), new PropertyComparator(true));
                 }
             }
-            default ->
-                    throw new NotImplementedException(filterCriterionInfo.type() + " predicate is not yet supported");
         }
+
+        throw new RuntimeException();
     }
 
     private final TaskRepository taskRepository;

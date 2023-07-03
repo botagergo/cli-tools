@@ -1,7 +1,7 @@
 package task_manager.ui.cli.command_parser;
 
 import org.testng.annotations.Test;
-import task_manager.core.property.PropertySpec;
+import task_manager.core.property.Affinity;
 import task_manager.ui.cli.argument.ArgumentList;
 import task_manager.ui.cli.argument.PropertyArgument;
 import task_manager.ui.cli.command.ModifyTaskCommand;
@@ -41,9 +41,9 @@ public class ModifyTaskCommandParserTest {
 
     @Test
     public void test_parse_propertyArgs() throws CommandParserException {
-        ModifyTaskCommand command = parse(getArgList(List.of("1"), List.of(new PropertyArgument(PropertySpec.Affinity.NEGATIVE, "prop", "pred", List.of("value1", "value2", "value3")))));
+        ModifyTaskCommand command = parse(getArgList(List.of("1"), List.of(new PropertyArgument(Affinity.NEGATIVE, "prop", "pred", List.of("value1", "value2", "value3")))));
         assertEquals(command.taskIDs(), List.of(1));
-        assertEquals(command.properties(), List.of(new PropertyArgument(PropertySpec.Affinity.NEGATIVE, "prop", "pred", List.of("value1", "value2", "value3"))));
+        assertEquals(command.properties(), List.of(new PropertyArgument(Affinity.NEGATIVE, "prop", "pred", List.of("value1", "value2", "value3"))));
     }
 
     private ModifyTaskCommand parse(ArgumentList argList) throws CommandParserException {

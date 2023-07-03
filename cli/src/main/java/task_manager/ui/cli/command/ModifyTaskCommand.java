@@ -4,7 +4,7 @@ import lombok.NonNull;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import task_manager.core.data.Task;
-import task_manager.core.property.PropertySpec;
+import task_manager.core.property.ModifyPropertySpec;
 import task_manager.ui.cli.Context;
 import task_manager.ui.cli.argument.PropertyArgument;
 import task_manager.ui.cli.command.property_modifier.PropertyModifier;
@@ -44,20 +44,19 @@ public record ModifyTaskCommand(
 
             for (Task task : tasks) {
                 if (properties != null) {
-                    List<PropertySpec> propertySpecs = context.getStringToPropertyConverter().convertProperties(properties, true);
-                    PropertyModifier.modifyProperties(context.getPropertyManager(), task, propertySpecs);
+                    List<ModifyPropertySpec> modifyPropertySpecs = context.getStringToPropertyConverter().convertPropertiesForModification(properties, true);
+                    PropertyModifier.modifyProperties(context.getPropertyManager(), task, modifyPropertySpecs);
                 }
                 context.getTaskUseCase().modifyTask(task);
             }
 
         } catch (StringToPropertyConverterException e) {
             switch (e.getExceptionType()) {
-                case NotAList -> System.out.println("A list of values was provided, but property '" + e.getPropertyDescriptor().name() + "' is not a list");
-                case EmptyList -> System.out.println("No value was provided for property '" + e.getPropertyDescriptor().name() + "'");
+                case NotAList -> System.out.println("A list of values was provided, but property '" + e.getArgument() + "' is not a list");
+                case EmptyList -> System.out.println("No value was provided for property '" + e.getArgument() + "'");
                 case LabelNotFound -> System.out.println("No changes were made");
-                case OrderedLabelNotFound -> System.out.println("Label not found: " + e.getPropertyValue());
-                case InvalidBoolean -> System.out.println("Invalid boolean value: " + e.getPropertyValue());
-                case InvalidInteger -> System.out.println("Invalid integer value: " + e.getPropertyValue());
+                case OrderedLabelNotFound -> System.out.println("Label not found: " + e.getArgument());
+                default -> System.out.println(e.getMessage());
             }
         } catch (IOException e) {
             System.out.println("An IO error has occurred: " + e.getMessage());
