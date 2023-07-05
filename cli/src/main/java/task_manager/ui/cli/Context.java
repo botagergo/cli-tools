@@ -33,4 +33,6 @@ public class Context {
 
     @Getter @Setter @Inject private ConfigurationRepository configurationRepository;
 
+    @Getter @Setter private Integer prevTaskID = null;
+
 }

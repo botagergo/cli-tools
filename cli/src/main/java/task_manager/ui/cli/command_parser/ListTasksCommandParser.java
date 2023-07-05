@@ -1,6 +1,7 @@
 package task_manager.ui.cli.command_parser;
 
 import task_manager.core.data.SortingCriterion;
+import task_manager.ui.cli.Context;
 import task_manager.ui.cli.argument.ArgumentList;
 import task_manager.ui.cli.argument.OptionArgument;
 import task_manager.ui.cli.command.Command;
@@ -13,7 +14,7 @@ import java.util.stream.Collectors;
 public class ListTasksCommandParser implements CommandParser {
 
     @Override
-    public Command parse(ArgumentList argList) throws CommandParserException {
+    public Command parse(Context context, ArgumentList argList) throws CommandParserException {
         List<String> queries = null;
         List<SortingCriterion> sortingCriteria = null;
         String viewName = null;
@@ -22,9 +23,9 @@ public class ListTasksCommandParser implements CommandParser {
             queries = argList.getSpecialArguments().get('?').stream().map(SpecialArgument -> SpecialArgument.value).collect(Collectors.toList());
         }
 
-        if (argList.getNormalArguments().size() == 1) {
-            viewName = String.join(" ", argList.getNormalArguments());
-        } else if (argList.getNormalArguments().size() > 1) {
+        if (argList.getTrailingNormalArguments().size() == 1) {
+            viewName = String.join(" ", argList.getTrailingNormalArguments());
+        } else if (argList.getTrailingNormalArguments().size() > 1) {
             throw new CommandParserException("One normal argument expected: view name");
         }
 
@@ -38,7 +39,14 @@ public class ListTasksCommandParser implements CommandParser {
             }
         }
 
-        return new ListTasksCommand(queries, sortingCriteria, argList.getPropertyArguments(), viewName);
+        List<Integer> taskIDs = ParseUtil.getTaskIDs(context, argList.getLeadingNormalArguments());
+
+        return new ListTasksCommand(
+                queries,
+                sortingCriteria,
+                argList.getFilterPropertyArguments(),
+                taskIDs,
+                viewName);
     }
 
     private List<SortingCriterion> parseSortingCriteria(List<String> values) throws CommandParserException {

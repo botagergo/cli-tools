@@ -33,7 +33,10 @@ public class StringToPropertyConverter {
             List<String> propertyValue = entry.values();
 
             if (propertyValue == null) {
-                continue;
+                throw new StringToPropertyConverterException(
+                        StringToPropertyConverterException.Type.MissingPropertyValue,
+                        "Missing property value for property '" + propertyName + "'",
+                        propertyName);
             }
 
             PropertyDescriptor propertyDescriptor = propertyDescriptorUseCase.findPropertyDescriptor(propertyName);
@@ -117,7 +120,6 @@ public class StringToPropertyConverter {
             throw new StringToPropertyConverterException(StringToPropertyConverterException.Type.InvalidBoolean, "Invalid boolean value: " + propertyValueStr, propertyValueStr);
         }
     }
-    private final OrderedLabelUseCase orderedLabelUseCase;
 
     private Object singleStringToProperty(PropertyDescriptor propertyDescriptor, String propertyValue, boolean createUuidIfNotExists) throws StringToPropertyConverterException, IOException {
         if (propertyDescriptor.type() == PropertyDescriptor.Type.String) {
@@ -228,5 +230,6 @@ public class StringToPropertyConverter {
         }
     }
     private final PropertyDescriptorUseCase propertyDescriptorUseCase;
+    private final OrderedLabelUseCase orderedLabelUseCase;
 
 }

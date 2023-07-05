@@ -51,11 +51,21 @@ public class TaskUseCaseImpl implements TaskUseCase {
             List<String> queries,
             List<FilterPropertySpec> propertySpecs,
             SortingInfo sortingInfo,
-            FilterCriterionInfo filterCriterionInfo
+            FilterCriterionInfo filterCriterionInfo,
+            List<UUID> taskUUIDs
     ) throws IOException, TaskUseCaseException, PropertyException, PropertyConverterException, FilterCriterionException {
-        List<Task> tasks = getTasks();
         List<FilterCriterion> finalFilterCriteria = new ArrayList<>();
         PropertySorter<Task> sorter = null;
+
+        List<Task> tasks;
+        if (taskUUIDs != null) {
+            tasks = new ArrayList<>();
+            for(UUID taskUUID : taskUUIDs) {
+                tasks.add(getTask(taskUUID));
+            }
+        } else {
+            tasks = getTasks();
+        }
 
         if (sortingInfo != null) {
             sorter = new PropertySorter<>(sortingInfo.sortingCriteria());
@@ -122,8 +132,9 @@ public class TaskUseCaseImpl implements TaskUseCase {
 
         switch (propertySpec.predicate()) {
             case EQUALS -> {
-                return new EqualFilterCriterion(propertySpec.property().getPropertyDescriptor().name(),
-                        propertySpec.property());
+                return new EqualFilterCriterion(
+                        propertySpec.property().getPropertyDescriptor().name(),
+                        propertySpec.property().getValue());
             }
             case CONTAINS -> {
                 try {

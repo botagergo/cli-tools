@@ -43,7 +43,7 @@ public class TaskUseCaseClientImpl implements TaskUseCase {
     }
 
     @Override
-    public List<Task> getTasks(List<String> queries, List<FilterPropertySpec> propertySpecs, SortingInfo sortingInfo, FilterCriterionInfo filterCriterionInfo) {
+    public List<Task> getTasks(List<String> queries, List<FilterPropertySpec> propertySpecs, SortingInfo sortingInfo, FilterCriterionInfo filterCriterionInfo, List<UUID> taskUUIDs) {
         throw new NotImplementedException();
     }
 

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.type.TypeFactory;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import jakarta.inject.Singleton;
+import lombok.NonNull;
 import task_manager.core.data.Task;
 import task_manager.core.repository.TaskRepository;
 import task_manager.repository.SimpleJsonRepository;
@@ -23,7 +24,7 @@ public class JsonTaskRepository extends SimpleJsonRepository<ArrayList<Task>> im
     }
 
     @Override
-    public Task create(Task task) throws IOException, IllegalArgumentException {
+    public @NonNull Task create(Task task) throws IOException, IllegalArgumentException {
         List<Task> tasks = getData();
 
         tasks.add(task);

@@ -15,34 +15,36 @@ import java.util.Set;
 public class ArgumentList {
     public ArgumentList(
             @NonNull String commandName,
-            @NonNull List<String> normalArguments,
+            @NonNull List<String> leadingNormalArguments,
+            @NonNull List<String> trailingNormalArguments,
             @NonNull LinkedHashMap<Character,List<SpecialArgument>> specialArguments,
-            @NonNull List<PropertyArgument> propertyArguments,
+            @NonNull List<PropertyArgument> filterPropertyArguments,
+            @NonNull List<PropertyArgument> modifyPropertyArguments,
             @NonNull List<OptionArgument> optionArguments
     ) {
         this.commandName = commandName;
-        this.normalArguments = normalArguments;
+        this.leadingNormalArguments = leadingNormalArguments;
+        this.trailingNormalArguments = trailingNormalArguments;
         this.specialArguments = specialArguments;
-        this.propertyArguments = propertyArguments;
+        this.filterPropertyArguments = filterPropertyArguments;
+        this.modifyPropertyArguments = modifyPropertyArguments;
         this.optionArguments = optionArguments;
     }
 
     public ArgumentList() {
-        this("", new ArrayList<>(), new LinkedHashMap<>(), new ArrayList<>(), new ArrayList<>());
-        this.optionArguments = new ArrayList<>();
+        this("", new ArrayList<>(), new ArrayList<>(), new LinkedHashMap<>(),
+                new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
     }
 
     public static ArgumentList from(TokenList tokenList) {
         if (tokenList.tokens().isEmpty()) {
-            return new ArgumentList("", List.of(),
-                    new LinkedHashMap<>(), new ArrayList<>(), new ArrayList<>());
+            return new ArgumentList("", new ArrayList<>(), new ArrayList<>(),
+                    new LinkedHashMap<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
         }
 
         ArgumentList argList = new ArgumentList();
 
-        argList.commandName = tokenList.tokens().get(0);
-
-        for (int i = 1; i < tokenList.tokens().size(); i++) {
+        for (int i = 0; i < tokenList.tokens().size(); i++) {
             String token = tokenList.tokens().get(i);
             boolean isPropertyArg = false;
             int j;
@@ -63,7 +65,15 @@ public class ArgumentList {
             }
 
             if (j >= token.length()) {
-                argList.normalArguments.add(token);
+                if (argList.commandName.isEmpty()) {
+                    if (token.matches("^[a-z]+$")) {
+                        argList.commandName = token;
+                    } else {
+                        argList.leadingNormalArguments.add(token);
+                    }
+                } else {
+                    argList.trailingNormalArguments.add(token);
+                }
             }
         }
 
@@ -119,7 +129,11 @@ public class ArgumentList {
                 predicate = nameList.get(1);
             }
 
-            argList.propertyArguments.add(new PropertyArgument(affinity, propertyName, predicate, valueList));
+            if (argList.commandName.isEmpty()) {
+                argList.filterPropertyArguments.add(new PropertyArgument(affinity, propertyName, predicate, valueList));
+            } else {
+                argList.modifyPropertyArguments.add(new PropertyArgument(affinity, propertyName, predicate, valueList));
+            }
         }
     }
 
@@ -147,8 +161,10 @@ public class ArgumentList {
     }
 
     @Getter @Setter @NonNull private String commandName;
-    @Getter @Setter @NonNull private List<String> normalArguments;
+    @Getter @Setter @NonNull private List<String> leadingNormalArguments;
+    @Getter @Setter @NonNull private List<String> trailingNormalArguments;
     @Getter @Setter @NonNull private LinkedHashMap<Character, List<SpecialArgument>> specialArguments;
-    @Getter @Setter @NonNull private List<PropertyArgument> propertyArguments;
+    @Getter @Setter @NonNull private List<PropertyArgument> filterPropertyArguments;
+    @Getter @Setter @NonNull private List<PropertyArgument> modifyPropertyArguments;
     @Getter @Setter @NonNull private List<OptionArgument> optionArguments;
 }

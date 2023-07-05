@@ -33,7 +33,7 @@ public class TaskController {
 	@GetMapping
 	public Object getTasks() {
 		try {
-			return taskUseCase.getTasks(null, null, null, null);
+			return taskUseCase.getTasks(null, null, null, null, null);
 		} catch (PropertyException | PropertyConverterException e) {
 			return null;
 		} catch (IOException e) {

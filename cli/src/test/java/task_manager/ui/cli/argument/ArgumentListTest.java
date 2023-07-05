@@ -17,9 +17,10 @@ public class ArgumentListTest {
     public void test_from_empty() {
         ArgumentList argList = ArgumentList.from(new TokenList(List.of(), new HashSet<>()));
         assertEquals(argList.getCommandName(), "");
-        assertEquals(argList.getNormalArguments().size(), 0);
+        assertEquals(argList.getTrailingNormalArguments().size(), 0);
         assertEquals(argList.getSpecialArguments().size(), 0);
-        assertEquals(argList.getPropertyArguments().size(), 0);
+        assertEquals(argList.getModifyPropertyArguments().size(), 0);
+        assertEquals(argList.getFilterPropertyArguments().size(), 0);
         assertEquals(argList.getOptionArguments().size(), 0);
     }
 
@@ -27,39 +28,78 @@ public class ArgumentListTest {
     public void test_from_noArgs() {
         ArgumentList argList = ArgumentList.from(new TokenList(List.of("command"), new HashSet<>()));
         assertEquals(argList.getCommandName(), "command");
-        assertEquals(argList.getNormalArguments().size(), 0);
+        assertEquals(argList.getTrailingNormalArguments().size(), 0);
         assertEquals(argList.getSpecialArguments().size(), 0);
-        assertEquals(argList.getPropertyArguments().size(), 0);
+        assertEquals(argList.getModifyPropertyArguments().size(), 0);
+        assertEquals(argList.getFilterPropertyArguments().size(), 0);
         assertEquals(argList.getOptionArguments().size(), 0);
     }
 
     @Test
-    public void test_from_oneNormalArg() {
+    public void test_from_oneTrailingNormalArg() {
         ArgumentList argList = ArgumentList.from(new TokenList(List.of("command", "arg"), new HashSet<>()));
         assertEquals(argList.getCommandName(), "command");
-        assertEquals(argList.getNormalArguments(), List.of("arg"));
+        assertEquals(argList.getTrailingNormalArguments(), List.of("arg"));
         assertEquals(argList.getSpecialArguments().size(), 0);
-        assertEquals(argList.getPropertyArguments().size(), 0);
+        assertEquals(argList.getModifyPropertyArguments().size(), 0);
+        assertEquals(argList.getFilterPropertyArguments().size(), 0);
         assertEquals(argList.getOptionArguments().size(), 0);
     }
 
     @Test
-    public void test_from_emptyNormalArg() {
+    public void test_from_emptyTrailingNormalArg() {
         ArgumentList argList = ArgumentList.from(new TokenList(List.of("command", ""), new HashSet<>()));
         assertEquals(argList.getCommandName(), "command");
-        assertEquals(argList.getNormalArguments(), List.of(""));
+        assertEquals(argList.getTrailingNormalArguments(), List.of(""));
         assertEquals(argList.getSpecialArguments().size(), 0);
-        assertEquals(argList.getPropertyArguments().size(), 0);
+        assertEquals(argList.getModifyPropertyArguments().size(), 0);
+        assertEquals(argList.getFilterPropertyArguments().size(), 0);
         assertEquals(argList.getOptionArguments().size(), 0);
     }
 
     @Test
-    public void test_from_multipleNormalArgs() {
+    public void test_from_multipleTrailingNormalArgs() {
         ArgumentList argList = ArgumentList.from(new TokenList(List.of("command", "arg1", "arg2", "arg3"), new HashSet<>()));
         assertEquals(argList.getCommandName(), "command");
-        assertEquals(argList.getNormalArguments(), List.of("arg1", "arg2", "arg3"));
+        assertEquals(argList.getTrailingNormalArguments(), List.of("arg1", "arg2", "arg3"));
         assertEquals(argList.getSpecialArguments().size(), 0);
-        assertEquals(argList.getPropertyArguments().size(), 0);
+        assertEquals(argList.getModifyPropertyArguments().size(), 0);
+        assertEquals(argList.getFilterPropertyArguments().size(), 0);
+        assertEquals(argList.getOptionArguments().size(), 0);
+    }
+
+    @Test
+    public void test_from_oneTrailingNormalArgWithEscapedSemicolon() {
+        ArgumentList argList = ArgumentList.from(new TokenList(List.of("command", "prop\\:value"), new HashSet<>(Set.of(Pair.of(1, 5)))));
+        assertEquals(argList.getCommandName(), "command");
+        assertEquals(argList.getTrailingNormalArguments(), List.of("prop\\:value"));
+        assertEquals(argList.getSpecialArguments().size(), 0);
+        assertEquals(argList.getModifyPropertyArguments().size(), 0);
+        assertEquals(argList.getFilterPropertyArguments().size(), 0);
+        assertEquals(argList.getOptionArguments().size(), 0);
+    }
+
+    @Test
+    public void test_from_oneLeadingNormalArg() {
+        ArgumentList argList = ArgumentList.from(new TokenList(List.of("1", "command"), new HashSet<>()));
+        assertEquals(argList.getCommandName(), "command");
+        assertEquals(argList.getLeadingNormalArguments(), List.of("1"));
+        assertEquals(argList.getTrailingNormalArguments().size(), 0);
+        assertEquals(argList.getSpecialArguments().size(), 0);
+        assertEquals(argList.getModifyPropertyArguments().size(), 0);
+        assertEquals(argList.getFilterPropertyArguments().size(), 0);
+        assertEquals(argList.getOptionArguments().size(), 0);
+    }
+
+    @Test
+    public void test_from_multipleLeadingNormalArgs() {
+        ArgumentList argList = ArgumentList.from(new TokenList(List.of("1", "2", "3", "command"), new HashSet<>()));
+        assertEquals(argList.getCommandName(), "command");
+        assertEquals(argList.getLeadingNormalArguments(), List.of("1", "2", "3"));
+        assertEquals(argList.getTrailingNormalArguments().size(), 0);
+        assertEquals(argList.getSpecialArguments().size(), 0);
+        assertEquals(argList.getModifyPropertyArguments().size(), 0);
+        assertEquals(argList.getFilterPropertyArguments().size(), 0);
         assertEquals(argList.getOptionArguments().size(), 0);
     }
 
@@ -67,184 +107,381 @@ public class ArgumentListTest {
     public void test_from_multipleSpecialArgs() {
         ArgumentList argList = ArgumentList.from(new TokenList(List.of("command", "%arg1", "!arg2", "!arg3", "?arg4"), new HashSet<>()));
         assertEquals(argList.getCommandName(), "command");
-        assertEquals(argList.getNormalArguments(), List.of("%arg1", "!arg2", "!arg3", "?arg4"));
+        assertEquals(argList.getTrailingNormalArguments(), List.of("%arg1", "!arg2", "!arg3", "?arg4"));
         assertEquals(argList.getSpecialArguments().size(), 0);
-        assertEquals(argList.getPropertyArguments().size(), 0);
+        assertEquals(argList.getModifyPropertyArguments().size(), 0);
+        assertEquals(argList.getFilterPropertyArguments().size(), 0);
         assertEquals(argList.getOptionArguments().size(), 0);
     }
 
     @Test
     public void test_from_mixed() {
-        ArgumentList argList = ArgumentList.from(new TokenList(List.of("command", "arg1", "+arg2", "arg3", "!arg4"), new HashSet<>()));
+        ArgumentList argList = ArgumentList.from(new TokenList(List.of("1", "prop:value", "2", "command", "arg1", "+arg2", "arg3", "!arg4"), new HashSet<>()));
         assertEquals(argList.getCommandName(), "command");
-        assertEquals(argList.getNormalArguments(), List.of("arg1", "arg3", "!arg4"));
+        assertEquals(argList.getLeadingNormalArguments(), List.of("1", "2"));
+        assertEquals(argList.getTrailingNormalArguments(), List.of("arg1", "arg3", "!arg4"));
         assertEquals(argList.getSpecialArguments().size(), 0);
-        assertEquals(argList.getPropertyArguments(), List.of(new PropertyArgument(Affinity.POSITIVE, "arg2", null, null)));
+        assertEquals(argList.getModifyPropertyArguments(), List.of(new PropertyArgument(Affinity.POSITIVE, "arg2", null, null)));
+        assertEquals(argList.getFilterPropertyArguments(), List.of(new PropertyArgument(Affinity.NEUTRAL, "prop", null, List.of("value"))));
         assertEquals(argList.getOptionArguments().size(), 0);
     }
 
     @Test
-    public void test_from_onePropertyArg() {
+    public void test_from_oneModifyPropertyArg() {
         ArgumentList argList = ArgumentList.from(new TokenList(List.of("command", "prop:value"), new HashSet<>()));
         assertEquals(argList.getCommandName(), "command");
-        assertEquals(argList.getNormalArguments().size(), 0);
+        assertEquals(argList.getTrailingNormalArguments().size(), 0);
         assertEquals(argList.getSpecialArguments().size(), 0);
-        assertEquals(argList.getPropertyArguments(), List.of(new PropertyArgument(Affinity.NEUTRAL, "prop", null, List.of("value"))));
+        assertEquals(argList.getModifyPropertyArguments(), List.of(new PropertyArgument(Affinity.NEUTRAL, "prop", null, List.of("value"))));
+        assertEquals(argList.getFilterPropertyArguments().size(), 0);
         assertEquals(argList.getOptionArguments().size(), 0);
     }
 
     @Test
-    public void test_from_onePropertyArgWithCommas() {
+    public void test_from_oneModifyPropertyArgWithCommas() {
         ArgumentList argList = ArgumentList.from(new TokenList(List.of("command", "prop:value1,value2,value3"), new HashSet<>()));
         assertEquals(argList.getCommandName(), "command");
-        assertEquals(argList.getNormalArguments().size(), 0);
+        assertEquals(argList.getTrailingNormalArguments().size(), 0);
         assertEquals(argList.getSpecialArguments().size(), 0);
         assertEquals(argList.getOptionArguments().size(), 0);
-        assertEquals(argList.getPropertyArguments(), List.of(new PropertyArgument(Affinity.NEUTRAL, "prop", null, List.of("value1", "value2", "value3"))));
+        assertEquals(argList.getModifyPropertyArguments(), List.of(new PropertyArgument(Affinity.NEUTRAL, "prop", null, List.of("value1", "value2", "value3"))));
+        assertEquals(argList.getFilterPropertyArguments().size(), 0);
     }
 
     @Test
-    public void test_from_onePropertyArgWithCommasAndEmptyValues() {
+    public void test_from_oneModifyPropertyArgWithCommasAndEmptyValues() {
         ArgumentList argList = ArgumentList.from(new TokenList(List.of("command", "prop:,,"), new HashSet<>()));
         assertEquals(argList.getCommandName(), "command");
-        assertEquals(argList.getNormalArguments().size(), 0);
+        assertEquals(argList.getTrailingNormalArguments().size(), 0);
         assertEquals(argList.getSpecialArguments().size(), 0);
         assertEquals(argList.getOptionArguments().size(), 0);
-        assertEquals(argList.getPropertyArguments(), List.of(new PropertyArgument(Affinity.NEUTRAL, "prop", null, List.of("", "", ""))));
+        assertEquals(argList.getModifyPropertyArguments(), List.of(new PropertyArgument(Affinity.NEUTRAL, "prop", null, List.of("", "", ""))));
+        assertEquals(argList.getFilterPropertyArguments().size(), 0);
     }
 
     @Test
-    public void test_from_onePropertyArgWithCommasAndSomeEmptyValues() {
+    public void test_from_oneModifyPropertyArgWithCommasAndSomeEmptyValues() {
         ArgumentList argList = ArgumentList.from(new TokenList(List.of("command", "prop:value1,,value3"), new HashSet<>()));
         assertEquals(argList.getCommandName(), "command");
-        assertEquals(argList.getNormalArguments().size(), 0);
+        assertEquals(argList.getTrailingNormalArguments().size(), 0);
         assertEquals(argList.getSpecialArguments().size(), 0);
         assertEquals(argList.getOptionArguments().size(), 0);
-        assertEquals(argList.getPropertyArguments(), List.of(new PropertyArgument(Affinity.NEUTRAL, "prop", null, List.of("value1", "", "value3"))));
+        assertEquals(argList.getModifyPropertyArguments(), List.of(new PropertyArgument(Affinity.NEUTRAL, "prop", null, List.of("value1", "", "value3"))));
+        assertEquals(argList.getFilterPropertyArguments().size(), 0);
     }
 
     @Test
-    public void test_from_oneNormalArgWithEscapedSemicolon() {
-        ArgumentList argList = ArgumentList.from(new TokenList(List.of("command", "prop\\:value"), new HashSet<>(Set.of(Pair.of(1, 5)))));
-        assertEquals(argList.getCommandName(), "command");
-        assertEquals(argList.getNormalArguments(), List.of("prop\\:value"));
-        assertEquals(argList.getSpecialArguments().size(), 0);
-        assertEquals(argList.getPropertyArguments().size(), 0);
-        assertEquals(argList.getOptionArguments().size(), 0);
-    }
-
-    @Test
-    public void test_from_onePropertyArgWithEscapedComma() {
+    public void test_from_oneModifyPropertyArgWithEscapedComma() {
         ArgumentList argList = ArgumentList.from(new TokenList(List.of("command", "prop:value1\\,value2"), new HashSet<>(Set.of(Pair.of(1, 12)))));
         assertEquals(argList.getCommandName(), "command");
-        assertEquals(argList.getNormalArguments().size(), 0);
+        assertEquals(argList.getTrailingNormalArguments().size(), 0);
         assertEquals(argList.getSpecialArguments().size(), 0);
         assertEquals(argList.getOptionArguments().size(), 0);
-        assertEquals(argList.getPropertyArguments(), List.of(new PropertyArgument(Affinity.NEUTRAL, "prop", null, List.of("value1\\,value2"))));
+        assertEquals(argList.getModifyPropertyArguments(), List.of(new PropertyArgument(Affinity.NEUTRAL, "prop", null, List.of("value1\\,value2"))));
+        assertEquals(argList.getFilterPropertyArguments().size(), 0);
     }
 
     @Test
-    public void test_from_onePropertyArgWithMultipleEscapedCommas() {
+    public void test_from_oneModifyPropertyArgWithMultipleEscapedCommas() {
         ArgumentList argList = ArgumentList.from(new TokenList(List.of("command", "prop:\\,\\,\\,"), new HashSet<>(Set.of(Pair.of(1, 6), Pair.of(1, 8), Pair.of(1, 10)))));
         assertEquals(argList.getCommandName(), "command");
-        assertEquals(argList.getNormalArguments().size(), 0);
+        assertEquals(argList.getTrailingNormalArguments().size(), 0);
         assertEquals(argList.getSpecialArguments().size(), 0);
         assertEquals(argList.getOptionArguments().size(), 0);
-        assertEquals(argList.getPropertyArguments(), List.of(new PropertyArgument(Affinity.NEUTRAL, "prop", null, List.of("\\,\\,\\,"))));
+        assertEquals(argList.getModifyPropertyArguments(), List.of(new PropertyArgument(Affinity.NEUTRAL, "prop", null, List.of("\\,\\,\\,"))));
+        assertEquals(argList.getFilterPropertyArguments().size(), 0);
     }
 
     @Test
-    public void test_from_onePropertyArgEscapedCommaAfterNonEscaped() {
+    public void test_from_oneModifyPropertyArgEscapedCommaAfterNonEscaped() {
         ArgumentList argList = ArgumentList.from(new TokenList(List.of("command", "prop:value1,value2\\,value3"), new HashSet<>(Set.of(Pair.of(1, 19)))));
         assertEquals(argList.getCommandName(), "command");
-        assertEquals(argList.getNormalArguments().size(), 0);
+        assertEquals(argList.getTrailingNormalArguments().size(), 0);
         assertEquals(argList.getSpecialArguments().size(), 0);
         assertEquals(argList.getOptionArguments().size(), 0);
-        assertEquals(argList.getPropertyArguments(), List.of(new PropertyArgument(Affinity.NEUTRAL, "prop", null, List.of("value1", "value2\\,value3"))));
+        assertEquals(argList.getModifyPropertyArguments(), List.of(new PropertyArgument(Affinity.NEUTRAL, "prop", null, List.of("value1", "value2\\,value3"))));
+        assertEquals(argList.getFilterPropertyArguments().size(), 0);
     }
 
     @Test
-    public void test_from_onePropertyArgNonEscapedCommaAfterEscaped() {
+    public void test_from_oneModifyPropertyArgNonEscapedCommaAfterEscaped() {
         ArgumentList argList = ArgumentList.from(new TokenList(List.of("command", "prop:value1\\,value2,value3"), new HashSet<>(Set.of(Pair.of(1, 12)))));
         assertEquals(argList.getCommandName(), "command");
-        assertEquals(argList.getNormalArguments().size(), 0);
+        assertEquals(argList.getTrailingNormalArguments().size(), 0);
         assertEquals(argList.getSpecialArguments().size(), 0);
         assertEquals(argList.getOptionArguments().size(), 0);
-        assertEquals(argList.getPropertyArguments(), List.of(new PropertyArgument(Affinity.NEUTRAL, "prop", null, List.of("value1\\,value2", "value3"))));
+        assertEquals(argList.getModifyPropertyArguments(), List.of(new PropertyArgument(Affinity.NEUTRAL, "prop", null, List.of("value1\\,value2", "value3"))));
+        assertEquals(argList.getFilterPropertyArguments().size(), 0);
     }
 
     @Test
-    public void test_from_oneNegativePropertyArg() {
+    public void test_from_oneNegativeModifyPropertyArg() {
         ArgumentList argList = ArgumentList.from(new TokenList(List.of("command", "-prop:value"), new HashSet<>()));
         assertEquals(argList.getCommandName(), "command");
-        assertEquals(argList.getNormalArguments().size(), 0);
+        assertEquals(argList.getTrailingNormalArguments().size(), 0);
         assertEquals(argList.getSpecialArguments().size(), 0);
         assertEquals(argList.getOptionArguments().size(), 0);
-        assertEquals(argList.getPropertyArguments(), List.of(new PropertyArgument(Affinity.NEGATIVE, "prop", null, List.of("value"))));
+        assertEquals(argList.getModifyPropertyArguments(), List.of(new PropertyArgument(Affinity.NEGATIVE, "prop", null, List.of("value"))));
+        assertEquals(argList.getFilterPropertyArguments().size(), 0);
     }
 
     @Test
-    public void test_from_oneNegativePropertyArgWithCommas() {
+    public void test_from_oneNegativeModifyPropertyArgWithCommas() {
         ArgumentList argList = ArgumentList.from(new TokenList(List.of("command", "-prop:value1,value2,value3"), new HashSet<>()));
         assertEquals(argList.getCommandName(), "command");
-        assertEquals(argList.getNormalArguments().size(), 0);
+        assertEquals(argList.getTrailingNormalArguments().size(), 0);
         assertEquals(argList.getSpecialArguments().size(), 0);
         assertEquals(argList.getOptionArguments().size(), 0);
-        assertEquals(argList.getPropertyArguments(), List.of(new PropertyArgument(Affinity.NEGATIVE, "prop", null, List.of("value1", "value2", "value3"))));
+        assertEquals(argList.getModifyPropertyArguments(), List.of(new PropertyArgument(Affinity.NEGATIVE, "prop", null, List.of("value1", "value2", "value3"))));
+        assertEquals(argList.getFilterPropertyArguments().size(), 0);
     }
 
     @Test
-    public void test_from_onePositivePropertyArg() {
+    public void test_from_onePositiveModifyPropertyArg() {
         ArgumentList argList = ArgumentList.from(new TokenList(List.of("command", "+prop:value"), new HashSet<>()));
         assertEquals(argList.getCommandName(), "command");
-        assertEquals(argList.getNormalArguments().size(), 0);
+        assertEquals(argList.getTrailingNormalArguments().size(), 0);
         assertEquals(argList.getSpecialArguments().size(), 0);
         assertEquals(argList.getOptionArguments().size(), 0);
-        assertEquals(argList.getPropertyArguments(), List.of(new PropertyArgument(Affinity.POSITIVE, "prop", null, List.of("value"))));
+        assertEquals(argList.getModifyPropertyArguments(), List.of(new PropertyArgument(Affinity.POSITIVE, "prop", null, List.of("value"))));
+        assertEquals(argList.getFilterPropertyArguments().size(), 0);
     }
 
     @Test
-    public void test_from_onePositivePropertyArgWithCommas() {
+    public void test_from_onePositiveModifyPropertyArgWithCommas() {
         ArgumentList argList = ArgumentList.from(new TokenList(List.of("command", "+prop:value1,value2,value3"), new HashSet<>()));
         assertEquals(argList.getCommandName(), "command");
-        assertEquals(argList.getNormalArguments().size(), 0);
+        assertEquals(argList.getTrailingNormalArguments().size(), 0);
         assertEquals(argList.getSpecialArguments().size(), 0);
         assertEquals(argList.getOptionArguments().size(), 0);
-        assertEquals(argList.getPropertyArguments(), List.of(new PropertyArgument(Affinity.POSITIVE, "prop", null, List.of("value1", "value2", "value3"))));
+        assertEquals(argList.getModifyPropertyArguments(), List.of(new PropertyArgument(Affinity.POSITIVE, "prop", null, List.of("value1", "value2", "value3"))));
+        assertEquals(argList.getFilterPropertyArguments().size(), 0);
     }
 
     @Test
-    public void test_from_emptyPropertyArg() {
+    public void test_from_emptyModifyPropertyArg() {
         ArgumentList argList = ArgumentList.from(new TokenList(List.of("command", "prop:"), new HashSet<>()));
         assertEquals(argList.getCommandName(), "command");
-        assertEquals(argList.getNormalArguments().size(), 0);
+        assertEquals(argList.getTrailingNormalArguments().size(), 0);
         assertEquals(argList.getSpecialArguments().size(), 0);
         assertEquals(argList.getOptionArguments().size(), 0);
-        assertEquals(argList.getPropertyArguments(), List.of(new PropertyArgument(Affinity.NEUTRAL, "prop", null, List.of(""))));
+        assertEquals(argList.getModifyPropertyArguments(), List.of(new PropertyArgument(Affinity.NEUTRAL, "prop", null, List.of(""))));
+        assertEquals(argList.getFilterPropertyArguments().size(), 0);
     }
 
     @Test
-    public void test_from_propertyArgWithoutValue() {
+    public void test_from_modifyPropertyArgWithoutValue() {
         ArgumentList argList = ArgumentList.from(new TokenList(List.of("command", "+prop", "prop.option", "-prop"), new HashSet<>()));
         assertEquals(argList.getCommandName(), "command");
-        assertEquals(argList.getNormalArguments().size(), 0);
+        assertEquals(argList.getTrailingNormalArguments().size(), 0);
         assertEquals(argList.getSpecialArguments().size(), 0);
         assertEquals(argList.getOptionArguments().size(), 0);
-        assertEquals(argList.getPropertyArguments(), List.of(
+        assertEquals(argList.getModifyPropertyArguments(), List.of(
                 new PropertyArgument(Affinity.POSITIVE, "prop", null, null),
                 new PropertyArgument(Affinity.NEUTRAL, "prop", "option", null),
                 new PropertyArgument(Affinity.NEGATIVE, "prop", null, null)
                 ));
+        assertEquals(argList.getFilterPropertyArguments().size(), 0);
     }
 
     @Test
-    public void test_from_multiplePropertyArgs() {
+    public void test_from_multipleModifyPropertyArgs() {
         ArgumentList argList = ArgumentList.from(new TokenList(List.of("command", "prop1:value1", "+prop2:value2", "-prop3:value3"), new HashSet<>()));
         assertEquals(argList.getCommandName(), "command");
-        assertEquals(argList.getNormalArguments().size(), 0);
+        assertEquals(argList.getTrailingNormalArguments().size(), 0);
         assertEquals(argList.getSpecialArguments().size(), 0);
         assertEquals(argList.getOptionArguments().size(), 0);
-        assertEquals(argList.getPropertyArguments(), List.of(
+        assertEquals(argList.getModifyPropertyArguments(), List.of(
+                new PropertyArgument(Affinity.NEUTRAL, "prop1", null, List.of("value1")),
+                new PropertyArgument(Affinity.POSITIVE, "prop2", null, List.of("value2")),
+                new PropertyArgument(Affinity.NEGATIVE, "prop3", null, List.of("value3"))
+        ));
+        assertEquals(argList.getFilterPropertyArguments().size(), 0);
+    }
+
+    @Test
+    public void test_from_modifyPropertyArgsWithOption() {
+        ArgumentList argList = ArgumentList.from(new TokenList(
+                List.of("command", "prop1.option:value1", "+prop2.option1.option2:value2", "-prop3.:value3", "-.option:value4"), new HashSet<>()));
+        assertEquals(argList.getCommandName(), "command");
+        assertEquals(argList.getTrailingNormalArguments().size(), 0);
+        assertEquals(argList.getSpecialArguments().size(), 0);
+        assertEquals(argList.getOptionArguments().size(), 0);
+        assertEquals(argList.getModifyPropertyArguments(), List.of(
+                new PropertyArgument(Affinity.NEUTRAL, "prop1", "option", List.of("value1")),
+                new PropertyArgument(Affinity.POSITIVE, "prop2", "option1", List.of("value2")),
+                new PropertyArgument(Affinity.NEGATIVE, "prop3", "", List.of("value3")),
+                new PropertyArgument(Affinity.NEGATIVE, "", "option", List.of("value4"))));
+        assertEquals(argList.getFilterPropertyArguments().size(), 0);
+    }
+
+    @Test
+    public void test_from_oneFilterPropertyArg() {
+        ArgumentList argList = ArgumentList.from(new TokenList(List.of("prop:value", "command"), new HashSet<>()));
+        assertEquals(argList.getCommandName(), "command");
+        assertEquals(argList.getTrailingNormalArguments().size(), 0);
+        assertEquals(argList.getSpecialArguments().size(), 0);
+        assertEquals(argList.getFilterPropertyArguments(), List.of(new PropertyArgument(Affinity.NEUTRAL, "prop", null, List.of("value"))));
+        assertEquals(argList.getModifyPropertyArguments().size(), 0);
+        assertEquals(argList.getOptionArguments().size(), 0);
+    }
+
+    @Test
+    public void test_from_oneFilterPropertyArgWithCommas() {
+        ArgumentList argList = ArgumentList.from(new TokenList(List.of("prop:value1,value2,value3", "command"), new HashSet<>()));
+        assertEquals(argList.getCommandName(), "command");
+        assertEquals(argList.getTrailingNormalArguments().size(), 0);
+        assertEquals(argList.getSpecialArguments().size(), 0);
+        assertEquals(argList.getOptionArguments().size(), 0);
+        assertEquals(argList.getFilterPropertyArguments(), List.of(new PropertyArgument(Affinity.NEUTRAL, "prop", null, List.of("value1", "value2", "value3"))));
+        assertEquals(argList.getModifyPropertyArguments().size(), 0);
+    }
+
+    @Test
+    public void test_from_oneFilterPropertyArgWithCommasAndEmptyValues() {
+        ArgumentList argList = ArgumentList.from(new TokenList(List.of("prop:,,", "command"), new HashSet<>()));
+        assertEquals(argList.getCommandName(), "command");
+        assertEquals(argList.getTrailingNormalArguments().size(), 0);
+        assertEquals(argList.getSpecialArguments().size(), 0);
+        assertEquals(argList.getOptionArguments().size(), 0);
+        assertEquals(argList.getModifyPropertyArguments().size(), 0);
+        assertEquals(argList.getFilterPropertyArguments(), List.of(new PropertyArgument(Affinity.NEUTRAL, "prop", null, List.of("", "", ""))));
+    }
+
+    @Test
+    public void test_from_oneFilterPropertyArgWithCommasAndSomeEmptyValues() {
+        ArgumentList argList = ArgumentList.from(new TokenList(List.of("prop:value1,,value3", "command"), new HashSet<>()));
+        assertEquals(argList.getCommandName(), "command");
+        assertEquals(argList.getTrailingNormalArguments().size(), 0);
+        assertEquals(argList.getSpecialArguments().size(), 0);
+        assertEquals(argList.getOptionArguments().size(), 0);
+        assertEquals(argList.getModifyPropertyArguments().size(), 0);
+        assertEquals(argList.getFilterPropertyArguments(), List.of(new PropertyArgument(Affinity.NEUTRAL, "prop", null, List.of("value1", "", "value3"))));
+    }
+
+    @Test
+    public void test_from_oneFilterPropertyArgWithEscapedComma() {
+        ArgumentList argList = ArgumentList.from(new TokenList(List.of("prop:value1\\,value2", "command"), new HashSet<>(Set.of(Pair.of(0, 12)))));
+        assertEquals(argList.getCommandName(), "command");
+        assertEquals(argList.getTrailingNormalArguments().size(), 0);
+        assertEquals(argList.getSpecialArguments().size(), 0);
+        assertEquals(argList.getOptionArguments().size(), 0);
+        assertEquals(argList.getModifyPropertyArguments().size(), 0);
+        assertEquals(argList.getFilterPropertyArguments(), List.of(new PropertyArgument(Affinity.NEUTRAL, "prop", null, List.of("value1\\,value2"))));
+    }
+
+    @Test
+    public void test_from_oneFilterPropertyArgWithMultipleEscapedCommas() {
+        ArgumentList argList = ArgumentList.from(new TokenList(List.of("prop:\\,\\,\\,", "command"), new HashSet<>(Set.of(Pair.of(0, 6), Pair.of(0, 8), Pair.of(0, 10)))));
+        assertEquals(argList.getCommandName(), "command");
+        assertEquals(argList.getTrailingNormalArguments().size(), 0);
+        assertEquals(argList.getSpecialArguments().size(), 0);
+        assertEquals(argList.getOptionArguments().size(), 0);
+        assertEquals(argList.getModifyPropertyArguments().size(), 0);
+        assertEquals(argList.getFilterPropertyArguments(), List.of(new PropertyArgument(Affinity.NEUTRAL, "prop", null, List.of("\\,\\,\\,"))));
+    }
+
+    @Test
+    public void test_from_oneFilterPropertyArgEscapedCommaAfterNonEscaped() {
+        ArgumentList argList = ArgumentList.from(new TokenList(List.of("prop:value1,value2\\,value3", "command"), new HashSet<>(Set.of(Pair.of(0, 19)))));
+        assertEquals(argList.getCommandName(), "command");
+        assertEquals(argList.getTrailingNormalArguments().size(), 0);
+        assertEquals(argList.getSpecialArguments().size(), 0);
+        assertEquals(argList.getOptionArguments().size(), 0);
+        assertEquals(argList.getModifyPropertyArguments().size(), 0);
+        assertEquals(argList.getFilterPropertyArguments(), List.of(new PropertyArgument(Affinity.NEUTRAL, "prop", null, List.of("value1", "value2\\,value3"))));
+    }
+
+    @Test
+    public void test_from_oneFilterPropertyArgNonEscapedCommaAfterEscaped() {
+        ArgumentList argList = ArgumentList.from(new TokenList(List.of("prop:value1\\,value2,value3", "command"), new HashSet<>(Set.of(Pair.of(0, 12)))));
+        assertEquals(argList.getCommandName(), "command");
+        assertEquals(argList.getTrailingNormalArguments().size(), 0);
+        assertEquals(argList.getSpecialArguments().size(), 0);
+        assertEquals(argList.getOptionArguments().size(), 0);
+        assertEquals(argList.getModifyPropertyArguments().size(), 0);
+        assertEquals(argList.getFilterPropertyArguments(), List.of(new PropertyArgument(Affinity.NEUTRAL, "prop", null, List.of("value1\\,value2", "value3"))));
+    }
+
+    @Test
+    public void test_from_oneNegativeFilterPropertyArg() {
+        ArgumentList argList = ArgumentList.from(new TokenList(List.of("-prop:value", "command"), new HashSet<>()));
+        assertEquals(argList.getCommandName(), "command");
+        assertEquals(argList.getTrailingNormalArguments().size(), 0);
+        assertEquals(argList.getSpecialArguments().size(), 0);
+        assertEquals(argList.getOptionArguments().size(), 0);
+        assertEquals(argList.getModifyPropertyArguments().size(), 0);
+        assertEquals(argList.getFilterPropertyArguments(), List.of(new PropertyArgument(Affinity.NEGATIVE, "prop", null, List.of("value"))));
+    }
+
+    @Test
+    public void test_from_oneNegativeFilterPropertyArgWithCommas() {
+        ArgumentList argList = ArgumentList.from(new TokenList(List.of("-prop:value1,value2,value3", "command"), new HashSet<>()));
+        assertEquals(argList.getCommandName(), "command");
+        assertEquals(argList.getTrailingNormalArguments().size(), 0);
+        assertEquals(argList.getSpecialArguments().size(), 0);
+        assertEquals(argList.getOptionArguments().size(), 0);
+        assertEquals(argList.getModifyPropertyArguments().size(), 0);
+        assertEquals(argList.getFilterPropertyArguments(), List.of(new PropertyArgument(Affinity.NEGATIVE, "prop", null, List.of("value1", "value2", "value3"))));
+    }
+
+    @Test
+    public void test_from_onePositiveFilterPropertyArg() {
+        ArgumentList argList = ArgumentList.from(new TokenList(List.of("+prop:value", "command"), new HashSet<>()));
+        assertEquals(argList.getCommandName(), "command");
+        assertEquals(argList.getTrailingNormalArguments().size(), 0);
+        assertEquals(argList.getSpecialArguments().size(), 0);
+        assertEquals(argList.getOptionArguments().size(), 0);
+        assertEquals(argList.getModifyPropertyArguments().size(), 0);
+        assertEquals(argList.getFilterPropertyArguments(), List.of(new PropertyArgument(Affinity.POSITIVE, "prop", null, List.of("value"))));
+    }
+
+    @Test
+    public void test_from_onePositiveFilterPropertyArgWithCommas() {
+        ArgumentList argList = ArgumentList.from(new TokenList(List.of("+prop:value1,value2,value3", "command"), new HashSet<>()));
+        assertEquals(argList.getCommandName(), "command");
+        assertEquals(argList.getTrailingNormalArguments().size(), 0);
+        assertEquals(argList.getSpecialArguments().size(), 0);
+        assertEquals(argList.getOptionArguments().size(), 0);
+        assertEquals(argList.getModifyPropertyArguments().size(), 0);
+        assertEquals(argList.getFilterPropertyArguments(), List.of(new PropertyArgument(Affinity.POSITIVE, "prop", null, List.of("value1", "value2", "value3"))));
+    }
+
+    @Test
+    public void test_from_emptyFilterPropertyArg() {
+        ArgumentList argList = ArgumentList.from(new TokenList(List.of("prop:", "command"), new HashSet<>()));
+        assertEquals(argList.getCommandName(), "command");
+        assertEquals(argList.getTrailingNormalArguments().size(), 0);
+        assertEquals(argList.getSpecialArguments().size(), 0);
+        assertEquals(argList.getOptionArguments().size(), 0);
+        assertEquals(argList.getModifyPropertyArguments().size(), 0);
+        assertEquals(argList.getFilterPropertyArguments(), List.of(new PropertyArgument(Affinity.NEUTRAL, "prop", null, List.of(""))));
+    }
+
+    @Test
+    public void test_from_filterPropertyArgWithoutValue() {
+        ArgumentList argList = ArgumentList.from(new TokenList(List.of("+prop", "prop.option", "-prop", "command"), new HashSet<>()));
+        assertEquals(argList.getCommandName(), "command");
+        assertEquals(argList.getTrailingNormalArguments().size(), 0);
+        assertEquals(argList.getSpecialArguments().size(), 0);
+        assertEquals(argList.getOptionArguments().size(), 0);
+        assertEquals(argList.getModifyPropertyArguments().size(), 0);
+        assertEquals(argList.getFilterPropertyArguments(), List.of(
+                new PropertyArgument(Affinity.POSITIVE, "prop", null, null),
+                new PropertyArgument(Affinity.NEUTRAL, "prop", "option", null),
+                new PropertyArgument(Affinity.NEGATIVE, "prop", null, null)
+        ));
+    }
+
+    @Test
+    public void test_from_multipleFilterPropertyArgs() {
+        ArgumentList argList = ArgumentList.from(new TokenList(List.of("prop1:value1", "+prop2:value2", "-prop3:value3", "command"), new HashSet<>()));
+        assertEquals(argList.getCommandName(), "command");
+        assertEquals(argList.getTrailingNormalArguments().size(), 0);
+        assertEquals(argList.getSpecialArguments().size(), 0);
+        assertEquals(argList.getOptionArguments().size(), 0);
+        assertEquals(argList.getModifyPropertyArguments().size(), 0);
+        assertEquals(argList.getFilterPropertyArguments(), List.of(
                 new PropertyArgument(Affinity.NEUTRAL, "prop1", null, List.of("value1")),
                 new PropertyArgument(Affinity.POSITIVE, "prop2", null, List.of("value2")),
                 new PropertyArgument(Affinity.NEGATIVE, "prop3", null, List.of("value3"))
@@ -252,27 +489,28 @@ public class ArgumentListTest {
     }
 
     @Test
-    public void test_from_propertyArgsWithPredicate() {
+    public void test_from_filterPropertyArgsWithOption() {
         ArgumentList argList = ArgumentList.from(new TokenList(
-                List.of("command", "prop1.equals:value1", "+prop2.contains.equals:value2", "-prop3.:value3", "-.equals:value4"), new HashSet<>()));
+                List.of("prop1.option:value1", "+prop2.option1.option2:value2", "-prop3.:value3", "-.option:value4", "command"), new HashSet<>()));
         assertEquals(argList.getCommandName(), "command");
-        assertEquals(argList.getNormalArguments().size(), 0);
+        assertEquals(argList.getTrailingNormalArguments().size(), 0);
         assertEquals(argList.getSpecialArguments().size(), 0);
         assertEquals(argList.getOptionArguments().size(), 0);
-        assertEquals(argList.getPropertyArguments(), List.of(
-                new PropertyArgument(Affinity.NEUTRAL, "prop1", "equals", List.of("value1")),
-                new PropertyArgument(Affinity.POSITIVE, "prop2", "contains", List.of("value2")),
+        assertEquals(argList.getModifyPropertyArguments().size(), 0);
+        assertEquals(argList.getFilterPropertyArguments(), List.of(
+                new PropertyArgument(Affinity.NEUTRAL, "prop1", "option", List.of("value1")),
+                new PropertyArgument(Affinity.POSITIVE, "prop2", "option1", List.of("value2")),
                 new PropertyArgument(Affinity.NEGATIVE, "prop3", "", List.of("value3")),
-                new PropertyArgument(Affinity.NEGATIVE, "", "equals", List.of("value4"))));
+                new PropertyArgument(Affinity.NEGATIVE, "", "option", List.of("value4"))));
     }
 
     @Test
     public void test_from_oneOptionArg() {
         ArgumentList argList = ArgumentList.from(new TokenList(List.of("command", ".option:value"), new HashSet<>()));
         assertEquals(argList.getCommandName(), "command");
-        assertEquals(argList.getNormalArguments().size(), 0);
+        assertEquals(argList.getTrailingNormalArguments().size(), 0);
         assertEquals(argList.getSpecialArguments().size(), 0);
-        assertEquals(argList.getPropertyArguments().size(), 0);
+        assertEquals(argList.getModifyPropertyArguments().size(), 0);
         assertEquals(argList.getOptionArguments(), List.of(new OptionArgument("option", List.of("value"))));
     }
 
@@ -280,41 +518,40 @@ public class ArgumentListTest {
     public void test_from_oneOptionArgWithCommas() {
         ArgumentList argList = ArgumentList.from(new TokenList(List.of("command", ".option:value1,value2"), new HashSet<>()));
         assertEquals(argList.getCommandName(), "command");
-        assertEquals(argList.getNormalArguments().size(), 0);
+        assertEquals(argList.getTrailingNormalArguments().size(), 0);
         assertEquals(argList.getSpecialArguments().size(), 0);
-        assertEquals(argList.getPropertyArguments().size(), 0);
+        assertEquals(argList.getModifyPropertyArguments().size(), 0);
         assertEquals(argList.getOptionArguments(), List.of(new OptionArgument("option", List.of("value1", "value2"))));
     }
-
 
     @Test
     public void test_from_emptyOptionArg() {
         ArgumentList argList = ArgumentList.from(new TokenList(List.of("command", ".prop:"), new HashSet<>()));
         assertEquals(argList.getCommandName(), "command");
-        assertEquals(argList.getNormalArguments().size(), 0);
+        assertEquals(argList.getTrailingNormalArguments().size(), 0);
         assertEquals(argList.getSpecialArguments().size(), 0);
         assertEquals(argList.getOptionArguments(), List.of(new OptionArgument("prop", List.of(""))));
-        assertEquals(argList.getPropertyArguments().size(), 0);
+        assertEquals(argList.getModifyPropertyArguments().size(), 0);
     }
 
     @Test
     public void test_from_optionArgWithoutValue() {
         ArgumentList argList = ArgumentList.from(new TokenList(List.of("command", ".prop"), new HashSet<>()));
         assertEquals(argList.getCommandName(), "command");
-        assertEquals(argList.getNormalArguments().size(), 0);
+        assertEquals(argList.getTrailingNormalArguments().size(), 0);
         assertEquals(argList.getSpecialArguments().size(), 0);
         assertEquals(argList.getOptionArguments(), List.of(new OptionArgument("prop", null)));
-        assertEquals(argList.getPropertyArguments().size(), 0);
+        assertEquals(argList.getModifyPropertyArguments().size(), 0);
     }
 
     @Test
     public void test_from_singleSpecialCharacterArgument() {
         ArgumentList argList = ArgumentList.from(new TokenList(List.of("command", ".", "+", "-", ":"), new HashSet<>()));
         assertEquals(argList.getCommandName(), "command");
-        assertEquals(argList.getNormalArguments().size(), 0);
+        assertEquals(argList.getTrailingNormalArguments().size(), 0);
         assertEquals(argList.getSpecialArguments().size(), 0);
         assertEquals(argList.getOptionArguments(), List.of(new OptionArgument("", null)));
-        assertEquals(argList.getPropertyArguments(), List.of(
+        assertEquals(argList.getModifyPropertyArguments(), List.of(
                 new PropertyArgument(Affinity.POSITIVE, "", null, null),
                 new PropertyArgument(Affinity.NEGATIVE, "", null, null),
                 new PropertyArgument(Affinity.NEUTRAL, "", null, List.of(""))));

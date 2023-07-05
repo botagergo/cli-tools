@@ -1,50 +1,44 @@
 package task_manager.ui.cli.command;
 
+import lombok.NonNull;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import task_manager.core.data.Task;
+import task_manager.core.property.FilterPropertySpec;
 import task_manager.ui.cli.Context;
+import task_manager.ui.cli.argument.PropertyArgument;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 @Log4j2
-public record DeleteTaskCommand(List<Integer> taskIDs) implements Command {
+public record DeleteTaskCommand(
+        List<@NonNull Integer> tempIDs,
+        List<@NonNull PropertyArgument> filterPropertyArgs
+) implements Command {
 
     @Override
     public void execute(Context context) {
         log.traceEntry();
 
-        if (taskIDs.isEmpty()) {
-            System.out.println("No selector was specified");
-            return;
-        }
-
         try {
-            List<Task> tasks = new ArrayList<>();
+            List<UUID> taskUUIDs = CommandUtil.getUUIDsFromTempIDs(context, tempIDs);
+            List<FilterPropertySpec> filterPropertySpecs = CommandUtil.getFilterPropertySpecs(context, filterPropertyArgs);
 
-            for (int taskID : taskIDs) {
-                UUID uuid = context.getTempIDMappingRepository().getUUID(taskID);
-                tasks.add(context.getTaskUseCase().getTask(uuid));
-            }
+            List<Task> tasks = context.getTaskUseCase().getTasks(
+                    null, filterPropertySpecs, null, null, taskUUIDs);
+            List<UUID> uuids = tasks.stream().map(Task::getUUID).toList();
 
-            for (Task task : tasks) {
-                context.getTempIDMappingRepository().delete(task.getUUID());
-                boolean result = context.getTaskUseCase().deleteTask(
-                        context.getPropertyManager().getProperty(task, "uuid").getUuid());
+            for (UUID uuid : uuids) {
+                context.getTempIDMappingRepository().delete(uuid);
+                boolean result = context.getTaskUseCase().deleteTask(uuid);
                 if (!result) {
-                    System.out.println("Failed to delete task '" + task.getUUID() + "'");
-                    log.info("failed to delete task '" + task.getUUID() + "'");
+                    System.out.println("ERROR: Task with uuid '" + uuid + "' not found");
+                    log.info("task with uuid '" + uuid + "' not found");
                 }
             }
-        } catch (IOException e) {
-            System.out.println("An IO error has occurred: " + e.getMessage());
-            System.out.println("Check the logs for details.");
-            log.error("{}\n{}", e.getMessage(), ExceptionUtils.getStackTrace(e));
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            System.out.println("ERROR: " + e.getMessage());
             log.error("{}\n{}", e.getMessage(), ExceptionUtils.getStackTrace(e));
         }
     }

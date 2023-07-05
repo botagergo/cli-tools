@@ -26,9 +26,10 @@ import java.util.UUID;
 
 @Log4j2
 public record ListTasksCommand(
-        List<String> queries,
-        List<SortingCriterion> sortingCriteria,
-        List<PropertyArgument> properties,
+        List<@NonNull String> queries,
+        List<@NonNull SortingCriterion> sortingCriteria,
+        List<@NonNull PropertyArgument> filterPropertyArgs,
+        List<@NonNull Integer> tempIDs,
         String viewName
 ) implements Command {
 
@@ -42,10 +43,8 @@ public record ListTasksCommand(
             List<String> propertiesToList = null;
             String actualViewName = viewName;
 
-            List<FilterPropertySpec> propertySpecs = null;
-            if (properties != null) {
-                propertySpecs = context.getStringToPropertyConverter().convertPropertiesForFiltering(properties, false);
-            }
+            List<UUID> taskUUIDs = CommandUtil.getUUIDsFromTempIDs(context, tempIDs);
+            List<FilterPropertySpec> filterPropertySpecs = CommandUtil.getFilterPropertySpecs(context, filterPropertyArgs);
 
             if (actualViewName == null) {
                 actualViewName = context.getConfigurationRepository().defaultView();
@@ -67,8 +66,6 @@ public record ListTasksCommand(
                 }
             }
 
-            List<Task> tasks = context.getTaskUseCase().getTasks(queries, propertySpecs, sortingInfo, filterCriterionInfo);
-
             if (propertiesToList == null) {
                 propertiesToList = List.of("name", "status", "tags");
             }
@@ -80,6 +77,7 @@ public record ListTasksCommand(
                     table.nextCell().addLine(String.format(" %s ", propertyName.toUpperCase()));
             }
 
+            List<Task> tasks = context.getTaskUseCase().getTasks(queries, filterPropertySpecs, sortingInfo, filterCriterionInfo, taskUUIDs);
             for (Task task : tasks) {
                 int tempID = context.getTempIDMappingRepository().getOrCreateID(task.getUUID());
                 addTaskToTable(table, context, task, tempID, propertiesToList);
@@ -87,13 +85,9 @@ public record ListTasksCommand(
 
             GridTable gridTable = Border.of(Border.Chars.of('+', '-', '|')).apply(table.toGrid());
             Util.print(gridTable, new PrintWriter(System.out, true));
-        } catch (IOException e) {
-            System.out.println("An IO error has occurred: " + e.getMessage());
-            System.out.println("Check the logs for details.");
-            log.error(ExceptionUtils.getStackTrace(e));
         } catch (Exception e) {
-            System.out.println(e.getMessage());
-            log.error("{}\n{}", e.toString(), ExceptionUtils.getStackTrace(e));
+            System.out.println("ERROR: " + e.getMessage());
+            log.error("{}\n{}", e.getMessage(), ExceptionUtils.getStackTrace(e));
         }
     }
 

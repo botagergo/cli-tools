@@ -22,7 +22,8 @@ public class StringToPropertyConverterException extends Exception {
         InvalidPredicate,
         InvalidInteger,
         NoAssociatedLabel,
-        InvalidPropertyOption
+        InvalidPropertyOption,
+        MissingPropertyValue
     }
 
 }

@@ -24,8 +24,8 @@ public interface TaskUseCase {
             List<String> queries,
             List<FilterPropertySpec> propertySpecs,
             SortingInfo sortingInfo,
-            FilterCriterionInfo filterCriterionInfo
-    ) throws IOException, TaskUseCaseException, PropertyException, PropertyConverterException, FilterCriterionException;
+            FilterCriterionInfo filterCriterionInfo,
+            List<UUID> taskUUIDs) throws IOException, TaskUseCaseException, PropertyException, PropertyConverterException, FilterCriterionException;
 
     Task getTask(UUID uuid) throws IOException;
 

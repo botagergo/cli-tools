@@ -1,6 +1,7 @@
 package task_manager.ui.cli.command_parser;
 
 import org.testng.annotations.Test;
+import task_manager.ui.cli.Context;
 import task_manager.ui.cli.argument.ArgumentList;
 import task_manager.ui.cli.command.ClearCommand;
 
@@ -10,7 +11,7 @@ public class ClearCommandParserTest {
 
     @Test
     public void test_parse_noArgs() {
-        ClearCommand cmd = (ClearCommand) parser.parse(getArgList());
+        ClearCommand cmd = (ClearCommand) parser.parse(context, getArgList());
         assertNotNull(cmd);
     }
 
@@ -20,6 +21,7 @@ public class ClearCommandParserTest {
         return argList;
     }
 
-    final ClearCommandParser parser = new ClearCommandParser();
+    private final ClearCommandParser parser = new ClearCommandParser();
+    private final Context context = new Context();
 
 }

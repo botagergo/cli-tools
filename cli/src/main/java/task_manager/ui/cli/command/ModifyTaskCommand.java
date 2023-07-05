@@ -4,50 +4,45 @@ import lombok.NonNull;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import task_manager.core.data.Task;
+import task_manager.core.property.FilterPropertySpec;
 import task_manager.core.property.ModifyPropertySpec;
 import task_manager.ui.cli.Context;
 import task_manager.ui.cli.argument.PropertyArgument;
 import task_manager.ui.cli.command.property_modifier.PropertyModifier;
 import task_manager.ui.cli.command.string_to_property_converter.StringToPropertyConverterException;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 @Log4j2
 public record ModifyTaskCommand(
-        @NonNull List<Integer> taskIDs,
-        List<PropertyArgument> properties
+        List<@NonNull Integer> tempIDs,
+        List<@NonNull PropertyArgument> filterPropertyArgs,
+        List<@NonNull PropertyArgument> modifyPropertyArgs
 ) implements Command {
 
     @Override
     public void execute(Context context) {
         log.traceEntry();
 
-        if (taskIDs.isEmpty()) {
-            System.out.println("No selector was specified");
-            return;
-        }
-
         try {
-            List<Task> tasks = new ArrayList<>();
+            List<UUID> taskUUIDs = CommandUtil.getUUIDsFromTempIDs(context, tempIDs);
+            List<FilterPropertySpec> filterPropertySpecs = CommandUtil.getFilterPropertySpecs(context, filterPropertyArgs);
 
-            for (int taskID : taskIDs) {
-                UUID uuid = context.getTempIDMappingRepository().getUUID(taskID);
-                if (uuid == null) {
-                    System.out.println("Task ID does not exist: " + taskID);
-                }
-
-                tasks.add(context.getTaskUseCase().getTask(uuid));
-            }
+            List<Task> tasks = context.getTaskUseCase().getTasks(
+                    null, filterPropertySpecs, null, null, taskUUIDs
+            );
 
             for (Task task : tasks) {
-                if (properties != null) {
-                    List<ModifyPropertySpec> modifyPropertySpecs = context.getStringToPropertyConverter().convertPropertiesForModification(properties, true);
+                if (modifyPropertyArgs != null) {
+                    List<ModifyPropertySpec> modifyPropertySpecs = context.getStringToPropertyConverter().convertPropertiesForModification(modifyPropertyArgs, true);
                     PropertyModifier.modifyProperties(context.getPropertyManager(), task, modifyPropertySpecs);
                 }
-                context.getTaskUseCase().modifyTask(task);
+                Task modifiedTask = context.getTaskUseCase().modifyTask(task);
+                 if (tasks.size() == 1) {
+                    int tempID = context.getTempIDMappingRepository().getOrCreateID(modifiedTask.getUUID());
+                    context.setPrevTaskID(tempID);
+                }
             }
 
         } catch (StringToPropertyConverterException e) {
@@ -58,13 +53,9 @@ public record ModifyTaskCommand(
                 case OrderedLabelNotFound -> System.out.println("Label not found: " + e.getArgument());
                 default -> System.out.println(e.getMessage());
             }
-        } catch (IOException e) {
-            System.out.println("An IO error has occurred: " + e.getMessage());
-            System.out.println("Check the logs for details.");
-            log.error("{}\n{}", e.getMessage(), ExceptionUtils.getStackTrace(e));
         } catch (Exception e) {
-            System.out.println(e.getMessage());
-            log.error("{}", ExceptionUtils.getStackTrace(e));
+            System.out.println("ERROR: " + e.getMessage());
+            log.error("{}\n{}", e.getMessage(), ExceptionUtils.getStackTrace(e));
         }
     }
 

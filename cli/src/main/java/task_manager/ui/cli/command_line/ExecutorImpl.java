@@ -3,6 +3,7 @@ package task_manager.ui.cli.command_line;
 import jakarta.inject.Inject;
 import lombok.Getter;
 import lombok.Setter;
+import task_manager.ui.cli.Context;
 import task_manager.ui.cli.argument.ArgumentList;
 import task_manager.ui.cli.command.Command;
 import task_manager.ui.cli.command.CommandExecutor;
@@ -44,8 +45,8 @@ public class ExecutorImpl implements Executor {
         }
 
         try {
-            Command command = parser.parse(argList);
-            commandExecutor.execute(command);
+            Command command = parser.parse(context, argList);
+            commandExecutor.execute(context, command);
         } catch (CommandParserException e) {
             System.out.println("Error parsing command: " + e.getMessage());
         } catch (Exception e) {
@@ -58,13 +59,19 @@ public class ExecutorImpl implements Executor {
         return _shouldExit;
     }
 
-    @Getter private boolean _shouldExit = false;
-
-    @Getter @Setter @Inject Tokenizer tokenizer;
-
-    @Getter @Setter @Inject CommandParserFactory commandParserFactory;
+    @Getter
+    private boolean _shouldExit = false;
 
     @Getter @Setter @Inject
-    CommandExecutor commandExecutor;
+    private Tokenizer tokenizer;
+
+    @Getter @Setter @Inject
+    private CommandParserFactory commandParserFactory;
+
+    @Getter @Setter @Inject
+    private CommandExecutor commandExecutor;
+
+    @Getter @Setter @Inject
+    private Context context;
 
 }
