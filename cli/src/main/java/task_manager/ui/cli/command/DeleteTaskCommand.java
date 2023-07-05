@@ -27,7 +27,13 @@ public record DeleteTaskCommand(
 
             List<Task> tasks = context.getTaskUseCase().getTasks(
                     null, filterPropertySpecs, null, null, taskUUIDs);
-            List<UUID> uuids = tasks.stream().map(Task::getUUID).toList();
+
+            List<Task> tasksToDelete = CommandUtil.confirmAndGetTasksToChange(context, tasks, tempIDs, filterPropertySpecs, CommandUtil.ChangeType.DELETE);
+            if (tasksToDelete == null || tasksToDelete.isEmpty()) {
+                return;
+            }
+
+            List<UUID> uuids = tasksToDelete.stream().map(Task::getUUID).toList();
 
             for (UUID uuid : uuids) {
                 context.getTempIDMappingRepository().delete(uuid);

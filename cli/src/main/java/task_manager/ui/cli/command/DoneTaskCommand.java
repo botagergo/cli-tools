@@ -28,6 +28,12 @@ public record DoneTaskCommand(
             List<Task> tasks = context.getTaskUseCase().getTasks(
                     null, filterPropertySpecs, null, null, taskUUIDs
             );
+
+            tasks = CommandUtil.confirmAndGetTasksToChange(context, tasks, tempIDs, filterPropertySpecs, CommandUtil.ChangeType.DONE);
+            if (tasks == null || tasks.isEmpty()) {
+                return;
+            }
+
             for (Task task : tasks) {
                 context.getTempIDMappingRepository().delete(task.getUUID());
                 context.getPropertyManager().setProperty(task, "done", true);

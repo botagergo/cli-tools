@@ -30,8 +30,12 @@ public record ModifyTaskCommand(
             List<FilterPropertySpec> filterPropertySpecs = CommandUtil.getFilterPropertySpecs(context, filterPropertyArgs);
 
             List<Task> tasks = context.getTaskUseCase().getTasks(
-                    null, filterPropertySpecs, null, null, taskUUIDs
-            );
+                    null, filterPropertySpecs, null, null, taskUUIDs);
+
+            tasks = CommandUtil.confirmAndGetTasksToChange(context, tasks, tempIDs, filterPropertySpecs, CommandUtil.ChangeType.DELETE);
+            if (tasks == null || tasks.isEmpty()) {
+                return;
+            }
 
             for (Task task : tasks) {
                 if (modifyPropertyArgs != null) {
