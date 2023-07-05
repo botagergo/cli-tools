@@ -77,7 +77,7 @@ public class AddTaskCommandParserTest {
     }
 
     @Test
-    public void test_parse_complex() throws CommandParserException {
+    public void test_parse_complex() {
         AddTaskCommand command = parse(
                 getArgList(
                         List.of(
