@@ -37,11 +37,7 @@ public record DeleteTaskCommand(
 
             for (UUID uuid : uuids) {
                 context.getTempIDMappingRepository().delete(uuid);
-                boolean result = context.getTaskUseCase().deleteTask(uuid);
-                if (!result) {
-                    System.out.println("ERROR: Task with uuid '" + uuid + "' not found");
-                    log.info("task with uuid '" + uuid + "' not found");
-                }
+                context.getTaskUseCase().deleteTask(uuid);
             }
         } catch (Exception e) {
             System.out.println("ERROR: " + e.getMessage());

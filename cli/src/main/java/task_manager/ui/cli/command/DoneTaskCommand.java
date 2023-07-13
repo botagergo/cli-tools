@@ -39,10 +39,7 @@ public record DoneTaskCommand(
                 context.getPropertyManager().setProperty(task, "done", true);
                 Task updatedTask = context.getTaskUseCase().modifyTask(task);
 
-                if (updatedTask == null) {
-                    System.out.println("ERROR: Task with uuid '" + task.getUUID() + "' not found");
-                    log.info("task with uuid '" + task.getUUID() + "' not found");
-                } else if (tasks.size() == 1) {
+                if (tasks.size() == 1) {
                     int tempID = context.getTempIDMappingRepository().getOrCreateID(updatedTask.getUUID());
                     context.setPrevTaskID(tempID);
                 }

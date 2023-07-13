@@ -71,15 +71,12 @@ public class TaskController {
 	}
 
 	@PutMapping(consumes = "application/json")
-	public Object putTask(@RequestBody Task task) {
+	public Object putTask(@RequestBody Task task) throws TaskUseCaseException {
 		try {
 			if (!propertyManager.hasProperty(task, "uuid")) {
 				handleNoUuidInPutRequest();
 			}
-			UUID uuid = task.getUUID();
-			if (taskUseCase.modifyTask(task) == null) {
-				return handleTaskNotFound(uuid.toString());
-			}
+			taskUseCase.modifyTask(task);
 			return ResponseEntity.ok().build();
 		} catch (IOException e) {
 			return handleInternalServerError(e);
@@ -87,12 +84,9 @@ public class TaskController {
 	}
 
 	@DeleteMapping(value = "{uuid}", consumes = "application/json")
-	public Object deleteTask(@PathVariable String uuid) {
+	public Object deleteTask(@PathVariable String uuid) throws TaskUseCaseException {
 		try {
-			boolean result = taskUseCase.deleteTask(UUID.fromString(uuid));
-			if (!result) {
-				return handleTaskNotFound(uuid);
-			}
+			taskUseCase.deleteTask(UUID.fromString(uuid));
 			return ResponseEntity.ok().build();
 		} catch (IllegalArgumentException e) {
 			return handleInvalidUUID(uuid, e);

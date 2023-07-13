@@ -14,9 +14,9 @@ import java.util.UUID;
 public interface TaskUseCase {
     Task addTask(Task task) throws IOException;
 
-    Task modifyTask(Task task) throws IOException;
+    Task modifyTask(Task task) throws IOException, TaskUseCaseException;
 
-    boolean deleteTask(UUID uuid) throws IOException;
+    void deleteTask(UUID uuid) throws IOException, TaskUseCaseException;
 
     List<Task> getTasks() throws IOException;
 

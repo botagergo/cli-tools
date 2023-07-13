@@ -29,6 +29,9 @@ public class CommandUtil {
             List<UUID> taskUUIDs = new ArrayList<>();
             for (int tempID : tempIDs) {
                 UUID uuid = context.getTempIDMappingRepository().getUUID(tempID);
+                if (uuid == null) {
+                    throw new IllegalArgumentException("No task found with ID '" + tempID + "'");
+                }
                 taskUUIDs.add(uuid);
             }
             return taskUUIDs;

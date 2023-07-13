@@ -26,19 +26,25 @@ import java.util.UUID;
 public class TaskUseCaseImpl implements TaskUseCase {
 
     @Override
-    public Task addTask(Task task) throws IOException {
+    public @NonNull Task addTask(Task task) throws IOException {
         task.getProperties().put("uuid", uuidGenerator.getUUID());
         return taskRepository.create(task);
     }
 
     @Override
-    public Task modifyTask(Task task) throws IOException {
-        return taskRepository.update(task);
+    public @NonNull Task modifyTask(Task task) throws IOException, TaskUseCaseException {
+        Task modifiedTask = taskRepository.update(task);
+        if (modifiedTask == null) {
+            throw new TaskUseCaseException(String.format(TaskUseCaseException.taskNotFoundMessage, task.getUUID()));
+        }
+        return modifiedTask;
     }
 
     @Override
-    public boolean deleteTask(UUID uuid) throws IOException {
-        return taskRepository.delete(uuid);
+    public void deleteTask(UUID uuid) throws IOException, TaskUseCaseException {
+        if (!taskRepository.delete(uuid)) {
+            throw new TaskUseCaseException(String.format(TaskUseCaseException.taskNotFoundMessage, uuid));
+        }
     }
 
     @Override
@@ -61,6 +67,10 @@ public class TaskUseCaseImpl implements TaskUseCase {
         if (taskUUIDs != null) {
             tasks = new ArrayList<>();
             for(UUID taskUUID : taskUUIDs) {
+                Task task = getTask(taskUUID);
+                if (task == null) {
+                    throw new TaskUseCaseException("No task found with uuid '" + taskUUID + "'");
+                }
                 tasks.add(getTask(taskUUID));
             }
         } else {
