@@ -58,6 +58,10 @@ public record ListTasksCommand(
                 }
             }
 
+            if (sortingCriteria != null) {
+                sortingInfo = new SortingInfo(sortingCriteria);
+            }
+
             if (propertiesToList == null) {
                 propertiesToList = List.of("name", "status", "tags");
             }
