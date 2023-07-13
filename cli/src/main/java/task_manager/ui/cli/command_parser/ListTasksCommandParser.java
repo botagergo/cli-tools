@@ -15,6 +15,10 @@ public class ListTasksCommandParser implements CommandParser {
 
     @Override
     public Command parse(Context context, ArgumentList argList) throws CommandParserException {
+        if (!argList.getModifyPropertyArguments().isEmpty()) {
+            throw new CommandParserException("Unexpected property arguments");
+        }
+
         List<String> queries = null;
         List<SortingCriterion> sortingCriteria = null;
         String viewName = null;

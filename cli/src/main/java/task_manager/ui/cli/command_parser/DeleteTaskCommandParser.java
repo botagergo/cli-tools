@@ -11,6 +11,14 @@ public class DeleteTaskCommandParser implements CommandParser {
 
     @Override
     public Command parse(Context context, ArgumentList argList) throws CommandParserException {
+        if (!argList.getModifyPropertyArguments().isEmpty()) {
+            throw new CommandParserException("Unexpected property arguments");
+        } else if (!argList.getTrailingNormalArguments().isEmpty()) {
+            throw new CommandParserException("Unexpected trailing arguments");
+        } else if (!argList.getOptionArguments().isEmpty()) {
+            throw new CommandParserException("Unexpected option arguments");
+        }
+
         List<Integer> taskIDs = ParseUtil.getTaskIDs(context, argList.getLeadingNormalArguments());
         return new DeleteTaskCommand(taskIDs, argList.getFilterPropertyArguments());
     }

@@ -50,7 +50,7 @@ public class ExecutorImpl implements Executor {
         } catch (CommandParserException e) {
             System.out.println("Error parsing command: " + e.getMessage());
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            System.out.println("ERROR: " + e.getMessage());
         }
     }
 

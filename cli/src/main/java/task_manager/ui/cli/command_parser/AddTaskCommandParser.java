@@ -9,8 +9,18 @@ import task_manager.ui.cli.command.Command;
 public class AddTaskCommandParser implements CommandParser {
 
     @Override
-    public Command parse(@NonNull Context context, ArgumentList argList) {
-        return new AddTaskCommand(String.join(" ", argList.getTrailingNormalArguments()), argList.getModifyPropertyArguments());
+    public Command parse(@NonNull Context context, ArgumentList argList) throws CommandParserException {
+        if (!argList.getFilterPropertyArguments().isEmpty()) {
+            throw new CommandParserException("Unexpected filter arguments");
+        } else if (!argList.getLeadingNormalArguments().isEmpty()) {
+            throw new CommandParserException("Unexpected leading arguments");
+        } else if (!argList.getOptionArguments().isEmpty()) {
+            throw new CommandParserException("Unexpected option arguments");
+        }
+
+        return new AddTaskCommand(
+                String.join(" ", argList.getTrailingNormalArguments()),
+                argList.getModifyPropertyArguments());
     }
 
 }
