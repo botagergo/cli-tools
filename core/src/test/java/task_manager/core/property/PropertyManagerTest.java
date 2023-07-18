@@ -153,6 +153,17 @@ public class PropertyManagerTest {
         }
 
         @Test
+        public void test_addPropertyValues_listWithNulls() throws IOException, PropertyException {
+                initPropertyDescriptorsWithoutDefaults();
+
+                PropertyOwner propertyOwner = new PropertyOwnerImpl();
+                propertyManager.setProperty(propertyOwner, "test_string_list", Utils.newArrayList(null));
+                propertyManager.addPropertyValues(propertyOwner, "test_string_list", Utils.newArrayList("str2", null));
+
+                assertEquals(propertyManager.getProperty(propertyOwner, "test_string_list").getValue(), Utils.newArrayList(null, "str2", null));
+        }
+
+        @Test
         public void test_addPropertyValues_emptyList() throws IOException, PropertyException {
                 initPropertyDescriptorsWithoutDefaults();
 
@@ -215,6 +226,17 @@ public class PropertyManagerTest {
                 propertyManager.addPropertyValues(propertyOwner, "test_string_set", Utils.newLinkedHashSet("str2", "str3"));
 
                 assertEquals(propertyManager.getProperty(propertyOwner, "test_string_set").getValue(), Utils.newLinkedHashSet("str1", "str2", "str3"));
+        }
+
+        @Test
+        public void test_addPropertyValues_setWithNull() throws IOException, PropertyException {
+                initPropertyDescriptorsWithoutDefaults();
+
+                PropertyOwner propertyOwner = new PropertyOwnerImpl();
+                propertyManager.setProperty(propertyOwner, "test_string_set", Utils.newLinkedHashSet("str1", null));
+                propertyManager.addPropertyValues(propertyOwner, "test_string_set", Utils.newLinkedHashSet("str2", null));
+
+                assertEquals(propertyManager.getProperty(propertyOwner, "test_string_set").getValue(), Utils.newLinkedHashSet(null, "str1", "str2"));
         }
 
         @Test
@@ -292,6 +314,17 @@ public class PropertyManagerTest {
                 propertyManager.setProperty(propertyOwner, "test_string_list", Utils.newArrayList("str1", "str2", "str3"));
 
                 propertyManager.removePropertyValues(propertyOwner, "test_string_list", Utils.newArrayList("str2", "str3"));
+                assertEquals(propertyManager.getProperty(propertyOwner, "test_string_list").getValue(), Utils.newArrayList("str1"));
+        }
+
+        @Test
+        public void test_removePropertyValues_listWithNull() throws IOException, PropertyException {
+                initPropertyDescriptorsWithoutDefaults();
+
+                PropertyOwner propertyOwner = new PropertyOwnerImpl();
+                propertyManager.setProperty(propertyOwner, "test_string_list", Utils.newArrayList("str1", null));
+
+                propertyManager.removePropertyValues(propertyOwner, "test_string_list", Utils.newArrayList("str2", null));
                 assertEquals(propertyManager.getProperty(propertyOwner, "test_string_list").getValue(), Utils.newArrayList("str1"));
         }
 
@@ -384,16 +417,6 @@ public class PropertyManagerTest {
                 }
         }
 
-
-
-
-
-
-
-
-
-
-
         @Test
         public void test_removeProperty_set() throws IOException, PropertyException {
                 initPropertyDescriptorsWithoutDefaults();
@@ -403,6 +426,17 @@ public class PropertyManagerTest {
 
                 propertyManager.removePropertyValues(propertyOwner, "test_string_set", Utils.newLinkedHashSet("str2", "str3"));
                 assertEquals(propertyManager.getProperty(propertyOwner, "test_string_set").getValue(), Utils.newLinkedHashSet("str1"));
+        }
+
+        @Test
+        public void test_removeProperty_setWithNull() throws IOException, PropertyException {
+                initPropertyDescriptorsWithoutDefaults();
+
+                PropertyOwner propertyOwner = new PropertyOwnerImpl();
+                propertyManager.setProperty(propertyOwner, "test_string_set", Utils.newLinkedHashSet("str1", null, "str3"));
+
+                propertyManager.removePropertyValues(propertyOwner, "test_string_set", Utils.newLinkedHashSet("str2", null));
+                assertEquals(propertyManager.getProperty(propertyOwner, "test_string_set").getValue(), Utils.newLinkedHashSet("str1", "str3"));
         }
 
         @Test

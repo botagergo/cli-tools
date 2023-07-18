@@ -1,8 +1,6 @@
 package task_manager.core.property;
 
 import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import lombok.extern.log4j.Log4j2;
@@ -10,6 +8,8 @@ import task_manager.core.repository.PropertyDescriptorRepository;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Log4j2
 @Singleton
@@ -65,14 +65,14 @@ public class PropertyManager {
             if (origList == null) {
                 newProperty = propertyValue;
             } else {
-                newProperty = Lists.newArrayList(Iterables.concat(origList, propertyValue));
+                newProperty = Stream.concat(origList.stream(), propertyValue.stream()).toList();
             }
         } else if (origProperty.getPropertyDescriptor().multiplicity() == PropertyDescriptor.Multiplicity.SET) {
             Set<Object> origSet = origProperty.getSet();
             if (origSet == null) {
                 newProperty = propertyValue;
             } else {
-                newProperty = Sets.newLinkedHashSet(Iterables.concat(origSet, propertyValue));
+                newProperty = Collections.unmodifiableSet(Stream.concat(origSet.stream(), propertyValue.stream()).collect(Collectors.toSet()));
             }
         } else {
             throw new PropertyException(PropertyException.Type.NotACollection,
@@ -94,19 +94,21 @@ public class PropertyManager {
         Collection<Object> newProperty;
 
         if (origProperty.getPropertyDescriptor().multiplicity() == PropertyDescriptor.Multiplicity.LIST) {
-            ArrayList<Object> origList = origProperty.getList();
+            List<Object> origList = origProperty.getList();
             if (origList == null) {
                 return;
             }
-            newProperty = new ArrayList<>(origList);
-            Iterables.removeAll(newProperty, propertyValue);
+            List<Object> newList = new ArrayList<>(origList);
+            Iterables.removeAll(newList, propertyValue);
+            newProperty = Collections.unmodifiableList(newList);
         } else if (origProperty.getPropertyDescriptor().multiplicity() == PropertyDescriptor.Multiplicity.SET) {
-            LinkedHashSet<Object> origSet = origProperty.getSet();
+            Set<Object> origSet = origProperty.getSet();
             if (origSet == null) {
                 return;
             }
-            newProperty = new LinkedHashSet<>(origSet);
-            Iterables.removeAll(newProperty, propertyValue);
+            Set<Object> newSet = new LinkedHashSet<>(origSet);
+            Iterables.removeAll(newSet, propertyValue);
+            newProperty = Collections.unmodifiableSet(newSet);
         } else {
             throw new PropertyException(PropertyException.Type.NotACollection,
                     origProperty.getPropertyDescriptor().name(), origProperty.getPropertyDescriptor(), null, null);

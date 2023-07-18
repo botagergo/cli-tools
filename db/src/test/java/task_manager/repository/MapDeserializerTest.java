@@ -1,6 +1,5 @@
 package task_manager.repository;
 
-import com.beust.jcommander.internal.Lists;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -8,6 +7,7 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import task_manager.core.util.RoundRobinUUIDGenerator;
+import task_manager.core.util.Utils;
 
 import java.util.*;
 
@@ -73,7 +73,7 @@ public class MapDeserializerTest {
     @Test
     public void test_deserializer_listWithNull() throws JsonProcessingException {
         assertJsonStrEquals("{\"string_list\":{\"type\":\"list\",\"value\":[\"s:value1\", null, \"s:value2\"]},\"tags\":{\"type\":\"list\",\"value\":[\"u:" + uuid1 + "\",null,\"u:" + uuid2 + "\"]}}",
-                new HashMap<>(Map.of("string_list", Lists.newArrayList("value1", null, "value2"), "tags", Lists.newArrayList(uuid1, null, uuid2))));
+                new HashMap<>(Map.of("string_list", Utils.newArrayList("value1", null, "value2"), "tags", Utils.newArrayList(uuid1, null, uuid2))));
     }
 
     @Test
@@ -93,8 +93,8 @@ public class MapDeserializerTest {
     @Test
     public void test_deserializer_setWithNull() throws JsonProcessingException {
         HashMap<String, Object> expectedMap = new HashMap<>(Map.of(
-                "string_set", new LinkedHashSet<>(Lists.newArrayList(null,"value1", "value2")),
-                "tags", new LinkedHashSet<>(Lists.newArrayList(null, uuid1, uuid2))));
+                "string_set", new LinkedHashSet<>(Utils.newArrayList(null,"value1", "value2")),
+                "tags", new LinkedHashSet<>(Utils.newArrayList(null, uuid1, uuid2))));
         assertJsonStrEquals("{\"string_set\":{\"type\":\"set\", \"value\":[null,\"s:value1\",\"s:value2\"]},\"tags\":{\"type\":\"set\", \"value\":[null,\"u:" + uuid1 + "\",\"u:" + uuid2 + "\"]}}", expectedMap);
     }
 

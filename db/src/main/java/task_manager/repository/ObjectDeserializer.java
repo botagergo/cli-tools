@@ -7,10 +7,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.LinkedHashSet;
-import java.util.UUID;
+import java.util.*;
 
 public class ObjectDeserializer extends StdDeserializer<Object> {
 
@@ -46,11 +43,11 @@ public class ObjectDeserializer extends StdDeserializer<Object> {
             if (collectionType.equals("list")) {
                 ArrayList<Object> list = new ArrayList<>();
                 deserializeCollection(jp, jsonNode, list);
-                return list;
+                return Collections.unmodifiableList(list);
             } else if (collectionType.equals("set")) {
                 LinkedHashSet<Object> set = new LinkedHashSet<>();
                 deserializeCollection(jp, jsonNode, set);
-                return set;
+                return Collections.unmodifiableSet(set);
             } else {
                 throw JsonMappingException.from(jp, "Invalid collection type: " + collectionType);
             }

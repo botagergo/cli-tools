@@ -1,6 +1,5 @@
 package task_manager.repository;
 
-import com.beust.jcommander.internal.Lists;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -78,7 +77,7 @@ public class MapSerializerTest {
     @Test
     public void test_serializer_listWithNull() throws JsonProcessingException {
         assertJsonStrEquals(objectMapper.writeValueAsString(
-                        new HashMap<>(Map.of("string_list", Lists.newArrayList("value1", null, "value2"), "tags", Lists.newArrayList(uuid1, null, uuid2)))),
+                        new HashMap<>(Map.of("string_list", Utils.newArrayList("value1", null, "value2"), "tags", Utils.newArrayList(uuid1, null, uuid2)))),
                 new HashMap<>(Map.of(
                         "string_list", Map.of("type", "list", "value", Utils.newArrayList("s:value1", null, "s:value2")),
                         "tags", Map.of("type", "list", "value", Utils.newArrayList("u:" + uuid1, null, "u:" + uuid2)))));
@@ -106,10 +105,10 @@ public class MapSerializerTest {
     @Test
     public void test_serializer_setWithNull() throws JsonProcessingException {
         assertJsonStrEquals(objectMapper.writeValueAsString(
-                new HashMap<>(Map.of("string_set", Sets.newLinkedHashSet(Lists.newArrayList("value1", null, "value2")), "tags", Sets.newLinkedHashSet(Lists.newArrayList(uuid1, null, uuid2))))),
+                new HashMap<>(Map.of("string_set", Sets.newLinkedHashSet(Utils.newArrayList("value1", null, "value2")), "tags", Sets.newLinkedHashSet(Utils.newArrayList(uuid1, null, uuid2))))),
                 new HashMap<>(Map.of(
-                        "string_set", Map.of("type", "set", "value", Lists.newArrayList("s:value1", null, "s:value2")),
-                        "tags", Map.of("type", "set", "value", Lists.newArrayList("u:" + uuid1, null, "u:" + uuid2)))));
+                        "string_set", Map.of("type", "set", "value", Utils.newArrayList("s:value1", null, "s:value2")),
+                        "tags", Map.of("type", "set", "value", Utils.newArrayList("u:" + uuid1, null, "u:" + uuid2)))));
     }
 
     private void assertJsonStrEquals(String jsonStr, Map<String, Object> map) throws JsonProcessingException {

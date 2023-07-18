@@ -163,7 +163,7 @@ public class CommandUtil {
     private static String getTagsStr(Context context, Task task) throws IOException, PropertyException {
         StringBuilder tagsStr = new StringBuilder();
 
-        LinkedHashSet<UUID> tagUuids = context.getPropertyManager().getProperty(task, "tags").getUuidSet();
+        Set<UUID> tagUuids = context.getPropertyManager().getProperty(task, "tags").getUuidSet();
         for (UUID tagUuid : tagUuids) {
             Label tag = context.getLabelUseCase().getLabel("tag", tagUuid);
 

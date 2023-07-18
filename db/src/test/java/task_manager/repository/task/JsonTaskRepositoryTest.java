@@ -1,6 +1,5 @@
 package task_manager.repository.task;
 
-import com.beust.jcommander.internal.Lists;
 import org.testng.annotations.Test;
 import task_manager.core.data.Task;
 import task_manager.core.util.Utils;
@@ -45,7 +44,7 @@ public class JsonTaskRepositoryTest {
 
         List<Task> tasks = repository.getAll();
         assertEquals(tasks.get(0).getProperties().get("name"), "task1");
-        assertEquals(tasks.get(0).getProperties().get("values"), Lists.newArrayList(true, false));
+        assertEquals(tasks.get(0).getProperties().get("values"), Utils.newArrayList(true, false));
         assertEquals(tasks.get(1).getProperties().get("name"), "task2");
         assertEquals(tasks.get(1).getProperties().get("values"), Utils.newLinkedHashSet(true, false));
     }

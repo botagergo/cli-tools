@@ -1,6 +1,5 @@
 package task_manager.filter;
 
-import com.beust.jcommander.internal.Lists;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -72,9 +71,9 @@ public class CollectionContainsFilterCriterionTest {
                 "test_boolean_list", Utils.newArrayList(true, false, true),
                 "test_uuid_list", Utils.newArrayList(uuid1, uuid2, uuid3)
         ));
-        assertFalse(new CollectionContainsFilterCriterion("test_string_list", Lists.newArrayList("value4", "value2")).check(propertyOwner, propertyManager));
-        assertFalse(new CollectionContainsFilterCriterion("test_boolean_list", Lists.newArrayList(true, null)).check(propertyOwner, propertyManager));
-        assertFalse(new CollectionContainsFilterCriterion("test_uuid_list", Lists.newArrayList(uuid4)).check(propertyOwner, propertyManager));
+        assertFalse(new CollectionContainsFilterCriterion("test_string_list", Utils.newArrayList("value4", "value2")).check(propertyOwner, propertyManager));
+        assertFalse(new CollectionContainsFilterCriterion("test_boolean_list", Utils.newArrayList(true, null)).check(propertyOwner, propertyManager));
+        assertFalse(new CollectionContainsFilterCriterion("test_uuid_list", Utils.newArrayList(uuid4)).check(propertyOwner, propertyManager));
     }
 
     @Test
