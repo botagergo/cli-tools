@@ -8,8 +8,8 @@ import org.jline.reader.LineReaderBuilder;
 import org.jline.reader.UserInterruptException;
 import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
-import task_manager.core.property.TaskIDPseudoPropertyProvider;
 import task_manager.init.Initializer;
+import task_manager.logic.pseudo_property_provider.TaskIDPseudoPropertyProvider;
 import task_manager.ui.cli.Context;
 
 import java.io.IOException;
@@ -25,7 +25,7 @@ public class JlineCommandLine implements CommandLine {
 
         Context context = ((ExecutorImpl) executor).getContext();
         context.getPropertyManager()
-                .registerPseudoPropertyProvider("id", new TaskIDPseudoPropertyProvider(context.getTempIDMappingRepository()));
+                .registerPseudoPropertyProvider("id", new TaskIDPseudoPropertyProvider(context.getTempIDMappingUseCase()));
 
         Terminal terminal = TerminalBuilder.builder()
                 .nativeSignals(true)

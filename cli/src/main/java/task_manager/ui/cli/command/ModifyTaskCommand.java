@@ -44,7 +44,7 @@ public record ModifyTaskCommand(
                 }
                 Task modifiedTask = context.getTaskUseCase().modifyTask(task);
                  if (tasks.size() == 1) {
-                    int tempID = context.getTempIDMappingRepository().getOrCreateID(modifiedTask.getUUID());
+                    int tempID = context.getTempIDMappingUseCase().getOrCreateID(modifiedTask.getUUID());
                     context.setPrevTaskID(tempID);
                 }
             }

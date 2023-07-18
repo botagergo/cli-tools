@@ -35,12 +35,12 @@ public record DoneTaskCommand(
             }
 
             for (Task task : tasks) {
-                context.getTempIDMappingRepository().delete(task.getUUID());
+                context.getTempIDMappingUseCase().delete(task.getUUID());
                 context.getPropertyManager().setProperty(task, "done", true);
                 Task updatedTask = context.getTaskUseCase().modifyTask(task);
 
                 if (tasks.size() == 1) {
-                    int tempID = context.getTempIDMappingRepository().getOrCreateID(updatedTask.getUUID());
+                    int tempID = context.getTempIDMappingUseCase().getOrCreateID(updatedTask.getUUID());
                     context.setPrevTaskID(tempID);
                 }
             }

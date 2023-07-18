@@ -29,7 +29,7 @@ public record AddTaskCommand(String name, List<@NonNull PropertyArgument> modify
             }
 
             Task addedTask = context.getTaskUseCase().addTask(task);
-            int tempID = context.getTempIDMappingRepository().getOrCreateID(addedTask.getUUID());
+            int tempID = context.getTempIDMappingUseCase().getOrCreateID(addedTask.getUUID());
             context.setPrevTaskID(tempID);
         } catch (Exception e) {
             System.out.println("ERROR: " + e.getMessage());

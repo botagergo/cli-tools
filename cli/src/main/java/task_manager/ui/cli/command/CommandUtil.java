@@ -28,7 +28,7 @@ public class CommandUtil {
         if (tempIDs != null && tempIDs.size() != 0) {
             List<UUID> taskUUIDs = new ArrayList<>();
             for (int tempID : tempIDs) {
-                UUID uuid = context.getTempIDMappingRepository().getUUID(tempID);
+                UUID uuid = context.getTempIDMappingUseCase().getUUID(tempID);
                 taskUUIDs.add(uuid);
             }
             return taskUUIDs;
