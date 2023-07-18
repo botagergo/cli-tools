@@ -69,7 +69,7 @@ public class AndFilterCriterionTest {
 
     private void mockitoPropertyDescriptor(String name) throws IOException {
         Mockito.when(propertyDescriptorRepository.get(name)).thenReturn(new PropertyDescriptor(name,
-                PropertyDescriptor.Type.Boolean, null, PropertyDescriptor.Multiplicity.SINGLE, null));
+                PropertyDescriptor.Type.Boolean, null, PropertyDescriptor.Multiplicity.SINGLE, null, false));
     }
 
     @Mock

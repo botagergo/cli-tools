@@ -121,23 +121,21 @@ public class CommandUtil {
     }
 
     public static void printTasks(Context context, List<Task> tasks, List<String> propertiesToList) throws IOException, PropertyException {
-        SimpleTable table = SimpleTable.of().nextRow()
-                .nextCell().addLine(" ID ");
+        SimpleTable table = SimpleTable.of().nextRow();
 
         for (String propertyName : propertiesToList) {
             table.nextCell().addLine(String.format(" %s ", propertyName.toUpperCase()));
         }
 
         for (Task task : tasks) {
-            int tempID = context.getTempIDMappingRepository().getOrCreateID(task.getUUID());
-            addTaskToTable(table, context, task, tempID, propertiesToList);
+            addTaskToTable(table, context, task, propertiesToList);
         }
 
         GridTable gridTable = Border.of(Border.Chars.of('+', '-', '|')).apply(table.toGrid());
         Util.print(gridTable, new PrintWriter(System.out, true));
     }
 
-    private static void addTaskToTable(SimpleTable table, Context context, Task task, int tempID, List<String> propertiesToList) throws IOException, PropertyException {
+    private static void addTaskToTable(SimpleTable table, Context context, Task task, List<String> propertiesToList) throws IOException, PropertyException {
         Ansi done;
         if (context.getPropertyManager().getProperty(task, "done").getBoolean()) {
             done = Ansi.ansi().a("✓ ");
@@ -145,8 +143,7 @@ public class CommandUtil {
             done = Ansi.ansi().a("");
         }
 
-        table.nextRow()
-                .nextCell().addLine(String.format(" %s ", tempID));
+        table.nextRow();
 
         for (String propertyName : propertiesToList) {
             Property property = context.getPropertyManager().getProperty(task, propertyName);
@@ -157,6 +154,7 @@ public class CommandUtil {
                 case "effort" -> table.nextCell().addLine(String.format(" %s ", getLabelStr(context, task, "effort")));
                 case "tags" -> table.nextCell().addLine(String.format(" %s ", getTagsStr(context, task)));
                 case "status" -> table.nextCell().addLine(String.format(" %s ", getStatusStr(context, task)));
+                case "id" -> table.nextCell().addLine(String.format(" %s ", getIDStr(context, task)));
                 default -> throw new RuntimeException();
             }
         }
@@ -205,6 +203,10 @@ public class CommandUtil {
         }
 
         return priority.text();
+    }
+
+    private static String getIDStr(Context context, Task task) throws PropertyException, IOException {
+        return context.getPropertyManager().getProperty(task, "id").getInteger().toString();
     }
 
     public static char prompt(String message, String options) {

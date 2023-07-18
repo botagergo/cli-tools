@@ -53,7 +53,7 @@ public class NotFilterCriterionTest {
     @SuppressWarnings("SameParameterValue")
     private void mockitoPropertyDescriptor(String propertyName, PropertyDescriptor.Type propertyType) throws IOException {
         Mockito.when(propertyDescriptorRepository.get(propertyName)).thenReturn(new PropertyDescriptor(propertyName,
-                propertyType, null, PropertyDescriptor.Multiplicity.SINGLE, null));
+                propertyType, null, PropertyDescriptor.Multiplicity.SINGLE, null, false));
     }
 
 }

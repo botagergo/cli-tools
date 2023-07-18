@@ -5,7 +5,8 @@ public record PropertyDescriptor(
         PropertyDescriptor.Type type,
         Extra extra,
         Multiplicity multiplicity,
-        Object defaultValue
+        Object defaultValue,
+        boolean isPseudoProperty
 ) {
 
     public PropertyDescriptor {

@@ -229,7 +229,7 @@ public class PropertySorterTest {
 
     private void mockitoPropertyDescriptor(String name, PropertyDescriptor.Type type, PropertyDescriptor.Multiplicity multiplicity) throws IOException {
         Mockito.when(propertyDescriptorRepository.get(name)).thenReturn(new PropertyDescriptor(name,
-                type, null, multiplicity, null));
+                type, null, multiplicity, null, false));
     }
 
     @Mock

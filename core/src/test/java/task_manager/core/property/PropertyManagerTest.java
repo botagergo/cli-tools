@@ -279,7 +279,7 @@ public class PropertyManagerTest {
                         propertyManager.addPropertyValues(propertyOwner, "test_string", Utils.newArrayList("default_value1"));
                 } catch (PropertyException e) {
                         assertEquals(e.getExceptionType(), PropertyException.Type.NotACollection);
-                        assertEquals(e.getPropertyDescriptor(), new PropertyDescriptor("test_string", PropertyDescriptor.Type.String, null, PropertyDescriptor.Multiplicity.SINGLE, null));
+                        assertEquals(e.getPropertyDescriptor(), new PropertyDescriptor("test_string", PropertyDescriptor.Type.String, null, PropertyDescriptor.Multiplicity.SINGLE, null, false));
                         assertEquals(e.getPropertyName(), "test_string");
                 }
         }
@@ -379,7 +379,7 @@ public class PropertyManagerTest {
                         propertyManager.removePropertyValues(propertyOwner, "test_string", Utils.newArrayList("default_value1"));
                 } catch (PropertyException e) {
                         assertEquals(e.getExceptionType(), PropertyException.Type.NotACollection);
-                        assertEquals(e.getPropertyDescriptor(), new PropertyDescriptor("test_string", PropertyDescriptor.Type.String, null, PropertyDescriptor.Multiplicity.SINGLE, null));
+                        assertEquals(e.getPropertyDescriptor(), new PropertyDescriptor("test_string", PropertyDescriptor.Type.String, null, PropertyDescriptor.Multiplicity.SINGLE, null, false));
                         assertEquals(e.getPropertyName(), "test_string");
                 }
         }
@@ -513,7 +513,7 @@ public class PropertyManagerTest {
 
         private void mockitoPropertyDescriptor(String name, PropertyDescriptor.Type type, PropertyDescriptor.Multiplicity multiplicity, Object defaultValue) throws IOException {
                 Mockito.when(propertyDescriptorRepository.get(name)).thenReturn(new PropertyDescriptor(name,
-                        type, null, multiplicity, defaultValue));
+                        type, null, multiplicity, defaultValue, false));
         }
 
         private void assertPropertyEquals(String propertyName, Object propertyValue) throws PropertyException, IOException {

@@ -117,7 +117,7 @@ public class PropertyConverterTest {
     }
 
     private PropertyDescriptor getPropertyDescriptor(PropertyDescriptor.Type type, PropertyDescriptor.Multiplicity multiplicity) {
-        return new PropertyDescriptor("test", type, null, multiplicity, null);
+        return new PropertyDescriptor("test", type, null, multiplicity, null, false);
     }
 
     @Mock private LabelRepositoryFactory labelRepositoryFactory;

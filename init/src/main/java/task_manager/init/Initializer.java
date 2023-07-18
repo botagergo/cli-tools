@@ -38,20 +38,21 @@ public class Initializer {
 
     private void initializePropertyDescriptors() throws IOException {
         propertyDescriptorUseCase.createPropertyDescriptor(
-                new PropertyDescriptor("name", PropertyDescriptor.Type.String, null, PropertyDescriptor.Multiplicity.SINGLE, ""));
+                new PropertyDescriptor("name", PropertyDescriptor.Type.String, null, PropertyDescriptor.Multiplicity.SINGLE, "", false));
         propertyDescriptorUseCase.createPropertyDescriptor(
-                new PropertyDescriptor("uuid", PropertyDescriptor.Type.UUID, null, PropertyDescriptor.Multiplicity.SINGLE, ""));
+                new PropertyDescriptor("uuid", PropertyDescriptor.Type.UUID, null, PropertyDescriptor.Multiplicity.SINGLE, "", false));
         propertyDescriptorUseCase.createPropertyDescriptor(
-                new PropertyDescriptor("done", PropertyDescriptor.Type.Boolean, null, PropertyDescriptor.Multiplicity.SINGLE, false));
+                new PropertyDescriptor("done", PropertyDescriptor.Type.Boolean, null, PropertyDescriptor.Multiplicity.SINGLE, false, false));
         propertyDescriptorUseCase.createPropertyDescriptor(
-                new PropertyDescriptor("tags", PropertyDescriptor.Type.UUID, new PropertyDescriptor.UUIDExtra("tag"), PropertyDescriptor.Multiplicity.SET, new LinkedHashSet<>()));
+                new PropertyDescriptor("tags", PropertyDescriptor.Type.UUID, new PropertyDescriptor.UUIDExtra("tag"), PropertyDescriptor.Multiplicity.SET, new LinkedHashSet<>(), false));
         propertyDescriptorUseCase.createPropertyDescriptor(
-                new PropertyDescriptor("status", PropertyDescriptor.Type.UUID, new PropertyDescriptor.UUIDExtra("status"), PropertyDescriptor.Multiplicity.SINGLE, null));
+                new PropertyDescriptor("status", PropertyDescriptor.Type.UUID, new PropertyDescriptor.UUIDExtra("status"), PropertyDescriptor.Multiplicity.SINGLE, null, false));
         propertyDescriptorUseCase.createPropertyDescriptor(
-                new PropertyDescriptor("priority", PropertyDescriptor.Type.Integer, new PropertyDescriptor.IntegerExtra("priority"), PropertyDescriptor.Multiplicity.SINGLE, null));
+                new PropertyDescriptor("priority", PropertyDescriptor.Type.Integer, new PropertyDescriptor.IntegerExtra("priority"), PropertyDescriptor.Multiplicity.SINGLE, null, false));
         propertyDescriptorUseCase.createPropertyDescriptor(
-                new PropertyDescriptor("effort", PropertyDescriptor.Type.Integer, new PropertyDescriptor.IntegerExtra("effort"), PropertyDescriptor.Multiplicity.SINGLE, null));
-
+                new PropertyDescriptor("effort", PropertyDescriptor.Type.Integer, new PropertyDescriptor.IntegerExtra("effort"), PropertyDescriptor.Multiplicity.SINGLE, null, false));
+        propertyDescriptorUseCase.createPropertyDescriptor(
+                new PropertyDescriptor("id", PropertyDescriptor.Type.Integer, null, PropertyDescriptor.Multiplicity.SINGLE, null, true));
     }
 
     private void initializePriorities() throws IOException {

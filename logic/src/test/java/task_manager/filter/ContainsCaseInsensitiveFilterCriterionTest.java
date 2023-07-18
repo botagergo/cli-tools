@@ -51,7 +51,7 @@ public class ContainsCaseInsensitiveFilterCriterionTest {
 
     private void mockitoPropertyDescriptor(String name, PropertyDescriptor.Multiplicity multiplicity) throws IOException {
         Mockito.when(propertyDescriptorRepository.get(name)).thenReturn(new PropertyDescriptor(name,
-                PropertyDescriptor.Type.String, null, multiplicity, null));
+                PropertyDescriptor.Type.String, null, multiplicity, null, false));
     }
 
     @Mock

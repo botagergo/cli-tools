@@ -23,5 +23,7 @@ public record PropertyDescriptorMixIn(
         @JsonSerialize(using = ObjectSerializer.class)
         @JsonDeserialize(using = ObjectDeserializer.class)
         @JsonProperty
-        Object defaultValue
+        Object defaultValue,
+
+        @JsonProperty boolean isPseudoProperty
 ) { }

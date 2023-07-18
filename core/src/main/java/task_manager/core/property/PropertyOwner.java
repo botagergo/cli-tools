@@ -1,9 +1,18 @@
 package task_manager.core.property;
 
 import java.util.HashMap;
+import java.util.UUID;
 
-public interface PropertyOwner {
+public abstract class PropertyOwner {
 
-    HashMap<String, Object> getProperties();
+    public abstract HashMap<String, Object> getProperties();
+
+    public UUID getUUID() {
+        Object uuid = getProperties().get("uuid");
+        if (!(uuid instanceof UUID)) {
+            return null;
+        }
+        return (UUID) uuid;
+    }
 
 }

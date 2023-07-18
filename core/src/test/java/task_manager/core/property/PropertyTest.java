@@ -267,20 +267,20 @@ public class PropertyTest {
         }
 
         private void assertFromEquals(String propertyName, PropertyDescriptor.Type propertyType, PropertyDescriptor.Multiplicity multiplicity, Object propertyValue) throws PropertyException {
-                PropertyDescriptor propertyDescriptor = new PropertyDescriptor(propertyName, propertyType, null, multiplicity, null);
+                PropertyDescriptor propertyDescriptor = new PropertyDescriptor(propertyName, propertyType, null, multiplicity, null, false);
                 Property property = Property.from(propertyDescriptor, propertyValue);
                 assertEquals(getPropertyValue(property, propertyType, multiplicity), propertyValue);
         }
 
         private void assertFromThrowsWrongValueTypePropertyException(String propertyName, PropertyDescriptor.Type propertyType, PropertyDescriptor.Multiplicity multiplicity, Object propertyValue) {
-                PropertyDescriptor propertyDescriptor = new PropertyDescriptor(propertyName, propertyType, null, multiplicity, null);
+                PropertyDescriptor propertyDescriptor = new PropertyDescriptor(propertyName, propertyType, null, multiplicity, null, false);
                 assertThrowsWrongValueTypePropertyException(propertyName, propertyType, multiplicity, () ->
                         Property.from(propertyDescriptor, propertyValue)
                 );
         }
 
         private void assertGetWithTypeThrowsTypeMismatchPropertyException(String propertyName, PropertyDescriptor.Type propertyType, PropertyDescriptor.Multiplicity multiplicity, PropertyDescriptor.Type requestedPropertyType) throws PropertyException {
-                PropertyDescriptor propertyDescriptor = new PropertyDescriptor(propertyName, propertyType, null, multiplicity, null);
+                PropertyDescriptor propertyDescriptor = new PropertyDescriptor(propertyName, propertyType, null, multiplicity, null, false);
                 Property property = Property.from(propertyDescriptor, null);
                 assertThrowsTypeMismatchPropertyException(propertyName, propertyType, multiplicity, requestedPropertyType, () ->
                         getPropertyValue(property, requestedPropertyType, multiplicity)
@@ -289,7 +289,7 @@ public class PropertyTest {
 
         @SuppressWarnings("SameParameterValue")
         private void assertGetCollectionThrowsWrongMultiplicityPropertyException(String propertyName, PropertyDescriptor.Type propertyType, PropertyDescriptor.Multiplicity multiplicity, Object propertyValue) throws PropertyException {
-                PropertyDescriptor propertyDescriptor = new PropertyDescriptor(propertyName, propertyType, null, multiplicity, null);
+                PropertyDescriptor propertyDescriptor = new PropertyDescriptor(propertyName, propertyType, null, multiplicity, null, false);
                 Property property = Property.from(propertyDescriptor, propertyValue);
                 assertThrowsWrongMultiplicityPropertyException(propertyName, propertyType, multiplicity, property::getCollection);
         }
@@ -300,7 +300,7 @@ public class PropertyTest {
                 PropertyDescriptor.Type propertyType,
                 PropertyDescriptor.Multiplicity multiplicity
         ) throws PropertyException {
-                PropertyDescriptor propertyDescriptor = new PropertyDescriptor(propertyName, propertyType, null, multiplicity, null);
+                PropertyDescriptor propertyDescriptor = new PropertyDescriptor(propertyName, propertyType, null, multiplicity, null, false);
                 Property property = Property.from(propertyDescriptor, null);
                 assertThrowsWrongMultiplicityPropertyException(propertyName, propertyType, multiplicity, property::getList);
         }
@@ -312,7 +312,7 @@ public class PropertyTest {
                 PropertyDescriptor.Multiplicity multiplicity,
                 Object propertyValue
         ) throws PropertyException {
-                PropertyDescriptor propertyDescriptor = new PropertyDescriptor(propertyName, propertyType, null, multiplicity, null);
+                PropertyDescriptor propertyDescriptor = new PropertyDescriptor(propertyName, propertyType, null, multiplicity, null, false);
                 Property property = Property.from(propertyDescriptor, propertyValue);
                 assertThrowsWrongMultiplicityPropertyException(propertyName, propertyType, multiplicity, property::getSet);
         }
@@ -323,7 +323,7 @@ public class PropertyTest {
                 PropertyDescriptor.Multiplicity multiplicity,
                 PropertyDescriptor.Multiplicity requestedMultiplicity
         ) {
-                PropertyDescriptor propertyDescriptor = new PropertyDescriptor(propertyName, propertyType, null, multiplicity, null);
+                PropertyDescriptor propertyDescriptor = new PropertyDescriptor(propertyName, propertyType, null, multiplicity, null, false);
                 Property property = Property.fromUnchecked(propertyDescriptor, null);
                 assertThrowsWrongMultiplicityPropertyException(propertyName, propertyType, multiplicity, () ->
                         getPropertyValue(property, propertyType, requestedMultiplicity)
@@ -331,7 +331,7 @@ public class PropertyTest {
         }
 
         private void assertThrowsWrongValueTypePropertyException(String propertyName, PropertyDescriptor.Type propertyType, PropertyDescriptor.Multiplicity multiplicity, Assert.ThrowingRunnable runnable) {
-                PropertyDescriptor propertyDescriptor = new PropertyDescriptor(propertyName, propertyType, null, multiplicity, null);
+                PropertyDescriptor propertyDescriptor = new PropertyDescriptor(propertyName, propertyType, null, multiplicity, null, false);
                 try {
                         runnable.run();
                         fail();
@@ -351,7 +351,7 @@ public class PropertyTest {
                 PropertyDescriptor.Multiplicity multiplicity,
                 PropertyDescriptor.Type requestedPropertyType,
                 Assert.ThrowingRunnable runnable) {
-                PropertyDescriptor propertyDescriptor = new PropertyDescriptor(propertyName, propertyType, null, multiplicity, null);
+                PropertyDescriptor propertyDescriptor = new PropertyDescriptor(propertyName, propertyType, null, multiplicity, null, false);
                 try {
                         runnable.run();
                         fail();
@@ -371,7 +371,7 @@ public class PropertyTest {
                 PropertyDescriptor.Multiplicity multiplicity,
                 ThrowingRunnable runnable
         ) {
-                PropertyDescriptor propertyDescriptor = new PropertyDescriptor(propertyName, propertyType, null, multiplicity, null);
+                PropertyDescriptor propertyDescriptor = new PropertyDescriptor(propertyName, propertyType, null, multiplicity, null, false);
                 try {
                         runnable.run();
                         fail();
@@ -386,27 +386,27 @@ public class PropertyTest {
 
         @SuppressWarnings("SameParameterValue")
         private void assertGetCollectionEquals(String propertyName, PropertyDescriptor.Type propertyType, PropertyDescriptor.Multiplicity multiplicity, Object propertyValue) throws PropertyException {
-                PropertyDescriptor propertyDescriptor = new PropertyDescriptor(propertyName, propertyType, null, multiplicity, null);
+                PropertyDescriptor propertyDescriptor = new PropertyDescriptor(propertyName, propertyType, null, multiplicity, null, false);
                 Property property = Property.from(propertyDescriptor, propertyValue);
                 assertEquals(property.getCollection(), propertyValue);
         }
 
         @SuppressWarnings("SameParameterValue")
         private void assertGetListEquals(String propertyName, PropertyDescriptor.Type propertyType, Object propertyValue) throws PropertyException {
-                PropertyDescriptor propertyDescriptor = new PropertyDescriptor(propertyName, propertyType, null, PropertyDescriptor.Multiplicity.LIST, null);
+                PropertyDescriptor propertyDescriptor = new PropertyDescriptor(propertyName, propertyType, null, PropertyDescriptor.Multiplicity.LIST, null, false);
                 Property property = Property.from(propertyDescriptor, propertyValue);
                 assertEquals(property.getList(), propertyValue);
         }
 
         @SuppressWarnings("SameParameterValue")
         private void assertGetSetEquals(String propertyName, PropertyDescriptor.Type propertyType, Object propertyValue) throws PropertyException {
-                PropertyDescriptor propertyDescriptor = new PropertyDescriptor(propertyName, propertyType, null, PropertyDescriptor.Multiplicity.SET, null);
+                PropertyDescriptor propertyDescriptor = new PropertyDescriptor(propertyName, propertyType, null, PropertyDescriptor.Multiplicity.SET, null, false);
                 Property property = Property.from(propertyDescriptor, propertyValue);
                 assertEquals(property.getSet(), propertyValue);
         }
 
         private void assertGetValueWithTypeEquals(String propertyName, PropertyDescriptor.Type propertyType, PropertyDescriptor.Multiplicity multiplicity, Object propertyValue) throws PropertyException {
-                PropertyDescriptor propertyDescriptor = new PropertyDescriptor(propertyName, propertyType, null, multiplicity, null);
+                PropertyDescriptor propertyDescriptor = new PropertyDescriptor(propertyName, propertyType, null, multiplicity, null, false);
                 Property property = Property.from(propertyDescriptor, propertyValue);
                 getPropertyValue(property, propertyType, multiplicity);
                 assertEquals(getPropertyValue(property, propertyType, multiplicity), propertyValue);

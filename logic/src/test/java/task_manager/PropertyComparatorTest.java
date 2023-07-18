@@ -73,7 +73,7 @@ public class PropertyComparatorTest {
                         "test_string",
                         PropertyDescriptor.Type.String,
                         null, PropertyDescriptor.Multiplicity.SINGLE,
-                        null),
+                        null, false),
                 value);
     }
 
@@ -83,7 +83,7 @@ public class PropertyComparatorTest {
                         "test_integer",
                         PropertyDescriptor.Type.Integer,
                         null, PropertyDescriptor.Multiplicity.SINGLE,
-                        null),
+                        null, false),
                 value);
     }
 
@@ -93,7 +93,7 @@ public class PropertyComparatorTest {
                         "test_boolean",
                         PropertyDescriptor.Type.Boolean,
                         null, PropertyDescriptor.Multiplicity.SINGLE,
-                        null),
+                        null, false),
                 value);
     }
 
@@ -103,7 +103,7 @@ public class PropertyComparatorTest {
                         "test_uuid",
                         PropertyDescriptor.Type.UUID,
                         null, PropertyDescriptor.Multiplicity.SINGLE,
-                        null),
+                        null, false),
                 uuidGenerator.getUUID());
     }
 
@@ -113,7 +113,7 @@ public class PropertyComparatorTest {
                         "test_list",
                         PropertyDescriptor.Type.String,
                         null, PropertyDescriptor.Multiplicity.LIST,
-                        null),
+                        null, false),
                 null);
     }
 
@@ -123,7 +123,7 @@ public class PropertyComparatorTest {
                         "test_set",
                         PropertyDescriptor.Type.String,
                         null, PropertyDescriptor.Multiplicity.SET,
-                        null),
+                        null, false),
                 null);
     }
 

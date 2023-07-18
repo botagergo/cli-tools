@@ -3,9 +3,8 @@ package task_manager.core.data;
 import task_manager.core.property.PropertyOwner;
 
 import java.util.HashMap;
-import java.util.UUID;
 
-public class Task implements PropertyOwner {
+public class Task extends PropertyOwner {
 
     public Task() {
         this(new HashMap<>());
@@ -22,14 +21,6 @@ public class Task implements PropertyOwner {
     @Override
     public HashMap<String, Object> getProperties() {
         return properties;
-    }
-
-    public UUID getUUID() {
-        Object uuid = getProperties().get("uuid");
-        if (!(uuid instanceof UUID)) {
-            return null;
-        }
-        return (UUID) uuid;
     }
 
     @Override

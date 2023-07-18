@@ -232,19 +232,19 @@ public class StringToPropertyConverterTest {
         List<FilterPropertySpec> propertySpecs = propertyConverter.convertPropertiesForFiltering(properties, true);
         assertEquals(propertySpecs, List.of(
                 new FilterPropertySpec(Property.fromUnchecked(
-                        new PropertyDescriptor("boolean_property", PropertyDescriptor.Type.Boolean, null, PropertyDescriptor.Multiplicity.SINGLE, null),
+                        new PropertyDescriptor("boolean_property", PropertyDescriptor.Type.Boolean, null, PropertyDescriptor.Multiplicity.SINGLE, null, false),
                         true
                 ), false, Predicate.CONTAINS),
                 new FilterPropertySpec(Property.fromUnchecked(
-                        new PropertyDescriptor("integer_property", PropertyDescriptor.Type.Integer, null, PropertyDescriptor.Multiplicity.SINGLE, null),
+                        new PropertyDescriptor("integer_property", PropertyDescriptor.Type.Integer, null, PropertyDescriptor.Multiplicity.SINGLE, null, false),
                         123
                 ), false, Predicate.LESS),
                 new FilterPropertySpec(Property.fromUnchecked(
-                        new PropertyDescriptor("string_list_property", PropertyDescriptor.Type.String, null, PropertyDescriptor.Multiplicity.LIST, null),
+                        new PropertyDescriptor("string_list_property", PropertyDescriptor.Type.String, null, PropertyDescriptor.Multiplicity.LIST, null, false),
                         List.of("true", "false")
                 ), false, Predicate.EQUALS),
                 new FilterPropertySpec(Property.fromUnchecked(
-                        new PropertyDescriptor("uuid_set_property", PropertyDescriptor.Type.UUID, null, PropertyDescriptor.Multiplicity.SET, null),
+                        new PropertyDescriptor("uuid_set_property", PropertyDescriptor.Type.UUID, null, PropertyDescriptor.Multiplicity.SET, null, false),
                         Set.of(uuid1, uuid2)
                 ), true, null)
         ));
@@ -354,7 +354,7 @@ public class StringToPropertyConverterTest {
             ModifyPropertySpec.ModificationType modificationType,
             ModifyPropertySpec.Option option
     ) {
-        PropertyDescriptor propertyDescriptor = new PropertyDescriptor(propertyName, propertyType, null, multiplicity, null);
+        PropertyDescriptor propertyDescriptor = new PropertyDescriptor(propertyName, propertyType, null, multiplicity, null, false);
         assertEquals(
                 modifyPropertySpec,
                 new ModifyPropertySpec(
@@ -410,7 +410,7 @@ public class StringToPropertyConverterTest {
     }
 
     private PropertyDescriptor getPropertyDescriptor(PropertyDescriptor.Type type, PropertyDescriptor.Extra extra, PropertyDescriptor.Multiplicity multiplicity) {
-        return new PropertyDescriptor("test", type, extra, multiplicity, null);
+        return new PropertyDescriptor("test", type, extra, multiplicity, null, false);
     }
 
     private void setStdin(String str) {
@@ -419,7 +419,7 @@ public class StringToPropertyConverterTest {
 
     private void mockitoPropertyDescriptor(String name, PropertyDescriptor.Type type, PropertyDescriptor.Multiplicity multiplicity) throws IOException, PropertyException {
         Mockito.when(propertyDescriptorUseCase.findPropertyDescriptor(name)).thenReturn(new PropertyDescriptor(name,
-                type, null, multiplicity, null));
+                type, null, multiplicity, null, false));
     }
     private final UUID uuid1 = uuidGenerator.getUUID();
     private final UUID uuid2 = uuidGenerator.getUUID();

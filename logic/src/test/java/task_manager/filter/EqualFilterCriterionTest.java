@@ -140,7 +140,7 @@ public class EqualFilterCriterionTest {
 
     private void mockitoPropertyDescriptor(String propertyName, PropertyDescriptor.Type propertyType, PropertyDescriptor.Multiplicity multiplicity) throws IOException {
         Mockito.when(propertyDescriptorRepository.get(propertyName)).thenReturn(new PropertyDescriptor(propertyName,
-                propertyType, null, multiplicity, null));
+                propertyType, null, multiplicity, null, false));
     }
 
     @Mock

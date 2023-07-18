@@ -18,7 +18,7 @@ import java.util.HashMap;
     getterVisibility = Visibility.NONE,
     isGetterVisibility = Visibility.NONE,
     creatorVisibility = Visibility.NONE)
-public abstract class TaskMixIn implements PropertyOwner {
+public abstract class TaskMixIn extends PropertyOwner {
 
     @JsonSetter
     @JsonGetter

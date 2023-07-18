@@ -38,8 +38,8 @@ public class JsonPropertyDescriptorRepositoryTest {
         """);
         repository = new JsonPropertyDescriptorRepository(tempFile);
         assertEquals(repository.getAll(), List.of(
-                new PropertyDescriptor("name", PropertyDescriptor.Type.String, null, PropertyDescriptor.Multiplicity.SINGLE, null),
-                new PropertyDescriptor("other_name", PropertyDescriptor.Type.UUID, null, PropertyDescriptor.Multiplicity.SET, null)
+                new PropertyDescriptor("name", PropertyDescriptor.Type.String, null, PropertyDescriptor.Multiplicity.SINGLE, null, false),
+                new PropertyDescriptor("other_name", PropertyDescriptor.Type.UUID, null, PropertyDescriptor.Multiplicity.SET, null, false)
         ));
     }
 
@@ -69,8 +69,8 @@ public class JsonPropertyDescriptorRepositoryTest {
         """);
         repository = new JsonPropertyDescriptorRepository(tempFile);
         assertEquals(repository.find("name"), List.of(
-                new PropertyDescriptor("name", PropertyDescriptor.Type.String, null, PropertyDescriptor.Multiplicity.SINGLE, null),
-                new PropertyDescriptor("name1", PropertyDescriptor.Type.UUID, null, PropertyDescriptor.Multiplicity.SET, null)
+                new PropertyDescriptor("name", PropertyDescriptor.Type.String, null, PropertyDescriptor.Multiplicity.SINGLE, null, false),
+                new PropertyDescriptor("name1", PropertyDescriptor.Type.UUID, null, PropertyDescriptor.Multiplicity.SET, null, false)
         ));
     }
 
@@ -123,8 +123,8 @@ public class JsonPropertyDescriptorRepositoryTest {
         }
         """);
         repository = new JsonPropertyDescriptorRepository(tempFile);
-        repository.create(new PropertyDescriptor("name", PropertyDescriptor.Type.String, null, PropertyDescriptor.Multiplicity.SINGLE, null));
-        repository.create(new PropertyDescriptor("other_name", PropertyDescriptor.Type.UUID, null, PropertyDescriptor.Multiplicity.SET, null));
+        repository.create(new PropertyDescriptor("name", PropertyDescriptor.Type.String, null, PropertyDescriptor.Multiplicity.SINGLE, null, false));
+        repository.create(new PropertyDescriptor("other_name", PropertyDescriptor.Type.UUID, null, PropertyDescriptor.Multiplicity.SET, null, false));
 
         String content = Files.readString(tempFile.toPath());
         assertEquals(content, """
@@ -132,12 +132,14 @@ public class JsonPropertyDescriptorRepositoryTest {
             "name": {
                 "name":"name",
                 "type":"String",
-                "multiplicity":"SINGLE"
+                "multiplicity":"SINGLE",
+                "isPseudoProperty":false
             },
             "other_name":{
                 "name":"other_name",
                 "type":"UUID",
-                "multiplicity":"SET"
+                "multiplicity":"SET",
+                "isPseudoProperty":false
             }
         }
         """.replaceAll("\\s+", ""));
@@ -229,7 +231,7 @@ public class JsonPropertyDescriptorRepositoryTest {
         }
         """);
         repository = new JsonPropertyDescriptorRepository(tempFile);
-        assertEquals(repository.get("other_name"), new PropertyDescriptor("other_name", PropertyDescriptor.Type.UUID, new PropertyDescriptor.UUIDExtra("label1"), PropertyDescriptor.Multiplicity.SET, null));
+        assertEquals(repository.get("other_name"), new PropertyDescriptor("other_name", PropertyDescriptor.Type.UUID, new PropertyDescriptor.UUIDExtra("label1"), PropertyDescriptor.Multiplicity.SET, null, false));
     }
 
     @Test

@@ -4,6 +4,7 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 import lombok.extern.log4j.Log4j2;
 import task_manager.core.repository.PropertyDescriptorRepository;
 
@@ -11,11 +12,13 @@ import java.io.IOException;
 import java.util.*;
 
 @Log4j2
+@Singleton
 public class PropertyManager {
 
     @Inject
     public PropertyManager(PropertyDescriptorRepository propertyDescriptorRepository) {
         this.propertyDescriptorRepository = propertyDescriptorRepository;
+        this.pseudoPropertyManager = new PseudoPropertyManager();
     }
 
     public Property getProperty(PropertyOwner propertyOwner, String propertyName)
@@ -27,9 +30,13 @@ public class PropertyManager {
     }
 
     public Property getProperty(PropertyOwner propertyOwner, PropertyDescriptor propertyDescriptor)
-            throws PropertyException {
-        Object propertyValue = getPropertyValue(propertyOwner, propertyDescriptor);
-        return Property.from(propertyDescriptor, propertyValue);
+            throws PropertyException, IOException {
+        if (propertyDescriptor.isPseudoProperty()) {
+            return pseudoPropertyManager.getPseudoProperty(propertyOwner, propertyDescriptor);
+        } else {
+            Object propertyValue = getPropertyValue(propertyOwner, propertyDescriptor);
+            return Property.from(propertyDescriptor, propertyValue);
+        }
     }
 
     public void setProperty(PropertyOwner propertyOwner, String propertyName, Object propertyValue)
@@ -126,6 +133,10 @@ public class PropertyManager {
         return propertyDescriptor;
     }
 
+    public void registerPseudoPropertyProvider(String name, PseudoPropertyProvider pseudoPropertyProvider) {
+        pseudoPropertyManager.registerPseudoPropertyProvider(name, pseudoPropertyProvider);
+    }
+
     private Object getPropertyValue(PropertyOwner propertyOwner,
             PropertyDescriptor propertyDescriptor) {
         Object propertyValue = propertyOwner.getProperties().get(propertyDescriptor.name());
@@ -137,5 +148,6 @@ public class PropertyManager {
     }
 
     private final PropertyDescriptorRepository propertyDescriptorRepository;
+    private final PseudoPropertyManager pseudoPropertyManager;
 
 }

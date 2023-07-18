@@ -1,16 +1,18 @@
 package task_manager.ui.cli.command_line;
 
-import java.io.IOException;
-
 import com.google.inject.Inject;
 import lombok.AllArgsConstructor;
 import org.jline.reader.LineReader;
-import org.jline.reader.LineReaderBuilder;
 import org.jline.reader.LineReader.Option;
+import org.jline.reader.LineReaderBuilder;
 import org.jline.reader.UserInterruptException;
 import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
+import task_manager.core.property.TaskIDPseudoPropertyProvider;
 import task_manager.init.Initializer;
+import task_manager.ui.cli.Context;
+
+import java.io.IOException;
 
 @AllArgsConstructor(onConstructor = @__(@Inject))
 public class JlineCommandLine implements CommandLine {
@@ -20,6 +22,10 @@ public class JlineCommandLine implements CommandLine {
         if (initializer.needsInitialization()) {
             initializer.initialize();
         }
+
+        Context context = ((ExecutorImpl) executor).getContext();
+        context.getPropertyManager()
+                .registerPseudoPropertyProvider("id", new TaskIDPseudoPropertyProvider(context.getTempIDMappingRepository()));
 
         Terminal terminal = TerminalBuilder.builder()
                 .nativeSignals(true)

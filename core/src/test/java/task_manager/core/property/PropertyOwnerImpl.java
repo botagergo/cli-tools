@@ -2,7 +2,7 @@ package task_manager.core.property;
 
 import java.util.HashMap;
 
-public class PropertyOwnerImpl implements PropertyOwner {
+public class PropertyOwnerImpl extends PropertyOwner {
 
     public PropertyOwnerImpl(HashMap<String, Object> properties) {
         this.properties = properties;
