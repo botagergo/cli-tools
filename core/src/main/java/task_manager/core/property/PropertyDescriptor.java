@@ -62,7 +62,8 @@ public record PropertyDescriptor(
     }
 
     public record IntegerExtra(
-            String orderedLabelName
+            String orderedLabelName,
+            Boolean isDate
     ) implements Extra {
     }
 

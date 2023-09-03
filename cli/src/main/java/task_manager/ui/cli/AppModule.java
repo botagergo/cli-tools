@@ -18,6 +18,7 @@ import task_manager.logic.use_case.temp_id_mapping.TempIDMappingUseCaseImpl;
 import task_manager.logic.use_case.view.ViewInfoUseCase;
 import task_manager.logic.use_case.view.ViewInfoUseCaseImpl;
 import task_manager.repository.ConfigurationRepositoryImpl;
+import task_manager.repository.JsonStateRepository;
 import task_manager.repository.label.JsonLabelRepositoryFactory;
 import task_manager.repository.ordered_label.JsonOrderedLabelRepositoryFactory;
 import task_manager.repository.property_descriptor.JsonPropertyDescriptorRepository;
@@ -51,6 +52,7 @@ public class AppModule extends AbstractModule {
         bind(OrderedLabelRepositoryFactory.class).to(JsonOrderedLabelRepositoryFactory.class);
         bind(PropertyDescriptorRepository.class).to(JsonPropertyDescriptorRepository.class);
         bind(ConfigurationRepository.class).to(ConfigurationRepositoryImpl.class);
+        bind(StateRepository.class).to(JsonStateRepository.class);
         bind(UUIDGenerator.class).to(RandomUUIDGenerator.class);
         bind(TaskUseCase.class).to(TaskUseCaseImpl.class);
         bind(LabelUseCase.class).to(LabelUseCaseImpl.class);
@@ -68,6 +70,7 @@ public class AppModule extends AbstractModule {
         bind(File.class).annotatedWith(Names.named("tempIdMappingJsonFile")).toInstance(new File(basePath + "temp_id_mapping.json"));
         bind(File.class).annotatedWith(Names.named("propertyDescriptorJsonFile")).toInstance(new File(basePath + "property_descriptor.json"));
         bind(File.class).annotatedWith(Names.named("viewInfoJsonFile")).toInstance(new File(basePath + "view_info.json"));
+        bind(File.class).annotatedWith(Names.named("stateJsonFile")).toInstance(new File(basePath + "state.json"));
         bind(File.class).annotatedWith(Names.named("configurationYamlFile")).toInstance(new File(basePath + "config.yaml"));
         bind(File.class).annotatedWith(Names.named("basePath")).toInstance(new File(basePath));
     }

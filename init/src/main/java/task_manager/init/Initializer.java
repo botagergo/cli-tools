@@ -48,11 +48,15 @@ public class Initializer {
         propertyDescriptorUseCase.createPropertyDescriptor(
                 new PropertyDescriptor("status", PropertyDescriptor.Type.UUID, new PropertyDescriptor.UUIDExtra("status"), PropertyDescriptor.Multiplicity.SINGLE, null, false));
         propertyDescriptorUseCase.createPropertyDescriptor(
-                new PropertyDescriptor("priority", PropertyDescriptor.Type.Integer, new PropertyDescriptor.IntegerExtra("priority"), PropertyDescriptor.Multiplicity.SINGLE, null, false));
+                new PropertyDescriptor("priority", PropertyDescriptor.Type.Integer, new PropertyDescriptor.IntegerExtra("priority", false), PropertyDescriptor.Multiplicity.SINGLE, null, false));
         propertyDescriptorUseCase.createPropertyDescriptor(
-                new PropertyDescriptor("effort", PropertyDescriptor.Type.Integer, new PropertyDescriptor.IntegerExtra("effort"), PropertyDescriptor.Multiplicity.SINGLE, null, false));
+                new PropertyDescriptor("effort", PropertyDescriptor.Type.Integer, new PropertyDescriptor.IntegerExtra("effort", false), PropertyDescriptor.Multiplicity.SINGLE, null, false));
         propertyDescriptorUseCase.createPropertyDescriptor(
                 new PropertyDescriptor("id", PropertyDescriptor.Type.Integer, null, PropertyDescriptor.Multiplicity.SINGLE, null, true));
+        propertyDescriptorUseCase.createPropertyDescriptor(
+                new PropertyDescriptor("modified_timestamp", PropertyDescriptor.Type.Integer, new PropertyDescriptor.IntegerExtra(null, true), PropertyDescriptor.Multiplicity.SINGLE, null, false));
+        propertyDescriptorUseCase.createPropertyDescriptor(
+                new PropertyDescriptor("todoist_id", PropertyDescriptor.Type.String, null, PropertyDescriptor.Multiplicity.SINGLE, null, false));
     }
 
     private void initializePriorities() throws IOException {
