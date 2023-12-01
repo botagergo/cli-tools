@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/cli/task_manager.cli.main.iml" filepath="$PROJECT_DIR$/.idea/modules/cli/task_manager.cli.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/core/task_manager.core.main.iml" filepath="$PROJECT_DIR$/.idea/modules/core/task_manager.core.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/core/task_manager.core.test.iml" filepath="$PROJECT_DIR$/.idea/modules/core/task_manager.core.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/db/task_manager.db.main.iml" filepath="$PROJECT_DIR$/.idea/modules/db/task_manager.db.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/db/task_manager.db.test.iml" filepath="$PROJECT_DIR$/.idea/modules/db/task_manager.db.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/init/task_manager.init.main.iml" filepath="$PROJECT_DIR$/.idea/modules/init/task_manager.init.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/logic/task_manager.logic.main.iml" filepath="$PROJECT_DIR$/.idea/modules/logic/task_manager.logic.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/server/task_manager.server.main.iml" filepath="$PROJECT_DIR$/.idea/modules/server/task_manager.server.main.iml" />
+    </modules>
+  </component>
+</project>
