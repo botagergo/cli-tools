@@ -5,7 +5,6 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import org.apache.commons.lang3.NotImplementedException;
 import org.bson.Document;
-import task_manager.core.property.PropertyDescriptor;
 import task_manager.core.repository.PropertyDescriptorRepository;
 
 import java.util.ArrayList;

@@ -1,8 +1,8 @@
 package task_manager.core;
 
 import com.google.inject.AbstractModule;
-import task_manager.core.util.RoundRobinUUIDGenerator;
-import task_manager.core.util.UUIDGenerator;
+import task_manager.util.RoundRobinUUIDGenerator;
+import task_manager.util.UUIDGenerator;
 
 public class TestModule extends AbstractModule {
 

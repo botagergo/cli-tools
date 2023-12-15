@@ -14,13 +14,14 @@ import task_manager.ui.cli.tokenizer.MismatchedQuotesException;
 import task_manager.ui.cli.tokenizer.TokenList;
 import task_manager.ui.cli.tokenizer.Tokenizer;
 
+@Getter
 public class ExecutorImpl implements Executor {
 
     public void execute(String commandStr) {
         TokenList tokenList;
         try {
             tokenList = tokenizer.tokenize(commandStr);
-            if (tokenList.tokens().size() == 0) {
+            if (tokenList.tokens().isEmpty()) {
                 return;
             }
         } catch (MismatchedQuotesException e) {
@@ -59,19 +60,18 @@ public class ExecutorImpl implements Executor {
         return _shouldExit;
     }
 
-    @Getter
     private boolean _shouldExit = false;
 
-    @Getter @Setter @Inject
+    @Setter @Inject
     private Tokenizer tokenizer;
 
-    @Getter @Setter @Inject
+    @Setter @Inject
     private CommandParserFactory commandParserFactory;
 
-    @Getter @Setter @Inject
+    @Setter @Inject
     private CommandExecutor commandExecutor;
 
-    @Getter @Setter @Inject
+    @Setter @Inject
     private Context context;
 
 }

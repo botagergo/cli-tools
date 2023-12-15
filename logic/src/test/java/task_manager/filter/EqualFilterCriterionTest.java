@@ -1,19 +1,17 @@
 package task_manager.filter;
 
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-import task_manager.core.property.PropertyDescriptor;
-import task_manager.core.property.PropertyException;
-import task_manager.core.property.PropertyManager;
-import task_manager.core.property.PropertyOwner;
-import task_manager.core.repository.PropertyDescriptorRepository;
-import task_manager.core.util.RoundRobinUUIDGenerator;
-import task_manager.core.util.Utils;
+import task_manager.util.RoundRobinUUIDGenerator;
+import task_manager.util.Utils;
 import task_manager.logic.filter.EqualFilterCriterion;
+import task_manager.property_lib.PropertyDescriptor;
+import task_manager.property_lib.PropertyException;
+import task_manager.property_lib.PropertyManager;
+import task_manager.property_lib.PropertyOwner;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -25,12 +23,14 @@ import static org.testng.Assert.assertTrue;
 
 public class EqualFilterCriterionTest {
 
-    public EqualFilterCriterionTest() throws IOException {
+    public EqualFilterCriterionTest() {
         MockitoAnnotations.openMocks(this);
-        mockitoPropertyDescriptor("test_string", PropertyDescriptor.Type.String, PropertyDescriptor.Multiplicity.SINGLE);
-        mockitoPropertyDescriptor("test_boolean", PropertyDescriptor.Type.Boolean, PropertyDescriptor.Multiplicity.SINGLE);
-        mockitoPropertyDescriptor("test_uuid", PropertyDescriptor.Type.UUID, PropertyDescriptor.Multiplicity.SINGLE);
-        mockitoPropertyDescriptor("test_string_list", PropertyDescriptor.Type.String, PropertyDescriptor.Multiplicity.LIST);
+
+        propertyManager = new PropertyManager();
+        addPropertyDescriptor("test_string", PropertyDescriptor.Type.String, PropertyDescriptor.Multiplicity.SINGLE);
+        addPropertyDescriptor("test_boolean", PropertyDescriptor.Type.Boolean, PropertyDescriptor.Multiplicity.SINGLE);
+        addPropertyDescriptor("test_uuid", PropertyDescriptor.Type.UUID, PropertyDescriptor.Multiplicity.SINGLE);
+        addPropertyDescriptor("test_string_list", PropertyDescriptor.Type.String, PropertyDescriptor.Multiplicity.LIST);
     }
 
     @BeforeMethod
@@ -138,15 +138,14 @@ public class EqualFilterCriterionTest {
                 .check(propertyOwner, propertyManager);
     }
 
-    private void mockitoPropertyDescriptor(String propertyName, PropertyDescriptor.Type propertyType, PropertyDescriptor.Multiplicity multiplicity) throws IOException {
-        Mockito.when(propertyDescriptorRepository.get(propertyName)).thenReturn(new PropertyDescriptor(propertyName,
+    private void addPropertyDescriptor(String propertyName, PropertyDescriptor.Type propertyType, PropertyDescriptor.Multiplicity multiplicity) {
+        propertyManager.getPropertyDescriptorCollection().addPropertyDescriptor(new PropertyDescriptor(propertyName,
                 propertyType, null, multiplicity, null, false));
     }
 
     @Mock
     private PropertyOwner propertyOwner;
-    @Mock private PropertyDescriptorRepository propertyDescriptorRepository;
-    @InjectMocks private PropertyManager propertyManager;
+    private final PropertyManager propertyManager;
     private final RoundRobinUUIDGenerator uuidGenerator = new RoundRobinUUIDGenerator();
     private final UUID uuid1 = uuidGenerator.getUUID();
     private final UUID uuid2 = uuidGenerator.getUUID();

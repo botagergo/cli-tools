@@ -9,9 +9,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.apache.commons.lang3.tuple.Pair;
 import task_manager.core.data.SortingCriterion;
-import task_manager.core.property.*;
 import task_manager.logic.PropertyComparator;
 import task_manager.logic.PropertyNotComparableException;
+import task_manager.property_lib.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Objects;
 
 //@AllArgsConstructor(onConstructor = @__(@JsonCreator))
+@Getter
 @JsonSerialize
 @JsonDeserialize
 @NoArgsConstructor
@@ -60,7 +61,7 @@ public class PropertySorter <T extends PropertyOwner> {
         return sortedPropertyOwners;
     }
 
-    @Getter @Setter private List<SortingCriterion> sortingCriteria;
+    @Setter private List<SortingCriterion> sortingCriteria;
 
     private static class ListIndexComparator implements Comparator<Integer> {
 

@@ -13,7 +13,8 @@
             <option value="$PROJECT_DIR$/db" />
             <option value="$PROJECT_DIR$/init" />
             <option value="$PROJECT_DIR$/logic" />
-            <option value="$PROJECT_DIR$/server" />
+            <option value="$PROJECT_DIR$/property-lib" />
+            <option value="$PROJECT_DIR$/util" />
           </set>
         </option>
       </GradleProjectSettings>

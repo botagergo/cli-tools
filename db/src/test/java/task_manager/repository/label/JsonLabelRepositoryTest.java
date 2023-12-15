@@ -2,8 +2,8 @@ package task_manager.repository.label;
 
 import org.testng.annotations.Test;
 import task_manager.core.data.Label;
-import task_manager.core.util.RoundRobinUUIDGenerator;
 import task_manager.repository.util.JsonRepositoryCreator;
+import task_manager.util.RoundRobinUUIDGenerator;
 
 import java.io.File;
 import java.io.IOException;
@@ -134,7 +134,7 @@ public class JsonLabelRepositoryTest {
     }
 
     private JsonLabelRepository repository;
-    RoundRobinUUIDGenerator uuidGenerator = new RoundRobinUUIDGenerator();
+    final RoundRobinUUIDGenerator uuidGenerator = new RoundRobinUUIDGenerator();
     private final JsonRepositoryCreator rc;
 
 

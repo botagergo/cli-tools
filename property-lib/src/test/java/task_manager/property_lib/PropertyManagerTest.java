@@ -1,4 +1,4 @@
-package task_manager.core.property;
+package task_manager.property_lib;
 
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -8,11 +8,9 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Guice;
 import org.testng.annotations.Test;
-import task_manager.core.TestModule;
-import task_manager.core.repository.PropertyDescriptorRepository;
-import task_manager.core.util.RoundRobinUUIDGenerator;
-import task_manager.core.util.UUIDGenerator;
-import task_manager.core.util.Utils;
+import task_manager.util.RoundRobinUUIDGenerator;
+import task_manager.util.UUIDGenerator;
+import task_manager.util.Utils;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -24,6 +22,11 @@ import static org.testng.Assert.assertNull;
 @Guice(modules = TestModule.class)
 public class PropertyManagerTest {
 
+        public PropertyManagerTest() {
+                propertyManager = new PropertyManager();
+                propertyManager.setPropertyDescriptorCollection(new PropertyDescriptorCollection());
+        }
+
         @BeforeClass
         public void initMocks() {
                 MockitoAnnotations.openMocks(this);
@@ -32,7 +35,7 @@ public class PropertyManagerTest {
         @BeforeMethod
         public void clear() {
                 Mockito.reset(propertyOwner);
-                Mockito.reset(propertyDescriptorRepository);
+                propertyManager.getPropertyDescriptorCollection().clear();
         }
 
         @Test
@@ -515,38 +518,38 @@ public class PropertyManagerTest {
                 assertEquals(propertyManager.getProperty(propertyOwner, "test_string_set").getValue(), Utils.newLinkedHashSet("default_value2"));
         }
 
-        private void initPropertyDescriptorsWithDefaults() throws IOException {
-                mockitoPropertyDescriptor("test_string", PropertyDescriptor.Type.String, PropertyDescriptor.Multiplicity.SINGLE, "default_value");
-                mockitoPropertyDescriptor("test_boolean", PropertyDescriptor.Type.Boolean, PropertyDescriptor.Multiplicity.SINGLE, true);
-                mockitoPropertyDescriptor("test_integer", PropertyDescriptor.Type.Integer, PropertyDescriptor.Multiplicity.SINGLE, 1122);
-                mockitoPropertyDescriptor("test_uuid", PropertyDescriptor.Type.UUID, PropertyDescriptor.Multiplicity.SINGLE, uuid1);
-                mockitoPropertyDescriptor("test_string_list", PropertyDescriptor.Type.String, PropertyDescriptor.Multiplicity.LIST, Utils.newArrayList("default_value1", "default_value2"));
-                mockitoPropertyDescriptor("test_boolean_list", PropertyDescriptor.Type.Boolean, PropertyDescriptor.Multiplicity.LIST, Utils.newArrayList(true, false));
-                mockitoPropertyDescriptor("test_integer_list", PropertyDescriptor.Type.Integer, PropertyDescriptor.Multiplicity.LIST, true);
-                mockitoPropertyDescriptor("test_uuid_list", PropertyDescriptor.Type.UUID, PropertyDescriptor.Multiplicity.LIST, Utils.newArrayList(uuid1, uuid2));
-                mockitoPropertyDescriptor("test_string_set", PropertyDescriptor.Type.String, PropertyDescriptor.Multiplicity.SET, Utils.newLinkedHashSet("default_value1", "default_value2"));
-                mockitoPropertyDescriptor("test_boolean_set", PropertyDescriptor.Type.Boolean, PropertyDescriptor.Multiplicity.SET, Utils.newLinkedHashSet(true, false));
-                mockitoPropertyDescriptor("test_integer_set", PropertyDescriptor.Type.Integer, PropertyDescriptor.Multiplicity.SET, true);
-                mockitoPropertyDescriptor("test_uuid_set", PropertyDescriptor.Type.UUID, PropertyDescriptor.Multiplicity.SET, Utils.newLinkedHashSet(uuid1, uuid2));
+        private void initPropertyDescriptorsWithDefaults() {
+                addPropertyDescriptor("test_string", PropertyDescriptor.Type.String, PropertyDescriptor.Multiplicity.SINGLE, "default_value");
+                addPropertyDescriptor("test_boolean", PropertyDescriptor.Type.Boolean, PropertyDescriptor.Multiplicity.SINGLE, true);
+                addPropertyDescriptor("test_integer", PropertyDescriptor.Type.Integer, PropertyDescriptor.Multiplicity.SINGLE, 1122);
+                addPropertyDescriptor("test_uuid", PropertyDescriptor.Type.UUID, PropertyDescriptor.Multiplicity.SINGLE, uuid1);
+                addPropertyDescriptor("test_string_list", PropertyDescriptor.Type.String, PropertyDescriptor.Multiplicity.LIST, Utils.newArrayList("default_value1", "default_value2"));
+                addPropertyDescriptor("test_boolean_list", PropertyDescriptor.Type.Boolean, PropertyDescriptor.Multiplicity.LIST, Utils.newArrayList(true, false));
+                addPropertyDescriptor("test_integer_list", PropertyDescriptor.Type.Integer, PropertyDescriptor.Multiplicity.LIST, true);
+                addPropertyDescriptor("test_uuid_list", PropertyDescriptor.Type.UUID, PropertyDescriptor.Multiplicity.LIST, Utils.newArrayList(uuid1, uuid2));
+                addPropertyDescriptor("test_string_set", PropertyDescriptor.Type.String, PropertyDescriptor.Multiplicity.SET, Utils.newLinkedHashSet("default_value1", "default_value2"));
+                addPropertyDescriptor("test_boolean_set", PropertyDescriptor.Type.Boolean, PropertyDescriptor.Multiplicity.SET, Utils.newLinkedHashSet(true, false));
+                addPropertyDescriptor("test_integer_set", PropertyDescriptor.Type.Integer, PropertyDescriptor.Multiplicity.SET, true);
+                addPropertyDescriptor("test_uuid_set", PropertyDescriptor.Type.UUID, PropertyDescriptor.Multiplicity.SET, Utils.newLinkedHashSet(uuid1, uuid2));
         }
 
-        private void initPropertyDescriptorsWithoutDefaults() throws IOException {
-                mockitoPropertyDescriptor("test_string", PropertyDescriptor.Type.String, PropertyDescriptor.Multiplicity.SINGLE, null);
-                mockitoPropertyDescriptor("test_boolean", PropertyDescriptor.Type.Boolean, PropertyDescriptor.Multiplicity.SINGLE, null);
-                mockitoPropertyDescriptor("test_integer", PropertyDescriptor.Type.Integer, PropertyDescriptor.Multiplicity.SINGLE, null);
-                mockitoPropertyDescriptor("test_uuid", PropertyDescriptor.Type.UUID, PropertyDescriptor.Multiplicity.SINGLE, null);
-                mockitoPropertyDescriptor("test_string_list", PropertyDescriptor.Type.String, PropertyDescriptor.Multiplicity.LIST, null);
-                mockitoPropertyDescriptor("test_boolean_list", PropertyDescriptor.Type.Boolean, PropertyDescriptor.Multiplicity.LIST, null);
-                mockitoPropertyDescriptor("test_integer_list", PropertyDescriptor.Type.Integer, PropertyDescriptor.Multiplicity.LIST, null);
-                mockitoPropertyDescriptor("test_uuid_list", PropertyDescriptor.Type.UUID, PropertyDescriptor.Multiplicity.LIST, null);
-                mockitoPropertyDescriptor("test_string_set", PropertyDescriptor.Type.String, PropertyDescriptor.Multiplicity.SET, null);
-                mockitoPropertyDescriptor("test_boolean_set", PropertyDescriptor.Type.Boolean, PropertyDescriptor.Multiplicity.SET, null);
-                mockitoPropertyDescriptor("test_integer_set", PropertyDescriptor.Type.Integer, PropertyDescriptor.Multiplicity.SET, null);
-                mockitoPropertyDescriptor("test_uuid_set", PropertyDescriptor.Type.UUID, PropertyDescriptor.Multiplicity.SET, null);
+        private void initPropertyDescriptorsWithoutDefaults() {
+                addPropertyDescriptor("test_string", PropertyDescriptor.Type.String, PropertyDescriptor.Multiplicity.SINGLE, null);
+                addPropertyDescriptor("test_boolean", PropertyDescriptor.Type.Boolean, PropertyDescriptor.Multiplicity.SINGLE, null);
+                addPropertyDescriptor("test_integer", PropertyDescriptor.Type.Integer, PropertyDescriptor.Multiplicity.SINGLE, null);
+                addPropertyDescriptor("test_uuid", PropertyDescriptor.Type.UUID, PropertyDescriptor.Multiplicity.SINGLE, null);
+                addPropertyDescriptor("test_string_list", PropertyDescriptor.Type.String, PropertyDescriptor.Multiplicity.LIST, null);
+                addPropertyDescriptor("test_boolean_list", PropertyDescriptor.Type.Boolean, PropertyDescriptor.Multiplicity.LIST, null);
+                addPropertyDescriptor("test_integer_list", PropertyDescriptor.Type.Integer, PropertyDescriptor.Multiplicity.LIST, null);
+                addPropertyDescriptor("test_uuid_list", PropertyDescriptor.Type.UUID, PropertyDescriptor.Multiplicity.LIST, null);
+                addPropertyDescriptor("test_string_set", PropertyDescriptor.Type.String, PropertyDescriptor.Multiplicity.SET, null);
+                addPropertyDescriptor("test_boolean_set", PropertyDescriptor.Type.Boolean, PropertyDescriptor.Multiplicity.SET, null);
+                addPropertyDescriptor("test_integer_set", PropertyDescriptor.Type.Integer, PropertyDescriptor.Multiplicity.SET, null);
+                addPropertyDescriptor("test_uuid_set", PropertyDescriptor.Type.UUID, PropertyDescriptor.Multiplicity.SET, null);
         }
 
-        private void mockitoPropertyDescriptor(String name, PropertyDescriptor.Type type, PropertyDescriptor.Multiplicity multiplicity, Object defaultValue) throws IOException {
-                Mockito.when(propertyDescriptorRepository.get(name)).thenReturn(new PropertyDescriptor(name,
+        private void addPropertyDescriptor(String name, PropertyDescriptor.Type type, PropertyDescriptor.Multiplicity multiplicity, Object defaultValue) {
+                propertyManager.getPropertyDescriptorCollection().addPropertyDescriptor(new PropertyDescriptor(name,
                         type, null, multiplicity, defaultValue, false));
         }
 
@@ -555,9 +558,9 @@ public class PropertyManagerTest {
                         propertyValue);
         }
 
-        @Mock private PropertyDescriptorRepository propertyDescriptorRepository;
         @Mock private PropertyOwner propertyOwner;
-        @InjectMocks PropertyManager propertyManager;
+        @InjectMocks
+        PropertyManager propertyManager;
         private final UUIDGenerator uuidGenerator = new RoundRobinUUIDGenerator(2);
         private final UUID uuid1 = uuidGenerator.getUUID();
         private final UUID uuid2 = uuidGenerator.getUUID();

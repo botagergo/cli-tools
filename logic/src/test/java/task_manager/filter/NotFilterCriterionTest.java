@@ -1,19 +1,17 @@
 package task_manager.filter;
 
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-import task_manager.core.property.PropertyDescriptor;
-import task_manager.core.property.PropertyException;
-import task_manager.core.property.PropertyManager;
-import task_manager.core.property.PropertyOwner;
-import task_manager.core.repository.PropertyDescriptorRepository;
-import task_manager.core.util.Utils;
+import task_manager.util.Utils;
 import task_manager.logic.filter.EqualFilterCriterion;
 import task_manager.logic.filter.NotFilterCriterion;
+import task_manager.property_lib.PropertyDescriptor;
+import task_manager.property_lib.PropertyException;
+import task_manager.property_lib.PropertyManager;
+import task_manager.property_lib.PropertyOwner;
 
 import java.io.IOException;
 
@@ -21,8 +19,12 @@ import static org.testng.Assert.assertEquals;
 
 public class NotFilterCriterionTest {
 
-    @Mock
-    private PropertyDescriptorRepository propertyDescriptorRepository;
+    public NotFilterCriterionTest() {
+        MockitoAnnotations.openMocks(this);
+
+        propertyManager = new PropertyManager();
+        addPropertyDescriptor("test_boolean", PropertyDescriptor.Type.Boolean);
+    }
 
     @BeforeMethod
     public void clear() {
@@ -40,20 +42,15 @@ public class NotFilterCriterionTest {
         assertEquals(new NotFilterCriterion(new EqualFilterCriterion("test_boolean", operand))
                 .check(propertyOwner, propertyManager), expected);
     }
-    @InjectMocks
-    private PropertyManager propertyManager;
+
+    @SuppressWarnings("SameParameterValue")
+    private void addPropertyDescriptor(String propertyName, PropertyDescriptor.Type propertyType) {
+        propertyManager.getPropertyDescriptorCollection().addPropertyDescriptor(new PropertyDescriptor(propertyName,
+                propertyType, null, PropertyDescriptor.Multiplicity.SINGLE, null, false));
+    }
 
     @Mock
     private PropertyOwner propertyOwner;
-    public NotFilterCriterionTest() throws IOException {
-        MockitoAnnotations.openMocks(this);
-        mockitoPropertyDescriptor("test_boolean", PropertyDescriptor.Type.Boolean);
-    }
-
-    @SuppressWarnings("SameParameterValue")
-    private void mockitoPropertyDescriptor(String propertyName, PropertyDescriptor.Type propertyType) throws IOException {
-        Mockito.when(propertyDescriptorRepository.get(propertyName)).thenReturn(new PropertyDescriptor(propertyName,
-                propertyType, null, PropertyDescriptor.Multiplicity.SINGLE, null, false));
-    }
+    private final PropertyManager propertyManager;
 
 }

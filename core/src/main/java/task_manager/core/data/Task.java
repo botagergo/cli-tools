@@ -1,6 +1,6 @@
 package task_manager.core.data;
 
-import task_manager.core.property.PropertyOwner;
+import task_manager.property_lib.PropertyOwner;
 
 import java.util.HashMap;
 

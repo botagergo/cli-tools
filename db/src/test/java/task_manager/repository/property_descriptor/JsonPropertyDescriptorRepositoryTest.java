@@ -1,7 +1,7 @@
 package task_manager.repository.property_descriptor;
 
 import org.testng.annotations.Test;
-import task_manager.core.property.PropertyDescriptor;
+import task_manager.property_lib.PropertyDescriptor;
 import task_manager.repository.util.JsonRepositoryCreator;
 
 import java.io.File;

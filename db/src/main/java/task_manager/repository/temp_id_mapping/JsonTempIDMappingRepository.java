@@ -1,11 +1,9 @@
 package task_manager.repository.temp_id_mapping;
 
 import com.fasterxml.jackson.databind.JavaType;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
-import lombok.AllArgsConstructor;
 import task_manager.core.repository.TempIDMappingRepository;
 import task_manager.repository.SimpleJsonRepository;
 
@@ -64,7 +62,7 @@ public class JsonTempIDMappingRepository extends SimpleJsonRepository<TempIDMapp
     }
 
     @Override
-    public TempIDMappings getEmptyData() {
+    protected TempIDMappings getEmptyData() {
         return new TempIDMappings();
     }
 
@@ -73,15 +71,4 @@ public class JsonTempIDMappingRepository extends SimpleJsonRepository<TempIDMapp
         return typeFactory.constructType(TempIDMappings.class);
     }
 
-}
-
-@JsonSerialize
-@AllArgsConstructor
-class TempIDMappings {
-    public TempIDMappings() {
-        this(new HashMap<>(), new TreeSet<>(), 1);
-    }
-    public HashMap<UUID, Integer> mappings;
-    public TreeSet<Integer> freeIDs;
-    public int nextID;
 }

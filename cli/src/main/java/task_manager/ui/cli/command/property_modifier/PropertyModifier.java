@@ -1,6 +1,7 @@
 package task_manager.ui.cli.command.property_modifier;
 
 import task_manager.core.property.*;
+import task_manager.property_lib.*;
 
 import java.io.IOException;
 import java.util.List;

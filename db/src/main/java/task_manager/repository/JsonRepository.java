@@ -33,7 +33,7 @@ public abstract class JsonRepository<T_Json, T_Stored> {
         return null;
     }
 
-    public T_Json getEmptyData() {
+    protected T_Json getEmptyData() {
         return null;
     }
 

@@ -1,9 +1,9 @@
 package task_manager.core.data;
 
 import org.testng.annotations.Test;
-import task_manager.core.util.RoundRobinUUIDGenerator;
-import task_manager.core.util.UUIDGenerator;
-import task_manager.core.util.Utils;
+import task_manager.util.RoundRobinUUIDGenerator;
+import task_manager.util.UUIDGenerator;
+import task_manager.util.Utils;
 
 import java.util.HashMap;
 import java.util.Map;

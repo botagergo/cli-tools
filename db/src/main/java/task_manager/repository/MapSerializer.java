@@ -36,5 +36,5 @@ public class MapSerializer extends StdSerializer<HashMap<String, Object>> {
         jgen.writeEndObject();
     }
 
-    ObjectSerializer objectSerializer;
+    final ObjectSerializer objectSerializer;
 }

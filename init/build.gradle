@@ -7,4 +7,5 @@ dependencies {
 
 	implementation project(':core')
 	implementation project(':logic')
+    implementation project(':property-lib')
 }

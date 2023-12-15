@@ -2,16 +2,15 @@ package task_manager.logic.filter;
 
 import lombok.Getter;
 import task_manager.core.data.Predicate;
-import task_manager.core.property.PropertyDescriptor;
+import task_manager.property_lib.PropertyDescriptor;
 
+@Getter
 public class FilterCriterionException extends Exception {
 
-    @Getter
     final PropertyDescriptor propertyDescriptor;
-    @Getter
     final Predicate predicate;
 
-    @Getter final Type exceptionType;
+    final Type exceptionType;
     public FilterCriterionException(Type exceptionType, PropertyDescriptor propertyDescriptor, Predicate predicate) {
         super(getMsg(exceptionType, propertyDescriptor, predicate));
 

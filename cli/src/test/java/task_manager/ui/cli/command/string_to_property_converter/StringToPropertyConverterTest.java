@@ -8,13 +8,16 @@ import task_manager.core.data.Label;
 import task_manager.core.data.OrderedLabel;
 import task_manager.core.data.Predicate;
 import task_manager.core.property.*;
-import task_manager.core.util.RoundRobinUUIDGenerator;
-import task_manager.core.util.UUIDGenerator;
-import task_manager.core.util.Utils;
 import task_manager.logic.use_case.label.LabelUseCase;
 import task_manager.logic.use_case.ordered_label.OrderedLabelUseCase;
 import task_manager.logic.use_case.property_descriptor.PropertyDescriptorUseCase;
+import task_manager.property_lib.Property;
+import task_manager.property_lib.PropertyDescriptor;
+import task_manager.property_lib.PropertyException;
 import task_manager.ui.cli.argument.PropertyArgument;
+import task_manager.util.RoundRobinUUIDGenerator;
+import task_manager.util.UUIDGenerator;
+import task_manager.util.Utils;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -78,7 +81,7 @@ public class StringToPropertyConverterTest {
         }
         try {
             propertyConverter.stringToProperty(
-                    getPropertyDescriptor(PropertyDescriptor.Type.Integer, new PropertyDescriptor.IntegerExtra(null), PropertyDescriptor.Multiplicity.SINGLE), List.of("tag"), true);
+                    getPropertyDescriptor(PropertyDescriptor.Type.Integer, new PropertyDescriptor.IntegerExtra(null, false), PropertyDescriptor.Multiplicity.SINGLE), List.of("tag"), true);
             fail();
         } catch (StringToPropertyConverterException e) {
             assertEquals(e.getExceptionType(), StringToPropertyConverterException.Type.NoAssociatedLabel);
@@ -369,7 +372,7 @@ public class StringToPropertyConverterTest {
         Mockito.when(orderedLabelUseCase.findOrderedLabel("test", "labelText")).thenReturn(new OrderedLabel("labelText", 3));
 
         assertEquals(propertyConverter.stringToProperty(
-                getPropertyDescriptor(PropertyDescriptor.Type.Integer, new PropertyDescriptor.IntegerExtra("test"), PropertyDescriptor.Multiplicity.SINGLE), List.of("labelText"), true), 3);
+                getPropertyDescriptor(PropertyDescriptor.Type.Integer, new PropertyDescriptor.IntegerExtra("test", false), PropertyDescriptor.Multiplicity.SINGLE), List.of("labelText"), true), 3);
     }
 
     @Test
@@ -378,7 +381,7 @@ public class StringToPropertyConverterTest {
 
         try {
             propertyConverter.stringToProperty(
-                    getPropertyDescriptor(PropertyDescriptor.Type.Integer, new PropertyDescriptor.IntegerExtra("test"), PropertyDescriptor.Multiplicity.SINGLE), List.of("labelText"), true);
+                    getPropertyDescriptor(PropertyDescriptor.Type.Integer, new PropertyDescriptor.IntegerExtra("test", false), PropertyDescriptor.Multiplicity.SINGLE), List.of("labelText"), true);
             fail();
         } catch (StringToPropertyConverterException e) {
             assertEquals(e.getExceptionType(), StringToPropertyConverterException.Type.OrderedLabelNotFound);

@@ -7,8 +7,8 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import org.testng.collections.Sets;
-import task_manager.core.util.RoundRobinUUIDGenerator;
-import task_manager.core.util.Utils;
+import task_manager.util.RoundRobinUUIDGenerator;
+import task_manager.util.Utils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -118,7 +118,7 @@ public class MapSerializerTest {
 
     private ObjectMapper objectMapper;
     private ObjectMapper basicObjectMapper;
-    RoundRobinUUIDGenerator uuidGenerator = new RoundRobinUUIDGenerator();
+    final RoundRobinUUIDGenerator uuidGenerator = new RoundRobinUUIDGenerator();
     private final UUID uuid1 = uuidGenerator.getUUID();
     private final UUID uuid2 = uuidGenerator.getUUID();
 

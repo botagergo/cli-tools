@@ -1,14 +1,15 @@
 package task_manager.logic.filter;
 
 import lombok.Getter;
-import task_manager.core.property.PropertyException;
-import task_manager.core.property.PropertyManager;
-import task_manager.core.property.PropertyOwner;
+import task_manager.property_lib.PropertyException;
+import task_manager.property_lib.PropertyManager;
+import task_manager.property_lib.PropertyOwner;
 
 import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 
+@Getter
 public class AndFilterCriterion extends FilterCriterion {
 
     public AndFilterCriterion(Collection<FilterCriterion> criteria) {
@@ -19,8 +20,6 @@ public class AndFilterCriterion extends FilterCriterion {
         this(List.of(criteria));
     }
 
-    @Getter private final Collection<FilterCriterion> criteria;
-
     @Override
     public boolean check_(PropertyOwner propertyOwner, PropertyManager propertyManager) throws PropertyException, IOException {
         for (FilterCriterion criterion : criteria) {
@@ -30,4 +29,7 @@ public class AndFilterCriterion extends FilterCriterion {
         }
         return true;
     }
+
+    private final Collection<FilterCriterion> criteria;
+
 }

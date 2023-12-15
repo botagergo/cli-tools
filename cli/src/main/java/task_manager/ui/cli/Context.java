@@ -3,7 +3,6 @@ package task_manager.ui.cli;
 import jakarta.inject.Inject;
 import lombok.Getter;
 import lombok.Setter;
-import task_manager.core.property.PropertyManager;
 import task_manager.core.repository.ConfigurationRepository;
 import task_manager.logic.use_case.label.LabelUseCase;
 import task_manager.logic.use_case.ordered_label.OrderedLabelUseCase;
@@ -11,28 +10,31 @@ import task_manager.logic.use_case.property_descriptor.PropertyDescriptorUseCase
 import task_manager.logic.use_case.task.TaskUseCase;
 import task_manager.logic.use_case.temp_id_mapping.TempIDMappingUseCase;
 import task_manager.logic.use_case.view.ViewInfoUseCase;
+import task_manager.property_lib.PropertyManager;
 import task_manager.ui.cli.command.string_to_property_converter.StringToPropertyConverter;
 
+@Setter
+@Getter
 public class Context {
 
-    @Getter @Setter @Inject private TaskUseCase taskUseCase;
+    @Inject private TaskUseCase taskUseCase;
 
-    @Getter @Setter @Inject private LabelUseCase labelUseCase;
+    @Inject private LabelUseCase labelUseCase;
 
-    @Getter @Setter @Inject private OrderedLabelUseCase orderedLabelUseCase;
+    @Inject private OrderedLabelUseCase orderedLabelUseCase;
 
-    @Getter @Setter @Inject private PropertyDescriptorUseCase propertyDescriptorUseCase;
+    @Inject private PropertyDescriptorUseCase propertyDescriptorUseCase;
 
-    @Getter @Setter @Inject private ViewInfoUseCase viewInfoUseCase;
+    @Inject private ViewInfoUseCase viewInfoUseCase;
 
-    @Getter @Setter @Inject private PropertyManager propertyManager;
+    @Inject private PropertyManager propertyManager;
 
-    @Getter @Setter @Inject private StringToPropertyConverter stringToPropertyConverter;
+    @Inject private StringToPropertyConverter stringToPropertyConverter;
 
-    @Getter @Setter @Inject private TempIDMappingUseCase tempIDMappingUseCase;
+    @Inject private TempIDMappingUseCase tempIDMappingUseCase;
 
-    @Getter @Setter @Inject private ConfigurationRepository configurationRepository;
+    @Inject private ConfigurationRepository configurationRepository;
 
-    @Getter @Setter private Integer prevTaskID = null;
+    private Integer prevTaskID = null;
 
 }

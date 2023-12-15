@@ -2,9 +2,9 @@ package task_manager.logic.pseudo_property_provider;
 
 import jakarta.inject.Inject;
 import lombok.AllArgsConstructor;
-import task_manager.core.property.PropertyOwner;
-import task_manager.core.property.PseudoPropertyProvider;
 import task_manager.logic.use_case.temp_id_mapping.TempIDMappingUseCase;
+import task_manager.property_lib.PropertyOwner;
+import task_manager.property_lib.PseudoPropertyProvider;
 
 import java.io.IOException;
 

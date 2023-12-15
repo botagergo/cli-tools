@@ -1,8 +1,9 @@
 package task_manager.logic.use_case.task;
 
 import lombok.Getter;
-import task_manager.core.property.PropertyDescriptor;
+import task_manager.property_lib.PropertyDescriptor;
 
+@Getter
 public class PropertyConverterException extends Exception {
 
     public PropertyConverterException(Type exceptionType, PropertyDescriptor propertyDescriptor, Object propertyValue) {
@@ -26,10 +27,10 @@ public class PropertyConverterException extends Exception {
         }
     }
 
-    @Getter final Type exceptionType;
-    @Getter final PropertyDescriptor propertyDescriptor;
-    @Getter final Object propertyValue;
-    @Getter final String predicate;
+    final Type exceptionType;
+    final PropertyDescriptor propertyDescriptor;
+    final Object propertyValue;
+    final String predicate;
 
     public enum Type {
         NotACollection, EmptyList, LabelNotFound

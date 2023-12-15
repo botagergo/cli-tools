@@ -1,19 +1,17 @@
 package task_manager.filter;
 
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-import task_manager.core.property.PropertyDescriptor;
-import task_manager.core.property.PropertyException;
-import task_manager.core.property.PropertyManager;
-import task_manager.core.property.PropertyOwner;
-import task_manager.core.repository.PropertyDescriptorRepository;
-import task_manager.core.util.Utils;
+import task_manager.util.Utils;
 import task_manager.logic.filter.EqualFilterCriterion;
 import task_manager.logic.filter.OrFilterCriterion;
+import task_manager.property_lib.PropertyDescriptor;
+import task_manager.property_lib.PropertyException;
+import task_manager.property_lib.PropertyManager;
+import task_manager.property_lib.PropertyOwner;
 
 import java.io.IOException;
 
@@ -22,10 +20,12 @@ import static org.testng.Assert.assertTrue;
 
 public class OrFilterCriterionTest {
 
-    public OrFilterCriterionTest() throws IOException {
+    public OrFilterCriterionTest() {
         MockitoAnnotations.openMocks(this);
-        mockitoPropertyDescriptor("test_boolean1");
-        mockitoPropertyDescriptor("test_boolean2");
+
+        propertyManager = new PropertyManager();
+        addPropertyDescriptor("test_boolean1");
+        addPropertyDescriptor("test_boolean2");
     }
 
     @BeforeMethod
@@ -61,13 +61,12 @@ public class OrFilterCriterionTest {
                 .check(propertyOwner, propertyManager);
     }
 
-    private void mockitoPropertyDescriptor(String name) throws IOException {
-        Mockito.when(propertyDescriptorRepository.get(name)).thenReturn(new PropertyDescriptor(name,
+    private void addPropertyDescriptor(String name) {
+        propertyManager.getPropertyDescriptorCollection().addPropertyDescriptor(new PropertyDescriptor(name,
                 PropertyDescriptor.Type.Boolean, null, PropertyDescriptor.Multiplicity.SINGLE, null, false));
     }
 
     @Mock private PropertyOwner propertyOwner;
-    @Mock private PropertyDescriptorRepository propertyDescriptorRepository;
-    @InjectMocks private PropertyManager propertyManager;
+    private final PropertyManager propertyManager;
 
 }

@@ -1,4 +1,4 @@
-package task_manager.core.property;
+package task_manager.property_lib;
 
 public record PropertyDescriptor(
         String name,

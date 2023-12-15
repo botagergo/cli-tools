@@ -1,9 +1,6 @@
 package task_manager.core.repository;
 
-import task_manager.core.property.PropertyDescriptor;
-
 import java.io.IOException;
-import java.util.List;
 
 public interface StateRepository {
 

@@ -1,7 +1,6 @@
 package task_manager.logic.filter;
 
-import task_manager.core.property.Property;
-import task_manager.core.property.PropertyException;
+import task_manager.property_lib.Property;
 
 import java.util.Comparator;
 
@@ -21,7 +20,7 @@ public class LessFilterCriterion extends PropertyFilterCriterion {
     }
 
     @Override
-    public boolean check_(Property property) throws PropertyException {
+    public boolean check_(Property property) {
         return propertyComparator.compare(property, operand) < 0;
     }
 

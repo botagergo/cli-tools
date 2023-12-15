@@ -3,8 +3,8 @@ package task_manager.logic.use_case.view;
 import jakarta.inject.Inject;
 import lombok.AllArgsConstructor;
 import task_manager.core.data.ViewInfo;
-import task_manager.core.property.PropertyManager;
 import task_manager.core.repository.ViewInfoRepository;
+import task_manager.property_lib.PropertyManager;
 
 import java.io.IOException;
 

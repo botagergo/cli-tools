@@ -7,14 +7,13 @@ import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.testng.collections.Sets;
-import task_manager.core.property.PropertyDescriptor;
-import task_manager.core.property.PropertyException;
-import task_manager.core.property.PropertyManager;
-import task_manager.core.property.PropertyOwner;
-import task_manager.core.repository.PropertyDescriptorRepository;
-import task_manager.core.util.RoundRobinUUIDGenerator;
-import task_manager.core.util.Utils;
+import task_manager.util.RoundRobinUUIDGenerator;
+import task_manager.util.Utils;
 import task_manager.logic.filter.CollectionContainsFilterCriterion;
+import task_manager.property_lib.PropertyDescriptor;
+import task_manager.property_lib.PropertyException;
+import task_manager.property_lib.PropertyManager;
+import task_manager.property_lib.PropertyOwner;
 
 import java.io.IOException;
 import java.util.List;
@@ -25,14 +24,16 @@ import static org.testng.Assert.assertTrue;
 
 public class CollectionContainsFilterCriterionTest {
 
-    public CollectionContainsFilterCriterionTest() throws IOException {
+    public CollectionContainsFilterCriterionTest() {
         MockitoAnnotations.openMocks(this);
-        mockitoPropertyDescriptor("test_string_list", PropertyDescriptor.Type.String, PropertyDescriptor.Multiplicity.LIST);
-        mockitoPropertyDescriptor("test_boolean_list", PropertyDescriptor.Type.Boolean, PropertyDescriptor.Multiplicity.LIST);
-        mockitoPropertyDescriptor("test_uuid_list", PropertyDescriptor.Type.UUID, PropertyDescriptor.Multiplicity.LIST);
-        mockitoPropertyDescriptor("test_string_set", PropertyDescriptor.Type.String, PropertyDescriptor.Multiplicity.SET);
-        mockitoPropertyDescriptor("test_boolean_set", PropertyDescriptor.Type.Boolean, PropertyDescriptor.Multiplicity.SET);
-        mockitoPropertyDescriptor("test_uuid_set", PropertyDescriptor.Type.UUID, PropertyDescriptor.Multiplicity.SET);
+
+        propertyManager = new PropertyManager();
+        addPropertyDescriptor("test_string_list", PropertyDescriptor.Type.String, PropertyDescriptor.Multiplicity.LIST);
+        addPropertyDescriptor("test_boolean_list", PropertyDescriptor.Type.Boolean, PropertyDescriptor.Multiplicity.LIST);
+        addPropertyDescriptor("test_uuid_list", PropertyDescriptor.Type.UUID, PropertyDescriptor.Multiplicity.LIST);
+        addPropertyDescriptor("test_string_set", PropertyDescriptor.Type.String, PropertyDescriptor.Multiplicity.SET);
+        addPropertyDescriptor("test_boolean_set", PropertyDescriptor.Type.Boolean, PropertyDescriptor.Multiplicity.SET);
+        addPropertyDescriptor("test_uuid_set", PropertyDescriptor.Type.UUID, PropertyDescriptor.Multiplicity.SET);
     }
 
     @BeforeMethod
@@ -124,19 +125,18 @@ public class CollectionContainsFilterCriterionTest {
         assertTrue(new CollectionContainsFilterCriterion("test_string_set", Sets.newLinkedHashSet()).check(propertyOwner, propertyManager));
     }
 
-    private void mockitoPropertyDescriptor(String name, PropertyDescriptor.Type type, PropertyDescriptor.Multiplicity multiplicity) throws IOException {
-        Mockito.when(propertyDescriptorRepository.get(name)).thenReturn(new PropertyDescriptor(name,
+    private void addPropertyDescriptor(String name, PropertyDescriptor.Type type, PropertyDescriptor.Multiplicity multiplicity) {
+        propertyManager.getPropertyDescriptorCollection().addPropertyDescriptor(new PropertyDescriptor(name,
                 type, null, multiplicity, null, false));
     }
 
     @Mock
     private PropertyOwner propertyOwner;
-    @Mock private PropertyDescriptorRepository propertyDescriptorRepository;
     @InjectMocks
     private PropertyManager propertyManager;
-    RoundRobinUUIDGenerator uuidGenerator = new RoundRobinUUIDGenerator();
-    UUID uuid1 = uuidGenerator.getUUID();
-    UUID uuid2 = uuidGenerator.getUUID();
-    UUID uuid3 = uuidGenerator.getUUID();
-    UUID uuid4 = uuidGenerator.getUUID();
+    final RoundRobinUUIDGenerator uuidGenerator = new RoundRobinUUIDGenerator();
+    final UUID uuid1 = uuidGenerator.getUUID();
+    final UUID uuid2 = uuidGenerator.getUUID();
+    final UUID uuid3 = uuidGenerator.getUUID();
+    final UUID uuid4 = uuidGenerator.getUUID();
 }

@@ -9,9 +9,11 @@
 
 rootProject.name = 'task_manager'
 
+include('util')
 include('core')
 include('db')
 include('logic')
-include('server')
+// include('server')
 include('cli')
 include('init')
+include('property-lib')

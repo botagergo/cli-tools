@@ -8,8 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.ErrorResponseException;
 import org.springframework.web.bind.annotation.*;
 import task_manager.core.data.Task;
-import task_manager.core.property.PropertyException;
-import task_manager.core.property.PropertyManager;
 import task_manager.logic.filter.FilterCriterionException;
 import task_manager.logic.use_case.task.PropertyConverterException;
 import task_manager.logic.use_case.task.TaskUseCase;

@@ -1,6 +1,6 @@
 package task_manager.logic;
 
-import task_manager.core.property.PropertyDescriptor;
+import task_manager.property_lib.PropertyDescriptor;
 
 public class PropertyNotComparableException extends Exception {
 

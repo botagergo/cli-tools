@@ -9,7 +9,9 @@
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/db/task_manager.db.test.iml" filepath="$PROJECT_DIR$/.idea/modules/db/task_manager.db.test.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/init/task_manager.init.main.iml" filepath="$PROJECT_DIR$/.idea/modules/init/task_manager.init.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/logic/task_manager.logic.main.iml" filepath="$PROJECT_DIR$/.idea/modules/logic/task_manager.logic.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/server/task_manager.server.main.iml" filepath="$PROJECT_DIR$/.idea/modules/server/task_manager.server.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/property-lib/task_manager.property-lib.main.iml" filepath="$PROJECT_DIR$/.idea/modules/property-lib/task_manager.property-lib.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/property-lib/task_manager.property-lib.test.iml" filepath="$PROJECT_DIR$/.idea/modules/property-lib/task_manager.property-lib.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/util/task_manager.util.main.iml" filepath="$PROJECT_DIR$/.idea/modules/util/task_manager.util.main.iml" />
     </modules>
   </component>
 </project>

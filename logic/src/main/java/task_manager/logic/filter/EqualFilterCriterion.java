@@ -1,6 +1,6 @@
 package task_manager.logic.filter;
 
-import task_manager.core.property.Property;
+import task_manager.property_lib.Property;
 
 public class EqualFilterCriterion extends PropertyFilterCriterion {
 

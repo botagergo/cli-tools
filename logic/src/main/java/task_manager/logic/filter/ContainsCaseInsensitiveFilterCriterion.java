@@ -1,9 +1,10 @@
 package task_manager.logic.filter;
 
 import lombok.Getter;
-import task_manager.core.property.Property;
-import task_manager.core.property.PropertyException;
+import task_manager.property_lib.Property;
+import task_manager.property_lib.PropertyException;
 
+@Getter
 public class ContainsCaseInsensitiveFilterCriterion extends PropertyFilterCriterion {
 
     public ContainsCaseInsensitiveFilterCriterion(
@@ -19,7 +20,6 @@ public class ContainsCaseInsensitiveFilterCriterion extends PropertyFilterCriter
         return propertyValueStr.toLowerCase().contains(operand.toLowerCase());
     }
 
-    @Getter
     private final String operand;
 
 }

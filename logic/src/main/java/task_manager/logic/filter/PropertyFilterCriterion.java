@@ -1,9 +1,9 @@
 package task_manager.logic.filter;
 
-import task_manager.core.property.Property;
-import task_manager.core.property.PropertyException;
-import task_manager.core.property.PropertyManager;
-import task_manager.core.property.PropertyOwner;
+import task_manager.property_lib.Property;
+import task_manager.property_lib.PropertyException;
+import task_manager.property_lib.PropertyManager;
+import task_manager.property_lib.PropertyOwner;
 
 import java.io.IOException;
 

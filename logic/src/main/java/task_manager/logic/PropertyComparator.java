@@ -1,8 +1,8 @@
 package task_manager.logic;
 
 import org.apache.commons.lang3.StringUtils;
-import task_manager.core.property.Property;
-import task_manager.core.property.PropertyDescriptor;
+import task_manager.property_lib.Property;
+import task_manager.property_lib.PropertyDescriptor;
 
 import java.util.Comparator;
 

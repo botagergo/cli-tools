@@ -11,9 +11,9 @@ import task_manager.core.data.Label;
 import task_manager.core.data.OrderedLabel;
 import task_manager.core.data.Task;
 import task_manager.core.property.FilterPropertySpec;
-import task_manager.core.property.Property;
-import task_manager.core.property.PropertyException;
-import task_manager.core.property.PropertyManager;
+import task_manager.property_lib.Property;
+import task_manager.property_lib.PropertyException;
+import task_manager.property_lib.PropertyManager;
 import task_manager.ui.cli.Context;
 import task_manager.ui.cli.argument.PropertyArgument;
 import task_manager.ui.cli.command.string_to_property_converter.StringToPropertyConverterException;
@@ -25,7 +25,7 @@ import java.util.*;
 @Log4j2
 public class CommandUtil {
     public static List<UUID> getUUIDsFromTempIDs(@NonNull Context context, List<Integer> tempIDs) throws IOException {
-        if (tempIDs != null && tempIDs.size() != 0) {
+        if (tempIDs != null && !tempIDs.isEmpty()) {
             List<UUID> taskUUIDs = new ArrayList<>();
             for (int tempID : tempIDs) {
                 UUID uuid = context.getTempIDMappingUseCase().getUUID(tempID);
@@ -38,7 +38,7 @@ public class CommandUtil {
     }
 
     public static List<FilterPropertySpec> getFilterPropertySpecs(@NonNull Context context, List<PropertyArgument> filterPropertyArgs) throws StringToPropertyConverterException, PropertyException, IOException {
-        if (filterPropertyArgs != null && filterPropertyArgs.size() != 0) {
+        if (filterPropertyArgs != null && !filterPropertyArgs.isEmpty()) {
             return context.getStringToPropertyConverter().convertPropertiesForFiltering(filterPropertyArgs, false);
         } else {
             return null;
@@ -58,23 +58,7 @@ public class CommandUtil {
             return tasks;
         }
 
-        String message;
-        if (filterPropertySpecs == null) {
-            message = switch (changeType) {
-                case DELETE ->
-                        "No filter was specified, delete all (" + tasks.size() + ") tasks? ([y]es/[n]o/[s]how/[p]ick) ";
-                case DONE ->
-                        "No filter was specified, mark all (" + tasks.size() + ") tasks as done? ([y]es/[n]o/[s]how/[p]ick) ";
-                case MODIFY ->
-                        "No filter was specified, modify all (" + tasks.size() + ") tasks? ([y]es/[n]o/[s]how/[p]ick) ";
-            };
-        } else {
-            message = switch (changeType) {
-                case DELETE -> "Deleting " + tasks.size() + " tasks. Continue? ([y]es/[n]o/[s]how/[p]ick) ";
-                case DONE -> "Marking " + tasks.size() + " tasks as done. Continue? ([y]es/[n]o/[s]how/[p]ick) ";
-                case MODIFY -> "Modifying " + tasks.size() + " tasks. Continue? ([y]es/[n]o/[s]how/[p]ick) ";
-            };
-        }
+        String message = getMessageFromChangeType(tasks, filterPropertySpecs, changeType);
 
         char answer = prompt(message, "ynsp");
         switch (answer) {
@@ -93,6 +77,27 @@ public class CommandUtil {
             }
             default -> throw new RuntimeException();
         }
+    }
+
+    private static String getMessageFromChangeType(List<Task> tasks, List<FilterPropertySpec> filterPropertySpecs, ChangeType changeType) {
+        String message;
+        if (filterPropertySpecs == null) {
+            message = switch (changeType) {
+                case DELETE ->
+                        "No filter was specified, delete all (" + tasks.size() + ") tasks? ([y]es/[n]o/[s]how/[p]ick) ";
+                case DONE ->
+                        "No filter was specified, mark all (" + tasks.size() + ") tasks as done? ([y]es/[n]o/[s]how/[p]ick) ";
+                case MODIFY ->
+                        "No filter was specified, modify all (" + tasks.size() + ") tasks? ([y]es/[n]o/[s]how/[p]ick) ";
+            };
+        } else {
+            message = switch (changeType) {
+                case DELETE -> "Deleting " + tasks.size() + " tasks. Continue? ([y]es/[n]o/[s]how/[p]ick) ";
+                case DONE -> "Marking " + tasks.size() + " tasks as done. Continue? ([y]es/[n]o/[s]how/[p]ick) ";
+                case MODIFY -> "Modifying " + tasks.size() + " tasks. Continue? ([y]es/[n]o/[s]how/[p]ick) ";
+            };
+        }
+        return message;
     }
 
     private static List<Task> pickTasks(PropertyManager propertyManager, List<Task> tasks, ChangeType changeType) throws PropertyException, IOException {

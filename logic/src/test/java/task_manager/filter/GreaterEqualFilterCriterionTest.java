@@ -1,16 +1,14 @@
 package task_manager.filter;
 
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-import task_manager.core.property.*;
-import task_manager.core.repository.PropertyDescriptorRepository;
-import task_manager.core.util.Utils;
+import task_manager.util.Utils;
 import task_manager.logic.PropertyComparator;
 import task_manager.logic.filter.GreaterEqualFilterCriterion;
+import task_manager.property_lib.*;
 
 import java.io.IOException;
 
@@ -19,22 +17,15 @@ import static org.testng.Assert.assertTrue;
 
 public class GreaterEqualFilterCriterionTest {
 
-    private final PropertyComparator nullsFirstPropertyComparator = new PropertyComparator(true);
-    private final PropertyComparator nullsLastPropertyComparator = new PropertyComparator(false);
-    @Mock
-    private PropertyOwner propertyOwner;
-    @Mock
-    private PropertyDescriptorRepository propertyDescriptorRepository;
-    @InjectMocks
-    private PropertyManager propertyManager;
-
-    public GreaterEqualFilterCriterionTest() throws IOException {
+    public GreaterEqualFilterCriterionTest() {
         MockitoAnnotations.openMocks(this);
-        mockitoPropertyDescriptor("test_string", PropertyDescriptor.Type.String);
-        mockitoPropertyDescriptor("test_boolean", PropertyDescriptor.Type.Boolean);
-        mockitoPropertyDescriptor("test_integer", PropertyDescriptor.Type.Integer);
-        mockitoPropertyDescriptor("test_integer1", PropertyDescriptor.Type.Integer);
-        mockitoPropertyDescriptor("test_integer2", PropertyDescriptor.Type.Integer);
+
+        propertyManager = new PropertyManager();
+        addPropertyDescriptor("test_string", PropertyDescriptor.Type.String);
+        addPropertyDescriptor("test_boolean", PropertyDescriptor.Type.Boolean);
+        addPropertyDescriptor("test_integer", PropertyDescriptor.Type.Integer);
+        addPropertyDescriptor("test_integer1", PropertyDescriptor.Type.Integer);
+        addPropertyDescriptor("test_integer2", PropertyDescriptor.Type.Integer);
     }
 
     @BeforeMethod
@@ -111,18 +102,24 @@ public class GreaterEqualFilterCriterionTest {
     }
 
     private boolean checkNullsFirst(String propertyName, Object operand) throws IOException, PropertyException {
-        return new GreaterEqualFilterCriterion(propertyName, Property.fromUnchecked(propertyDescriptorRepository.get(propertyName), operand), nullsFirstPropertyComparator)
+        return new GreaterEqualFilterCriterion(propertyName, Property.fromUnchecked(propertyManager.getPropertyDescriptorCollection().get(propertyName), operand), nullsFirstPropertyComparator)
                 .check(propertyOwner, propertyManager);
     }
 
     private boolean checkNullsLast(String propertyName, Object operand) throws IOException, PropertyException {
-        return new GreaterEqualFilterCriterion(propertyName, Property.fromUnchecked(propertyDescriptorRepository.get(propertyName), operand), nullsLastPropertyComparator)
+        return new GreaterEqualFilterCriterion(propertyName, Property.fromUnchecked(propertyManager.getPropertyDescriptorCollection().get(propertyName), operand), nullsLastPropertyComparator)
                 .check(propertyOwner, propertyManager);
     }
 
-    private void mockitoPropertyDescriptor(String propertyName, PropertyDescriptor.Type propertyType) throws IOException {
-        Mockito.when(propertyDescriptorRepository.get(propertyName)).thenReturn(new PropertyDescriptor(propertyName,
+    private void addPropertyDescriptor(String propertyName, PropertyDescriptor.Type propertyType) {
+        propertyManager.getPropertyDescriptorCollection().addPropertyDescriptor(new PropertyDescriptor(propertyName,
                 propertyType, null, PropertyDescriptor.Multiplicity.SINGLE, null, false));
     }
+
+    private final PropertyComparator nullsFirstPropertyComparator = new PropertyComparator(true);
+    private final PropertyComparator nullsLastPropertyComparator = new PropertyComparator(false);
+    @Mock
+    private PropertyOwner propertyOwner;
+    private final PropertyManager propertyManager;
 
 }

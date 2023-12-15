@@ -1,21 +1,17 @@
 package task_manager.sorter;
 
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import task_manager.PropertyOwnerImpl;
 import task_manager.core.data.SortingCriterion;
-import task_manager.core.property.PropertyDescriptor;
-import task_manager.core.property.PropertyException;
-import task_manager.core.property.PropertyManager;
-import task_manager.core.repository.PropertyDescriptorRepository;
-import task_manager.core.util.Utils;
+import task_manager.util.Utils;
 import task_manager.logic.PropertyNotComparableException;
 import task_manager.logic.sorter.PropertySorter;
+import task_manager.property_lib.PropertyDescriptor;
+import task_manager.property_lib.PropertyException;
+import task_manager.property_lib.PropertyManager;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -26,19 +22,21 @@ import static org.testng.Assert.assertThrows;
 public class PropertySorterTest {
 
     @BeforeClass
-    public void init() throws IOException {
+    public void init() {
         MockitoAnnotations.openMocks(this);
-        mockitoPropertyDescriptor("test_string1", PropertyDescriptor.Type.String, PropertyDescriptor.Multiplicity.SINGLE);
-        mockitoPropertyDescriptor("test_string2", PropertyDescriptor.Type.String, PropertyDescriptor.Multiplicity.SINGLE);
-        mockitoPropertyDescriptor("test_string_list", PropertyDescriptor.Type.String, PropertyDescriptor.Multiplicity.LIST);
-        mockitoPropertyDescriptor("test_string_set", PropertyDescriptor.Type.String, PropertyDescriptor.Multiplicity.SET);
-        mockitoPropertyDescriptor("test_boolean", PropertyDescriptor.Type.Boolean, PropertyDescriptor.Multiplicity.SINGLE);
-        mockitoPropertyDescriptor("test_boolean_list", PropertyDescriptor.Type.Boolean, PropertyDescriptor.Multiplicity.LIST);
-        mockitoPropertyDescriptor("test_boolean_set", PropertyDescriptor.Type.Boolean, PropertyDescriptor.Multiplicity.SET);
-        mockitoPropertyDescriptor("test_integer", PropertyDescriptor.Type.Integer, PropertyDescriptor.Multiplicity.SINGLE);
-        mockitoPropertyDescriptor("test_uuid", PropertyDescriptor.Type.UUID, PropertyDescriptor.Multiplicity.SINGLE);
-        mockitoPropertyDescriptor("test_uuid_list", PropertyDescriptor.Type.UUID, PropertyDescriptor.Multiplicity.LIST);
-        mockitoPropertyDescriptor("test_uuid_set", PropertyDescriptor.Type.UUID, PropertyDescriptor.Multiplicity.SET);
+
+        propertyManager = new PropertyManager();
+        addPropertyDescriptor("test_string1", PropertyDescriptor.Type.String, PropertyDescriptor.Multiplicity.SINGLE);
+        addPropertyDescriptor("test_string2", PropertyDescriptor.Type.String, PropertyDescriptor.Multiplicity.SINGLE);
+        addPropertyDescriptor("test_string_list", PropertyDescriptor.Type.String, PropertyDescriptor.Multiplicity.LIST);
+        addPropertyDescriptor("test_string_set", PropertyDescriptor.Type.String, PropertyDescriptor.Multiplicity.SET);
+        addPropertyDescriptor("test_boolean", PropertyDescriptor.Type.Boolean, PropertyDescriptor.Multiplicity.SINGLE);
+        addPropertyDescriptor("test_boolean_list", PropertyDescriptor.Type.Boolean, PropertyDescriptor.Multiplicity.LIST);
+        addPropertyDescriptor("test_boolean_set", PropertyDescriptor.Type.Boolean, PropertyDescriptor.Multiplicity.SET);
+        addPropertyDescriptor("test_integer", PropertyDescriptor.Type.Integer, PropertyDescriptor.Multiplicity.SINGLE);
+        addPropertyDescriptor("test_uuid", PropertyDescriptor.Type.UUID, PropertyDescriptor.Multiplicity.SINGLE);
+        addPropertyDescriptor("test_uuid_list", PropertyDescriptor.Type.UUID, PropertyDescriptor.Multiplicity.LIST);
+        addPropertyDescriptor("test_uuid_set", PropertyDescriptor.Type.UUID, PropertyDescriptor.Multiplicity.SET);
     }
 
     @Test
@@ -227,16 +225,11 @@ public class PropertySorterTest {
         }
     }
 
-    private void mockitoPropertyDescriptor(String name, PropertyDescriptor.Type type, PropertyDescriptor.Multiplicity multiplicity) throws IOException {
-        Mockito.when(propertyDescriptorRepository.get(name)).thenReturn(new PropertyDescriptor(name,
+    private void addPropertyDescriptor(String name, PropertyDescriptor.Type type, PropertyDescriptor.Multiplicity multiplicity) {
+        propertyManager.getPropertyDescriptorCollection().addPropertyDescriptor(new PropertyDescriptor(name,
                 type, null, multiplicity, null, false));
     }
 
-    @Mock
-    private PropertyDescriptorRepository propertyDescriptorRepository;
-
-    @InjectMocks
     private PropertyManager propertyManager;
-
 
 }

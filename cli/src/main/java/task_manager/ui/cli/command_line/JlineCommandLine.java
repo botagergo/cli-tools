@@ -10,9 +10,12 @@ import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
 import task_manager.init.Initializer;
 import task_manager.logic.pseudo_property_provider.TaskIDPseudoPropertyProvider;
+import task_manager.property_lib.PropertyDescriptor;
+import task_manager.property_lib.PropertyDescriptorCollection;
 import task_manager.ui.cli.Context;
 
 import java.io.IOException;
+import java.util.List;
 
 @AllArgsConstructor(onConstructor = @__(@Inject))
 public class JlineCommandLine implements CommandLine {
@@ -24,6 +27,10 @@ public class JlineCommandLine implements CommandLine {
         }
 
         Context context = ((ExecutorImpl) executor).getContext();
+
+        List<PropertyDescriptor> propertyDescriptors = context.getPropertyDescriptorUseCase().getPropertyDescriptors();
+        context.getPropertyManager().setPropertyDescriptorCollection(PropertyDescriptorCollection.fromList(propertyDescriptors));
+
         context.getPropertyManager()
                 .registerPseudoPropertyProvider("id", new TaskIDPseudoPropertyProvider(context.getTempIDMappingUseCase()));
 

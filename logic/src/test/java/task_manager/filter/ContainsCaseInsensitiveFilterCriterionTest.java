@@ -1,18 +1,16 @@
 package task_manager.filter;
 
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-import task_manager.core.property.PropertyDescriptor;
-import task_manager.core.property.PropertyException;
-import task_manager.core.property.PropertyManager;
-import task_manager.core.property.PropertyOwner;
-import task_manager.core.repository.PropertyDescriptorRepository;
-import task_manager.core.util.Utils;
+import task_manager.util.Utils;
 import task_manager.logic.filter.ContainsCaseInsensitiveFilterCriterion;
+import task_manager.property_lib.PropertyDescriptor;
+import task_manager.property_lib.PropertyException;
+import task_manager.property_lib.PropertyManager;
+import task_manager.property_lib.PropertyOwner;
 
 import java.io.IOException;
 
@@ -21,12 +19,14 @@ import static org.testng.Assert.assertTrue;
 
 public class ContainsCaseInsensitiveFilterCriterionTest {
 
-    public ContainsCaseInsensitiveFilterCriterionTest() throws IOException {
+    public ContainsCaseInsensitiveFilterCriterionTest() {
         MockitoAnnotations.openMocks(this);
-        mockitoPropertyDescriptor("test_string", PropertyDescriptor.Multiplicity.SINGLE);
-        mockitoPropertyDescriptor("test_boolean", PropertyDescriptor.Multiplicity.SINGLE);
-        mockitoPropertyDescriptor("test_uuid", PropertyDescriptor.Multiplicity.SINGLE);
-        mockitoPropertyDescriptor("test_string_list", PropertyDescriptor.Multiplicity.LIST);
+
+        propertyManager = new PropertyManager();
+        addPropertyDescriptor("test_string", PropertyDescriptor.Multiplicity.SINGLE);
+        addPropertyDescriptor("test_boolean", PropertyDescriptor.Multiplicity.SINGLE);
+        addPropertyDescriptor("test_uuid", PropertyDescriptor.Multiplicity.SINGLE);
+        addPropertyDescriptor("test_string_list", PropertyDescriptor.Multiplicity.LIST);
     }
 
     @BeforeMethod
@@ -49,15 +49,13 @@ public class ContainsCaseInsensitiveFilterCriterionTest {
         assertFalse(new ContainsCaseInsensitiveFilterCriterion("test_string", "value1").check(propertyOwner, propertyManager));
     }
 
-    private void mockitoPropertyDescriptor(String name, PropertyDescriptor.Multiplicity multiplicity) throws IOException {
-        Mockito.when(propertyDescriptorRepository.get(name)).thenReturn(new PropertyDescriptor(name,
+    private void addPropertyDescriptor(String name, PropertyDescriptor.Multiplicity multiplicity) {
+        propertyManager.getPropertyDescriptorCollection().addPropertyDescriptor(new PropertyDescriptor(name,
                 PropertyDescriptor.Type.String, null, multiplicity, null, false));
     }
 
     @Mock
     private PropertyOwner propertyOwner;
-    @Mock private PropertyDescriptorRepository propertyDescriptorRepository;
-    @InjectMocks
-    private PropertyManager propertyManager;
+    private final PropertyManager propertyManager;
 
 }

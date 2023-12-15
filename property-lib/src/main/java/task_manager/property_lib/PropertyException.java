@@ -1,7 +1,8 @@
-package task_manager.core.property;
+package task_manager.property_lib;
 
 import lombok.Getter;
 
+@Getter
 public class PropertyException extends Exception {
 
     public PropertyException(Type exceptionType, String propertyName,
@@ -39,11 +40,11 @@ public class PropertyException extends Exception {
         }
     }
 
-    @Getter final Type exceptionType;
-    @Getter final String propertyName;
-    @Getter final PropertyDescriptor propertyDescriptor;
-    @Getter final Object propertyValue;
-    @Getter final PropertyDescriptor.Type requestedType;
+    final Type exceptionType;
+    final String propertyName;
+    final PropertyDescriptor propertyDescriptor;
+    final Object propertyValue;
+    final PropertyDescriptor.Type requestedType;
 
     public enum Type {
         NotExist, TypeMismatch, WrongValueType, NotACollection, WrongMultiplicity, MultipleMatches

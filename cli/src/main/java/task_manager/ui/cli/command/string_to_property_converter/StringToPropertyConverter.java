@@ -9,6 +9,9 @@ import task_manager.core.property.*;
 import task_manager.logic.use_case.label.LabelUseCase;
 import task_manager.logic.use_case.ordered_label.OrderedLabelUseCase;
 import task_manager.logic.use_case.property_descriptor.PropertyDescriptorUseCase;
+import task_manager.property_lib.Property;
+import task_manager.property_lib.PropertyDescriptor;
+import task_manager.property_lib.PropertyException;
 import task_manager.ui.cli.Util;
 import task_manager.ui.cli.argument.PropertyArgument;
 

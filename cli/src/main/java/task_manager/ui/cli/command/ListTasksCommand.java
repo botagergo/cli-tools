@@ -5,9 +5,6 @@ import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import task_manager.core.data.*;
 import task_manager.core.property.FilterPropertySpec;
-import task_manager.core.property.PropertyException;
-import task_manager.logic.filter.FilterCriterionException;
-import task_manager.logic.use_case.task.PropertyConverterException;
 import task_manager.logic.use_case.task.TaskUseCaseException;
 import task_manager.ui.cli.Context;
 import task_manager.ui.cli.argument.PropertyArgument;
@@ -75,15 +72,11 @@ public record ListTasksCommand(
     }
 
     private @NonNull ViewInfo getView(Context context, String viewName) throws TaskUseCaseException, IOException {
-        try {
-            ViewInfo viewInfo = context.getViewInfoUseCase().getViewInfo(viewName, context.getPropertyManager());
-            if (viewInfo == null) {
-                throw new TaskUseCaseException("View '" + viewName + "' does not exist");
-            }
-            return viewInfo;
-        } catch (PropertyException | PropertyConverterException | FilterCriterionException e) {
-            throw new TaskUseCaseException("Failed to get view '" + viewName + "': " + e.getMessage());
+        ViewInfo viewInfo = context.getViewInfoUseCase().getViewInfo(viewName, context.getPropertyManager());
+        if (viewInfo == null) {
+            throw new TaskUseCaseException("View '" + viewName + "' does not exist");
         }
+        return viewInfo;
     }
 
 

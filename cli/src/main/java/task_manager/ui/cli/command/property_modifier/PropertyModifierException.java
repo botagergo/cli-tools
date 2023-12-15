@@ -3,6 +3,7 @@ package task_manager.ui.cli.command.property_modifier;
 import lombok.Getter;
 import task_manager.core.property.ModifyPropertySpec;
 
+@Getter
 public class PropertyModifierException extends Exception {
 
     public PropertyModifierException(Type type, ModifyPropertySpec modifyPropertySpec, String msg) {
@@ -11,8 +12,8 @@ public class PropertyModifierException extends Exception {
         this.modifyPropertySpec = modifyPropertySpec;
     }
 
-    @Getter private final Type type;
-    @Getter private final ModifyPropertySpec modifyPropertySpec;
+    private final Type type;
+    private final ModifyPropertySpec modifyPropertySpec;
 
     public enum Type {
         BadModificationType, NotACollection

@@ -4,8 +4,8 @@ import task_manager.core.data.FilterCriterionInfo;
 import task_manager.core.data.SortingInfo;
 import task_manager.core.data.Task;
 import task_manager.core.property.FilterPropertySpec;
-import task_manager.core.property.PropertyException;
 import task_manager.logic.filter.FilterCriterionException;
+import task_manager.property_lib.PropertyException;
 
 import java.io.IOException;
 import java.util.List;

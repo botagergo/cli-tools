@@ -12,6 +12,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
 
+@Setter
+@Getter
 public class ArgumentList {
     public ArgumentList(
             @NonNull String commandName,
@@ -160,11 +162,11 @@ public class ArgumentList {
         return valueList;
     }
 
-    @Getter @Setter @NonNull private String commandName;
-    @Getter @Setter @NonNull private List<String> leadingNormalArguments;
-    @Getter @Setter @NonNull private List<String> trailingNormalArguments;
-    @Getter @Setter @NonNull private LinkedHashMap<Character, List<SpecialArgument>> specialArguments;
-    @Getter @Setter @NonNull private List<PropertyArgument> filterPropertyArguments;
-    @Getter @Setter @NonNull private List<PropertyArgument> modifyPropertyArguments;
-    @Getter @Setter @NonNull private List<OptionArgument> optionArguments;
+    @NonNull private String commandName;
+    @NonNull private List<String> leadingNormalArguments;
+    @NonNull private List<String> trailingNormalArguments;
+    @NonNull private LinkedHashMap<Character, List<SpecialArgument>> specialArguments;
+    @NonNull private List<PropertyArgument> filterPropertyArguments;
+    @NonNull private List<PropertyArgument> modifyPropertyArguments;
+    @NonNull private List<OptionArgument> optionArguments;
 }

@@ -9,12 +9,16 @@ import task_manager.core.data.SortingInfo;
 import task_manager.core.data.Task;
 import task_manager.core.property.*;
 import task_manager.core.repository.TaskRepository;
-import task_manager.core.util.UUIDGenerator;
 import task_manager.logic.PropertyComparator;
 import task_manager.logic.PropertyNotComparableException;
 import task_manager.logic.filter.*;
 import task_manager.logic.filter.grammar.FilterBuilder;
 import task_manager.logic.sorter.PropertySorter;
+import task_manager.property_lib.Property;
+import task_manager.property_lib.PropertyDescriptor;
+import task_manager.property_lib.PropertyException;
+import task_manager.property_lib.PropertyManager;
+import task_manager.util.UUIDGenerator;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -103,7 +107,7 @@ public class TaskUseCaseImpl implements TaskUseCase {
             }
         }
 
-        if (finalFilterCriteria.size() != 0) {
+        if (!finalFilterCriteria.isEmpty()) {
             Filter filter = new SimpleFilter(new AndFilterCriterion(finalFilterCriteria));
             try {
                 tasks = filter.doFilter(tasks, propertyManager);

@@ -1,10 +1,8 @@
-package task_manager.core.property;
+package task_manager.property_lib;
 
 import com.google.common.collect.Iterables;
-import jakarta.inject.Inject;
-import jakarta.inject.Singleton;
+import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
-import task_manager.core.repository.PropertyDescriptorRepository;
 
 import java.io.IOException;
 import java.util.*;
@@ -12,13 +10,11 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Log4j2
-@Singleton
 public class PropertyManager {
 
-    @Inject
-    public PropertyManager(PropertyDescriptorRepository propertyDescriptorRepository) {
-        this.propertyDescriptorRepository = propertyDescriptorRepository;
+    public PropertyManager() {
         this.pseudoPropertyManager = new PseudoPropertyManager();
+        this.propertyDescriptorCollection = new PropertyDescriptorCollection();
     }
 
     public Property getProperty(PropertyOwner propertyOwner, String propertyName)
@@ -40,7 +36,7 @@ public class PropertyManager {
     }
 
     public void setProperty(PropertyOwner propertyOwner, String propertyName, Object propertyValue)
-            throws PropertyException, IOException {
+            throws PropertyException {
         log.debug("setProperty - {}", propertyName);
 
         PropertyDescriptor propertyDescriptor = getPropertyDescriptor(propertyName);
@@ -72,8 +68,7 @@ public class PropertyManager {
             if (origSet == null) {
                 newProperty = propertyValue;
             } else {
-                newProperty = Collections.unmodifiableSet(Stream.concat(origSet.stream(), propertyValue.stream()).collect(Collectors.toSet()));
-            }
+                newProperty = Collections.unmodifiableSet(Stream.concat(origSet.stream(), propertyValue.stream()).collect(Collectors.toSet()));            }
         } else {
             throw new PropertyException(PropertyException.Type.NotACollection,
                 origProperty.getPropertyDescriptor().name(), origProperty.getPropertyDescriptor(), null, null);
@@ -125,9 +120,9 @@ public class PropertyManager {
         propertyOwner.getProperties().remove(propertyName);
     }
 
-    public PropertyDescriptor getPropertyDescriptor(String propertyName) throws PropertyException, IOException {
+    public PropertyDescriptor getPropertyDescriptor(String propertyName) throws PropertyException {
         PropertyDescriptor propertyDescriptor =
-                propertyDescriptorRepository.get(propertyName);
+                propertyDescriptorCollection.get(propertyName);
         if (propertyDescriptor == null) {
             throw new PropertyException(PropertyException.Type.NotExist, propertyName, null, null,
                     null);
@@ -139,8 +134,12 @@ public class PropertyManager {
         pseudoPropertyManager.registerPseudoPropertyProvider(name, pseudoPropertyProvider);
     }
 
+    public void setPropertyDescriptorCollection(PropertyDescriptorCollection propertyDescriptorCollection) {
+        this.propertyDescriptorCollection = propertyDescriptorCollection;
+    }
+
     private Object getPropertyValue(PropertyOwner propertyOwner,
-            PropertyDescriptor propertyDescriptor) {
+                                    PropertyDescriptor propertyDescriptor) {
         Object propertyValue = propertyOwner.getProperties().get(propertyDescriptor.name());
         if (propertyValue == null) {
             log.debug("Property '{}' not set, getting default value", propertyDescriptor.name());
@@ -149,7 +148,8 @@ public class PropertyManager {
         return propertyValue;
     }
 
-    private final PropertyDescriptorRepository propertyDescriptorRepository;
+    @Getter
+    private PropertyDescriptorCollection propertyDescriptorCollection;
     private final PseudoPropertyManager pseudoPropertyManager;
 
 }

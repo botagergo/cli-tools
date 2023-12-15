@@ -1,4 +1,4 @@
-package task_manager.core.property;
+package task_manager.property_lib;
 
 import java.util.HashMap;
 import java.util.UUID;

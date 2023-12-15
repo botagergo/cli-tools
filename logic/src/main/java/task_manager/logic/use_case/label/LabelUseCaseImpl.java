@@ -4,7 +4,7 @@ import jakarta.inject.Inject;
 import lombok.AllArgsConstructor;
 import task_manager.core.data.Label;
 import task_manager.core.repository.LabelRepositoryFactory;
-import task_manager.core.util.UUIDGenerator;
+import task_manager.util.UUIDGenerator;
 
 import java.io.IOException;
 import java.util.UUID;
@@ -16,9 +16,6 @@ public class LabelUseCaseImpl implements LabelUseCase {
     public Label getLabel(String labelType, UUID labelUuid) throws IOException {
         return labelRepositoryFactory.getLabelRepository(labelType).get(labelUuid);
     }
-
-    private final LabelRepositoryFactory labelRepositoryFactory;
-    private final UUIDGenerator uuidGenerator;
 
     @Override
     public Label findLabel(String labelType, String labelText) throws IOException {
@@ -39,5 +36,8 @@ public class LabelUseCaseImpl implements LabelUseCase {
     public void deleteAllLabels(String labelName) throws IOException {
         labelRepositoryFactory.getLabelRepository(labelName).deleteAll();
     }
+
+    private final LabelRepositoryFactory labelRepositoryFactory;
+    private final UUIDGenerator uuidGenerator;
 
 }

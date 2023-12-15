@@ -1,10 +1,10 @@
 package task_manager;
 
 import org.testng.annotations.Test;
-import task_manager.core.property.Property;
-import task_manager.core.property.PropertyDescriptor;
-import task_manager.core.util.RoundRobinUUIDGenerator;
+import task_manager.util.RoundRobinUUIDGenerator;
 import task_manager.logic.PropertyComparator;
+import task_manager.property_lib.Property;
+import task_manager.property_lib.PropertyDescriptor;
 
 import static org.testng.Assert.*;
 
@@ -128,8 +128,8 @@ public class PropertyComparatorTest {
     }
 
 
-    PropertyComparator nullsFirstPropertyComparator = new PropertyComparator(true);
-    PropertyComparator nullsLastPropertyComparator = new PropertyComparator(false);
-    RoundRobinUUIDGenerator uuidGenerator = new RoundRobinUUIDGenerator();
+    final PropertyComparator nullsFirstPropertyComparator = new PropertyComparator(true);
+    final PropertyComparator nullsLastPropertyComparator = new PropertyComparator(false);
+    final RoundRobinUUIDGenerator uuidGenerator = new RoundRobinUUIDGenerator();
 
 }

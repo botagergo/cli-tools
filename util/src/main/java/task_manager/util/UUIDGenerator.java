@@ -1,4 +1,4 @@
-package task_manager.core.util;
+package task_manager.util;
 
 import java.util.UUID;
 

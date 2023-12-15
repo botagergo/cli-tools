@@ -8,7 +8,7 @@ import java.util.List;
 
 public class ParseUtil {
     public static List<@NonNull Integer> getTaskIDs(@NonNull Context context, List<String> taskIDArguments) throws CommandParserException {
-        if (taskIDArguments == null || taskIDArguments.size() == 0) {
+        if (taskIDArguments == null || taskIDArguments.isEmpty()) {
             return null;
         }
 

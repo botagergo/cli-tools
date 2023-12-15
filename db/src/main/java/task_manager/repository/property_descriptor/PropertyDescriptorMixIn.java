@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import task_manager.core.property.PropertyDescriptor;
+import task_manager.property_lib.PropertyDescriptor;
 import task_manager.repository.ObjectDeserializer;
 import task_manager.repository.ObjectSerializer;
 

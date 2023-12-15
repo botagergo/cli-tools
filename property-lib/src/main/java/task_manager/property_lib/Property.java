@@ -1,4 +1,4 @@
-package task_manager.core.property;
+package task_manager.property_lib;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -7,6 +7,7 @@ import lombok.Getter;
 
 import java.util.*;
 
+@Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @EqualsAndHashCode
 public class Property {
@@ -300,7 +301,7 @@ public class Property {
         return Collections.unmodifiableSet(propertyValuesSet);
     }
 
-    @Getter private final PropertyDescriptor propertyDescriptor;
-    @Getter private final Object value;
+    private final PropertyDescriptor propertyDescriptor;
+    private final Object value;
 
 }

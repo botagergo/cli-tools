@@ -1,6 +1,8 @@
 package task_manager.core.property;
 
 import lombok.NonNull;
+import task_manager.property_lib.Property;
+import task_manager.property_lib.PropertyDescriptor;
 
 public record ModifyPropertySpec(
         @NonNull PropertyDescriptor propertyDescriptor,
