@@ -8,12 +8,16 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
-            <option value="$PROJECT_DIR$/cli" />
+            <option value="$PROJECT_DIR$/cli-lib" />
             <option value="$PROJECT_DIR$/core" />
             <option value="$PROJECT_DIR$/db" />
             <option value="$PROJECT_DIR$/init" />
             <option value="$PROJECT_DIR$/logic" />
+            <option value="$PROJECT_DIR$/music-cli" />
+            <option value="$PROJECT_DIR$/music-logic" />
             <option value="$PROJECT_DIR$/property-lib" />
+            <option value="$PROJECT_DIR$/task-logic" />
+            <option value="$PROJECT_DIR$/task-manager-cli" />
             <option value="$PROJECT_DIR$/util" />
           </set>
         </option>

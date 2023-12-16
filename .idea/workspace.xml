@@ -7,7 +7,320 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9b16097d-ee07-4e87-ae61-a0b993010810" name="Changes" comment="" />
+    <list default="true" id="9b16097d-ee07-4e87-ae61-a0b993010810" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/modules/cli-lib/task_manager.cli-lib.main.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cli-lib/build.gradle" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cli-lib/src/test/java/task_manager/cli_lib/TestModule.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/music-cli/src/main/java/task_manager/music_cli/Context.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/music-cli/src/main/java/task_manager/music_cli/MusicCLI.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/music-cli/src/main/java/task_manager/music_cli/Util.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/music-cli/src/main/java/task_manager/music_cli/command/AddSongCommand.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/music-cli/src/main/java/task_manager/music_cli/command/Command.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/music-cli/src/main/java/task_manager/music_cli/command/DeleteSongCommand.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/music-cli/src/main/java/task_manager/music_cli/command/ListSongsCommand.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/music-cli/src/main/java/task_manager/music_cli/command/ModifySongCommand.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/music-cli/src/main/java/task_manager/music_cli/command/string_to_property_converter/StringToPropertyConverter.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/music-cli/src/main/java/task_manager/music_cli/command_parser/AddSongCommandParser.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/music-cli/src/main/java/task_manager/music_cli/command_parser/ClearCommandParser.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/music-cli/src/main/java/task_manager/music_cli/command_parser/CommandParser.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/music-cli/src/main/java/task_manager/music_cli/command_parser/CommandParserFactory.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/music-cli/src/main/java/task_manager/music_cli/command_parser/CommandParserFactoryImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/music-cli/src/main/java/task_manager/music_cli/command_parser/DeleteSongCommandParser.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/music-cli/src/main/java/task_manager/music_cli/command_parser/ListSongsCommandParser.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/music-cli/src/main/java/task_manager/music_cli/command_parser/ModifySongCommandParser.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/music-cli/src/main/java/task_manager/music_cli/command_parser/ParseUtil.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/music-cli/src/test/java/task_manager/music_cli/command_parser/AddRecordingCommandParserTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/music-cli/src/test/java/task_manager/music_cli/command_parser/CommandParserFactoryImplTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/music-cli/src/test/java/task_manager/music_cli/command_parser/DeleteSongCommandParserTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/music-cli/src/test/java/task_manager/music_cli/command_parser/ListSongsCommandParserTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/music-cli/src/test/java/task_manager/music_cli/command_parser/ModifySongCommandParserTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/music-logic/build.gradle" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/music-logic/src/main/java/task_manager/music-logic/PropertyComparator.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/music-logic/src/main/java/task_manager/music-logic/PropertyNotComparableException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/task-logic/build.gradle" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/task-logic/src/main/java/task_manager/task_logic/pseudo_property_provider/TaskIDPseudoPropertyProvider.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/task-logic/src/main/java/task_manager/task_logic/use_case/TaskManagerClient.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/task-logic/src/main/java/task_manager/task_logic/use_case/label/LabelUseCase.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/task-logic/src/main/java/task_manager/task_logic/use_case/label/LabelUseCaseImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/task-logic/src/main/java/task_manager/task_logic/use_case/ordered_label/OrderedLabelUseCase.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/task-logic/src/main/java/task_manager/task_logic/use_case/ordered_label/OrderedLabelUseCaseImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/task-logic/src/main/java/task_manager/task_logic/use_case/property_descriptor/PropertyDescriptorUseCase.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/task-logic/src/main/java/task_manager/task_logic/use_case/property_descriptor/PropertyDescriptorUseCaseImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/task-logic/src/main/java/task_manager/task_logic/use_case/task/PropertyConverter.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/task-logic/src/main/java/task_manager/task_logic/use_case/task/PropertyConverterException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/task-logic/src/main/java/task_manager/task_logic/use_case/task/TaskUseCase.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/task-logic/src/main/java/task_manager/task_logic/use_case/task/TaskUseCaseException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/task-logic/src/main/java/task_manager/task_logic/use_case/task/TaskUseCaseImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/task-logic/src/main/java/task_manager/task_logic/use_case/temp_id_mapping/TempIDMappingUseCase.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/task-logic/src/main/java/task_manager/task_logic/use_case/temp_id_mapping/TempIDMappingUseCaseImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/task-logic/src/main/java/task_manager/task_logic/use_case/view/ViewInfoUseCase.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/task-logic/src/main/java/task_manager/task_logic/use_case/view/ViewInfoUseCaseImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/task-logic/src/test/java/task_manager/PropertyComparatorTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/task-logic/src/test/java/task_manager/PropertyOwnerImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/task-logic/src/test/java/task_manager/use_case/task/PropertyConverterTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/task-manager-cli/build.gradle" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/task-manager-cli/src/main/java/task_manager/task_manager_cli/AppModule.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/task-manager-cli/src/main/java/task_manager/task_manager_cli/command/ClearCommand.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/task-manager-cli/src/main/java/task_manager/task_manager_cli/command/Command.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/task-manager-cli/src/main/java/task_manager/task_manager_cli/command/CommandExecutor.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/task-manager-cli/src/main/java/task_manager/task_manager_cli/command/CommandUtil.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/task-manager-cli/src/main/java/task_manager/task_manager_cli/command/property_modifier/PropertyModifier.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/task-manager-cli/src/main/java/task_manager/task_manager_cli/command/property_modifier/PropertyModifierException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/task-manager-cli/src/main/java/task_manager/task_manager_cli/command/string_to_property_converter/StringToPropertyConverterException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/task-manager-cli/src/main/java/task_manager/task_manager_cli/command_line/CommandLine.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/task-manager-cli/src/main/java/task_manager/task_manager_cli/command_line/Executor.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/task-manager-cli/src/main/java/task_manager/task_manager_cli/command_line/ExecutorImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/task-manager-cli/src/main/java/task_manager/task_manager_cli/command_line/JlineCommandLine.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/task-manager-cli/src/main/java/task_manager/task_manager_cli/command_parser/ClearCommandParser.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/task-manager-cli/src/main/java/task_manager/task_manager_cli/command_parser/CommandParser.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/task-manager-cli/src/main/java/task_manager/task_manager_cli/command_parser/CommandParserException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/task-manager-cli/src/main/java/task_manager/task_manager_cli/command_parser/CommandParserFactory.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/task-manager-cli/src/main/java/task_manager/task_manager_cli/command_parser/CommandParserFactoryImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/task-manager-cli/src/main/resources/log4j2.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/task-manager-cli/src/test/java/task_manager/task_manager_cli/UtilTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/task-manager-cli/src/test/java/task_manager/task_manager_cli/command/string_to_property_converter/StringToPropertyConverterTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/task-manager-cli/src/test/java/task_manager/task_manager_cli/command_parser/ClearCommandParserTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitattributes" beforeDir="false" afterPath="$PROJECT_DIR$/.gitattributes" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.name" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.name" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/jarRepositories.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/jarRepositories.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/cli/task_manager.cli.main.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/core/task_manager.core.main.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/core/task_manager.core.main.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/core/task_manager.core.test.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/db/task_manager.db.main.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/db/task_manager.db.main.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/db/task_manager.db.test.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/init/task_manager.init.main.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/logic/task_manager.logic.main.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/logic/task_manager.logic.main.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/property-lib/task_manager.property-lib.main.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/property-lib/task_manager.property-lib.main.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/property-lib/task_manager.property-lib.test.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/util/task_manager.util.main.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/util/task_manager.util.main.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cli/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/music-cli/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cli/src/main/java/task_manager/ui/cli/AppModule.java" beforeDir="false" afterPath="$PROJECT_DIR$/music-cli/src/main/java/task_manager/music_cli/AppModule.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cli/src/main/java/task_manager/ui/cli/Context.java" beforeDir="false" afterPath="$PROJECT_DIR$/task-manager-cli/src/main/java/task_manager/task_manager_cli/Context.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cli/src/main/java/task_manager/ui/cli/TaskManagerCLI.java" beforeDir="false" afterPath="$PROJECT_DIR$/task-manager-cli/src/main/java/task_manager/task_manager_cli/TaskManagerCLI.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cli/src/main/java/task_manager/ui/cli/Util.java" beforeDir="false" afterPath="$PROJECT_DIR$/task-manager-cli/src/main/java/task_manager/task_manager_cli/Util.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cli/src/main/java/task_manager/ui/cli/argument/ArgumentList.java" beforeDir="false" afterPath="$PROJECT_DIR$/cli-lib/src/main/java/task_manager/cli_lib/argument/ArgumentList.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cli/src/main/java/task_manager/ui/cli/argument/NotASpecialArgumentException.java" beforeDir="false" afterPath="$PROJECT_DIR$/cli-lib/src/main/java/task_manager/cli_lib/argument/NotASpecialArgumentException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cli/src/main/java/task_manager/ui/cli/argument/OptionArgument.java" beforeDir="false" afterPath="$PROJECT_DIR$/cli-lib/src/main/java/task_manager/cli_lib/argument/OptionArgument.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cli/src/main/java/task_manager/ui/cli/argument/PropertyArgument.java" beforeDir="false" afterPath="$PROJECT_DIR$/cli-lib/src/main/java/task_manager/cli_lib/argument/PropertyArgument.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cli/src/main/java/task_manager/ui/cli/argument/SpecialArgument.java" beforeDir="false" afterPath="$PROJECT_DIR$/cli-lib/src/main/java/task_manager/cli_lib/argument/SpecialArgument.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cli/src/main/java/task_manager/ui/cli/command/AddTaskCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/task-manager-cli/src/main/java/task_manager/task_manager_cli/command/AddTaskCommand.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cli/src/main/java/task_manager/ui/cli/command/ClearCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/music-cli/src/main/java/task_manager/music_cli/command/ClearCommand.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cli/src/main/java/task_manager/ui/cli/command/Command.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cli/src/main/java/task_manager/ui/cli/command/CommandExecutor.java" beforeDir="false" afterPath="$PROJECT_DIR$/music-cli/src/main/java/task_manager/music_cli/command/CommandExecutor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cli/src/main/java/task_manager/ui/cli/command/CommandUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/music-cli/src/main/java/task_manager/music_cli/command/CommandUtil.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cli/src/main/java/task_manager/ui/cli/command/DeleteTaskCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/task-manager-cli/src/main/java/task_manager/task_manager_cli/command/DeleteTaskCommand.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cli/src/main/java/task_manager/ui/cli/command/DoneTaskCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/task-manager-cli/src/main/java/task_manager/task_manager_cli/command/DoneTaskCommand.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cli/src/main/java/task_manager/ui/cli/command/ListTasksCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/task-manager-cli/src/main/java/task_manager/task_manager_cli/command/ListTasksCommand.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cli/src/main/java/task_manager/ui/cli/command/ModifyTaskCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/task-manager-cli/src/main/java/task_manager/task_manager_cli/command/ModifyTaskCommand.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cli/src/main/java/task_manager/ui/cli/command/property_modifier/PropertyModifier.java" beforeDir="false" afterPath="$PROJECT_DIR$/music-cli/src/main/java/task_manager/music_cli/command/property_modifier/PropertyModifier.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cli/src/main/java/task_manager/ui/cli/command/property_modifier/PropertyModifierException.java" beforeDir="false" afterPath="$PROJECT_DIR$/music-cli/src/main/java/task_manager/music_cli/command/property_modifier/PropertyModifierException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cli/src/main/java/task_manager/ui/cli/command/string_to_property_converter/StringToPropertyConverter.java" beforeDir="false" afterPath="$PROJECT_DIR$/task-manager-cli/src/main/java/task_manager/task_manager_cli/command/string_to_property_converter/StringToPropertyConverter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cli/src/main/java/task_manager/ui/cli/command/string_to_property_converter/StringToPropertyConverterException.java" beforeDir="false" afterPath="$PROJECT_DIR$/music-cli/src/main/java/task_manager/music_cli/command/string_to_property_converter/StringToPropertyConverterException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cli/src/main/java/task_manager/ui/cli/command_line/CommandLine.java" beforeDir="false" afterPath="$PROJECT_DIR$/music-cli/src/main/java/task_manager/music_cli/command_line/CommandLine.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cli/src/main/java/task_manager/ui/cli/command_line/Executor.java" beforeDir="false" afterPath="$PROJECT_DIR$/music-cli/src/main/java/task_manager/music_cli/command_line/Executor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cli/src/main/java/task_manager/ui/cli/command_line/ExecutorImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/music-cli/src/main/java/task_manager/music_cli/command_line/ExecutorImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cli/src/main/java/task_manager/ui/cli/command_line/JlineCommandLine.java" beforeDir="false" afterPath="$PROJECT_DIR$/music-cli/src/main/java/task_manager/music_cli/command_line/JlineCommandLine.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cli/src/main/java/task_manager/ui/cli/command_parser/AddTaskCommandParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/task-manager-cli/src/main/java/task_manager/task_manager_cli/command_parser/AddTaskCommandParser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cli/src/main/java/task_manager/ui/cli/command_parser/ClearCommandParser.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cli/src/main/java/task_manager/ui/cli/command_parser/CommandParser.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cli/src/main/java/task_manager/ui/cli/command_parser/CommandParserException.java" beforeDir="false" afterPath="$PROJECT_DIR$/music-cli/src/main/java/task_manager/music_cli/command_parser/CommandParserException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cli/src/main/java/task_manager/ui/cli/command_parser/CommandParserFactory.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cli/src/main/java/task_manager/ui/cli/command_parser/CommandParserFactoryImpl.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cli/src/main/java/task_manager/ui/cli/command_parser/DeleteTaskCommandParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/task-manager-cli/src/main/java/task_manager/task_manager_cli/command_parser/DeleteTaskCommandParser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cli/src/main/java/task_manager/ui/cli/command_parser/DoneTaskCommandParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/task-manager-cli/src/main/java/task_manager/task_manager_cli/command_parser/DoneTaskCommandParser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cli/src/main/java/task_manager/ui/cli/command_parser/ListTasksCommandParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/task-manager-cli/src/main/java/task_manager/task_manager_cli/command_parser/ListTasksCommandParser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cli/src/main/java/task_manager/ui/cli/command_parser/ModifyTaskCommandParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/task-manager-cli/src/main/java/task_manager/task_manager_cli/command_parser/ModifyTaskCommandParser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cli/src/main/java/task_manager/ui/cli/command_parser/ParseUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/task-manager-cli/src/main/java/task_manager/task_manager_cli/command_parser/ParseUtil.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cli/src/main/java/task_manager/ui/cli/tokenizer/MismatchedQuotesException.java" beforeDir="false" afterPath="$PROJECT_DIR$/cli-lib/src/main/java/task_manager/cli_lib/tokenizer/MismatchedQuotesException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cli/src/main/java/task_manager/ui/cli/tokenizer/TokenList.java" beforeDir="false" afterPath="$PROJECT_DIR$/cli-lib/src/main/java/task_manager/cli_lib/tokenizer/TokenList.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cli/src/main/java/task_manager/ui/cli/tokenizer/Tokenizer.java" beforeDir="false" afterPath="$PROJECT_DIR$/cli-lib/src/main/java/task_manager/cli_lib/tokenizer/Tokenizer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cli/src/main/java/task_manager/ui/cli/tokenizer/TokenizerImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/cli-lib/src/main/java/task_manager/cli_lib/tokenizer/TokenizerImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cli/src/main/resources/log4j2.properties" beforeDir="false" afterPath="$PROJECT_DIR$/music-cli/src/main/resources/log4j2.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cli/src/test/java/task_manager/ui/cli/TestModule.java" beforeDir="false" afterPath="$PROJECT_DIR$/music-cli/src/test/java/task_manager/music_cli/TestModule.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cli/src/test/java/task_manager/ui/cli/UtilTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/music-cli/src/test/java/task_manager/music_cli/UtilTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cli/src/test/java/task_manager/ui/cli/argument/ArgumentListTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/cli-lib/src/test/java/task_manager/cli_lib/argument/ArgumentListTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cli/src/test/java/task_manager/ui/cli/argument/SpecialArgumentTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/cli-lib/src/test/java/task_manager/cli_lib/argument/SpecialArgumentTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cli/src/test/java/task_manager/ui/cli/command/string_to_property_converter/StringToPropertyConverterTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/music-cli/src/test/java/task_manager/music_cli/command/string_to_property_converter/StringToPropertyConverterTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cli/src/test/java/task_manager/ui/cli/command_parser/AddTaskCommandParserTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/task-manager-cli/src/test/java/task_manager/task_manager_cli/command_parser/AddTaskCommandParserTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cli/src/test/java/task_manager/ui/cli/command_parser/ClearCommandParserTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/music-cli/src/test/java/task_manager/music_cli/command_parser/ClearCommandParserTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cli/src/test/java/task_manager/ui/cli/command_parser/CommandParserFactoryImplTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/task-manager-cli/src/test/java/task_manager/task_manager_cli/command_parser/CommandParserFactoryImplTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cli/src/test/java/task_manager/ui/cli/command_parser/DeleteTaskCommandParserTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/task-manager-cli/src/test/java/task_manager/task_manager_cli/command_parser/DeleteTaskCommandParserTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cli/src/test/java/task_manager/ui/cli/command_parser/DoneTaskCommandParserTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/task-manager-cli/src/test/java/task_manager/task_manager_cli/command_parser/DoneTaskCommandParserTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cli/src/test/java/task_manager/ui/cli/command_parser/ListTasksCommandParserTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/task-manager-cli/src/test/java/task_manager/task_manager_cli/command_parser/ListTasksCommandParserTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cli/src/test/java/task_manager/ui/cli/command_parser/ModifyTaskCommandParserTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/task-manager-cli/src/test/java/task_manager/task_manager_cli/command_parser/ModifyTaskCommandParserTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cli/src/test/java/task_manager/ui/cli/tokenizer/TokenizerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/cli-lib/src/test/java/task_manager/cli_lib/tokenizer/TokenizerTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/core/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/task_manager/core/data/FilterCriterionInfo.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/task_manager/core/data/FilterCriterionInfo.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/task_manager/core/data/Label.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/task_manager/core/data/Label.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/task_manager/core/data/OrderedLabel.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/task_manager/core/data/OrderedLabel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/task_manager/core/data/Predicate.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/task_manager/core/data/Predicate.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/task_manager/core/data/SortingCriterion.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/task_manager/core/data/SortingCriterion.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/task_manager/core/data/SortingInfo.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/task_manager/core/data/SortingInfo.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/task_manager/core/data/Task.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/task_manager/core/data/Task.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/task_manager/core/data/ViewInfo.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/task_manager/core/data/ViewInfo.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/task_manager/core/property/Affinity.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/task_manager/core/property/Affinity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/task_manager/core/property/FilterPropertySpec.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/task_manager/core/property/FilterPropertySpec.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/task_manager/core/property/ModifyPropertySpec.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/task_manager/core/property/ModifyPropertySpec.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/task_manager/core/repository/ConfigurationRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/task_manager/core/repository/ConfigurationRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/task_manager/core/repository/LabelRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/task_manager/core/repository/LabelRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/task_manager/core/repository/LabelRepositoryFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/task_manager/core/repository/LabelRepositoryFactory.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/task_manager/core/repository/OrderedLabelRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/task_manager/core/repository/OrderedLabelRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/task_manager/core/repository/OrderedLabelRepositoryFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/task_manager/core/repository/OrderedLabelRepositoryFactory.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/task_manager/core/repository/PropertyDescriptorRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/task_manager/core/repository/PropertyDescriptorRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/task_manager/core/repository/StateRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/task_manager/core/repository/StateRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/task_manager/core/repository/TaskRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/task_manager/core/repository/TaskRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/task_manager/core/repository/TempIDMappingRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/task_manager/core/repository/TempIDMappingRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/task_manager/core/repository/ViewInfoRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/task_manager/core/repository/ViewInfoRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/test/java/task_manager/core/TestModule.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/test/java/task_manager/core/TestModule.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/test/java/task_manager/core/data/TaskTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/test/java/task_manager/core/data/TaskTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/db/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db/src/main/java/task_manager/repository/ConfigurationRepositoryImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/db/src/main/java/task_manager/repository/ConfigurationRepositoryImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db/src/main/java/task_manager/repository/JsonRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/db/src/main/java/task_manager/repository/JsonRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db/src/main/java/task_manager/repository/JsonStateRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/db/src/main/java/task_manager/repository/JsonStateRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db/src/main/java/task_manager/repository/MapDeserializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/db/src/main/java/task_manager/repository/MapDeserializer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db/src/main/java/task_manager/repository/MapSerializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/db/src/main/java/task_manager/repository/MapSerializer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db/src/main/java/task_manager/repository/ObjectDeserializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/db/src/main/java/task_manager/repository/ObjectDeserializer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db/src/main/java/task_manager/repository/ObjectSerializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/db/src/main/java/task_manager/repository/ObjectSerializer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db/src/main/java/task_manager/repository/SimpleJsonRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/db/src/main/java/task_manager/repository/SimpleJsonRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db/src/main/java/task_manager/repository/label/JsonLabelRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/db/src/main/java/task_manager/repository/label/JsonLabelRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db/src/main/java/task_manager/repository/label/JsonLabelRepositoryFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/db/src/main/java/task_manager/repository/label/JsonLabelRepositoryFactory.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db/src/main/java/task_manager/repository/label/LabelMixIn.java" beforeDir="false" afterPath="$PROJECT_DIR$/db/src/main/java/task_manager/repository/label/LabelMixIn.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db/src/main/java/task_manager/repository/ordered_label/JsonOrderedLabelRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/db/src/main/java/task_manager/repository/ordered_label/JsonOrderedLabelRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db/src/main/java/task_manager/repository/ordered_label/JsonOrderedLabelRepositoryFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/db/src/main/java/task_manager/repository/ordered_label/JsonOrderedLabelRepositoryFactory.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db/src/main/java/task_manager/repository/ordered_label/OrderedLabelMixIn.java" beforeDir="false" afterPath="$PROJECT_DIR$/db/src/main/java/task_manager/repository/ordered_label/OrderedLabelMixIn.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db/src/main/java/task_manager/repository/property_descriptor/ExtraMixIn.java" beforeDir="false" afterPath="$PROJECT_DIR$/db/src/main/java/task_manager/repository/property_descriptor/ExtraMixIn.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db/src/main/java/task_manager/repository/property_descriptor/JsonPropertyDescriptorRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/db/src/main/java/task_manager/repository/property_descriptor/JsonPropertyDescriptorRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db/src/main/java/task_manager/repository/property_descriptor/PropertyDescriptorMixIn.java" beforeDir="false" afterPath="$PROJECT_DIR$/db/src/main/java/task_manager/repository/property_descriptor/PropertyDescriptorMixIn.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db/src/main/java/task_manager/repository/task/JsonTaskRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/db/src/main/java/task_manager/repository/task/JsonTaskRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db/src/main/java/task_manager/repository/task/TaskMixIn.java" beforeDir="false" afterPath="$PROJECT_DIR$/db/src/main/java/task_manager/repository/task/TaskMixIn.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db/src/main/java/task_manager/repository/temp_id_mapping/JsonTempIDMappingRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/db/src/main/java/task_manager/repository/temp_id_mapping/JsonTempIDMappingRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db/src/main/java/task_manager/repository/temp_id_mapping/TempIDMappings.java" beforeDir="false" afterPath="$PROJECT_DIR$/db/src/main/java/task_manager/repository/temp_id_mapping/TempIDMappings.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db/src/main/java/task_manager/repository/view/FilterCriterionInfoDeserializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/db/src/main/java/task_manager/repository/view/FilterCriterionInfoDeserializer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db/src/main/java/task_manager/repository/view/FilterCriterionInfoMixIn.java" beforeDir="false" afterPath="$PROJECT_DIR$/db/src/main/java/task_manager/repository/view/FilterCriterionInfoMixIn.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db/src/main/java/task_manager/repository/view/JsonViewInfoRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/db/src/main/java/task_manager/repository/view/JsonViewInfoRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db/src/main/java/task_manager/repository/view/SortingCriterionMixIn.java" beforeDir="false" afterPath="$PROJECT_DIR$/db/src/main/java/task_manager/repository/view/SortingCriterionMixIn.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db/src/main/java/task_manager/repository/view/SortingInfoMixIn.java" beforeDir="false" afterPath="$PROJECT_DIR$/db/src/main/java/task_manager/repository/view/SortingInfoMixIn.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db/src/main/java/task_manager/repository/view/ViewInfoMixIn.java" beforeDir="false" afterPath="$PROJECT_DIR$/db/src/main/java/task_manager/repository/view/ViewInfoMixIn.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db/src/test/java/task_manager/repository/JsonRepositoryTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/db/src/test/java/task_manager/repository/JsonRepositoryTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db/src/test/java/task_manager/repository/MapDeserializerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/db/src/test/java/task_manager/repository/MapDeserializerTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db/src/test/java/task_manager/repository/MapSerializerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/db/src/test/java/task_manager/repository/MapSerializerTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db/src/test/java/task_manager/repository/ObjectDeserializerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/db/src/test/java/task_manager/repository/ObjectDeserializerTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db/src/test/java/task_manager/repository/ObjectSerializerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/db/src/test/java/task_manager/repository/ObjectSerializerTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db/src/test/java/task_manager/repository/SimpleJsonRepositoryImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/db/src/test/java/task_manager/repository/SimpleJsonRepositoryImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db/src/test/java/task_manager/repository/label/JsonLabelRepositoryTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/db/src/test/java/task_manager/repository/label/JsonLabelRepositoryTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db/src/test/java/task_manager/repository/ordered_label/JsonOrderedLabelRepositoryTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/db/src/test/java/task_manager/repository/ordered_label/JsonOrderedLabelRepositoryTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db/src/test/java/task_manager/repository/property_descriptor/JsonPropertyDescriptorRepositoryTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/db/src/test/java/task_manager/repository/property_descriptor/JsonPropertyDescriptorRepositoryTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db/src/test/java/task_manager/repository/task/JsonTaskRepositoryTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/db/src/test/java/task_manager/repository/task/JsonTaskRepositoryTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db/src/test/java/task_manager/repository/temp_id_mapping/JsonTempIdMappingRepositoryTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/db/src/test/java/task_manager/repository/temp_id_mapping/JsonTempIdMappingRepositoryTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db/src/test/java/task_manager/repository/util/JsonRepositoryCreator.java" beforeDir="false" afterPath="$PROJECT_DIR$/db/src/test/java/task_manager/repository/util/JsonRepositoryCreator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db/src/test/java/task_manager/repository/view/JsonViewInfoRepositoryTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/db/src/test/java/task_manager/repository/view/JsonViewInfoRepositoryTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gradle/wrapper/gradle-wrapper.jar" beforeDir="false" afterPath="$PROJECT_DIR$/gradle/wrapper/gradle-wrapper.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gradle/wrapper/gradle-wrapper.properties" beforeDir="false" afterPath="$PROJECT_DIR$/gradle/wrapper/gradle-wrapper.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gradlew" beforeDir="false" afterPath="$PROJECT_DIR$/gradlew" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gradlew.bat" beforeDir="false" afterPath="$PROJECT_DIR$/gradlew.bat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/init/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/init/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/init/src/main/java/task_manager/init/Initializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/init/src/main/java/task_manager/init/Initializer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/logic/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/logic/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/logic/src/main/antlr/task_manager/filter/grammar/Query.g4" beforeDir="false" afterPath="$PROJECT_DIR$/logic/src/main/antlr/task_manager/logic/filter/grammar/Query.g4" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/logic/src/main/antlr/task_manager/filter/grammar/test.txt" beforeDir="false" afterPath="$PROJECT_DIR$/logic/src/main/antlr/task_manager/logic/filter/grammar/test.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/logic/src/main/java/task_manager/logic/PropertyComparator.java" beforeDir="false" afterPath="$PROJECT_DIR$/logic/src/main/java/task_manager/logic/PropertyComparator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/logic/src/main/java/task_manager/logic/PropertyNotComparableException.java" beforeDir="false" afterPath="$PROJECT_DIR$/logic/src/main/java/task_manager/logic/PropertyNotComparableException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/logic/src/main/java/task_manager/logic/filter/AndFilterCriterion.java" beforeDir="false" afterPath="$PROJECT_DIR$/logic/src/main/java/task_manager/logic/filter/AndFilterCriterion.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/logic/src/main/java/task_manager/logic/filter/CollectionContainsFilterCriterion.java" beforeDir="false" afterPath="$PROJECT_DIR$/logic/src/main/java/task_manager/logic/filter/CollectionContainsFilterCriterion.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/logic/src/main/java/task_manager/logic/filter/ContainsCaseInsensitiveFilterCriterion.java" beforeDir="false" afterPath="$PROJECT_DIR$/logic/src/main/java/task_manager/logic/filter/ContainsCaseInsensitiveFilterCriterion.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/logic/src/main/java/task_manager/logic/filter/EqualFilterCriterion.java" beforeDir="false" afterPath="$PROJECT_DIR$/logic/src/main/java/task_manager/logic/filter/EqualFilterCriterion.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/logic/src/main/java/task_manager/logic/filter/Filter.java" beforeDir="false" afterPath="$PROJECT_DIR$/logic/src/main/java/task_manager/logic/filter/Filter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/logic/src/main/java/task_manager/logic/filter/FilterCriterion.java" beforeDir="false" afterPath="$PROJECT_DIR$/logic/src/main/java/task_manager/logic/filter/FilterCriterion.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/logic/src/main/java/task_manager/logic/filter/FilterCriterionException.java" beforeDir="false" afterPath="$PROJECT_DIR$/logic/src/main/java/task_manager/logic/filter/FilterCriterionException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/logic/src/main/java/task_manager/logic/filter/GreaterEqualFilterCriterion.java" beforeDir="false" afterPath="$PROJECT_DIR$/logic/src/main/java/task_manager/logic/filter/GreaterEqualFilterCriterion.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/logic/src/main/java/task_manager/logic/filter/GreaterFilterCriterion.java" beforeDir="false" afterPath="$PROJECT_DIR$/logic/src/main/java/task_manager/logic/filter/GreaterFilterCriterion.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/logic/src/main/java/task_manager/logic/filter/LessEqualFilterCriterion.java" beforeDir="false" afterPath="$PROJECT_DIR$/logic/src/main/java/task_manager/logic/filter/LessEqualFilterCriterion.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/logic/src/main/java/task_manager/logic/filter/LessFilterCriterion.java" beforeDir="false" afterPath="$PROJECT_DIR$/logic/src/main/java/task_manager/logic/filter/LessFilterCriterion.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/logic/src/main/java/task_manager/logic/filter/NotFilterCriterion.java" beforeDir="false" afterPath="$PROJECT_DIR$/logic/src/main/java/task_manager/logic/filter/NotFilterCriterion.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/logic/src/main/java/task_manager/logic/filter/OrFilterCriterion.java" beforeDir="false" afterPath="$PROJECT_DIR$/logic/src/main/java/task_manager/logic/filter/OrFilterCriterion.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/logic/src/main/java/task_manager/logic/filter/PropertyFilterCriterion.java" beforeDir="false" afterPath="$PROJECT_DIR$/logic/src/main/java/task_manager/logic/filter/PropertyFilterCriterion.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/logic/src/main/java/task_manager/logic/filter/SimpleFilter.java" beforeDir="false" afterPath="$PROJECT_DIR$/logic/src/main/java/task_manager/logic/filter/SimpleFilter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/logic/src/main/java/task_manager/logic/filter/grammar/FilterBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/logic/src/main/java/task_manager/logic/filter/grammar/FilterBuilder.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/logic/src/main/java/task_manager/logic/pseudo_property_provider/TaskIDPseudoPropertyProvider.java" beforeDir="false" afterPath="$PROJECT_DIR$/music-logic/src/main/java/task_manager/music-logic/pseudo_property_provider/TaskIDPseudoPropertyProvider.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/logic/src/main/java/task_manager/logic/sorter/PropertySorter.java" beforeDir="false" afterPath="$PROJECT_DIR$/logic/src/main/java/task_manager/logic/sorter/PropertySorter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/logic/src/main/java/task_manager/logic/use_case/TaskManagerClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/music-logic/src/main/java/task_manager/music-logic/use_case/TaskManagerClient.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/logic/src/main/java/task_manager/logic/use_case/label/LabelUseCase.java" beforeDir="false" afterPath="$PROJECT_DIR$/music-logic/src/main/java/task_manager/music-logic/use_case/label/LabelUseCase.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/logic/src/main/java/task_manager/logic/use_case/label/LabelUseCaseImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/music-logic/src/main/java/task_manager/music-logic/use_case/label/LabelUseCaseImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/logic/src/main/java/task_manager/logic/use_case/ordered_label/OrderedLabelUseCase.java" beforeDir="false" afterPath="$PROJECT_DIR$/music-logic/src/main/java/task_manager/music-logic/use_case/ordered_label/OrderedLabelUseCase.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/logic/src/main/java/task_manager/logic/use_case/ordered_label/OrderedLabelUseCaseImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/music-logic/src/main/java/task_manager/music-logic/use_case/ordered_label/OrderedLabelUseCaseImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/logic/src/main/java/task_manager/logic/use_case/property_descriptor/PropertyDescriptorUseCase.java" beforeDir="false" afterPath="$PROJECT_DIR$/music-logic/src/main/java/task_manager/music-logic/use_case/property_descriptor/PropertyDescriptorUseCase.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/logic/src/main/java/task_manager/logic/use_case/property_descriptor/PropertyDescriptorUseCaseImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/music-logic/src/main/java/task_manager/music-logic/use_case/property_descriptor/PropertyDescriptorUseCaseImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/logic/src/main/java/task_manager/logic/use_case/task/PropertyConverter.java" beforeDir="false" afterPath="$PROJECT_DIR$/music-logic/src/main/java/task_manager/music-logic/use_case/task/PropertyConverter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/logic/src/main/java/task_manager/logic/use_case/task/PropertyConverterException.java" beforeDir="false" afterPath="$PROJECT_DIR$/music-logic/src/main/java/task_manager/music-logic/use_case/task/PropertyConverterException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/logic/src/main/java/task_manager/logic/use_case/task/TaskUseCase.java" beforeDir="false" afterPath="$PROJECT_DIR$/music-logic/src/main/java/task_manager/music-logic/use_case/task/TaskUseCase.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/logic/src/main/java/task_manager/logic/use_case/task/TaskUseCaseException.java" beforeDir="false" afterPath="$PROJECT_DIR$/music-logic/src/main/java/task_manager/music-logic/use_case/task/TaskUseCaseException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/logic/src/main/java/task_manager/logic/use_case/task/TaskUseCaseImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/music-logic/src/main/java/task_manager/music-logic/use_case/task/TaskUseCaseImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/logic/src/main/java/task_manager/logic/use_case/temp_id_mapping/TempIDMappingUseCase.java" beforeDir="false" afterPath="$PROJECT_DIR$/music-logic/src/main/java/task_manager/music-logic/use_case/temp_id_mapping/TempIDMappingUseCase.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/logic/src/main/java/task_manager/logic/use_case/temp_id_mapping/TempIDMappingUseCaseImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/music-logic/src/main/java/task_manager/music-logic/use_case/temp_id_mapping/TempIDMappingUseCaseImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/logic/src/main/java/task_manager/logic/use_case/view/ViewInfoUseCase.java" beforeDir="false" afterPath="$PROJECT_DIR$/music-logic/src/main/java/task_manager/music-logic/use_case/view/ViewInfoUseCase.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/logic/src/main/java/task_manager/logic/use_case/view/ViewInfoUseCaseImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/music-logic/src/main/java/task_manager/music-logic/use_case/view/ViewInfoUseCaseImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/logic/src/test/java/task_manager/PropertyComparatorTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/music-logic/src/test/java/task_manager/PropertyComparatorTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/logic/src/test/java/task_manager/PropertyOwnerImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/music-logic/src/test/java/task_manager/PropertyOwnerImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/logic/src/test/java/task_manager/filter/AndFilterCriterionTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/logic/src/test/java/task_manager/logic/filter/AndFilterCriterionTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/logic/src/test/java/task_manager/filter/CollectionContainsFilterCriterionTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/logic/src/test/java/task_manager/logic/filter/CollectionContainsFilterCriterionTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/logic/src/test/java/task_manager/filter/ContainsCaseInsensitiveFilterCriterionTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/logic/src/test/java/task_manager/logic/filter/ContainsCaseInsensitiveFilterCriterionTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/logic/src/test/java/task_manager/filter/EqualFilterCriterionTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/logic/src/test/java/task_manager/logic/filter/EqualFilterCriterionTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/logic/src/test/java/task_manager/filter/GreaterEqualFilterCriterionTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/logic/src/test/java/task_manager/logic/filter/GreaterEqualFilterCriterionTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/logic/src/test/java/task_manager/filter/GreaterFilterCriterionTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/logic/src/test/java/task_manager/logic/filter/GreaterFilterCriterionTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/logic/src/test/java/task_manager/filter/LessEqualFilterCriterionTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/logic/src/test/java/task_manager/logic/filter/LessEqualFilterCriterionTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/logic/src/test/java/task_manager/filter/LessFilterCriterionTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/logic/src/test/java/task_manager/logic/filter/LessFilterCriterionTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/logic/src/test/java/task_manager/filter/NotFilterCriterionTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/logic/src/test/java/task_manager/logic/filter/NotFilterCriterionTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/logic/src/test/java/task_manager/filter/OrFilterCriterionTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/logic/src/test/java/task_manager/logic/filter/OrFilterCriterionTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/logic/src/test/java/task_manager/sorter/PropertySorterTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/logic/src/test/java/task_manager/logic/sorter/PropertySorterTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/logic/src/test/java/task_manager/use_case/task/PropertyConverterTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/music-logic/src/test/java/task_manager/use_case/task/PropertyConverterTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/property-lib/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/property-lib/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/property-lib/src/main/java/task_manager/property_lib/Property.java" beforeDir="false" afterPath="$PROJECT_DIR$/property-lib/src/main/java/task_manager/property_lib/Property.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/property-lib/src/main/java/task_manager/property_lib/PropertyDescriptor.java" beforeDir="false" afterPath="$PROJECT_DIR$/property-lib/src/main/java/task_manager/property_lib/PropertyDescriptor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/property-lib/src/main/java/task_manager/property_lib/PropertyDescriptorCollection.java" beforeDir="false" afterPath="$PROJECT_DIR$/property-lib/src/main/java/task_manager/property_lib/PropertyDescriptorCollection.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/property-lib/src/main/java/task_manager/property_lib/PropertyException.java" beforeDir="false" afterPath="$PROJECT_DIR$/property-lib/src/main/java/task_manager/property_lib/PropertyException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/property-lib/src/main/java/task_manager/property_lib/PropertyManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/property-lib/src/main/java/task_manager/property_lib/PropertyManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/property-lib/src/main/java/task_manager/property_lib/PropertyOwner.java" beforeDir="false" afterPath="$PROJECT_DIR$/property-lib/src/main/java/task_manager/property_lib/PropertyOwner.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/property-lib/src/main/java/task_manager/property_lib/PseudoPropertyManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/property-lib/src/main/java/task_manager/property_lib/PseudoPropertyManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/property-lib/src/main/java/task_manager/property_lib/PseudoPropertyProvider.java" beforeDir="false" afterPath="$PROJECT_DIR$/property-lib/src/main/java/task_manager/property_lib/PseudoPropertyProvider.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/property-lib/src/test/java/task_manager/property_lib/PropertyManagerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/property-lib/src/test/java/task_manager/cli_lib/PropertyManagerTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/property-lib/src/test/java/task_manager/property_lib/PropertyOwnerImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/property-lib/src/test/java/task_manager/cli_lib/PropertyOwnerImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/property-lib/src/test/java/task_manager/property_lib/PropertyTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/property-lib/src/test/java/task_manager/cli_lib/PropertyTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/property-lib/src/test/java/task_manager/property_lib/TestModule.java" beforeDir="false" afterPath="$PROJECT_DIR$/property-lib/src/test/java/task_manager/cli_lib/TestModule.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/server/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/helm/task-manager-server/Chart.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/server/helm/task-manager-server/Chart.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/helm/task-manager-server/templates/mongodb-deployment.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/server/helm/task-manager-server/templates/mongodb-deployment.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/helm/task-manager-server/templates/mongodb-service.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/server/helm/task-manager-server/templates/mongodb-service.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/helm/task-manager-server/templates/task-manager-server-deployment.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/server/helm/task-manager-server/templates/task-manager-server-deployment.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/helm/task-manager-server/templates/task-manager-server-service.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/server/helm/task-manager-server/templates/task-manager-server-service.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/helm/task-manager-server/templates/test-deployment.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/server/helm/task-manager-server/templates/test-deployment.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/src/main/java/task_manager/server/Application.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/task_manager/server/Application.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/src/main/java/task_manager/server/InitRunner.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/task_manager/server/InitRunner.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/src/main/java/task_manager/server/ProblemDetails.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/task_manager/server/ProblemDetails.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/src/main/java/task_manager/server/controller/TagController.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/task_manager/server/controller/TagController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/src/main/java/task_manager/server/controller/TaskController.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/task_manager/server/controller/TaskController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/src/main/java/task_manager/server/repository/MongoLabelRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/task_manager/server/repository/MongoLabelRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/src/main/java/task_manager/server/repository/MongoLabelRepositoryFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/task_manager/server/repository/MongoLabelRepositoryFactory.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/src/main/java/task_manager/server/repository/MongoPropertyDescriptorRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/task_manager/server/repository/MongoPropertyDescriptorRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/src/main/java/task_manager/server/repository/MongoTaskRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/task_manager/server/repository/MongoTaskRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/src/main/resources/application copy.properties" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/resources/application copy.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/settings.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/settings.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/util/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/util/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/util/src/main/java/task_manager/util/RandomUUIDGenerator.java" beforeDir="false" afterPath="$PROJECT_DIR$/util/src/main/java/task_manager/util/RandomUUIDGenerator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/util/src/main/java/task_manager/util/RoundRobinUUIDGenerator.java" beforeDir="false" afterPath="$PROJECT_DIR$/util/src/main/java/task_manager/util/RoundRobinUUIDGenerator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/util/src/main/java/task_manager/util/UUIDGenerator.java" beforeDir="false" afterPath="$PROJECT_DIR$/util/src/main/java/task_manager/util/UUIDGenerator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/util/src/main/java/task_manager/util/Utils.java" beforeDir="false" afterPath="$PROJECT_DIR$/util/src/main/java/task_manager/util/Utils.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -45,6 +358,11 @@
                 <item name="Tasks" type="e4a08cd1:TasksNode" />
                 <item name="build" type="c8890929:TasksNode$1" />
               </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="task_manager" type="f1a62948:ProjectNode" />
+                <item name="Run Configurations" type="7b0102dc:RunConfigurationsNode" />
+              </path>
             </expand>
             <select />
           </tree_state>
@@ -78,10 +396,12 @@
   "keyToString": {
     "Application.CLI.executor": "Run",
     "Gradle.Build task-manager.executor": "Run",
+    "Gradle.task-manager [build].executor": "Run",
     "Gradle.task-manager [clean].executor": "Run",
     "Gradle.task-manager [test].executor": "Run",
     "Gradle.task-manager:cli [:cli:TaskManagerCLI.main()].executor": "Run",
     "Gradle.task-manager:cli [jar].executor": "Run",
+    "Gradle.task-manager:task-manager-cli [:task-manager-cli:TaskManagerCLI.main()].executor": "Run",
     "JAR Application.cli.jar.executor": "Run",
     "RequestMappingsPanelOrder0": "0",
     "RequestMappingsPanelOrder1": "1",
@@ -94,13 +414,13 @@
     "git-widget-placeholder": "state__repository",
     "ignore.virus.scanning.warn.message": "true",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "/mnt/windows/Users/botag/projects/task-manager",
+    "last_opened_file_path": "C:/Users/botag/projects/task-manager/logic/src/main",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
-    "project.structure.last.edited": "Project",
+    "project.structure.last.edited": "Modules",
     "project.structure.proportion": "0.15",
     "project.structure.side.proportion": "0.0",
     "run.code.analysis.last.selected.profile": "pProject Default",
@@ -110,24 +430,29 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\botag\projects\task-manager\logic\src\main" />
       <recent name="C:\Users\botag\projects\task-manager" />
+      <recent name="C:\Users\botag\projects\task-manager\cli-lib" />
+      <recent name="C:\Users\botag\projects\task-manager\cli-lib\src\main\java\task_manager\cli_lib" />
       <recent name="$PROJECT_DIR$" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\botag\projects\task-manager\logic\src\main\antlr\task_manager\logic" />
+      <recent name="C:\Users\botag\projects\task-manager\logic\src\main\java\task_manager\logic" />
       <recent name="$PROJECT_DIR$/property-lib/src/test/java/task_manager" />
       <recent name="$PROJECT_DIR$/property-lib/src/main/java/task_manager" />
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="task_manager.cli_lib" />
       <recent name="task_manager.property_lib" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.CLI">
+  <component name="RunManager" selected="Application.TaskManagerCLI">
     <configuration name="CLI" type="Application" factoryName="Application">
-      <option name="MAIN_CLASS_NAME" value="task_manager.ui.cli.TaskManagerCLI" />
-      <module name="task_manager.cli.main" />
+      <option name="MAIN_CLASS_NAME" value="task_manager.ui.task_manager_cli.TaskManagerCLI" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="task_manager.ui.cli.*" />
+          <option name="PATTERN" value="task_manager.ui.task_manager_cli.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -135,31 +460,20 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="CollectionContainsFilterCriterionTest" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
-      <ExternalSystemSettings>
-        <option name="executionName" />
-        <option name="externalProjectPath" value="$PROJECT_DIR$" />
-        <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" value="" />
-        <option name="taskDescriptions">
-          <list />
-        </option>
-        <option name="taskNames">
-          <list>
-            <option value=":logic:test" />
-            <option value="--tests" />
-            <option value="&quot;task_manager.filter.CollectionContainsFilterCriterionTest&quot;" />
-          </list>
-        </option>
-        <option name="vmOptions" />
-      </ExternalSystemSettings>
-      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
-      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
-      <DebugAllEnabled>false</DebugAllEnabled>
-      <RunAsTest>true</RunAsTest>
-      <method v="2" />
+    <configuration name="TaskManagerCLI" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="task_manager.task_manager_cli.TaskManagerCLI" />
+      <module name="task_manager.task-manager-cli.main" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="task_manager.task_manager_cli.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
     </configuration>
-    <configuration name="task-manager [assemble]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+    <configuration name="task-manager [build]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
@@ -170,7 +484,7 @@
         </option>
         <option name="taskNames">
           <list>
-            <option value="assemble" />
+            <option value="build" />
           </list>
         </option>
         <option name="vmOptions" />
@@ -260,27 +574,27 @@
     </configuration>
     <list>
       <item itemvalue="Application.CLI" />
+      <item itemvalue="Application.TaskManagerCLI" />
       <item itemvalue="Gradle.task-manager [test]" />
+      <item itemvalue="Gradle.task-manager [build]" />
       <item itemvalue="Gradle.task-manager [clean]" />
-      <item itemvalue="Gradle.CollectionContainsFilterCriterionTest" />
-      <item itemvalue="Gradle.task-manager [assemble]" />
       <item itemvalue="Gradle.task-manager:cli [jar]" />
       <item itemvalue="JAR Application.cli.jar" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Gradle.task-manager [clean]" />
+        <item itemvalue="Application.TaskManagerCLI" />
+        <item itemvalue="Gradle.task-manager [build]" />
         <item itemvalue="JAR Application.cli.jar" />
         <item itemvalue="Gradle.task-manager:cli [jar]" />
-        <item itemvalue="Gradle.task-manager [clean]" />
-        <item itemvalue="Gradle.CollectionContainsFilterCriterionTest" />
-        <item itemvalue="Gradle.task-manager [assemble]" />
       </list>
     </recent_temporary>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="jdk-17.0.9-corretto-17.0.9-249ae16d76d6-7c0527ad" />
+        <option value="jdk-17.0.9-corretto-17.0.9-249ae16d76d6-98297cd8" />
       </set>
     </attachedChunks>
   </component>
@@ -303,16 +617,27 @@
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/logic/src/main/java/task_manager/logic/use_case/task/TaskUseCaseImpl.java</url>
+          <url>file://$PROJECT_DIR$/task-logic/src/main/java/task_manager/task_logic/use_case/task/TaskUseCaseImpl.java</url>
           <line>239</line>
           <option name="timeStamp" value="1" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/cli/src/main/java/task_manager/ui/cli/command/ListTasksCommand.java</url>
+          <url>file://$PROJECT_DIR$/music-cli/src/main/java/task_manager/music_cli/command/ListSongsCommand.java</url>
           <line>65</line>
           <option name="timeStamp" value="4" />
         </line-breakpoint>

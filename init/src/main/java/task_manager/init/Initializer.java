@@ -3,9 +3,9 @@ package task_manager.init;
 import jakarta.inject.Inject;
 import lombok.AllArgsConstructor;
 import task_manager.core.data.Label;
-import task_manager.logic.use_case.label.LabelUseCase;
-import task_manager.logic.use_case.ordered_label.OrderedLabelUseCase;
-import task_manager.logic.use_case.property_descriptor.PropertyDescriptorUseCase;
+import task_manager.task_logic.use_case.label.LabelUseCase;
+import task_manager.task_logic.use_case.ordered_label.OrderedLabelUseCase;
+import task_manager.task_logic.use_case.property_descriptor.PropertyDescriptorUseCase;
 import task_manager.property_lib.PropertyDescriptor;
 
 import java.io.IOException;

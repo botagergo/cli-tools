@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import task_manager.logic.use_case.label.LabelUseCase;
+import task_manager.task_logic.use_case.label.LabelUseCase;
 import task_manager.server.ProblemDetails;
 
 @RestController

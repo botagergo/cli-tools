@@ -1,9 +1,6 @@
 package task_manager.util;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
+import java.util.*;
 
 public class Utils {
 
@@ -134,6 +131,15 @@ public class Utils {
         ret.add(value9);
         ret.add(value10);
         return ret;
+    }
+
+    public static boolean yesNo(String prompt) {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.print(prompt + " (y/n)");
+        String answer = scanner.nextLine();
+
+        return answer.equalsIgnoreCase("y");
     }
 
 }

@@ -8,9 +8,9 @@ core/bin/
 db/bin/
 logic/bin/
 server/bin/
-cli/bin/
+music-cli/bin/
 core/build/
 db/build/
 logic/build/
 server/build/
-cli/build/
+music-cli/build/

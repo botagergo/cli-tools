@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Objects;
 
 //@AllArgsConstructor(onConstructor = @__(@JsonCreator))
+@Setter
 @Getter
 @JsonSerialize
 @JsonDeserialize
@@ -61,7 +62,7 @@ public class PropertySorter <T extends PropertyOwner> {
         return sortedPropertyOwners;
     }
 
-    @Setter private List<SortingCriterion> sortingCriteria;
+    private List<SortingCriterion> sortingCriteria;
 
     private static class ListIndexComparator implements Comparator<Integer> {
 
