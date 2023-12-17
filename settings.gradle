@@ -7,17 +7,19 @@
  * in the user manual at https://docs.gradle.org/8.0.1/userguide/multi_project_builds.html
  */
 
-rootProject.name = 'task_manager'
+rootProject.name = 'task-manager'
 
-include('util')
-include('core')
-include('db')
-include('logic')
-include('music-logic')
-include('task-logic')
+include('lib:util')
+include('lib:core')
+include('lib:db')
+include('lib:logic')
+include('lib:init')
+include('lib:property-lib')
+include('lib:cli-lib')
+
+include('music-manager:music-logic')
+include('music-manager:music-cli')
+
+include('task-manager:task-logic')
+include('task-manager:task-manager-cli')
 // include('server')
-include('init')
-include('property-lib')
-include('cli-lib')
-include('task-manager-cli')
-include('music-cli')

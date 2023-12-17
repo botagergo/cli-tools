@@ -1,0 +1,11 @@
+plugins {
+	id 'java-library'
+}
+
+dependencies {
+	implementation 'jakarta.inject:jakarta.inject-api:2.0.1'
+
+	implementation project(':lib:core')
+    implementation project(':lib:property-lib')
+	implementation project(':task-manager:task-logic')
+}

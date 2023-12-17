@@ -8,17 +8,20 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
-            <option value="$PROJECT_DIR$/cli-lib" />
-            <option value="$PROJECT_DIR$/core" />
-            <option value="$PROJECT_DIR$/db" />
-            <option value="$PROJECT_DIR$/init" />
-            <option value="$PROJECT_DIR$/logic" />
-            <option value="$PROJECT_DIR$/music-cli" />
-            <option value="$PROJECT_DIR$/music-logic" />
-            <option value="$PROJECT_DIR$/property-lib" />
-            <option value="$PROJECT_DIR$/task-logic" />
-            <option value="$PROJECT_DIR$/task-manager-cli" />
-            <option value="$PROJECT_DIR$/util" />
+            <option value="$PROJECT_DIR$/lib" />
+            <option value="$PROJECT_DIR$/lib/cli-lib" />
+            <option value="$PROJECT_DIR$/lib/core" />
+            <option value="$PROJECT_DIR$/lib/db" />
+            <option value="$PROJECT_DIR$/lib/init" />
+            <option value="$PROJECT_DIR$/lib/logic" />
+            <option value="$PROJECT_DIR$/lib/property-lib" />
+            <option value="$PROJECT_DIR$/lib/util" />
+            <option value="$PROJECT_DIR$/music-manager" />
+            <option value="$PROJECT_DIR$/music-manager/music-cli" />
+            <option value="$PROJECT_DIR$/music-manager/music-logic" />
+            <option value="$PROJECT_DIR$/task-manager" />
+            <option value="$PROJECT_DIR$/task-manager/task-logic" />
+            <option value="$PROJECT_DIR$/task-manager/task-manager-cli" />
           </set>
         </option>
       </GradleProjectSettings>

@@ -1,0 +1,21 @@
+plugins {
+    id 'java-library'
+}
+
+dependencies {
+    implementation          'jakarta.inject:jakarta.inject-api:2.0.1'
+    implementation          'com.fasterxml.jackson.core:jackson-databind:2.14.2'
+    testImplementation      'com.fasterxml.jackson.core:jackson-databind:2.14.2'
+    implementation          'com.google.guava:guava:32.1.1-jre'
+    implementation          'org.cfg4j:cfg4j-core:4.4.1'
+    testImplementation      'org.mockito:mockito-core:5.3.1'
+    compileOnly             'org.projectlombok:lombok:1.18.26'
+    annotationProcessor     'org.projectlombok:lombok:1.18.26'
+    testCompileOnly         'org.projectlombok:lombok:1.18.26'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.26'
+    testImplementation      'org.testng:testng:7.7.0'
+
+    implementation project(':lib:util')
+    implementation project(':lib:property-lib')
+    implementation project(':lib:core')
+}

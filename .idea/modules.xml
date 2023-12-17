@@ -2,15 +2,21 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/cli-lib/task_manager.cli-lib.main.iml" filepath="$PROJECT_DIR$/.idea/modules/cli-lib/task_manager.cli-lib.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/core/task_manager.core.main.iml" filepath="$PROJECT_DIR$/.idea/modules/core/task_manager.core.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/db/task_manager.db.main.iml" filepath="$PROJECT_DIR$/.idea/modules/db/task_manager.db.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/init/task_manager.init.main.iml" filepath="$PROJECT_DIR$/.idea/modules/init/task_manager.init.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/logic/task_manager.logic.main.iml" filepath="$PROJECT_DIR$/.idea/modules/logic/task_manager.logic.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/property-lib/task_manager.property-lib.main.iml" filepath="$PROJECT_DIR$/.idea/modules/property-lib/task_manager.property-lib.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/task-logic/task_manager.task-logic.main.iml" filepath="$PROJECT_DIR$/.idea/modules/task-logic/task_manager.task-logic.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/task-manager-cli/task_manager.task-manager-cli.main.iml" filepath="$PROJECT_DIR$/.idea/modules/task-manager-cli/task_manager.task-manager-cli.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/util/task_manager.util.main.iml" filepath="$PROJECT_DIR$/.idea/modules/util/task_manager.util.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/lib/cli-lib/task-manager.lib.cli-lib.main.iml" filepath="$PROJECT_DIR$/.idea/modules/lib/cli-lib/task-manager.lib.cli-lib.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/lib/cli-lib/task-manager.lib.cli-lib.test.iml" filepath="$PROJECT_DIR$/.idea/modules/lib/cli-lib/task-manager.lib.cli-lib.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/lib/core/task-manager.lib.core.main.iml" filepath="$PROJECT_DIR$/.idea/modules/lib/core/task-manager.lib.core.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/lib/core/task-manager.lib.core.test.iml" filepath="$PROJECT_DIR$/.idea/modules/lib/core/task-manager.lib.core.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/lib/db/task-manager.lib.db.main.iml" filepath="$PROJECT_DIR$/.idea/modules/lib/db/task-manager.lib.db.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/lib/db/task-manager.lib.db.test.iml" filepath="$PROJECT_DIR$/.idea/modules/lib/db/task-manager.lib.db.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/lib/init/task-manager.lib.init.main.iml" filepath="$PROJECT_DIR$/.idea/modules/lib/init/task-manager.lib.init.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/lib/logic/task-manager.lib.logic.main.iml" filepath="$PROJECT_DIR$/.idea/modules/lib/logic/task-manager.lib.logic.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/lib/logic/task-manager.lib.logic.test.iml" filepath="$PROJECT_DIR$/.idea/modules/lib/logic/task-manager.lib.logic.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/lib/property-lib/task-manager.lib.property-lib.main.iml" filepath="$PROJECT_DIR$/.idea/modules/lib/property-lib/task-manager.lib.property-lib.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/lib/property-lib/task-manager.lib.property-lib.test.iml" filepath="$PROJECT_DIR$/.idea/modules/lib/property-lib/task-manager.lib.property-lib.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/lib/util/task-manager.lib.util.main.iml" filepath="$PROJECT_DIR$/.idea/modules/lib/util/task-manager.lib.util.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/music-manager/music-cli/task-manager.music-manager.music-cli.main.iml" filepath="$PROJECT_DIR$/.idea/modules/music-manager/music-cli/task-manager.music-manager.music-cli.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/music-manager/music-logic/task-manager.music-manager.music-logic.main.iml" filepath="$PROJECT_DIR$/.idea/modules/music-manager/music-logic/task-manager.music-manager.music-logic.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/task-manager/task-logic/task-manager.task-manager.task-logic.main.iml" filepath="$PROJECT_DIR$/.idea/modules/task-manager/task-logic/task-manager.task-manager.task-logic.main.iml" />
     </modules>
   </component>
 </project>
