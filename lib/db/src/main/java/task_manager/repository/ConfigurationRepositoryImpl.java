@@ -32,6 +32,12 @@ public class ConfigurationRepositoryImpl implements ConfigurationRepository {
         return getProperty("allowPropertyPrefix", Boolean.class, true);
     }
 
+    public String openAiModel() { return getProperty("openAiModel", String.class, null); }
+
+    public String openAiApiKey() {
+        return getProperty("openAiApiKey", String.class, null);
+    }
+
     private <T> T getProperty(String propertyName, Class<T> type, T defValue) {
         try {
             return configProvider.getProperty(propertyName, type);

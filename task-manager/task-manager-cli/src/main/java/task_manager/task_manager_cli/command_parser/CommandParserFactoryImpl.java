@@ -13,6 +13,7 @@ public class CommandParserFactoryImpl implements CommandParserFactory {
             case "clear" -> new ClearCommandParser();
             case "delete" -> new DeleteTaskCommandParser();
             case "modify" -> new ModifyTaskCommandParser();
+            case "ai" -> new AICommandParser();
             default -> null;
         };
     }
