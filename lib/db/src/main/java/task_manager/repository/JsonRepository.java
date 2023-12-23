@@ -18,10 +18,6 @@ public abstract class JsonRepository<T_Json, T_Stored> {
         this.objectMapper = new ObjectMapper();
     }
 
-    @Getter
-    private final ObjectMapper objectMapper;
-    private T_Stored data = null;
-
     public T_Stored getData() throws IOException {
         if (data == null) {
             data = jsonToStoredData(loadData());
@@ -81,9 +77,13 @@ public abstract class JsonRepository<T_Json, T_Stored> {
         return data;
     }
 
-    private final File jsonFile;
-
     protected abstract T_Stored jsonToStoredData(T_Json data);
 
     protected abstract T_Json storedToJsonData(T_Stored data);
+
+    @Getter
+    private final ObjectMapper objectMapper;
+    private T_Stored data = null;
+    private final File jsonFile;
+
 }

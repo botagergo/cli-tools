@@ -27,14 +27,14 @@ dependencies {
 }
 
 application {
-    mainClass = 'task_manager.ui.task_manager_cli.TaskManagerCLI'
+    mainClass = 'task_manager.task_manager_cli.TaskManagerCLI'
 }
 
 jar {
     duplicatesStrategy(DuplicatesStrategy.EXCLUDE)
 
     manifest {
-        attributes "Main-Class": "task_manager.ui.task_manager_cli.TaskManagerCLI"
+        attributes "Main-Class": "task_manager.task_manager_cli.TaskManagerCLI"
         attributes "Multi-Release": true
     }
 

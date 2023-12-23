@@ -92,6 +92,7 @@ public class JsonTaskRepository extends SimpleJsonRepository<ArrayList<Task>> im
 
     @Override
     public void deleteAll() throws IOException {
+        getData().clear();
         writeData();
     }
 
