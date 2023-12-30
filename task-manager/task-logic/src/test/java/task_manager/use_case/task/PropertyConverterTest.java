@@ -10,7 +10,7 @@ import task_manager.core.repository.LabelRepositoryFactory;
 import task_manager.util.RoundRobinUUIDGenerator;
 import task_manager.util.UUIDGenerator;
 import task_manager.util.Utils;
-import task_manager.task_logic.use_case.property_descriptor.PropertyDescriptorUseCase;
+import task_manager.logic.use_case.property_descriptor.PropertyDescriptorUseCase;
 import task_manager.task_logic.use_case.task.PropertyConverter;
 import task_manager.task_logic.use_case.task.PropertyConverterException;
 import task_manager.property_lib.PropertyDescriptor;

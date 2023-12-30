@@ -1,6 +1,5 @@
 package task_manager.task_manager_cli.command;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 
 import java.util.*;

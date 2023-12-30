@@ -222,8 +222,8 @@ public class JsonPropertyDescriptorRepositoryTest {
                 "name":"other_name",
                 "type":"UUID",
                 "multiplicity":"SET",
-                "extra": {
-                    "@type":"UUIDExtra",
+                "subtype": {
+                    "@type":"PropertyDescriptor$Subtype$LabelSubtype",
                     "labelName":"label1"
                 },
                 "defaultValue":null
@@ -231,7 +231,7 @@ public class JsonPropertyDescriptorRepositoryTest {
         }
         """);
         repository = new JsonPropertyDescriptorRepository(tempFile);
-        assertEquals(repository.get("other_name"), new PropertyDescriptor("other_name", PropertyDescriptor.Type.UUID, new PropertyDescriptor.UUIDExtra("label1"), PropertyDescriptor.Multiplicity.SET, null, false));
+        assertEquals(repository.get("other_name"), new PropertyDescriptor("other_name", PropertyDescriptor.Type.UUID, new PropertyDescriptor.Subtype.LabelSubtype("label1"), PropertyDescriptor.Multiplicity.SET, null, false));
     }
 
     @Test

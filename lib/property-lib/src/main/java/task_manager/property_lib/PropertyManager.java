@@ -2,6 +2,7 @@ package task_manager.property_lib;
 
 import com.google.common.collect.Iterables;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 
 import java.io.IOException;
@@ -71,7 +72,7 @@ public class PropertyManager {
                 newProperty = Collections.unmodifiableSet(Stream.concat(origSet.stream(), propertyValue.stream()).collect(Collectors.toSet()));            }
         } else {
             throw new PropertyException(PropertyException.Type.NotACollection,
-                origProperty.getPropertyDescriptor().name(), origProperty.getPropertyDescriptor(), null, null);
+                origProperty.getPropertyDescriptor().name(), origProperty.getPropertyDescriptor(), null, null, null);
         }
 
         propertyOwner.getProperties().put(propertyName, newProperty);
@@ -106,14 +107,10 @@ public class PropertyManager {
             newProperty = Collections.unmodifiableSet(newSet);
         } else {
             throw new PropertyException(PropertyException.Type.NotACollection,
-                    origProperty.getPropertyDescriptor().name(), origProperty.getPropertyDescriptor(), null, null);
+                    origProperty.getPropertyDescriptor().name(), origProperty.getPropertyDescriptor(), null, null, null);
         }
 
         propertyOwner.getProperties().put(propertyName, newProperty);
-    }
-
-    public boolean hasProperty(PropertyOwner propertyOwner, String propertyName) {
-        return propertyOwner.getProperties().containsKey(propertyName);
     }
 
     public void removeProperty(PropertyOwner propertyOwner, String propertyName) {
@@ -125,17 +122,13 @@ public class PropertyManager {
                 propertyDescriptorCollection.get(propertyName);
         if (propertyDescriptor == null) {
             throw new PropertyException(PropertyException.Type.NotExist, propertyName, null, null,
-                    null);
+                    null, null);
         }
         return propertyDescriptor;
     }
 
     public void registerPseudoPropertyProvider(String name, PseudoPropertyProvider pseudoPropertyProvider) {
         pseudoPropertyManager.registerPseudoPropertyProvider(name, pseudoPropertyProvider);
-    }
-
-    public void setPropertyDescriptorCollection(PropertyDescriptorCollection propertyDescriptorCollection) {
-        this.propertyDescriptorCollection = propertyDescriptorCollection;
     }
 
     private Object getPropertyValue(PropertyOwner propertyOwner,
@@ -148,6 +141,7 @@ public class PropertyManager {
         return propertyValue;
     }
 
+    @Setter
     @Getter
     private PropertyDescriptorCollection propertyDescriptorCollection;
     private final PseudoPropertyManager pseudoPropertyManager;

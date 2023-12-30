@@ -7,7 +7,7 @@ import task_manager.core.data.Task;
 import task_manager.core.property.ModifyPropertySpec;
 import task_manager.cli_lib.argument.PropertyArgument;
 import task_manager.task_manager_cli.Context;
-import task_manager.task_manager_cli.command.property_modifier.PropertyModifier;
+import task_manager.cli_lib.property_modifier.PropertyModifier;
 
 import java.util.List;
 

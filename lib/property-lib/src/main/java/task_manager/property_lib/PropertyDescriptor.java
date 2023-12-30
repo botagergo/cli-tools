@@ -2,17 +2,21 @@ package task_manager.property_lib;
 
 public record PropertyDescriptor(
         String name,
-        PropertyDescriptor.Type type,
-        Extra extra,
+        Type type,
+        Subtype subtype,
         Multiplicity multiplicity,
         Object defaultValue,
         boolean isPseudoProperty
 ) {
 
     public PropertyDescriptor {
-        if (extra != null) {
-            if (type == Type.UUID && !(extra instanceof UUIDExtra)) {
-                throw new IllegalArgumentException("field 'extra' must have 'UUIDExtra' type for 'UUID'");
+        if (subtype != null) {
+            if (type == Type.UUID && !(subtype instanceof Subtype.UUIDSubtype)) {
+                throw new IllegalArgumentException("subtype must be UUIDSubtype for UUID");
+            } else if (type == Type.String && !(subtype instanceof Subtype.StringSubtype)) {
+                throw new IllegalArgumentException("subtype must be StringSubtype for String");
+            } else if (type == Type.Integer && !(subtype instanceof Subtype.IntegerSubtype)) {
+                throw new IllegalArgumentException("subtype must be IntegerSubtype for Integer");
             }
         }
     }
@@ -21,19 +25,19 @@ public record PropertyDescriptor(
         return multiplicity == Multiplicity.LIST || multiplicity == Multiplicity.SET;
     }
 
-    public UUIDExtra getUuidExtraUnchecked() {
-        if (extra == null) {
+    public Subtype.UUIDSubtype getUuidSubtypeUnchecked() {
+        if (subtype == null) {
             return null;
         } else {
-            return (UUIDExtra) extra;
+            return (Subtype.UUIDSubtype) subtype;
         }
     }
 
-    public IntegerExtra getIntegerExtraUnchecked() {
-        if (extra == null) {
+    public Subtype.IntegerSubtype getIntegerSubtypeUnchecked() {
+        if (subtype == null) {
             return null;
         } else {
-            return (IntegerExtra) extra;
+            return (Subtype.IntegerSubtype) subtype;
         }
     }
 
@@ -46,25 +50,42 @@ public record PropertyDescriptor(
         String, UUID, Boolean, Integer
     }
 
+    public interface Subtype {
+        String name();
+
+        interface StringSubtype extends Subtype {}
+        interface UUIDSubtype extends Subtype {}
+        interface IntegerSubtype extends Subtype {}
+        record LabelSubtype(String labelName) implements UUIDSubtype {
+            @Override
+            public String name() {
+                return "Label";
+            }
+        }
+        record OrderedLabelSubtype(String orderedLabelName) implements IntegerSubtype {
+            @Override
+            public String name() {
+                return "OrderedLabel";
+            }
+        }
+        record DateSubtype() implements StringSubtype {
+            @Override
+            public String name() {
+                return "Date";
+            }
+        }
+        record TimeSubtype() implements StringSubtype {
+            @Override
+            public String name() {
+                return "Time";
+            }
+        }
+    }
 
     public enum Multiplicity {
         SINGLE,
         LIST,
         SET
-    }
-
-    public interface Extra {
-    }
-
-    public record UUIDExtra(
-            String labelName
-    ) implements Extra {
-    }
-
-    public record IntegerExtra(
-            String orderedLabelName,
-            Boolean isDate
-    ) implements Extra {
     }
 
 }

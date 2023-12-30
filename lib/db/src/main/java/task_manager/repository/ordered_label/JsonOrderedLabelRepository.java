@@ -41,7 +41,7 @@ public class JsonOrderedLabelRepository extends JsonRepository<ArrayList<String>
     }
 
     @Override
-    public OrderedLabel create(String text) throws IOException {
+    public void create(String text) throws IOException {
         ArrayList<OrderedLabel> data = getData();
         OrderedLabel orderedLabel;
         if (data.isEmpty()) {
@@ -51,7 +51,6 @@ public class JsonOrderedLabelRepository extends JsonRepository<ArrayList<String>
         }
         data.add(orderedLabel);
         writeData();
-        return orderedLabel;
     }
 
     @Override

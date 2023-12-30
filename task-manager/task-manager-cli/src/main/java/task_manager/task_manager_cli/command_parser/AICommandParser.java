@@ -7,7 +7,7 @@ import task_manager.task_manager_cli.command.Command;
 
 public class AICommandParser implements CommandParser {
     @Override
-    public Command parse(Context context, ArgumentList argList) throws CommandParserException {
+    public Command parse(Context context, ArgumentList argList) {
         return new AICommand(String.join(" ", argList.getTrailingNormalArguments()));
     }
 }

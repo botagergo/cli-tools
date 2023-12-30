@@ -7,5 +7,6 @@ dependencies {
 
 	implementation project(':lib:core')
     implementation project(':lib:property-lib')
+	implementation project(':lib:logic')
 	implementation project(':task-manager:task-logic')
 }

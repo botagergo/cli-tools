@@ -18,7 +18,7 @@ import task_manager.repository.ObjectSerializer;
 public record PropertyDescriptorMixIn(
         @JsonProperty(required = true) String name,
         @JsonProperty(required = true) PropertyDescriptor.Type type,
-        @JsonProperty PropertyDescriptor.Extra extra,
+        @JsonProperty PropertyDescriptor.Subtype subtype,
         @JsonProperty(required = true) PropertyDescriptor.Multiplicity multiplicity,
         @JsonSerialize(using = ObjectSerializer.class)
         @JsonDeserialize(using = ObjectDeserializer.class)

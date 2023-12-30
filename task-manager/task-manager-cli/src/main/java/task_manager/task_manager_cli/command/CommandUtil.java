@@ -7,6 +7,7 @@ import com.inamik.text.tables.grid.Util;
 import lombok.NonNull;
 import lombok.extern.log4j.Log4j2;
 import org.fusesource.jansi.Ansi;
+import task_manager.cli_lib.DateTimeFormatter;
 import task_manager.core.data.Label;
 import task_manager.core.data.OrderedLabel;
 import task_manager.core.data.Task;
@@ -16,10 +17,12 @@ import task_manager.property_lib.PropertyException;
 import task_manager.property_lib.PropertyManager;
 import task_manager.cli_lib.argument.PropertyArgument;
 import task_manager.task_manager_cli.Context;
-import task_manager.task_manager_cli.command.string_to_property_converter.StringToPropertyConverterException;
+import task_manager.cli_lib.string_to_property_converter.StringToPropertyConverterException;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.*;
 
 @Log4j2
@@ -160,6 +163,10 @@ public class CommandUtil {
                 case "tags" -> table.nextCell().addLine(String.format(" %s ", getTagsStr(context, task)));
                 case "status" -> table.nextCell().addLine(String.format(" %s ", getStatusStr(context, task)));
                 case "id" -> table.nextCell().addLine(String.format(" %s ", getIDStr(context, task)));
+                case "startDate" -> table.nextCell().addLine(String.format(" %s ", getDateStr(context.getPropertyManager().getProperty(task, "startDate").getDate())));
+                case "startTime" -> table.nextCell().addLine(String.format(" %s ", getTimeStr(context.getPropertyManager().getProperty(task, "startTime").getTime())));
+                case "dueDate" -> table.nextCell().addLine(String.format(" %s ", getDateStr(context.getPropertyManager().getProperty(task, "dueDate").getDate())));
+                case "dueTime" -> table.nextCell().addLine(String.format(" %s ", getTimeStr(context.getPropertyManager().getProperty(task, "dueTime").getTime())));
                 default -> throw new RuntimeException();
             }
         }
@@ -214,6 +221,14 @@ public class CommandUtil {
         return context.getPropertyManager().getProperty(task, "id").getInteger().toString();
     }
 
+    private static String getDateStr(LocalDate localDate) {
+        return localDate != null ? dateTimeFormatter.formatLocalDate(localDate) : "";
+    }
+
+    private static String getTimeStr(LocalTime localTime) {
+        return localTime != null ? dateTimeFormatter.formatLocalTime(localTime) : "";
+    }
+
     public static char prompt(String message, String options) {
         while (true) {
             System.out.print(message);
@@ -231,4 +246,5 @@ public class CommandUtil {
     }
 
     private static final Scanner scanner = new Scanner(System.in);
+    private static final DateTimeFormatter dateTimeFormatter = new DateTimeFormatter();
 }

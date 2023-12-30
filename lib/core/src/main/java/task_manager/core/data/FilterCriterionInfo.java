@@ -17,8 +17,7 @@ public record FilterCriterionInfo(
         PROPERTY,
         AND,
         OR,
-        NOT,
-        REF
+        NOT
     }
 
 }

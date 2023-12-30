@@ -20,24 +20,19 @@ dependencies {
     implementation project(':lib:cli-lib')
     implementation project(':lib:core')
     implementation project(':lib:db')
-    implementation project(':lib:init')
     implementation project(':lib:logic')
     implementation project(':music-manager:music-logic')
 }
 
 application {
-    mainClass = 'task_manager.ui.music_cli.MusicCLI'
+    mainClass = 'task_manager.music_cli.MusicCLI'
 }
 
 jar {
     duplicatesStrategy(DuplicatesStrategy.EXCLUDE)
 
     manifest {
-        attributes "Main-Class": "task_manager.ui.music_cli.MusicCLI"
+        attributes "Main-Class": "task_manager.music_cli.MusicCLI"
         attributes "Multi-Release": true
-    }
-
-    from {
-        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
     }
 }

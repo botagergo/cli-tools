@@ -20,9 +20,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
-
 public class CollectionContainsFilterCriterionTest {
 
     public CollectionContainsFilterCriterionTest() {

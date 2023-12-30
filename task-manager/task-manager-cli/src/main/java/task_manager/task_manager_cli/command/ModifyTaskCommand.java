@@ -8,8 +8,8 @@ import task_manager.core.property.FilterPropertySpec;
 import task_manager.core.property.ModifyPropertySpec;
 import task_manager.cli_lib.argument.PropertyArgument;
 import task_manager.task_manager_cli.Context;
-import task_manager.task_manager_cli.command.property_modifier.PropertyModifier;
-import task_manager.task_manager_cli.command.string_to_property_converter.StringToPropertyConverterException;
+import task_manager.cli_lib.property_modifier.PropertyModifier;
+import task_manager.cli_lib.string_to_property_converter.StringToPropertyConverterException;
 
 import java.util.List;
 import java.util.UUID;
@@ -32,7 +32,7 @@ public record ModifyTaskCommand(
             List<Task> tasks = context.getTaskUseCase().getTasks(
                     null, filterPropertySpecs, null, null, taskUUIDs);
 
-            tasks = CommandUtil.confirmAndGetTasksToChange(context, tasks, tempIDs, filterPropertySpecs, CommandUtil.ChangeType.DELETE);
+            tasks = CommandUtil.confirmAndGetTasksToChange(context, tasks, tempIDs, filterPropertySpecs, CommandUtil.ChangeType.MODIFY);
             if (tasks == null || tasks.isEmpty()) {
                 return;
             }

@@ -8,7 +8,6 @@ import org.jline.reader.LineReaderBuilder;
 import org.jline.reader.UserInterruptException;
 import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
-import task_manager.init.Initializer;
 import task_manager.music_logic.pseudo_property_provider.TaskIDPseudoPropertyProvider;
 import task_manager.property_lib.PropertyDescriptor;
 import task_manager.property_lib.PropertyDescriptorCollection;
@@ -22,9 +21,9 @@ public class JlineCommandLine implements CommandLine {
 
     @Override
     public void run() throws IOException {
-        if (initializer.needsInitialization()) {
+        /*if (initializer.needsInitialization()) {
             initializer.initialize();
-        }
+        }*/
 
         Context context = ((ExecutorImpl) executor).getContext();
 
@@ -60,7 +59,6 @@ public class JlineCommandLine implements CommandLine {
         }
     }
 
-    private final Initializer initializer;
     private final Executor executor;
 
 }

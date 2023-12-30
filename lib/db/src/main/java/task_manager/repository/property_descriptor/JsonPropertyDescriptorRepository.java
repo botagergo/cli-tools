@@ -20,7 +20,7 @@ public class JsonPropertyDescriptorRepository extends SimpleJsonRepository<HashM
     public JsonPropertyDescriptorRepository(@Named("propertyDescriptorJsonFile") File jsonFile) {
         super(jsonFile);
         getObjectMapper().addMixIn(PropertyDescriptor.class, PropertyDescriptorMixIn.class);
-        getObjectMapper().addMixIn(PropertyDescriptor.Extra.class, ExtraMixIn.class);
+        getObjectMapper().addMixIn(PropertyDescriptor.Subtype.class, SubtypeMixIn.class);
     }
 
     @Override

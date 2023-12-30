@@ -16,7 +16,7 @@ public record AICommand(String command) implements Command {
     @Override
     public void execute(Context context) {
         try {
-            List<ChatFunctionDynamic> functions = buildFunctions(context);
+            List<ChatFunctionDynamic> functions = buildFunctions();
 
             if (context.getOpenAiService() == null) {
                 String openAiApiKey = context.getConfigurationRepository().openAiApiKey();
@@ -60,11 +60,10 @@ public record AICommand(String command) implements Command {
             //System.out.println(response.getContent());
         } catch (Exception e) {
             System.out.println(e.getMessage());
-            e.printStackTrace();
         }
     }
 
-    private List<ChatFunctionDynamic> buildFunctions(Context context) {
+    private List<ChatFunctionDynamic> buildFunctions() {
         List<ChatFunctionDynamic> functions = new ArrayList<>();
 
         functions.add(ChatFunctionDynamic.builder()

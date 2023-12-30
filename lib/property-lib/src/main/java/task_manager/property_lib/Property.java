@@ -5,6 +5,10 @@ import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.*;
 
 @Getter
@@ -34,7 +38,7 @@ public class Property {
         if (propertyDescriptor.type() != PropertyDescriptor.Type.Boolean) {
             throw new PropertyException(PropertyException.Type.TypeMismatch,
                     propertyDescriptor.name(), propertyDescriptor, value,
-                    PropertyDescriptor.Type.Boolean);
+                    PropertyDescriptor.Type.Boolean, null);
         }
         return getBooleanUnchecked();
     }
@@ -50,7 +54,7 @@ public class Property {
         if (propertyDescriptor.type() != PropertyDescriptor.Type.String) {
             throw new PropertyException(PropertyException.Type.TypeMismatch,
                     propertyDescriptor.name(), propertyDescriptor, value,
-                    PropertyDescriptor.Type.String);
+                    PropertyDescriptor.Type.String, null);
         }
 
         return getStringUnchecked();
@@ -68,7 +72,7 @@ public class Property {
         if (propertyDescriptor.type() != PropertyDescriptor.Type.UUID) {
             throw new PropertyException(PropertyException.Type.TypeMismatch,
                     propertyDescriptor.name(), propertyDescriptor, value,
-                    PropertyDescriptor.Type.UUID);
+                    PropertyDescriptor.Type.UUID, null);
         }
 
         if (value == null) {
@@ -90,7 +94,7 @@ public class Property {
 
             throw new PropertyException(PropertyException.Type.WrongValueType,
                     propertyDescriptor.name(), propertyDescriptor, propertyValue,
-                    propertyDescriptor.type());
+                    propertyDescriptor.type(), null);
         }
     }
 
@@ -98,7 +102,7 @@ public class Property {
         if (propertyDescriptor.type() != PropertyDescriptor.Type.Integer) {
             throw new PropertyException(PropertyException.Type.TypeMismatch,
                     propertyDescriptor.name(), propertyDescriptor, value,
-                    PropertyDescriptor.Type.Integer);
+                    PropertyDescriptor.Type.Integer, null);
         }
 
         return getIntegerUnchecked();
@@ -112,22 +116,65 @@ public class Property {
         return (Integer) value;
     }
 
+    public LocalDate getDate() throws PropertyException {
+        String propertyValue = getString();
+
+        if (!(propertyDescriptor.subtype() instanceof PropertyDescriptor.Subtype.DateSubtype)) {
+            throw new PropertyException(PropertyException.Type.SubtypeMismatch,
+                    propertyDescriptor.name(), propertyDescriptor, propertyValue,
+                    PropertyDescriptor.Type.String, "Date");
+        }
+
+        if (propertyValue == null) {
+            return null;
+        }
+
+        try {
+            return LocalDate.parse(propertyValue, DateTimeFormatter.ISO_LOCAL_DATE);
+        } catch (DateTimeParseException e) {
+            throw new PropertyException(PropertyException.Type.WrongValueType,
+                    propertyDescriptor.name(), propertyDescriptor, propertyValue,
+                    propertyDescriptor.type(), "Date");
+        }
+    }
+
+    public LocalTime getTime() throws PropertyException {
+        String propertyValue = getString();
+
+        if (!(propertyDescriptor.subtype() instanceof PropertyDescriptor.Subtype.TimeSubtype)) {
+            throw new PropertyException(PropertyException.Type.SubtypeMismatch,
+                    propertyDescriptor.name(), propertyDescriptor, propertyValue,
+                    PropertyDescriptor.Type.String, "Time");
+        }
+
+        if (propertyValue == null) {
+            return null;
+        }
+
+        try {
+            return LocalTime.parse(propertyValue, DateTimeFormatter.ISO_LOCAL_TIME);
+        } catch (DateTimeParseException e) {
+            throw new PropertyException(PropertyException.Type.WrongValueType,
+                    propertyDescriptor.name(), propertyDescriptor, propertyValue,
+                    propertyDescriptor.type(), "Date");
+        }
+    }
+
     @SuppressWarnings("unchecked")
     public List<UUID> getUuidList() throws PropertyException {
         if (propertyDescriptor.type() != PropertyDescriptor.Type.UUID) {
             throw new PropertyException(PropertyException.Type.TypeMismatch,
                     propertyDescriptor.name(), propertyDescriptor, value,
-                    PropertyDescriptor.Type.UUID);
+                    PropertyDescriptor.Type.UUID, null);
         } else if (propertyDescriptor.multiplicity() != PropertyDescriptor.Multiplicity.LIST) {
             throw new PropertyException(PropertyException.Type.WrongMultiplicity,
                     propertyDescriptor.name(), propertyDescriptor, value,
-                    PropertyDescriptor.Type.UUID);
+                    PropertyDescriptor.Type.UUID, null);
         }
 
         if (value == null) {
             return null;
         }
-
 
         return (List<UUID>) value;
     }
@@ -137,11 +184,11 @@ public class Property {
         if (propertyDescriptor.type() != PropertyDescriptor.Type.String) {
             throw new PropertyException(PropertyException.Type.TypeMismatch,
                     propertyDescriptor.name(), propertyDescriptor, value,
-                    PropertyDescriptor.Type.String);
+                    PropertyDescriptor.Type.String, null);
         } else if (propertyDescriptor.multiplicity() != PropertyDescriptor.Multiplicity.LIST) {
             throw new PropertyException(PropertyException.Type.WrongMultiplicity,
                     propertyDescriptor.name(), propertyDescriptor, value,
-                    PropertyDescriptor.Type.String);
+                    PropertyDescriptor.Type.String, null);
         }
 
         if (value == null) {
@@ -156,11 +203,11 @@ public class Property {
         if (propertyDescriptor.type() != PropertyDescriptor.Type.Boolean) {
             throw new PropertyException(PropertyException.Type.TypeMismatch,
                     propertyDescriptor.name(), propertyDescriptor, value,
-                    PropertyDescriptor.Type.Boolean);
+                    PropertyDescriptor.Type.Boolean, null);
         } else if (propertyDescriptor.multiplicity() != PropertyDescriptor.Multiplicity.LIST) {
             throw new PropertyException(PropertyException.Type.WrongMultiplicity,
                     propertyDescriptor.name(), propertyDescriptor, value,
-                    PropertyDescriptor.Type.Boolean);
+                    PropertyDescriptor.Type.Boolean, null);
         }
 
         if (value == null) {
@@ -175,11 +222,11 @@ public class Property {
         if (propertyDescriptor.type() != PropertyDescriptor.Type.UUID) {
             throw new PropertyException(PropertyException.Type.TypeMismatch,
                     propertyDescriptor.name(), propertyDescriptor, value,
-                    PropertyDescriptor.Type.UUID);
+                    PropertyDescriptor.Type.UUID, null);
         } else if (propertyDescriptor.multiplicity() != PropertyDescriptor.Multiplicity.SET) {
             throw new PropertyException(PropertyException.Type.WrongMultiplicity,
                     propertyDescriptor.name(), propertyDescriptor, value,
-                    PropertyDescriptor.Type.UUID);
+                    PropertyDescriptor.Type.UUID, null);
         }
 
         if (value == null) {
@@ -194,11 +241,11 @@ public class Property {
         if (propertyDescriptor.type() != PropertyDescriptor.Type.String) {
             throw new PropertyException(PropertyException.Type.TypeMismatch,
                     propertyDescriptor.name(), propertyDescriptor, value,
-                    PropertyDescriptor.Type.String);
+                    PropertyDescriptor.Type.String, null);
         } else if (propertyDescriptor.multiplicity() != PropertyDescriptor.Multiplicity.SET) {
             throw new PropertyException(PropertyException.Type.WrongMultiplicity,
                     propertyDescriptor.name(), propertyDescriptor, value,
-                    PropertyDescriptor.Type.String);
+                    PropertyDescriptor.Type.String, null);
         }
 
         if (value == null) {
@@ -212,7 +259,7 @@ public class Property {
     public List<Object> getList() throws PropertyException {
         if (propertyDescriptor.multiplicity() != PropertyDescriptor.Multiplicity.LIST) {
             throw new PropertyException(PropertyException.Type.WrongMultiplicity,
-                    propertyDescriptor.name(), propertyDescriptor, value, null);
+                    propertyDescriptor.name(), propertyDescriptor, value, null, null);
         }
 
         if (value == null) {
@@ -226,7 +273,7 @@ public class Property {
     public Set<Object> getSet() throws PropertyException {
         if (propertyDescriptor.multiplicity() != PropertyDescriptor.Multiplicity.SET) {
             throw new PropertyException(PropertyException.Type.WrongMultiplicity,
-                    propertyDescriptor.name(), propertyDescriptor, value, null);
+                    propertyDescriptor.name(), propertyDescriptor, value, null, null);
         }
 
         if (value == null) {
@@ -235,12 +282,13 @@ public class Property {
         return (Set<Object>) value;
     }
 
+
     @SuppressWarnings("unchecked")
     public Collection<Object> getCollection() throws PropertyException {
         if (propertyDescriptor.multiplicity() != PropertyDescriptor.Multiplicity.SET
         && propertyDescriptor.multiplicity() != PropertyDescriptor.Multiplicity.LIST) {
             throw new PropertyException(PropertyException.Type.WrongMultiplicity,
-                    propertyDescriptor.name(), propertyDescriptor, value, null);
+                    propertyDescriptor.name(), propertyDescriptor, value, null, null);
         }
 
         if (value == null) {
@@ -255,11 +303,11 @@ public class Property {
         if (propertyDescriptor.type() != PropertyDescriptor.Type.Boolean) {
             throw new PropertyException(PropertyException.Type.TypeMismatch,
                     propertyDescriptor.name(), propertyDescriptor, value,
-                    PropertyDescriptor.Type.Boolean);
+                    PropertyDescriptor.Type.Boolean, null);
         } else if (propertyDescriptor.multiplicity() != PropertyDescriptor.Multiplicity.SET) {
             throw new PropertyException(PropertyException.Type.WrongMultiplicity,
                     propertyDescriptor.name(), propertyDescriptor, value,
-                    PropertyDescriptor.Type.Boolean);
+                    PropertyDescriptor.Type.Boolean, null);
         }
 
         if (value == null) {
@@ -273,7 +321,7 @@ public class Property {
         if (!(propertyValues instanceof List<?> propertyValuesList)) {
             throw new PropertyException(PropertyException.Type.WrongValueType,
                 propertyDescriptor.name(), propertyDescriptor, propertyValues,
-                propertyDescriptor.type());
+                propertyDescriptor.type(), null);
         }
 
         for (Object propertyValue : propertyValuesList) {
@@ -289,7 +337,7 @@ public class Property {
         if (!(propertyValues instanceof Set<?> propertyValuesSet)) {
             throw new PropertyException(PropertyException.Type.WrongValueType,
                     propertyDescriptor.name(), propertyDescriptor, propertyValues,
-                    propertyDescriptor.type());
+                    propertyDescriptor.type(), null);
         }
 
         for (Object propertyValue : propertyValuesSet) {

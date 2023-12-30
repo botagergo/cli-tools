@@ -1,7 +1,6 @@
 package task_manager.task_manager_cli.command_line;
 
 import com.google.inject.Inject;
-import com.theokanning.openai.service.OpenAiService;
 import lombok.AllArgsConstructor;
 import org.jline.reader.LineReader;
 import org.jline.reader.LineReader.Option;

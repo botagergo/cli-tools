@@ -81,7 +81,7 @@ public class StringToPropertyConverterTest {
         }
         try {
             propertyConverter.stringToProperty(
-                    getPropertyDescriptor(PropertyDescriptor.Type.Integer, new PropertyDescriptor.IntegerExtra(null, false), PropertyDescriptor.Multiplicity.SINGLE), List.of("tag"), true);
+                    getPropertyDescriptor(PropertyDescriptor.Type.Integer, null, PropertyDescriptor.Multiplicity.SINGLE), List.of("tag"), true);
             fail();
         } catch (StringToPropertyConverterException e) {
             assertEquals(e.getExceptionType(), StringToPropertyConverterException.Type.NoAssociatedLabel);
@@ -145,7 +145,7 @@ public class StringToPropertyConverterTest {
         }
         try {
             propertyConverter.stringToProperty(
-                    getPropertyDescriptor(PropertyDescriptor.Type.UUID, new PropertyDescriptor.UUIDExtra(null), PropertyDescriptor.Multiplicity.SINGLE), List.of("tag"), true);
+                    getPropertyDescriptor(PropertyDescriptor.Type.UUID, null, PropertyDescriptor.Multiplicity.SINGLE), List.of("tag"), true);
             fail();
         } catch (StringToPropertyConverterException e) {
             assertEquals(e.getExceptionType(), StringToPropertyConverterException.Type.NoAssociatedLabel);
@@ -162,7 +162,7 @@ public class StringToPropertyConverterTest {
         setStdin("y");
 
         assertEquals(propertyConverter.stringToProperty(
-                getPropertyDescriptor(PropertyDescriptor.Type.UUID, new PropertyDescriptor.UUIDExtra("test"), PropertyDescriptor.Multiplicity.SINGLE), List.of("tag2"), true), uuid1);
+                getPropertyDescriptor(PropertyDescriptor.Type.UUID, new PropertyDescriptor.Subtype.LabelSubtype("test"), PropertyDescriptor.Multiplicity.SINGLE), List.of("tag2"), true), uuid1);
     }
 
     @Test
@@ -372,7 +372,7 @@ public class StringToPropertyConverterTest {
         Mockito.when(orderedLabelUseCase.findOrderedLabel("test", "labelText")).thenReturn(new OrderedLabel("labelText", 3));
 
         assertEquals(propertyConverter.stringToProperty(
-                getPropertyDescriptor(PropertyDescriptor.Type.Integer, new PropertyDescriptor.IntegerExtra("test", false), PropertyDescriptor.Multiplicity.SINGLE), List.of("labelText"), true), 3);
+                getPropertyDescriptor(PropertyDescriptor.Type.Integer, new PropertyDescriptor.Subtype.OrderedLabelSubtype("test"), PropertyDescriptor.Multiplicity.SINGLE), List.of("labelText"), true), 3);
     }
 
     @Test
@@ -381,7 +381,7 @@ public class StringToPropertyConverterTest {
 
         try {
             propertyConverter.stringToProperty(
-                    getPropertyDescriptor(PropertyDescriptor.Type.Integer, new PropertyDescriptor.IntegerExtra("test", false), PropertyDescriptor.Multiplicity.SINGLE), List.of("labelText"), true);
+                    getPropertyDescriptor(PropertyDescriptor.Type.Integer, new PropertyDescriptor.Subtype.OrderedLabelSubtype("test"), PropertyDescriptor.Multiplicity.SINGLE), List.of("labelText"), true);
             fail();
         } catch (StringToPropertyConverterException e) {
             assertEquals(e.getExceptionType(), StringToPropertyConverterException.Type.OrderedLabelNotFound);
@@ -394,7 +394,7 @@ public class StringToPropertyConverterTest {
         Mockito.when(labelUseCase.findLabel("test", "tag")).thenReturn(new Label(uuid1, "tag"));
 
         assertEquals(propertyConverter.stringToProperty(
-                getPropertyDescriptor(PropertyDescriptor.Type.UUID, new PropertyDescriptor.UUIDExtra("test"), PropertyDescriptor.Multiplicity.SINGLE), List.of("tag"), true), uuid1);
+                getPropertyDescriptor(PropertyDescriptor.Type.UUID, new PropertyDescriptor.Subtype.LabelSubtype("test"), PropertyDescriptor.Multiplicity.SINGLE), List.of("tag"), true), uuid1);
     }
 
     @Test
@@ -404,7 +404,7 @@ public class StringToPropertyConverterTest {
 
         try {
             propertyConverter.stringToProperty(
-                    getPropertyDescriptor(PropertyDescriptor.Type.UUID, new PropertyDescriptor.UUIDExtra("test"), PropertyDescriptor.Multiplicity.SINGLE), List.of("tag"), true);
+                    getPropertyDescriptor(PropertyDescriptor.Type.UUID, new PropertyDescriptor.Subtype.LabelSubtype("test"), PropertyDescriptor.Multiplicity.SINGLE), List.of("tag"), true);
             fail();
         } catch (StringToPropertyConverterException e) {
             assertEquals(e.getExceptionType(), StringToPropertyConverterException.Type.LabelNotFound);
@@ -412,8 +412,8 @@ public class StringToPropertyConverterTest {
         }
     }
 
-    private PropertyDescriptor getPropertyDescriptor(PropertyDescriptor.Type type, PropertyDescriptor.Extra extra, PropertyDescriptor.Multiplicity multiplicity) {
-        return new PropertyDescriptor("test", type, extra, multiplicity, null, false);
+    private PropertyDescriptor getPropertyDescriptor(PropertyDescriptor.Type type, PropertyDescriptor.Subtype subtype, PropertyDescriptor.Multiplicity multiplicity) {
+        return new PropertyDescriptor("test", type, subtype, multiplicity, null, false);
     }
 
     private void setStdin(String str) {

@@ -2,17 +2,19 @@ package task_manager.music_cli.command.string_to_property_converter;
 
 import jakarta.inject.Inject;
 import lombok.NonNull;
+import task_manager.cli_lib.argument.PropertyArgument;
 import task_manager.core.data.Label;
 import task_manager.core.data.OrderedLabel;
 import task_manager.core.data.Predicate;
-import task_manager.core.property.*;
+import task_manager.core.property.Affinity;
+import task_manager.core.property.FilterPropertySpec;
+import task_manager.core.property.ModifyPropertySpec;
 import task_manager.music_logic.use_case.label.LabelUseCase;
 import task_manager.music_logic.use_case.ordered_label.OrderedLabelUseCase;
 import task_manager.music_logic.use_case.property_descriptor.PropertyDescriptorUseCase;
 import task_manager.property_lib.Property;
 import task_manager.property_lib.PropertyDescriptor;
 import task_manager.property_lib.PropertyException;
-import task_manager.cli_lib.argument.PropertyArgument;
 import task_manager.util.Utils;
 
 import java.io.IOException;
@@ -193,21 +195,17 @@ public class StringToPropertyConverter {
         try {
             return UUID.fromString(propertyValueStr);
         } catch (IllegalArgumentException e1) {
-            PropertyDescriptor.UUIDExtra uuidExtra = propertyDescriptor.getUuidExtraUnchecked();
-            if (uuidExtra == null || uuidExtra.labelName() == null) {
-                throw new StringToPropertyConverterException(StringToPropertyConverterException.Type.NoAssociatedLabel,
-                        "UUID property '" + propertyDescriptor.name() + "' does not have an associated label", propertyDescriptor.name());
-            }
+            PropertyDescriptor.Subtype.LabelSubtype labelSubtype = getLabelSubtype(propertyDescriptor);
 
-            Label label = labelUseCase.findLabel(uuidExtra.labelName(), propertyValueStr);
+            Label label = labelUseCase.findLabel(labelSubtype.labelName(), propertyValueStr);
             if (label == null && createUuidIfNotExists
                     && Utils.yesNo("Label '" + propertyValueStr + "' does not exist. Do you want to create it?")) {
-                label = labelUseCase.createLabel(uuidExtra.labelName(), propertyValueStr);
+                label = labelUseCase.createLabel(labelSubtype.labelName(), propertyValueStr);
             }
             if (label != null) {
                 return label.uuid();
             } else {
-                throw new StringToPropertyConverterException(StringToPropertyConverterException.Type.LabelNotFound, "Label not found: " + uuidExtra.labelName(), uuidExtra.labelName());
+                throw new StringToPropertyConverterException(StringToPropertyConverterException.Type.LabelNotFound, "Label not found: " + labelSubtype.labelName(), labelSubtype.labelName());
             }
         }
     }
@@ -216,22 +214,39 @@ public class StringToPropertyConverter {
         try {
             return Integer.parseInt(propertyValueStr);
         } catch (NumberFormatException e1) {
-            PropertyDescriptor.IntegerExtra integerExtra = propertyDescriptor.getIntegerExtraUnchecked();
-            if (integerExtra == null || integerExtra.orderedLabelName() == null) {
-                throw new StringToPropertyConverterException(StringToPropertyConverterException.Type.NoAssociatedLabel,
-                        "UUID property '" + propertyDescriptor.name() + "' does not have an associated label", propertyDescriptor.name());
-            }
+            PropertyDescriptor.Subtype.OrderedLabelSubtype orderedLabelSubtype = getIntegerSubtype(propertyDescriptor);
 
-            OrderedLabel orderedLabel = orderedLabelUseCase.findOrderedLabel(integerExtra.orderedLabelName(), propertyValueStr);
+            OrderedLabel orderedLabel = orderedLabelUseCase.findOrderedLabel(orderedLabelSubtype.orderedLabelName(), propertyValueStr);
 
             if (orderedLabel != null) {
                 return orderedLabel.value();
             } else {
                 throw new StringToPropertyConverterException(StringToPropertyConverterException.Type.OrderedLabelNotFound,
-                        "Label not found: " + integerExtra.orderedLabelName(), integerExtra.orderedLabelName());
+                        "Ordered label not found: " + orderedLabelSubtype.orderedLabelName(), orderedLabelSubtype.orderedLabelName());
             }
         }
     }
+
+    private static PropertyDescriptor.Subtype.OrderedLabelSubtype getIntegerSubtype(PropertyDescriptor propertyDescriptor) throws StringToPropertyConverterException {
+        PropertyDescriptor.Subtype.IntegerSubtype integerSubtype = propertyDescriptor.getIntegerSubtypeUnchecked();
+        if (!(integerSubtype instanceof PropertyDescriptor.Subtype.OrderedLabelSubtype)) {
+            throw new StringToPropertyConverterException(StringToPropertyConverterException.Type.NoAssociatedLabel,
+                    "UUID property '" + propertyDescriptor.name() + "' does not have an associated label", propertyDescriptor.name());
+        }
+
+        return (PropertyDescriptor.Subtype.OrderedLabelSubtype)integerSubtype;
+    }
+
+    private static PropertyDescriptor.Subtype.LabelSubtype getLabelSubtype(PropertyDescriptor propertyDescriptor) throws StringToPropertyConverterException {
+        PropertyDescriptor.Subtype.UUIDSubtype uuidSubtype = propertyDescriptor.getUuidSubtypeUnchecked();
+        if (!(uuidSubtype instanceof PropertyDescriptor.Subtype.LabelSubtype)) {
+            throw new StringToPropertyConverterException(StringToPropertyConverterException.Type.NoAssociatedLabel,
+                    "UUID property '" + propertyDescriptor.name() + "' does not have an associated label", propertyDescriptor.name());
+        }
+
+        return (PropertyDescriptor.Subtype.LabelSubtype)uuidSubtype;
+    }
+
     private final PropertyDescriptorUseCase propertyDescriptorUseCase;
     private final OrderedLabelUseCase orderedLabelUseCase;
 

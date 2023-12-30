@@ -30,7 +30,7 @@ public class PropertyDescriptorUseCaseImpl implements PropertyDescriptorUseCase 
     public PropertyDescriptor getPropertyDescriptor(String name) throws PropertyException, IOException {
         PropertyDescriptor propertyDescriptor = propertyDescriptorRepository.get(name);
         if (propertyDescriptor == null) {
-            throw new PropertyException(PropertyException.Type.NotExist, name, null, null, null);
+            throw new PropertyException(PropertyException.Type.NotExist, name, null, null, null, null);
         } else {
             return propertyDescriptor;
         }
@@ -44,13 +44,13 @@ public class PropertyDescriptorUseCaseImpl implements PropertyDescriptorUseCase 
 
         List<PropertyDescriptor> propertyDescriptors = propertyDescriptorRepository.find(name);
         if (propertyDescriptors.isEmpty()) {
-            throw new PropertyException(PropertyException.Type.NotExist, name, null, null, null);
+            throw new PropertyException(PropertyException.Type.NotExist, name, null, null, null, null);
         } else if (propertyDescriptors.size() > 1){
             Optional<PropertyDescriptor> propertyDescriptor = propertyDescriptors.stream().filter(pd -> pd.name().equals(name)).findAny();
             if (propertyDescriptor.isPresent()) {
                 return propertyDescriptor.get();
             } else {
-                throw new PropertyException(PropertyException.Type.MultipleMatches, name, null, null, null);
+                throw new PropertyException(PropertyException.Type.MultipleMatches, name, null, null, null, null);
             }
         } else {
             return propertyDescriptors.get(0);

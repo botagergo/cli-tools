@@ -3,9 +3,9 @@ package task_manager.init;
 import jakarta.inject.Inject;
 import lombok.AllArgsConstructor;
 import task_manager.core.data.Label;
-import task_manager.task_logic.use_case.label.LabelUseCase;
-import task_manager.task_logic.use_case.ordered_label.OrderedLabelUseCase;
-import task_manager.task_logic.use_case.property_descriptor.PropertyDescriptorUseCase;
+import task_manager.logic.use_case.label.LabelUseCase;
+import task_manager.logic.use_case.ordered_label.OrderedLabelUseCase;
+import task_manager.logic.use_case.property_descriptor.PropertyDescriptorUseCase;
 import task_manager.property_lib.PropertyDescriptor;
 
 import java.io.IOException;
@@ -44,19 +44,23 @@ public class Initializer {
         propertyDescriptorUseCase.createPropertyDescriptor(
                 new PropertyDescriptor("done", PropertyDescriptor.Type.Boolean, null, PropertyDescriptor.Multiplicity.SINGLE, false, false));
         propertyDescriptorUseCase.createPropertyDescriptor(
-                new PropertyDescriptor("tags", PropertyDescriptor.Type.UUID, new PropertyDescriptor.UUIDExtra("tag"), PropertyDescriptor.Multiplicity.SET, new LinkedHashSet<>(), false));
+                new PropertyDescriptor("tags", PropertyDescriptor.Type.UUID, new PropertyDescriptor.Subtype.LabelSubtype("tag"), PropertyDescriptor.Multiplicity.SET, new LinkedHashSet<>(), false));
         propertyDescriptorUseCase.createPropertyDescriptor(
-                new PropertyDescriptor("status", PropertyDescriptor.Type.UUID, new PropertyDescriptor.UUIDExtra("status"), PropertyDescriptor.Multiplicity.SINGLE, null, false));
+                new PropertyDescriptor("status", PropertyDescriptor.Type.UUID, new PropertyDescriptor.Subtype.LabelSubtype("status"), PropertyDescriptor.Multiplicity.SINGLE, null, false));
         propertyDescriptorUseCase.createPropertyDescriptor(
-                new PropertyDescriptor("priority", PropertyDescriptor.Type.Integer, new PropertyDescriptor.IntegerExtra("priority", false), PropertyDescriptor.Multiplicity.SINGLE, null, false));
+                new PropertyDescriptor("priority", PropertyDescriptor.Type.Integer, new PropertyDescriptor.Subtype.OrderedLabelSubtype("priority"), PropertyDescriptor.Multiplicity.SINGLE, null, false));
         propertyDescriptorUseCase.createPropertyDescriptor(
-                new PropertyDescriptor("effort", PropertyDescriptor.Type.Integer, new PropertyDescriptor.IntegerExtra("effort", false), PropertyDescriptor.Multiplicity.SINGLE, null, false));
+                new PropertyDescriptor("effort", PropertyDescriptor.Type.Integer, new PropertyDescriptor.Subtype.OrderedLabelSubtype("effort"), PropertyDescriptor.Multiplicity.SINGLE, null, false));
         propertyDescriptorUseCase.createPropertyDescriptor(
                 new PropertyDescriptor("id", PropertyDescriptor.Type.Integer, null, PropertyDescriptor.Multiplicity.SINGLE, null, true));
         propertyDescriptorUseCase.createPropertyDescriptor(
-                new PropertyDescriptor("modified_timestamp", PropertyDescriptor.Type.Integer, new PropertyDescriptor.IntegerExtra(null, true), PropertyDescriptor.Multiplicity.SINGLE, null, false));
+                new PropertyDescriptor("startDate", PropertyDescriptor.Type.String, new PropertyDescriptor.Subtype.DateSubtype(), PropertyDescriptor.Multiplicity.SINGLE, null, false));
         propertyDescriptorUseCase.createPropertyDescriptor(
-                new PropertyDescriptor("todoist_id", PropertyDescriptor.Type.String, null, PropertyDescriptor.Multiplicity.SINGLE, null, false));
+                new PropertyDescriptor("startTime", PropertyDescriptor.Type.String, new PropertyDescriptor.Subtype.TimeSubtype(), PropertyDescriptor.Multiplicity.SINGLE, null, false));
+        propertyDescriptorUseCase.createPropertyDescriptor(
+                new PropertyDescriptor("dueDate", PropertyDescriptor.Type.String, new PropertyDescriptor.Subtype.DateSubtype(), PropertyDescriptor.Multiplicity.SINGLE, null, false));
+        propertyDescriptorUseCase.createPropertyDescriptor(
+                new PropertyDescriptor("dueTime", PropertyDescriptor.Type.String, new PropertyDescriptor.Subtype.TimeSubtype(), PropertyDescriptor.Multiplicity.SINGLE, null, false));
     }
 
     private void initializePriorities() throws IOException {

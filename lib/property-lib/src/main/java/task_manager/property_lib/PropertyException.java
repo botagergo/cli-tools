@@ -6,21 +6,22 @@ import lombok.Getter;
 public class PropertyException extends Exception {
 
     public PropertyException(Type exceptionType, String propertyName,
-            PropertyDescriptor propertyDescriptor, Object propertyValue,
-            PropertyDescriptor.Type requestedType) {
+                             PropertyDescriptor propertyDescriptor, Object propertyValue,
+                             PropertyDescriptor.Type requestedType, String requestedSubtype) {
         super(getMsg(exceptionType, propertyName, propertyDescriptor, propertyValue,
-                requestedType));
+                requestedType, requestedSubtype));
 
         this.exceptionType = exceptionType;
         this.propertyName = propertyName;
         this.propertyDescriptor = propertyDescriptor;
         this.propertyValue = propertyValue;
         this.requestedType = requestedType;
+        this.requestedSubtype = requestedSubtype;
     }
 
     private static String getMsg(Type exceptionType, String propertyName,
-            PropertyDescriptor propertyDescriptor, Object propertyValue,
-            PropertyDescriptor.Type requestedType) {
+                                 PropertyDescriptor propertyDescriptor, Object propertyValue,
+                                 PropertyDescriptor.Type requestedType, String requestedSubtype) {
         if (exceptionType == Type.WrongMultiplicity) {
             return "Property '" + propertyName + "' is not a list";
         } else if (exceptionType == Type.NotACollection) {
@@ -30,6 +31,9 @@ public class PropertyException extends Exception {
         } else if (exceptionType == Type.TypeMismatch) {
             return "Trying to read " + propertyDescriptor.type().name() + " property '"
                     + propertyName + "' as " + requestedType.name();
+        } else if (exceptionType == Type.SubtypeMismatch) {
+            return "Trying to read " + propertyDescriptor.subtype().name() + " property '"
+                    + propertyName + "' as " + requestedSubtype;
         } else if (exceptionType == Type.WrongValueType) {
             return "The value of property '" + propertyName + "' does not have the required type "
                     + propertyDescriptor.type().name() + " " + propertyDescriptor.multiplicity() + ": " + propertyValue;
@@ -45,9 +49,10 @@ public class PropertyException extends Exception {
     final PropertyDescriptor propertyDescriptor;
     final Object propertyValue;
     final PropertyDescriptor.Type requestedType;
+    final String requestedSubtype;
 
     public enum Type {
-        NotExist, TypeMismatch, WrongValueType, NotACollection, WrongMultiplicity, MultipleMatches
+        NotExist, TypeMismatch, WrongValueType, NotACollection, WrongMultiplicity, MultipleMatches, SubtypeMismatch
     }
 
 }
