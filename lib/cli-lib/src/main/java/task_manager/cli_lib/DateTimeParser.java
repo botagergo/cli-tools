@@ -6,6 +6,7 @@ import java.time.Clock;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoField;
@@ -26,46 +27,42 @@ public class DateTimeParser {
 
         dateFormatterBuilders = new ArrayList<>();
         dateFormatterBuilders.add(new DateTimeFormatterBuilder()
-                .append(java.time.format.DateTimeFormatter.ofPattern("MM-dd-uuuu")));
+                .append(DateTimeFormatter.ofPattern("MM-dd-uuuu")));
         dateFormatterBuilders.add(new DateTimeFormatterBuilder()
-                .append(java.time.format.DateTimeFormatter.ofPattern("dd-MM-uuuu")));
+                .append(DateTimeFormatter.ofPattern("dd-MM-uuuu")));
         dateFormatterBuilders.add(new DateTimeFormatterBuilder()
-                .append(java.time.format.DateTimeFormatter.ofPattern("uuuu-MM-dd")));
+                .append(DateTimeFormatter.ofPattern("uuuu-MM-dd")));
         dateFormatterBuilders.add(new DateTimeFormatterBuilder()
-                .append(java.time.format.DateTimeFormatter.ofPattern("MM-dd")));
+                .append(DateTimeFormatter.ofPattern("MM-dd")));
         dateFormatterBuilders.add(new DateTimeFormatterBuilder()
-                .append(java.time.format.DateTimeFormatter.ofPattern("MMM-dd")));
+                .append(DateTimeFormatter.ofPattern("MMM-dd")));
         dateFormatterBuilders.add(new DateTimeFormatterBuilder()
-                .append(java.time.format.DateTimeFormatter.ofPattern("MMMM-dd")));
+                .append(DateTimeFormatter.ofPattern("MMMM-dd")));
         dateFormatterBuilders.add(new DateTimeFormatterBuilder()
-                .append(java.time.format.DateTimeFormatter.ofPattern("MMM-d")));
+                .append(DateTimeFormatter.ofPattern("MMM-d")));
         dateFormatterBuilders.add(new DateTimeFormatterBuilder()
-                .append(java.time.format.DateTimeFormatter.ofPattern("MMMM-d")));
+                .append(DateTimeFormatter.ofPattern("MMMM-d")));
         dateFormatterBuilders.add(new DateTimeFormatterBuilder()
-                .append(java.time.format.DateTimeFormatter.ofPattern("MMM"))
+                .append(DateTimeFormatter.ofPattern("MMM"))
                 .parseDefaulting(ChronoField.DAY_OF_MONTH, 31));
         dateFormatterBuilders.add(new DateTimeFormatterBuilder()
-                .append(java.time.format.DateTimeFormatter.ofPattern("MMMM"))
+                .append(DateTimeFormatter.ofPattern("MMMM"))
                 .parseDefaulting(ChronoField.DAY_OF_MONTH, 31));
         dateFormatterBuilders.add(new DateTimeFormatterBuilder()
-                .append(java.time.format.DateTimeFormatter.ofPattern("d")));
+                .append(DateTimeFormatter.ofPattern("d")));
         dateFormatterBuilders.add(new DateTimeFormatterBuilder()
-                .append(java.time.format.DateTimeFormatter.ofPattern("dd"))
+                .append(DateTimeFormatter.ofPattern("dd"))
                 .parseDefaulting(ChronoField.DAY_OF_MONTH, 31));
         dateFormatterBuilders.add(new DateTimeFormatterBuilder()
-                .append(java.time.format.DateTimeFormatter.ofPattern("yyyy"))
+                .append(DateTimeFormatter.ofPattern("yyyy"))
                 .parseDefaulting(ChronoField.MONTH_OF_YEAR, 12)
                 .parseDefaulting(ChronoField.DAY_OF_MONTH, 31));
 
         timeFormatter = new DateTimeFormatterBuilder()
-                .append(java.time.format.DateTimeFormatter.ofPattern(
+                .append(DateTimeFormatter.ofPattern(
                         "[h:mm a]" + "[HH:mm]" + "[h a]" + "[ha]"))
                 .parseDefaulting(ChronoField.MINUTE_OF_HOUR, 0).toFormatter();
-        datePattern = Pattern.compile("^\\s*([+\\-])\\s*([1-9][0-9]*)\\s*(\\w+?)s?\\s*$");
-    }
-
-    public LocalTime parseLocalTime(String timeStr) throws DateTimeParseException {
-        return LocalTime.parse(timeStr.toUpperCase(), timeFormatter);
+        pattern = Pattern.compile("^\\s*([+\\-])\\s*([1-9][0-9]*)\\s*(\\w+?)s?\\s*$");
     }
 
     public LocalDate parseLocalDate(String dateStr) throws DateTimeParseException {
@@ -75,6 +72,14 @@ public class DateTimeParser {
             return parsed;
         } else {
             return parseLocalDateCustom(now, dateStr);
+        }
+    }
+
+    public LocalTime parseLocalTime(String timeStr) throws DateTimeParseException {
+        try {
+            return parseLocalTimeStandard(timeStr);
+        } catch (DateTimeParseException e) {
+            return parseLocalTimeCustom(timeStr);
         }
     }
 
@@ -103,9 +108,9 @@ public class DateTimeParser {
         return null;
     }
 
-    LocalDate parseLocalDateCustom(LocalDate now, String date) throws DateTimeParseException {
-        date = date.toLowerCase().replace(" ", "");
-        Matcher matcher = datePattern.matcher(date);
+    private LocalDate parseLocalDateCustom(LocalDate now, String date) throws DateTimeParseException {
+        date = date.toLowerCase();
+        Matcher matcher = pattern.matcher(date);
 
         if (matcher.matches()) {
             int number = Integer.parseInt(matcher.group(2));
@@ -140,7 +145,7 @@ public class DateTimeParser {
                 }
             }
         } else {
-            switch (date) {
+            switch (date.strip()) {
                 case "today" -> {
                     return now;
                 }
@@ -195,9 +200,41 @@ public class DateTimeParser {
         }
     }
 
+
+    private LocalTime parseLocalTimeStandard(String timeStr) {
+        return LocalTime.parse(timeStr.toUpperCase(), timeFormatter);
+    }
+
+    private LocalTime parseLocalTimeCustom(String timeStr) {
+        LocalTime now = LocalTime.now(clock);
+        timeStr = timeStr.toLowerCase();
+        Matcher matcher = pattern.matcher(timeStr);
+
+        if (matcher.matches()) {
+            int number = Integer.parseInt(matcher.group(2));
+            if (matcher.group(1).equals("-")) {
+                number *= -1;
+            }
+            String noun = matcher.group(3);
+
+            switch (noun) {
+                case "hour" -> {
+                    return now.plusHours(number);
+                } case "minute" -> {
+                    return now.plusMinutes(number);
+                } case "second" -> {
+                    return now.plusSeconds(number);
+                }
+            }
+        } else if (timeStr.strip().equals("now")) {
+            return now;
+        }
+        throw new DateTimeParseException("Invalid time: " + timeStr, timeStr, 0);
+    }
+
     private final List<DateTimeFormatterBuilder> dateFormatterBuilders;
     private final java.time.format.DateTimeFormatter timeFormatter;
-    private final Pattern datePattern;
+    private final Pattern pattern;
     private final Clock clock;
 
 }
