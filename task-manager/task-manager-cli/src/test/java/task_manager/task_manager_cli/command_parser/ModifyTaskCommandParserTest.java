@@ -19,19 +19,19 @@ public class ModifyTaskCommandParserTest {
     @Test
     public void test_parse_noArgs() throws CommandParserException {
         ModifyTaskCommand command = parse(getArgList());
-        assertNull(command.tempIDs());
+        assertNull(command.getTempIDs());
     }
 
     @Test
     public void test_parse_oneTaskID() throws CommandParserException {
         ModifyTaskCommand command = parse(getArgList("1"));
-        assertEquals(command.tempIDs(), List.of(1));
+        assertEquals(command.getTempIDs(), List.of(1));
     }
 
     @Test
     public void test_parse_multipleTaskIDs() throws CommandParserException {
         ModifyTaskCommand command = parse(getArgList("3", "111", "333"));
-        assertEquals(command.tempIDs(), List.of(3, 111, 333));
+        assertEquals(command.getTempIDs(), List.of(3, 111, 333));
     }
 
     @Test
@@ -48,8 +48,8 @@ public class ModifyTaskCommandParserTest {
                 ),
                 List.of()
         ));
-        assertEquals(command.tempIDs(), List.of(1));
-        assertEquals(command.modifyPropertyArgs(), List.of(new PropertyArgument(Affinity.NEGATIVE, "prop", "pred", List.of("value1", "value2", "value3"))));
+        assertEquals(command.getTempIDs(), List.of(1));
+        assertEquals(command.getModifyPropertyArgs(), List.of(new PropertyArgument(Affinity.NEGATIVE, "prop", "pred", List.of("value1", "value2", "value3"))));
     }
 
     @Test
@@ -68,12 +68,12 @@ public class ModifyTaskCommandParserTest {
                                 new PropertyArgument(Affinity.NEUTRAL, "prop4", null, null)
                         )
                 ));
-        assertEquals(command.tempIDs(), List.of(1, 2));
-        assertEquals(command.modifyPropertyArgs(), List.of(
+        assertEquals(command.getTempIDs(), List.of(1, 2));
+        assertEquals(command.getModifyPropertyArgs(), List.of(
                 new PropertyArgument(Affinity.POSITIVE, "prop1", "option1", List.of("value")),
                 new PropertyArgument(Affinity.NEUTRAL, "prop2", null, null)
         ));
-        assertEquals(command.filterPropertyArgs(), List.of(
+        assertEquals(command.getFilterPropertyArgs(), List.of(
                 new PropertyArgument(Affinity.POSITIVE, "prop3", "option1", List.of("value")),
                 new PropertyArgument(Affinity.NEUTRAL, "prop4", null, null)
         ));

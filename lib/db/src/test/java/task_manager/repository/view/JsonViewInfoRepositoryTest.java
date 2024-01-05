@@ -89,6 +89,7 @@ public class JsonViewInfoRepositoryTest {
                                         new FilterCriterionInfo(null, FilterCriterionInfo.Type.PROPERTY, "priority", null, Predicate.GREATER_EQUAL, List.of("medium"))
                                         ),
                                 null, null),
+                        null,
                         null));
         assertEquals(repository.get("view2"),
                 new ViewInfo(
@@ -106,6 +107,7 @@ public class JsonViewInfoRepositoryTest {
                                                 ),
                                                 null, null)),
                                 null, null),
+                        null,
                         null));
         assertEquals(repository.get("view3"),
                 new ViewInfo(
@@ -113,9 +115,9 @@ public class JsonViewInfoRepositoryTest {
                         new SortingInfo(
                                 List.of(new SortingCriterion("name", true))
                         ),
-                        null, null
+                        null, null, null
                 ));
-        assertEquals(repository.get("view4"), new ViewInfo("view4", null, null, null));
+        assertEquals(repository.get("view4"), new ViewInfo("view4", null, null, null, null));
     }
 
     @Test
@@ -155,6 +157,7 @@ public class JsonViewInfoRepositoryTest {
                                 new FilterCriterionInfo(null, FilterCriterionInfo.Type.PROPERTY, "priority", null, Predicate.GREATER_EQUAL, List.of("medium"))
                         ),
                         null, null),
+                null,
                 null));
         repository.create(new ViewInfo(
                         "view2",
@@ -171,6 +174,7 @@ public class JsonViewInfoRepositoryTest {
                                                 ),
                                                 null, null)),
                                 null, null),
+                null,
                 null)
         );
         repository.create(new ViewInfo(
@@ -178,9 +182,9 @@ public class JsonViewInfoRepositoryTest {
                 new SortingInfo(
                         List.of(new SortingCriterion("name", true))
                 ),
-                null, null
+                null, null, null
         ));
-        repository.create(new ViewInfo("view4", null, null, null));
+        repository.create(new ViewInfo("view4", null, null, null, null));
 
         assertEquals(Files.readString(tempFile.toPath()), """
         {

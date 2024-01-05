@@ -5,7 +5,7 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import task_manager.task_manager_cli.Context;
 
 @Log4j2
-public class ClearCommand implements Command {
+public class ClearCommand extends Command {
 
     @Override
     public void execute(Context context) {

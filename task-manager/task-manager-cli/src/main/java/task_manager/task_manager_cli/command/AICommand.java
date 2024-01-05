@@ -4,6 +4,10 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.theokanning.openai.completion.chat.*;
 import com.theokanning.openai.service.OpenAiService;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+import task_manager.core.data.OutputFormat;
 import task_manager.core.data.Task;
 import task_manager.task_logic.use_case.task.TaskUseCase;
 import task_manager.task_manager_cli.Context;
@@ -11,8 +15,10 @@ import task_manager.task_manager_cli.Context;
 import java.io.IOException;
 import java.util.*;
 
-public record AICommand(String command) implements Command {
-
+@AllArgsConstructor
+@Getter
+@Setter
+public final class AICommand extends Command {
     @Override
     public void execute(Context context) {
         try {
@@ -142,7 +148,7 @@ public record AICommand(String command) implements Command {
             List<Task> tasks = context.getTaskUseCase().getTasks(
                     null, null, null, null,
                     taskUuidsList);
-            CommandUtil.printTasks(context, tasks, propertiesToList);
+            context.getTaskPrinter().printTasks(context, tasks, propertiesToList, OutputFormat.TEXT);
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
@@ -163,5 +169,7 @@ public record AICommand(String command) implements Command {
             System.out.println(e.getMessage());
         }
     }
+
+    private String command;
 
 }

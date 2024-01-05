@@ -8,5 +8,6 @@ public record ViewInfo(
         @NonNull String name,
         SortingInfo sortingInfo,
         FilterCriterionInfo filterCriterionInfo,
-        List<String> propertiesToList
+        List<String> propertiesToList,
+        OutputFormat outputFormat
 ) { }

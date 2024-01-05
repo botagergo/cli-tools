@@ -22,15 +22,15 @@ public class ListTasksCommandParserTest {
     @Test
     public void test_parse_noArgs() throws CommandParserException {
         ListTasksCommand command = parse(getArgList(List.of(), List.of(), new LinkedHashMap<>(), List.of(), List.of()));
-        assertNull(command.viewName());
-        assertNull(command.queries());
+        assertNull(command.getViewName());
+        assertNull(command.getQueries());
     }
 
     @Test
     public void test_parse_oneNormalArg() throws CommandParserException {
         ListTasksCommand command = parse(getArgList(List.of(), List.of("viewName"), new LinkedHashMap<>(), List.of(), List.of()));
-        assertEquals(command.viewName(), "viewName");
-        assertNull(command.queries());
+        assertEquals(command.getViewName(), "viewName");
+        assertNull(command.getQueries());
     }
 
     @Test
@@ -49,8 +49,8 @@ public class ListTasksCommandParserTest {
                                 new SpecialArgument('?', "text='my task'")))),
                         List.of(),
                         List.of()));
-        assertNull(command.viewName());
-        assertEquals(command.queries(), List.of("text='my task'"));
+        assertNull(command.getViewName());
+        assertEquals(command.getQueries(), List.of("text='my task'"));
     }
 
     @Test
@@ -65,8 +65,8 @@ public class ListTasksCommandParserTest {
                         List.of(),
                         List.of()
                 ));
-        assertNull(command.viewName());
-        assertEquals(command.queries(), List.of("text='my task'", "text='other task'"));
+        assertNull(command.getViewName());
+        assertEquals(command.getQueries(), List.of("text='my task'", "text='other task'"));
     }
 
     @Test
@@ -94,12 +94,12 @@ public class ListTasksCommandParserTest {
                                 new PropertyArgument(Affinity.NEUTRAL, "prop2", null, null)
                         )
                 ));
-        assertEquals(command.viewName(), "view1");
-        assertEquals(command.tempIDs(), List.of(1, 3));
-        assertEquals(command.sortingCriteria(), List.of(
+        assertEquals(command.getViewName(), "view1");
+        assertEquals(command.getTempIDs(), List.of(1, 3));
+        assertEquals(command.getSortingCriteria(), List.of(
                 new SortingCriterion("prop1", true)
         ));
-        assertEquals(command.filterPropertyArgs(), List.of(
+        assertEquals(command.getFilterPropertyArgs(), List.of(
                 new PropertyArgument(Affinity.POSITIVE, "prop1", "option1", List.of("value")),
                 new PropertyArgument(Affinity.NEUTRAL, "prop2", null, null)
         ));

@@ -1,7 +1,7 @@
 grammar Query;
 
 @header {
-	package task_manager.filter.grammar;
+	package task_manager.logic.filter.grammar;
 }
 
 query : expr ;

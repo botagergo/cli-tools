@@ -5,12 +5,12 @@ import task_manager.task_manager_cli.Context;
 import task_manager.task_manager_cli.command.Command;
 import task_manager.task_manager_cli.command.DeleteTaskCommand;
 
-import java.util.List;
-
-public class DeleteTaskCommandParser implements CommandParser {
+public class DeleteTaskCommandParser extends CommandParser {
 
     @Override
     public Command parse(Context context, ArgumentList argList) throws CommandParserException {
+        DeleteTaskCommand command = new DeleteTaskCommand();
+
         if (!argList.getModifyPropertyArguments().isEmpty()) {
             throw new CommandParserException("Unexpected property arguments");
         } else if (!argList.getTrailingNormalArguments().isEmpty()) {
@@ -19,8 +19,10 @@ public class DeleteTaskCommandParser implements CommandParser {
             throw new CommandParserException("Unexpected option arguments");
         }
 
-        List<Integer> taskIDs = ParseUtil.getTaskIDs(context, argList.getLeadingNormalArguments());
-        return new DeleteTaskCommand(taskIDs, argList.getFilterPropertyArguments());
+        command.setTempIDs(ParseUtil.getTaskIDs(context, argList.getLeadingNormalArguments()));
+        command.setFilterPropertyArgs(argList.getFilterPropertyArguments());
+
+        return command;
     }
 
 }

@@ -3,8 +3,8 @@ package task_manager.logic.filter.grammar;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
-import task_manager.filter.grammar.QueryLexer;
-import task_manager.filter.grammar.QueryParser;
+import task_manager.logic.filter.grammar.QueryLexer;
+import task_manager.logic.filter.grammar.QueryParser;
 import task_manager.logic.filter.*;
 
 public class FilterBuilder {

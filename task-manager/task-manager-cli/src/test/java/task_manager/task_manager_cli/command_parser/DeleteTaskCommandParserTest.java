@@ -16,19 +16,19 @@ public class DeleteTaskCommandParserTest {
     @Test
     public void test_parse_noArgs() throws CommandParserException {
         DeleteTaskCommand command = parse(getArgList(List.of(), List.of()));
-        assertNull(command.tempIDs());
+        assertNull(command.getTempIDs());
     }
 
     @Test
     public void test_parse_oneTaskID() throws CommandParserException {
         DeleteTaskCommand command = parse(getArgList(List.of("1"), List.of()));
-        assertEquals(command.tempIDs(), List.of(1));
+        assertEquals(command.getTempIDs(), List.of(1));
     }
 
     @Test
     public void test_parse_multipleTaskIDs() throws CommandParserException {
         DeleteTaskCommand command = parse(getArgList(List.of("3", "111", "333"), List.of()));
-        assertEquals(command.tempIDs(), List.of(3, 111, 333));
+        assertEquals(command.getTempIDs(), List.of(3, 111, 333));
     }
 
     @Test
@@ -41,8 +41,8 @@ public class DeleteTaskCommandParserTest {
         DeleteTaskCommand command = parse(getArgList(List.of(), List.of(
                 new PropertyArgument(Affinity.NEUTRAL, "prop1", null, List.of("value1"))
         )));
-        assertNull(command.tempIDs());
-        assertEquals(command.filterPropertyArgs(), List.of(
+        assertNull(command.getTempIDs());
+        assertEquals(command.getFilterPropertyArgs(), List.of(
                 new PropertyArgument(Affinity.NEUTRAL, "prop1", null, List.of("value1"))
         ));
     }
@@ -59,7 +59,7 @@ public class DeleteTaskCommandParserTest {
                                 new PropertyArgument(Affinity.NEUTRAL, "prop2", null, null)
                         )
                 ));
-        assertEquals(command.filterPropertyArgs(), List.of(
+        assertEquals(command.getFilterPropertyArgs(), List.of(
                 new PropertyArgument(Affinity.POSITIVE, "prop1", "option1", List.of("value")),
                 new PropertyArgument(Affinity.NEUTRAL, "prop2", null, null)
         ));

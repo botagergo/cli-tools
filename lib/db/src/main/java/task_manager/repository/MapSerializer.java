@@ -21,6 +21,7 @@ public class MapSerializer extends StdSerializer<HashMap<String, Object>> {
     @Override
     @SuppressWarnings("unchecked")
     public Class<HashMap<String, Object>> handledType() {
+        //noinspection InstantiatingObjectToGetClassObject
         return (Class<HashMap<String, Object>>) new HashMap<String, Object>().getClass();
     }
 

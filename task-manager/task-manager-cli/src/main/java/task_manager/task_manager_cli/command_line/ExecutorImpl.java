@@ -49,7 +49,7 @@ public class ExecutorImpl implements Executor {
             Command command = parser.parse(context, argList);
             commandExecutor.execute(context, command);
         } catch (CommandParserException e) {
-            System.out.println("Error parsing command: " + e.getMessage());
+            System.out.println(e.getMessage());
         } catch (Exception e) {
             System.out.println("ERROR: " + e.getMessage());
         }

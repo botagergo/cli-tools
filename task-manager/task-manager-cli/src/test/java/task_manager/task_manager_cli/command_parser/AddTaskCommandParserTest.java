@@ -19,61 +19,61 @@ public class AddTaskCommandParserTest {
     @Test
     public void test_parse_noArgs() throws CommandParserException {
         AddTaskCommand command = parse(getArgList());
-        assertEquals(command.name(), "");
-        assertEquals(command.modifyPropertyArgs().size(), 0);
+        assertEquals(command.getName(), "");
+        assertEquals(command.getModifyPropertyArgs().size(), 0);
     }
     
     @Test
     public void test_parse_oneNormalArg() throws CommandParserException {
         AddTaskCommand command = parse(getArgList("task"));
-        assertEquals(command.name(), "task");
-        assertEquals(command.modifyPropertyArgs().size(), 0);
+        assertEquals(command.getName(), "task");
+        assertEquals(command.getModifyPropertyArgs().size(), 0);
 
         command = parse(getArgList(""));
-        assertEquals(command.name(), "");
-        assertEquals(command.modifyPropertyArgs().size(), 0);
+        assertEquals(command.getName(), "");
+        assertEquals(command.getModifyPropertyArgs().size(), 0);
     }
 
     @Test
     public void test_parse_oneEmptyNormalArg() throws CommandParserException {
         AddTaskCommand command = parse(getArgList(""));
-        assertEquals(command.name(), "");
-        assertEquals(command.modifyPropertyArgs().size(), 0);
+        assertEquals(command.getName(), "");
+        assertEquals(command.getModifyPropertyArgs().size(), 0);
     }
     
     @Test
     public void test_parse_multipleNormalArgs() throws CommandParserException {
         AddTaskCommand command = parse(getArgList("my", "simple", "task"));
-        assertEquals(command.name(), "my simple task");
-        assertEquals(command.modifyPropertyArgs().size(), 0);
+        assertEquals(command.getName(), "my simple task");
+        assertEquals(command.getModifyPropertyArgs().size(), 0);
     }
     
     @Test
     public void test_parse_multipleNormalArgsWithWhitespace() throws CommandParserException {
         AddTaskCommand command = parse(getArgList("my ", "simple", " task"));
-        assertEquals(command.name(), "my  simple  task");
-        assertEquals(command.modifyPropertyArgs().size(), 0);
+        assertEquals(command.getName(), "my  simple  task");
+        assertEquals(command.getModifyPropertyArgs().size(), 0);
     }
 
     @Test
     public void test_parse_onePropertyArg() throws CommandParserException {
         AddTaskCommand command = parse(getArgList(List.of("task"), List.of(new PropertyArgument(Affinity.POSITIVE, "prop", "pred", List.of("value")))));
-        assertEquals(command.name(), "task");
-        assertEquals(command.modifyPropertyArgs(), List.of(new PropertyArgument(Affinity.POSITIVE, "prop", "pred", List.of("value"))));
+        assertEquals(command.getName(), "task");
+        assertEquals(command.getModifyPropertyArgs(), List.of(new PropertyArgument(Affinity.POSITIVE, "prop", "pred", List.of("value"))));
     }
 
     @Test
     public void test_parse_onePropertyArgWithoutName() throws CommandParserException {
         AddTaskCommand command = parse(getArgList(List.of(), List.of(new PropertyArgument(Affinity.NEUTRAL, "prop", null, List.of("value")))));
-        assertEquals(command.name(), "");
-        assertEquals(command.modifyPropertyArgs(), List.of(new PropertyArgument(Affinity.NEUTRAL, "prop", null, List.of("value"))));
+        assertEquals(command.getName(), "");
+        assertEquals(command.getModifyPropertyArgs(), List.of(new PropertyArgument(Affinity.NEUTRAL, "prop", null, List.of("value"))));
     }
     
     @Test
     public void test_parse_onePropertyArgWithMultipleValues() throws CommandParserException {
         AddTaskCommand command = parse(getArgList(List.of("task"), List.of(new PropertyArgument(Affinity.NEUTRAL, "prop", null, List.of("value1", "value2", "value3")))));
-        assertEquals(command.name(), "task");
-        assertEquals(command.modifyPropertyArgs(), List.of(new PropertyArgument(Affinity.NEUTRAL, "prop", null, List.of("value1", "value2", "value3"))));
+        assertEquals(command.getName(), "task");
+        assertEquals(command.getModifyPropertyArgs(), List.of(new PropertyArgument(Affinity.NEUTRAL, "prop", null, List.of("value1", "value2", "value3"))));
     }
 
     @Test
@@ -88,7 +88,7 @@ public class AddTaskCommandParserTest {
                                 new PropertyArgument(Affinity.NEUTRAL, "prop2", null, null)
                         )
                 ));
-        assertEquals(command.modifyPropertyArgs(), List.of(
+        assertEquals(command.getModifyPropertyArgs(), List.of(
                 new PropertyArgument(Affinity.POSITIVE, "prop1", "option1", List.of("value")),
                 new PropertyArgument(Affinity.NEUTRAL, "prop2", null, null)
         ));

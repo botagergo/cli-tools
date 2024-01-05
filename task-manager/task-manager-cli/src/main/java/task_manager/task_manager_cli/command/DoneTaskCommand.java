@@ -1,21 +1,22 @@
 package task_manager.task_manager_cli.command;
 
+import lombok.Getter;
 import lombok.NonNull;
+import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import task_manager.cli_lib.argument.PropertyArgument;
 import task_manager.core.data.Task;
 import task_manager.core.property.FilterPropertySpec;
-import task_manager.cli_lib.argument.PropertyArgument;
 import task_manager.task_manager_cli.Context;
 
 import java.util.List;
 import java.util.UUID;
 
 @Log4j2
-public record DoneTaskCommand(
-        List<@NonNull Integer> tempIDs,
-        List<@NonNull PropertyArgument> filterPropertyArgs
-) implements Command {
+@Getter
+@Setter
+public final class DoneTaskCommand extends Command {
 
     @Override
     public void execute(Context context) {
@@ -49,5 +50,8 @@ public record DoneTaskCommand(
             log.error("{}\n{}", e.getMessage(), ExceptionUtils.getStackTrace(e));
         }
     }
+
+    private List<@NonNull Integer> tempIDs;
+    private List<@NonNull PropertyArgument> filterPropertyArgs;
 
 }

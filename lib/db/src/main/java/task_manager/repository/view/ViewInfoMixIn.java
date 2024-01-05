@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import task_manager.core.data.FilterCriterionInfo;
+import task_manager.core.data.OutputFormat;
 import task_manager.core.data.SortingInfo;
 
 import java.util.List;
@@ -19,5 +20,7 @@ public record ViewInfoMixIn(
         @JsonDeserialize(using = FilterCriterionInfoDeserializer.class)
         FilterCriterionInfo filterCriterionInfo,
         @JsonProperty("properties")
-        List<String> propertiesToList
+        List<String> propertiesToList,
+        @JsonProperty("outputFormat")
+        OutputFormat outputFormat
 ) {}

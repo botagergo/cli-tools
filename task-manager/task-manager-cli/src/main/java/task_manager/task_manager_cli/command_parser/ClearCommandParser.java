@@ -5,7 +5,7 @@ import task_manager.task_manager_cli.Context;
 import task_manager.task_manager_cli.command.ClearCommand;
 import task_manager.task_manager_cli.command.Command;
 
-public class ClearCommandParser implements CommandParser {
+public class ClearCommandParser extends CommandParser {
 
     @Override
     public Command parse(Context context, ArgumentList argList) {

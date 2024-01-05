@@ -5,12 +5,12 @@ import task_manager.task_manager_cli.Context;
 import task_manager.task_manager_cli.command.Command;
 import task_manager.task_manager_cli.command.DoneTaskCommand;
 
-import java.util.List;
-
-public class DoneTaskCommandParser implements CommandParser {
+public class DoneTaskCommandParser extends CommandParser {
 
     @Override
     public Command parse(Context context, ArgumentList argList) throws CommandParserException {
+        DoneTaskCommand command = new DoneTaskCommand();
+
         if (!argList.getModifyPropertyArguments().isEmpty()) {
             throw new CommandParserException("Unexpected property arguments");
         } else if (!argList.getTrailingNormalArguments().isEmpty()) {
@@ -19,8 +19,10 @@ public class DoneTaskCommandParser implements CommandParser {
             throw new CommandParserException("Unexpected option arguments");
         }
 
-        List<Integer> taskIDs = ParseUtil.getTaskIDs(context, argList.getLeadingNormalArguments());
-        return new DoneTaskCommand(taskIDs, argList.getFilterPropertyArguments());
+        command.setTempIDs(ParseUtil.getTaskIDs(context, argList.getLeadingNormalArguments()));
+        command.setFilterPropertyArgs(argList.getFilterPropertyArguments());
+
+        return command;
     }
 
 }

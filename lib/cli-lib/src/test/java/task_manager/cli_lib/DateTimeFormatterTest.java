@@ -5,8 +5,6 @@ import org.testng.annotations.Test;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatterBuilder;
-import java.time.temporal.ChronoField;
 
 public class DateTimeFormatterTest {
     @Test
@@ -17,14 +15,6 @@ public class DateTimeFormatterTest {
         assertFormatDate(LocalDate.of(13, 12, 31), "0013-12-31");
         assertFormatDate(LocalDate.of(0, 1, 1), "0000-01-01");
         assertFormatDate(LocalDate.of(9999, 1, 1), "9999-01-01");
-    }
-
-    @Test
-    public void test() {
-        java.time.format.DateTimeFormatter dateTimeFormatter = new DateTimeFormatterBuilder()
-                .append(java.time.format.DateTimeFormatter.ofPattern("[yyyy-MM-dd]"+ "[MMM-dd]"))
-                .parseDefaulting(ChronoField.YEAR, 2020).toFormatter();
-        dateTimeFormatter.parse("2023-11-04");
     }
 
     @Test
