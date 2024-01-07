@@ -21,7 +21,6 @@ public class StringToPropertyConverterException extends Exception {
         LabelNotFound,
         OrderedLabelNotFound,
         InvalidPredicate,
-        InvalidInteger,
         NoAssociatedLabel,
         InvalidPropertyOption,
         MissingPropertyValue,

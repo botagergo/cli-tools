@@ -4,7 +4,6 @@ import jakarta.inject.Inject;
 import lombok.AllArgsConstructor;
 import task_manager.core.data.ViewInfo;
 import task_manager.core.repository.ViewInfoRepository;
-import task_manager.property_lib.PropertyManager;
 
 import java.io.IOException;
 
@@ -12,7 +11,7 @@ import java.io.IOException;
 public class ViewInfoUseCaseImpl implements ViewInfoUseCase {
 
     @Override
-    public ViewInfo getViewInfo(String name, PropertyManager propertyManager)
+    public ViewInfo getViewInfo(String name)
             throws IOException {
         return viewInfoRepository.get(name);
     }

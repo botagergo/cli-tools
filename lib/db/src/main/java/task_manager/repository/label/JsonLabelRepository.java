@@ -9,7 +9,6 @@ import task_manager.repository.SimpleJsonRepository;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
-import java.util.stream.IntStream;
 
 public class JsonLabelRepository extends SimpleJsonRepository<ArrayList<Label>> implements LabelRepository {
 
@@ -30,7 +29,6 @@ public class JsonLabelRepository extends SimpleJsonRepository<ArrayList<Label>> 
                 .findAny().orElse(null);
     }
 
-    @Override
     public List<Label> getAll() throws IOException {
         return getData();
     }
@@ -40,34 +38,6 @@ public class JsonLabelRepository extends SimpleJsonRepository<ArrayList<Label>> 
         getData().add(label);
         writeData();
         return label;
-    }
-
-    @Override
-    public Label update(Label label) throws IOException {
-        ArrayList<Label> labels = getData();
-        OptionalInt indexOptional = IntStream.range(0, labels.size()).filter(i -> labels.get(i).uuid().equals(label.uuid())).findAny();
-        if (indexOptional.isPresent()) {
-            int index = indexOptional.getAsInt();
-            labels.set(index, labels.get(index).withText(label.text()));
-            writeData();
-            return labels.get(index);
-        } else {
-            return null;
-        }
-    }
-
-    @Override
-    public boolean delete(UUID uuid) throws IOException {
-        ArrayList<Label> labels = getData();
-        Optional<Label> label =
-                labels.stream().filter(t -> t.uuid().equals(uuid)).findAny();
-        if (label.isPresent()) {
-            labels.remove(label.get());
-            writeData();
-            return true;
-        } else {
-            return false;
-        }
     }
 
     @Override

@@ -2,12 +2,7 @@ package task_manager.cli_lib.argument;
 
 import java.util.Set;
 
-public class SpecialArgument {
-
-    public SpecialArgument(char type, String value) {
-        this.type = type;
-        this.value = value;
-    }
+public record SpecialArgument(char type, String value) {
 
     @Override
     public boolean equals(Object obj) {
@@ -33,9 +28,6 @@ public class SpecialArgument {
     public static boolean isSpecialArgumentChar(char ch) {
         return specialChars.contains(ch);
     }
-
-    public final char type;
-    public final String value;
 
     public static final Set<Character> specialChars =
             Set.of('!', '@', '/', '?', '#', '+', '*', ':', '<', '>', '&', '=', '%', '.');

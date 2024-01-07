@@ -31,7 +31,7 @@ public final class ModifyTaskCommand extends Command {
             List<FilterPropertySpec> filterPropertySpecs = CommandUtil.getFilterPropertySpecs(context, filterPropertyArgs);
 
             List<Task> tasks = context.getTaskUseCase().getTasks(
-                    null, filterPropertySpecs, null, null, taskUUIDs);
+                    filterPropertySpecs, null, null, taskUUIDs);
 
             tasks = CommandUtil.confirmAndGetTasksToChange(context, tasks, tempIDs, filterPropertySpecs, CommandUtil.ChangeType.MODIFY);
             if (tasks == null || tasks.isEmpty()) {

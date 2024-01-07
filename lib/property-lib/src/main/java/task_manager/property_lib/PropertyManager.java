@@ -69,6 +69,8 @@ public class PropertyManager {
             if (origSet == null) {
                 newProperty = propertyValue;
             } else {
+                // Disable this inspection as toUnmodifiableSet doesn't work with null values
+                // noinspection FuseStreamOperations
                 newProperty = Collections.unmodifiableSet(Stream.concat(origSet.stream(), propertyValue.stream()).collect(Collectors.toSet()));            }
         } else {
             throw new PropertyException(PropertyException.Type.NotACollection,

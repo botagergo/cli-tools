@@ -35,7 +35,6 @@ public class JsonOrderedLabelRepository extends JsonRepository<ArrayList<String>
         return orderedLabels.get(value);
     }
 
-    @Override
     public List<OrderedLabel> getAll() throws IOException {
         return getData();
     }

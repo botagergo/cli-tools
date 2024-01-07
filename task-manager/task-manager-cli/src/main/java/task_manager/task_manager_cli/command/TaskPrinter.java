@@ -5,6 +5,7 @@ import com.inamik.text.tables.GridTable;
 import com.inamik.text.tables.SimpleTable;
 import com.inamik.text.tables.grid.Border;
 import com.inamik.text.tables.grid.Util;
+import jakarta.inject.Inject;
 import lombok.extern.log4j.Log4j2;
 import org.fusesource.jansi.Ansi;
 import task_manager.cli_lib.DateTimeFormatter;
@@ -26,6 +27,8 @@ import java.util.UUID;
 
 @Log4j2
 public class TaskPrinter {
+
+    @Inject public TaskPrinter() {}
 
     public void printTasks(Context context, List<Task> tasks, List<String> propertiesToList, OutputFormat outputFormat) throws PropertyException, IOException {
         if (outputFormat.equals(OutputFormat.TEXT)) {

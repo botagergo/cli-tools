@@ -29,10 +29,6 @@ public class PropertyDescriptorCollection {
         return propertyDescriptors.getOrDefault(name, null);
     }
 
-    public boolean isEmpty() {
-        return propertyDescriptors.isEmpty();
-    }
-
     private final HashMap<String, PropertyDescriptor> propertyDescriptors;
 
 }

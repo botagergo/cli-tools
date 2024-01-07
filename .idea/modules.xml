@@ -10,7 +10,6 @@
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/lib/db/task-manager.lib.db.main.iml" filepath="$PROJECT_DIR$/.idea/modules/lib/db/task-manager.lib.db.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/lib/db/task-manager.lib.db.test.iml" filepath="$PROJECT_DIR$/.idea/modules/lib/db/task-manager.lib.db.test.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/lib/init/task-manager.lib.init.main.iml" filepath="$PROJECT_DIR$/.idea/modules/lib/init/task-manager.lib.init.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/lib/logic/task-manager.lib.logic.iml" filepath="$PROJECT_DIR$/.idea/modules/lib/logic/task-manager.lib.logic.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/lib/logic/task-manager.lib.logic.main.iml" filepath="$PROJECT_DIR$/.idea/modules/lib/logic/task-manager.lib.logic.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/lib/logic/task-manager.lib.logic.test.iml" filepath="$PROJECT_DIR$/.idea/modules/lib/logic/task-manager.lib.logic.test.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/lib/property-lib/task-manager.lib.property-lib.main.iml" filepath="$PROJECT_DIR$/.idea/modules/lib/property-lib/task-manager.lib.property-lib.main.iml" />

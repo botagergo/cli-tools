@@ -23,12 +23,6 @@ public class JsonStateRepository extends SimpleJsonRepository<HashMap<String, Ob
     }
 
     @Override
-    public void setValue(String name, Object value) throws IOException {
-        getData().put(name, value);
-        writeData();
-    }
-
-    @Override
     protected JavaType constructType(TypeFactory typeFactory) {
         return typeFactory.constructMapType(HashMap.class, String.class, Object.class);
     }

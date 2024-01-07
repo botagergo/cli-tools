@@ -26,8 +26,7 @@ public class PropertyDescriptorUseCaseImpl implements PropertyDescriptorUseCase 
         propertyDescriptorRepository.create(propertyDescriptor);
     }
 
-    @Override
-    public PropertyDescriptor getPropertyDescriptor(String name) throws PropertyException, IOException {
+    private PropertyDescriptor getPropertyDescriptor(String name) throws PropertyException, IOException {
         PropertyDescriptor propertyDescriptor = propertyDescriptorRepository.get(name);
         if (propertyDescriptor == null) {
             throw new PropertyException(PropertyException.Type.NotExist, name, null, null, null, null);

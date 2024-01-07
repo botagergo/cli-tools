@@ -146,7 +146,7 @@ public final class AICommand extends Command {
             }
 
             List<Task> tasks = context.getTaskUseCase().getTasks(
-                    null, null, null, null,
+                    null, null, null,
                     taskUuidsList);
             context.getTaskPrinter().printTasks(context, tasks, propertiesToList, OutputFormat.TEXT);
         } catch (Exception e) {

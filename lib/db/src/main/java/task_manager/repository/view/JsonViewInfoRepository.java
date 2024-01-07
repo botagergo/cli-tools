@@ -31,11 +31,9 @@ public class JsonViewInfoRepository extends SimpleJsonRepository<HashMap<String,
           return getData().getOrDefault(name, null);
     }
 
-    @Override
-    public ViewInfo create(ViewInfo viewInfo) throws IOException {
+    public void create(ViewInfo viewInfo) throws IOException {
         getData().put(viewInfo.name(), viewInfo);
         writeData();
-        return viewInfo;
     }
 
     @Override

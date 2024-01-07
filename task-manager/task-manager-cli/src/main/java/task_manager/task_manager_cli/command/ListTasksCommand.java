@@ -68,7 +68,7 @@ public final class ListTasksCommand extends Command {
                 outputFormat = OutputFormat.TEXT;
             }
 
-            List<Task> tasks = context.getTaskUseCase().getTasks(queries, filterPropertySpecs, sortingInfo, filterCriterionInfo, taskUUIDs);
+            List<Task> tasks = context.getTaskUseCase().getTasks(filterPropertySpecs, sortingInfo, filterCriterionInfo, taskUUIDs);
             context.getTaskPrinter().printTasks(context, tasks, propertiesToList, outputFormat);
         } catch (Exception e) {
             System.out.println("ERROR: " + e.getMessage());
@@ -77,7 +77,7 @@ public final class ListTasksCommand extends Command {
     }
 
     private @NonNull ViewInfo getView(Context context, String viewName) throws TaskUseCaseException, IOException {
-        ViewInfo viewInfo = context.getViewInfoUseCase().getViewInfo(viewName, context.getPropertyManager());
+        ViewInfo viewInfo = context.getViewInfoUseCase().getViewInfo(viewName);
         if (viewInfo == null) {
             throw new TaskUseCaseException("View '" + viewName + "' does not exist");
         }

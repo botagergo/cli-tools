@@ -2,6 +2,7 @@ package task_manager.task_manager_cli.command_parser;
 
 import task_manager.cli_lib.argument.ArgumentList;
 import task_manager.cli_lib.argument.OptionArgument;
+import task_manager.cli_lib.argument.SpecialArgument;
 import task_manager.core.data.OutputFormat;
 import task_manager.core.data.SortingCriterion;
 import task_manager.task_manager_cli.Context;
@@ -23,7 +24,7 @@ public class ListTasksCommandParser extends CommandParser {
         }
 
         if (argList.getSpecialArguments().containsKey('?')) {
-            command.setQueries(argList.getSpecialArguments().get('?').stream().map(SpecialArgument -> SpecialArgument.value).collect(Collectors.toList()));
+            command.setQueries(argList.getSpecialArguments().get('?').stream().map(SpecialArgument::value).collect(Collectors.toList()));
         }
 
         if (argList.getTrailingNormalArguments().size() == 1) {

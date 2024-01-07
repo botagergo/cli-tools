@@ -57,7 +57,6 @@ public class TaskUseCaseImpl implements TaskUseCase {
 
     @Override
     public List<Task> getTasks(
-            List<String> queries,
             List<FilterPropertySpec> propertySpecs,
             SortingInfo sortingInfo,
             FilterCriterionInfo filterCriterionInfo,
@@ -120,8 +119,7 @@ public class TaskUseCaseImpl implements TaskUseCase {
         return tasks;
     }
 
-    @Override
-    public Task getTask(UUID uuid) throws IOException {
+    private Task getTask(UUID uuid) throws IOException {
         return taskRepository.get(uuid);
     }
 

@@ -6,6 +6,7 @@ import com.theokanning.openai.service.OpenAiService;
 import jakarta.inject.Inject;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import task_manager.cli_lib.string_to_property_converter.StringToPropertyConverter;
 import task_manager.core.repository.ConfigurationRepository;
 import task_manager.logic.use_case.label.LabelUseCase;
@@ -19,6 +20,7 @@ import task_manager.task_manager_cli.command.TaskPrinter;
 
 import java.util.List;
 
+@ToString
 @Setter
 @Getter
 public class Context {

@@ -12,7 +12,6 @@ import task_manager.core.repository.ConfigurationRepository;
 import java.io.File;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.TimeZone;
 
 public class ConfigurationRepositoryImpl implements ConfigurationRepository {
 
@@ -37,11 +36,6 @@ public class ConfigurationRepositoryImpl implements ConfigurationRepository {
 
     public String openAiApiKey() {
         return getProperty("openAiApiKey", String.class, null);
-    }
-
-    public TimeZone timeZone() {
-        String timeZone = getProperty("timeZone", String.class, null);
-        return TimeZone.getTimeZone(timeZone);
     }
 
     private <T> T getProperty(String propertyName, Class<T> type, T defValue) {

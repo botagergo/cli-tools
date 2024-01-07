@@ -9,8 +9,6 @@ import java.util.List;
 public interface PropertyDescriptorUseCase {
     void createPropertyDescriptor(PropertyDescriptor propertyDescriptor) throws IOException;
 
-    PropertyDescriptor getPropertyDescriptor(String name) throws IOException, PropertyException;
-
     PropertyDescriptor findPropertyDescriptor(String name) throws PropertyException, IOException;
 
     List<PropertyDescriptor> getPropertyDescriptors() throws IOException;

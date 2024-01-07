@@ -32,14 +32,6 @@ public class Utils {
         return ret;
     }
 
-    public static <K, V> LinkedHashMap<K, V> newLinkedHashMap(K key1, V value1, K key2, V value2, K key3, V value3) {
-        LinkedHashMap<K, V> ret = new LinkedHashMap<>();
-        ret.put(key1, value1);
-        ret.put(key2, value2);
-        ret.put(key3, value3);
-        return ret;
-    }
-
     public static <K> LinkedHashSet<K> newLinkedHashSet() {
         return new LinkedHashSet<>();
     }

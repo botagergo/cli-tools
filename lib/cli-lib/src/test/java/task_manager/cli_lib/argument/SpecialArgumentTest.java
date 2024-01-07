@@ -28,8 +28,8 @@ public class SpecialArgumentTest {
         Assert.assertTrue(SpecialArgument.isSpecialArgument("+arg"));
 
         SpecialArgument specArg = SpecialArgument.from("+arg");
-        Assert.assertEquals(specArg.type, '+');
-        Assert.assertEquals(specArg.value, "arg");
+        Assert.assertEquals(specArg.type(), '+');
+        Assert.assertEquals(specArg.value(), "arg");
     }
 
     @Test

@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<module version="4">
-  <component name="AdditionalModuleElements">
-    <content url="file://$MODULE_DIR$/../../../../lib/logic/build" />
-    <content url="file://$MODULE_DIR$/../../../../lib/logic/build/generated-src/antlr" />
-  </component>
-</module>

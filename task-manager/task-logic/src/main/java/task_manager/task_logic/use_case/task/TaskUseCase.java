@@ -21,13 +21,10 @@ public interface TaskUseCase {
     List<Task> getTasks() throws IOException;
 
     List<Task> getTasks(
-            List<String> queries,
             List<FilterPropertySpec> propertySpecs,
             SortingInfo sortingInfo,
             FilterCriterionInfo filterCriterionInfo,
             List<UUID> taskUUIDs) throws IOException, TaskUseCaseException, PropertyException, PropertyConverterException, FilterCriterionException;
-
-    Task getTask(UUID uuid) throws IOException;
 
     void deleteAllTasks() throws IOException;
 }

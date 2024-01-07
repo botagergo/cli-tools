@@ -245,7 +245,7 @@ public class StringToPropertyConverter {
         try {
             return dateTimeParser.parseLocalTime(propertyValueStr).format(java.time.format.DateTimeFormatter.ISO_LOCAL_TIME);
         } catch (DateTimeParseException e) {
-            throw new StringToPropertyConverterException(StringToPropertyConverterException.Type.InvalidDate, "Invalid time: " + propertyValueStr, propertyValueStr);
+            throw new StringToPropertyConverterException(StringToPropertyConverterException.Type.InvalidTime, "Invalid time: " + propertyValueStr, propertyValueStr);
         }
     }
 
