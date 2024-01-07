@@ -12,7 +12,6 @@ import task_manager.core.repository.TaskRepository;
 import task_manager.logic.PropertyComparator;
 import task_manager.logic.PropertyNotComparableException;
 import task_manager.logic.filter.*;
-import task_manager.logic.filter.grammar.FilterBuilder;
 import task_manager.logic.sorter.PropertySorter;
 import task_manager.property_lib.Property;
 import task_manager.property_lib.PropertyDescriptor;
@@ -87,12 +86,6 @@ public class TaskUseCaseImpl implements TaskUseCase {
 
         if (filterCriterionInfo != null) {
             finalFilterCriteria.add(createFilterCriterion(filterCriterionInfo, propertyManager));
-        }
-
-        if (queries != null) {
-            for (String query : queries) {
-                finalFilterCriteria.add(FilterBuilder.buildFilter(query));
-            }
         }
 
         if (propertySpecs != null) {
