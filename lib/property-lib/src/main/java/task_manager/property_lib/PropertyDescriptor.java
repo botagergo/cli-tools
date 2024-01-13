@@ -80,6 +80,12 @@ public record PropertyDescriptor(
                 return "Time";
             }
         }
+        record TaskSubtype() implements UUIDSubtype {
+            @Override
+            public String name() {
+                return "Task";
+            }
+        }
     }
 
     public enum Multiplicity {

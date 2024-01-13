@@ -9,5 +9,6 @@ public record ViewInfo(
         SortingInfo sortingInfo,
         FilterCriterionInfo filterCriterionInfo,
         List<String> propertiesToList,
-        OutputFormat outputFormat
+        OutputFormat outputFormat,
+        boolean hierarchical
 ) { }

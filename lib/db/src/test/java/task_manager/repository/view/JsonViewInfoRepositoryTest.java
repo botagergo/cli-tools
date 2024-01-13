@@ -90,7 +90,8 @@ public class JsonViewInfoRepositoryTest {
                                         ),
                                 null, null),
                         null,
-                        null));
+                        null,
+                        false));
         assertEquals(repository.get("view2"),
                 new ViewInfo(
                         "view2",
@@ -108,16 +109,17 @@ public class JsonViewInfoRepositoryTest {
                                                 null, null)),
                                 null, null),
                         null,
-                        null));
+                        null,
+                        false));
         assertEquals(repository.get("view3"),
                 new ViewInfo(
                         "view3",
                         new SortingInfo(
                                 List.of(new SortingCriterion("name", true))
                         ),
-                        null, null, null
+                        null, null, null, false
                 ));
-        assertEquals(repository.get("view4"), new ViewInfo("view4", null, null, null, null));
+        assertEquals(repository.get("view4"), new ViewInfo("view4", null, null, null, null, false));
     }
 
     @Test
@@ -158,7 +160,8 @@ public class JsonViewInfoRepositoryTest {
                         ),
                         null, null),
                 null,
-                null));
+                null,
+                false));
         repository.create(new ViewInfo(
                         "view2",
                         null,
@@ -175,16 +178,17 @@ public class JsonViewInfoRepositoryTest {
                                                 null, null)),
                                 null, null),
                 null,
-                null)
+                null,
+                false)
         );
         repository.create(new ViewInfo(
                 "view3",
                 new SortingInfo(
                         List.of(new SortingCriterion("name", true))
                 ),
-                null, null, null
+                null, null, null, false
         ));
-        repository.create(new ViewInfo("view4", null, null, null, null));
+        repository.create(new ViewInfo("view4", null, null, null, null, false));
 
         assertEquals(Files.readString(tempFile.toPath()), """
         {
@@ -206,7 +210,8 @@ public class JsonViewInfoRepositoryTest {
                         {"type": "PROPERTY", "property":"priority", "predicate": "GREATER", "operands":["medium"]},
                         {"type": "PROPERTY", "property":"priority", "predicate": "GREATER_EQUAL", "operands":["medium"]}
                     ]
-                }
+                },
+                "hierarchical": false
             },
             "view2": {
                 "name": "view2",
@@ -220,7 +225,8 @@ public class JsonViewInfoRepositoryTest {
                             ]
                         }
                     ]
-                }
+                },
+                "hierarchical": false
             },
             "view3": {
                 "name": "view3",
@@ -228,10 +234,12 @@ public class JsonViewInfoRepositoryTest {
                     "criteria": [
                         {"property": "name", "ascending": true}
                     ]
-                }
+                },
+                "hierarchical": false
             },
             "view4": {
-                "name": "view4"
+                "name": "view4",
+                "hierarchical": false
             }
         }
         """.replaceAll("\\s", ""));

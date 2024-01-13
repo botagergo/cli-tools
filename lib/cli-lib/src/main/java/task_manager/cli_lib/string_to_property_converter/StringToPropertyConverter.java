@@ -201,8 +201,8 @@ public class StringToPropertyConverter {
         try {
             return UUID.fromString(propertyValueStr);
         } catch (IllegalArgumentException e1) {
-            PropertyDescriptor.Subtype.LabelSubtype labelSubtype = getLabelSubtype(propertyDescriptor);
 
+            PropertyDescriptor.Subtype.LabelSubtype labelSubtype = getLabelSubtype(propertyDescriptor);
             Label label = labelUseCase.findLabel(labelSubtype.labelName(), propertyValueStr);
             if (label == null && createUuidIfNotExists
                     && Utils.yesNo("Label '" + propertyValueStr + "' does not exist. Do you want to create it?")) {
@@ -220,8 +220,7 @@ public class StringToPropertyConverter {
         try {
             return Integer.parseInt(propertyValueStr);
         } catch (NumberFormatException e1) {
-            PropertyDescriptor.Subtype.OrderedLabelSubtype orderedLabelSubtype = getIntegerSubtype(propertyDescriptor);
-
+            PropertyDescriptor.Subtype.OrderedLabelSubtype orderedLabelSubtype = getOrderedLabelSubtype(propertyDescriptor);
             OrderedLabel orderedLabel = orderedLabelUseCase.findOrderedLabel(orderedLabelSubtype.orderedLabelName(), propertyValueStr);
 
             if (orderedLabel != null) {
@@ -249,11 +248,11 @@ public class StringToPropertyConverter {
         }
     }
 
-    private static PropertyDescriptor.Subtype.OrderedLabelSubtype getIntegerSubtype(PropertyDescriptor propertyDescriptor) throws StringToPropertyConverterException {
+    private static PropertyDescriptor.Subtype.OrderedLabelSubtype getOrderedLabelSubtype(PropertyDescriptor propertyDescriptor) throws StringToPropertyConverterException {
         PropertyDescriptor.Subtype.IntegerSubtype integerSubtype = propertyDescriptor.getIntegerSubtypeUnchecked();
         if (!(integerSubtype instanceof PropertyDescriptor.Subtype.OrderedLabelSubtype)) {
             throw new StringToPropertyConverterException(StringToPropertyConverterException.Type.NoAssociatedLabel,
-                    "UUID property '" + propertyDescriptor.name() + "' does not have an associated label", propertyDescriptor.name());
+                    "Property '" + propertyDescriptor.name() + "' is not a label", propertyDescriptor.name());
         }
 
         return (PropertyDescriptor.Subtype.OrderedLabelSubtype)integerSubtype;
@@ -263,7 +262,7 @@ public class StringToPropertyConverter {
         PropertyDescriptor.Subtype.UUIDSubtype uuidSubtype = propertyDescriptor.getUuidSubtypeUnchecked();
         if (!(uuidSubtype instanceof PropertyDescriptor.Subtype.LabelSubtype)) {
             throw new StringToPropertyConverterException(StringToPropertyConverterException.Type.NoAssociatedLabel,
-                    "UUID property '" + propertyDescriptor.name() + "' does not have an associated label", propertyDescriptor.name());
+                    "Property '" + propertyDescriptor.name() + "' is not a label", propertyDescriptor.name());
         }
 
         return (PropertyDescriptor.Subtype.LabelSubtype)uuidSubtype;

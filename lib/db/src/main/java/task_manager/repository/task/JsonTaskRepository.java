@@ -24,7 +24,7 @@ public class JsonTaskRepository extends SimpleJsonRepository<ArrayList<Task>> im
     }
 
     @Override
-    public @NonNull Task create(Task task) throws IOException, IllegalArgumentException {
+    public @NonNull Task create(@NonNull Task task) throws IOException, IllegalArgumentException {
         List<Task> tasks = getData();
 
         tasks.add(task);
@@ -34,7 +34,7 @@ public class JsonTaskRepository extends SimpleJsonRepository<ArrayList<Task>> im
     }
 
     @Override
-    public Task get(UUID uuid) throws IOException {
+    public Task get(@NonNull UUID uuid) throws IOException {
         ArrayList<Task> tasks = getData();
 
         for (Task task : tasks) {
@@ -52,31 +52,25 @@ public class JsonTaskRepository extends SimpleJsonRepository<ArrayList<Task>> im
     }
 
     @Override
-    public Task update(Task task) throws IOException {
+    public Task update(@NonNull UUID taskUuid, @NonNull Task task) throws IOException {
         ArrayList<Task> tasks = getData();
 
-        Task taskToUpdate = null;
-        for (Task taskToUpdate_ : tasks) {
-            if (Objects.equals(taskToUpdate_.getUUID(), task.getUUID())) {
-                taskToUpdate = taskToUpdate_;
-                break;
-            }
-        }
-        if (taskToUpdate == null) {
+        Optional<Task> taskToUpdateOptional = tasks.stream().filter(t -> t.getUUID() == taskUuid).findFirst();
+        if (taskToUpdateOptional.isEmpty()) {
             return null;
         }
+
+        Task taskToUpdate = taskToUpdateOptional.get();
         for (Map.Entry<String, Object> pair : task.getProperties().entrySet()) {
-            if (!Objects.equals(pair.getKey(), "uuid")) {
-                taskToUpdate.getProperties().put(pair.getKey(), pair.getValue());
-            }
+            taskToUpdate.getProperties().put(pair.getKey(), pair.getValue());
         }
+
         writeData();
         return taskToUpdate;
-
     }
 
     @Override
-    public boolean delete(UUID uuid) throws IOException {
+    public boolean delete(@NonNull UUID uuid) throws IOException {
         ArrayList<Task> tasks = getData();
 
         for (Task task : tasks) {

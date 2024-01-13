@@ -14,10 +14,7 @@ import task_manager.logic.PropertyNotComparableException;
 import task_manager.property_lib.*;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 //@AllArgsConstructor(onConstructor = @__(@JsonCreator))
 @Setter
@@ -32,7 +29,7 @@ public class PropertySorter <T extends PropertyOwner> {
         this.sortingCriteria = sortingCriteria;
     }
 
-    public ArrayList<T> sort(List<T> propertyOwners, PropertyManager propertyManager) throws PropertyException, IOException, PropertyNotComparableException {
+    public void sort(List<T> propertyOwners, PropertyManager propertyManager) throws PropertyException, IOException, PropertyNotComparableException {
         List<Pair<List<Property>, Boolean>> valuesToCompare = new ArrayList<>();
 
         for (SortingCriterion sortingCriterion : sortingCriteria) {
@@ -54,12 +51,20 @@ public class PropertySorter <T extends PropertyOwner> {
         List<Integer> indices = comp.createIndexArray();
         indices.sort(comp);
 
-        ArrayList<T> sortedPropertyOwners = new ArrayList<>();
+        reorder(propertyOwners, indices);
+    }
 
-        for (int index : indices) {
-            sortedPropertyOwners.add(propertyOwners.get(index));
+    void reorder(List<T> list, List<Integer> indices)
+    {
+        List<T> reorderedList = new ArrayList<>(Collections.nCopies(list.size(), null));
+        for (int i = 0; i < list.size(); i++) {
+            int ind = indices.get(i);
+            reorderedList.set(i, list.get(ind));
         }
-        return sortedPropertyOwners;
+
+        for (int i = 0; i < list.size(); i++) {
+            list.set(i, reorderedList.get(i));
+        }
     }
 
     private List<SortingCriterion> sortingCriteria;

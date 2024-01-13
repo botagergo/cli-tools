@@ -22,5 +22,7 @@ public record ViewInfoMixIn(
         @JsonProperty("properties")
         List<String> propertiesToList,
         @JsonProperty("outputFormat")
-        OutputFormat outputFormat
+        OutputFormat outputFormat,
+        @JsonProperty(value = "hierarchical", defaultValue = "true")
+        boolean hierarchical
 ) {}

@@ -9,12 +9,10 @@ import jakarta.inject.Inject;
 import lombok.extern.log4j.Log4j2;
 import org.fusesource.jansi.Ansi;
 import task_manager.cli_lib.DateTimeFormatter;
-import task_manager.core.data.Label;
-import task_manager.core.data.OrderedLabel;
-import task_manager.core.data.OutputFormat;
-import task_manager.core.data.Task;
+import task_manager.core.data.*;
 import task_manager.property_lib.Property;
 import task_manager.property_lib.PropertyException;
+import task_manager.property_lib.PropertyOwner;
 import task_manager.task_manager_cli.Context;
 
 import java.io.IOException;
@@ -30,7 +28,9 @@ public class TaskPrinter {
 
     @Inject public TaskPrinter() {}
 
-    public void printTasks(Context context, List<Task> tasks, List<String> propertiesToList, OutputFormat outputFormat) throws PropertyException, IOException {
+    public void printTasks(Context context, List<Task> tasks,
+                           List<String> propertiesToList,
+                           OutputFormat outputFormat) throws PropertyException, IOException {
         if (outputFormat.equals(OutputFormat.TEXT)) {
             printTasksText(context, tasks, propertiesToList);
         } else if (outputFormat.equals(OutputFormat.JSON)) {
@@ -40,7 +40,25 @@ public class TaskPrinter {
         }
     }
 
-    private void printTasksText(Context context, List<Task> tasks, List<String> propertiesToList) throws PropertyException, IOException {
+    public void printTaskHierarchies(Context context, List<TaskHierarchy> taskHierarchies,
+                                     List<String> propertiesToList) throws PropertyException, IOException {
+        SimpleTable table = SimpleTable.of().nextRow();
+
+        for (String propertyName : propertiesToList) {
+            table.nextCell().addLine(String.format(" %s ", propertyName.toUpperCase()));
+        }
+
+        for (TaskHierarchy taskHierarchy : taskHierarchies) {
+            addTaskHierarchyToTable(table, context, taskHierarchy, propertiesToList, 0);
+        }
+
+        GridTable gridTable = Border.of(Border.Chars.of('+', '-', '|')).apply(table.toGrid());
+        Util.print(gridTable, new PrintWriter(System.out, true));
+    }
+
+    private void printTasksText(Context context,
+                                List<Task> tasks,
+                                List<String> propertiesToList) throws PropertyException, IOException {
         SimpleTable table = SimpleTable.of().nextRow();
 
         for (String propertyName : propertiesToList) {
@@ -53,6 +71,50 @@ public class TaskPrinter {
 
         GridTable gridTable = Border.of(Border.Chars.of('+', '-', '|')).apply(table.toGrid());
         Util.print(gridTable, new PrintWriter(System.out, true));
+    }
+
+    private void addTaskHierarchyToTable(SimpleTable table, Context context, TaskHierarchy taskHierarchy, List<String> propertiesToList, int depth) throws IOException, PropertyException {
+        Ansi done;
+        if (context.getPropertyManager().getProperty(taskHierarchy, "done").getBoolean()) {
+            done = Ansi.ansi().a("✓ ");
+        } else {
+            done = Ansi.ansi().a("");
+        }
+
+        table.nextRow();
+
+        for (int i = 0; i < propertiesToList.size(); i++) {
+            String content;
+            String propertyName = propertiesToList.get(i);
+            Property property = context.getPropertyManager().getProperty(taskHierarchy, propertyName);
+            switch (propertyName) {
+                case "name" -> content = String.format(" %s ", done + property.getString());
+                case "done" -> content = String.format(" %s ", property.getBoolean().toString());
+                case "priority" -> content = String.format(" %s ", getLabelStr(context, taskHierarchy, "priority"));
+                case "effort" -> content = String.format(" %s ", getLabelStr(context, taskHierarchy, "effort"));
+                case "tags" -> content = String.format(" %s ", getTagsStr(context, taskHierarchy));
+                case "status" -> content = String.format(" %s ", getStatusStr(context, taskHierarchy));
+                case "id" -> content = String.format(" %s ", getIDStr(context, taskHierarchy));
+                case "startDate" -> content = String.format(" %s ", getDateStr(context.getPropertyManager().getProperty(taskHierarchy, "startDate").getDate()));
+                case "startTime" -> content = String.format(" %s ", getTimeStr(context.getPropertyManager().getProperty(taskHierarchy, "startTime").getTime()));
+                case "dueDate" -> content = String.format(" %s ", getDateStr(context.getPropertyManager().getProperty(taskHierarchy, "dueDate").getDate()));
+                case "dueTime" -> content = String.format(" %s ", getTimeStr(context.getPropertyManager().getProperty(taskHierarchy, "dueTime").getTime()));
+                case "uuid" -> content = String.format(" %s ", property.getUuid());
+                default -> throw new RuntimeException();
+            }
+
+            if (i == 0 && depth > 0) {
+                content = " •".repeat(depth) + content;
+            }
+
+            table.nextCell().addLine(content);
+        }
+
+        if (taskHierarchy.getChildren() != null) {
+            for (TaskHierarchy child : taskHierarchy.getChildren()) {
+                addTaskHierarchyToTable(table, context, child, propertiesToList, depth+1);
+            }
+        }
     }
 
     private void addTaskToTable(SimpleTable table, Context context, Task task, List<String> propertiesToList) throws IOException, PropertyException {
@@ -79,12 +141,13 @@ public class TaskPrinter {
                 case "startTime" -> table.nextCell().addLine(String.format(" %s ", getTimeStr(context.getPropertyManager().getProperty(task, "startTime").getTime())));
                 case "dueDate" -> table.nextCell().addLine(String.format(" %s ", getDateStr(context.getPropertyManager().getProperty(task, "dueDate").getDate())));
                 case "dueTime" -> table.nextCell().addLine(String.format(" %s ", getTimeStr(context.getPropertyManager().getProperty(task, "dueTime").getTime())));
+                case "uuid" -> table.nextCell().addLine(String.format(" %s ", property.getUuid()));
                 default -> throw new RuntimeException();
             }
         }
     }
 
-    private String getTagsStr(Context context, Task task) throws IOException, PropertyException {
+    private String getTagsStr(Context context, PropertyOwner task) throws IOException, PropertyException {
         StringBuilder tagsStr = new StringBuilder();
 
         Set<UUID> tagUuids = context.getPropertyManager().getProperty(task, "tags").getUuidSet();
@@ -99,8 +162,8 @@ public class TaskPrinter {
         return tagsStr.toString();
     }
 
-    private String getStatusStr(Context context, Task task) throws IOException, PropertyException {
-        UUID statusUuid = context.getPropertyManager().getProperty(task, "status").getUuid();
+    private String getStatusStr(Context context, PropertyOwner propertyOwner) throws IOException, PropertyException {
+        UUID statusUuid = context.getPropertyManager().getProperty(propertyOwner, "status").getUuid();
         if (statusUuid == null) {
             return "";
         }
@@ -114,8 +177,8 @@ public class TaskPrinter {
         return status.text();
     }
 
-    private String getLabelStr(Context context, Task task, String propertyName) throws IOException, PropertyException {
-        Integer value = context.getPropertyManager().getProperty(task, propertyName).getInteger();
+    private String getLabelStr(Context context, PropertyOwner propertyOwner, String propertyName) throws IOException, PropertyException {
+        Integer value = context.getPropertyManager().getProperty(propertyOwner, propertyName).getInteger();
         if (value == null) {
             return "";
         }
@@ -129,8 +192,8 @@ public class TaskPrinter {
         return priority.text();
     }
 
-    private String getIDStr(Context context, Task task) throws PropertyException, IOException {
-        return context.getPropertyManager().getProperty(task, "id").getInteger().toString();
+    private String getIDStr(Context context, PropertyOwner propertyOwner) throws PropertyException, IOException {
+        return context.getPropertyManager().getProperty(propertyOwner, "id").getInteger().toString();
     }
 
     private String getDateStr(LocalDate localDate) {

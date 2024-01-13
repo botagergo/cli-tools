@@ -39,11 +39,12 @@ public final class ModifyTaskCommand extends Command {
             }
 
             for (Task task : tasks) {
+                UUID taskUuid = task.getUUID();
                 if (modifyPropertyArgs != null) {
                     List<ModifyPropertySpec> modifyPropertySpecs = context.getStringToPropertyConverter().convertPropertiesForModification(modifyPropertyArgs, true);
                     PropertyModifier.modifyProperties(context.getPropertyManager(), task, modifyPropertySpecs);
                 }
-                Task modifiedTask = context.getTaskUseCase().modifyTask(task);
+                Task modifiedTask = context.getTaskUseCase().modifyTask(taskUuid, task);
                 if (tasks.size() == 1) {
                     int tempID = context.getTempIDMappingUseCase().getOrCreateID(modifiedTask.getUUID());
                     context.setPrevTaskID(tempID);

@@ -17,11 +17,22 @@ public class Utils {
         return ret;
     }
 
+
+
     public static <K, V> HashMap<K, V> newHashMap(K key1, V value1, K key2, V value2, K key3, V value3) {
         HashMap<K, V> ret = new HashMap<>();
         ret.put(key1, value1);
         ret.put(key2, value2);
         ret.put(key3, value3);
+        return ret;
+    }
+
+    public static <K, V> HashMap<K, V> newHashMap(K key1, V value1, K key2, V value2, K key3, V value3, K key4, V value4) {
+        HashMap<K, V> ret = new HashMap<>();
+        ret.put(key1, value1);
+        ret.put(key2, value2);
+        ret.put(key3, value3);
+        ret.put(key4, value4);
         return ret;
     }
 

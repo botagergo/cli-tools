@@ -61,6 +61,8 @@ public class Initializer {
                 new PropertyDescriptor("dueDate", PropertyDescriptor.Type.String, new PropertyDescriptor.Subtype.DateSubtype(), PropertyDescriptor.Multiplicity.SINGLE, null, false));
         propertyDescriptorUseCase.createPropertyDescriptor(
                 new PropertyDescriptor("dueTime", PropertyDescriptor.Type.String, new PropertyDescriptor.Subtype.TimeSubtype(), PropertyDescriptor.Multiplicity.SINGLE, null, false));
+        propertyDescriptorUseCase.createPropertyDescriptor(
+                new PropertyDescriptor("parent", PropertyDescriptor.Type.UUID, new PropertyDescriptor.Subtype.TaskSubtype(), PropertyDescriptor.Multiplicity.SINGLE, null, false));
     }
 
     private void initializePriorities() throws IOException {

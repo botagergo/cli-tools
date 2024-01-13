@@ -51,8 +51,12 @@ public final class ListTasksCommand extends Command {
                     propertiesToList = viewInfo.propertiesToList();
                 }
 
-                if (viewInfo.outputFormat() != null) {
+                if (outputFormat == null) {
                     outputFormat = viewInfo.outputFormat();
+                }
+
+                if (hierarchical == null) {
+                    hierarchical = viewInfo.hierarchical();
                 }
             }
 
@@ -68,8 +72,21 @@ public final class ListTasksCommand extends Command {
                 outputFormat = OutputFormat.TEXT;
             }
 
-            List<Task> tasks = context.getTaskUseCase().getTasks(filterPropertySpecs, sortingInfo, filterCriterionInfo, taskUUIDs);
-            context.getTaskPrinter().printTasks(context, tasks, propertiesToList, outputFormat);
+            if (hierarchical == null) {
+                hierarchical = true;
+            }
+
+            if (hierarchical) {
+                if (outputFormat != OutputFormat.TEXT) {
+                    System.out.println("outputFormat can only be text when printing tasks hierarchically");
+                    return;
+                }
+                List<TaskHierarchy> taskHierarchies = context.getTaskUseCase().getTaskHierarchies(filterPropertySpecs, sortingInfo, filterCriterionInfo, taskUUIDs);
+                context.getTaskPrinter().printTaskHierarchies(context, taskHierarchies, propertiesToList);
+            } else {
+                List<Task> tasks = context.getTaskUseCase().getTasks(filterPropertySpecs, sortingInfo, filterCriterionInfo, taskUUIDs);
+                context.getTaskPrinter().printTasks(context, tasks, propertiesToList, outputFormat);
+            }
         } catch (Exception e) {
             System.out.println("ERROR: " + e.getMessage());
             log.error("{}\n{}", e.getMessage(), ExceptionUtils.getStackTrace(e));
@@ -89,6 +106,7 @@ public final class ListTasksCommand extends Command {
     private List<@NonNull PropertyArgument> filterPropertyArgs;
     private String viewName;
     private OutputFormat outputFormat;
+    private Boolean hierarchical;
     private List<@NonNull Integer> tempIDs;
 }
 

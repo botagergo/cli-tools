@@ -2,49 +2,48 @@ package task_manager.task_logic.use_case.task;
 
 import jakarta.inject.Inject;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NonNull;
+import lombok.Setter;
 import org.apache.commons.lang3.NotImplementedException;
 import task_manager.core.data.FilterCriterionInfo;
 import task_manager.core.data.SortingInfo;
 import task_manager.core.data.Task;
+import task_manager.core.data.TaskHierarchy;
 import task_manager.core.property.*;
 import task_manager.core.repository.TaskRepository;
 import task_manager.logic.PropertyComparator;
 import task_manager.logic.PropertyNotComparableException;
 import task_manager.logic.filter.*;
 import task_manager.logic.sorter.PropertySorter;
-import task_manager.property_lib.Property;
-import task_manager.property_lib.PropertyDescriptor;
-import task_manager.property_lib.PropertyException;
-import task_manager.property_lib.PropertyManager;
+import task_manager.property_lib.*;
 import task_manager.util.UUIDGenerator;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @AllArgsConstructor(onConstructor = @__(@Inject))
+@Getter
+@Setter
 public class TaskUseCaseImpl implements TaskUseCase {
 
     @Override
-    public @NonNull Task addTask(Task task) throws IOException {
+    public @NonNull Task addTask(@NonNull Task task) throws IOException {
         task.getProperties().put("uuid", uuidGenerator.getUUID());
         return taskRepository.create(task);
     }
 
     @Override
-    public @NonNull Task modifyTask(Task task) throws IOException, TaskUseCaseException {
-        Task modifiedTask = taskRepository.update(task);
+    public @NonNull Task modifyTask(@NonNull UUID taskUuid, @NonNull Task task) throws IOException, TaskUseCaseException {
+        Task modifiedTask = taskRepository.update(taskUuid, task);
         if (modifiedTask == null) {
-            throw new TaskUseCaseException(String.format(TaskUseCaseException.taskNotFoundMessage, task.getUUID()));
+            throw new TaskUseCaseException(String.format(TaskUseCaseException.taskNotFoundMessage, taskUuid));
         }
         return modifiedTask;
     }
 
     @Override
-    public void deleteTask(UUID uuid) throws IOException, TaskUseCaseException {
+    public void deleteTask(@NonNull UUID uuid) throws IOException, TaskUseCaseException {
         if (!taskRepository.delete(uuid)) {
             throw new TaskUseCaseException(String.format(TaskUseCaseException.taskNotFoundMessage, uuid));
         }
@@ -62,25 +61,124 @@ public class TaskUseCaseImpl implements TaskUseCase {
             FilterCriterionInfo filterCriterionInfo,
             List<UUID> taskUUIDs
     ) throws IOException, TaskUseCaseException, PropertyException, PropertyConverterException, FilterCriterionException {
-        List<FilterCriterion> finalFilterCriteria = new ArrayList<>();
-        PropertySorter<Task> sorter = null;
 
-        List<Task> tasks;
-        if (taskUUIDs != null) {
-            tasks = new ArrayList<>();
-            for(UUID taskUUID : taskUUIDs) {
-                Task task = getTask(taskUUID);
-                if (task == null) {
-                    throw new TaskUseCaseException("No task found with uuid '" + taskUUID + "'");
-                }
-                tasks.add(getTask(taskUUID));
+        List<Task> tasks = getUnsortedTasks(propertySpecs, filterCriterionInfo, taskUUIDs);
+
+        if (sortingInfo != null) {
+            PropertySorter<Task> propertySorter = new PropertySorter<>(sortingInfo.sortingCriteria());
+            try {
+                propertySorter.sort(tasks, propertyManager);
+            } catch (PropertyException | PropertyNotComparableException e) {
+                throw new TaskUseCaseException("Failed to sort tasks: " + e.getMessage());
             }
-        } else {
-            tasks = getTasks();
+        }
+
+        return tasks;
+    }
+
+
+    public List<TaskHierarchy> getTaskHierarchies(
+            List<FilterPropertySpec> propertySpecs,
+            SortingInfo sortingInfo,
+            FilterCriterionInfo filterCriterionInfo,
+            List<UUID> taskUUIDs
+    ) throws IOException, TaskUseCaseException, PropertyException, PropertyConverterException, FilterCriterionException {
+        List<Task> tasks = getUnsortedTasks(propertySpecs, filterCriterionInfo, taskUUIDs);
+
+        List<TaskHierarchy> taskHierarchies = new ArrayList<>();
+        Map<UUID, TaskHierarchy> taskTreeMap = new HashMap<>();
+
+        for (Task task : tasks) {
+            addTaskHierarchy(taskHierarchies, taskTreeMap, task);
         }
 
         if (sortingInfo != null) {
-            sorter = new PropertySorter<>(sortingInfo.sortingCriteria());
+            PropertySorter<TaskHierarchy> sorter = new PropertySorter<>(sortingInfo.sortingCriteria());
+            try {
+                sortTaskTrees(taskHierarchies, sorter, propertyManager);
+            } catch (PropertyException | PropertyNotComparableException e) {
+                throw new TaskUseCaseException("Failed to sort tasks: " + e.getMessage());
+            }
+        }
+
+        return taskHierarchies;
+    }
+
+    private TaskHierarchy addTaskHierarchy(List<TaskHierarchy> taskHierarchies, Map<UUID, TaskHierarchy> taskTreeMap, Task task) throws IOException, PropertyException {
+        TaskHierarchy taskHierarchy = taskTreeMap.get(task.getUUID());
+        if (taskHierarchy != null) {
+            return taskHierarchy;
+        }
+
+        taskHierarchy = new TaskHierarchy(task, new ArrayList<>());
+        taskTreeMap.put(task.getUUID(), taskHierarchy);
+
+        UUID parentUuid = propertyManager.getProperty(taskHierarchy.getParent(), "parent").getUuid();
+        if (parentUuid != null) {
+            TaskHierarchy parentTaskHierarchy = taskTreeMap.get(parentUuid);
+            if (parentTaskHierarchy == null) {
+                parentTaskHierarchy = addTaskHierarchy(taskHierarchies, taskTreeMap, parentUuid);
+            }
+            if (parentTaskHierarchy.getChildren() == null) {
+                parentTaskHierarchy.setChildren(new ArrayList<>());
+            }
+            parentTaskHierarchy.getChildren().add(taskHierarchy);
+        } else {
+            taskHierarchies.add(taskHierarchy);
+        }
+
+        return taskHierarchy;
+    }
+
+    private TaskHierarchy addTaskHierarchy(List<TaskHierarchy> taskHierarchies, Map<UUID, TaskHierarchy> taskTreeMap, UUID uuid) throws IOException, PropertyException {
+        TaskHierarchy taskHierarchy = taskTreeMap.get(uuid);
+        if (taskHierarchy != null) {
+            return taskHierarchy;
+        }
+
+        taskHierarchy = new TaskHierarchy(getTask(uuid), new ArrayList<>());
+        taskTreeMap.put(uuid, taskHierarchy);
+
+        UUID parentUuid = propertyManager.getProperty(taskHierarchy.getParent(), "parent").getUuid();
+        if (parentUuid != null) {
+            TaskHierarchy parentTaskHierarchy = taskTreeMap.get(parentUuid);
+            if (parentTaskHierarchy == null) {
+                parentTaskHierarchy = addTaskHierarchy(taskHierarchies, taskTreeMap, getTask(parentUuid));
+            }
+            if (parentTaskHierarchy.getChildren() == null) {
+                parentTaskHierarchy.setChildren(new ArrayList<>());
+            }
+            parentTaskHierarchy.getChildren().add(taskHierarchy);
+        } else {
+            taskHierarchies.add(taskHierarchy);
+        }
+
+        return taskHierarchy;
+    }
+
+    private List<Task> getUnsortedTasks(
+            List<FilterPropertySpec> propertySpecs,
+            FilterCriterionInfo filterCriterionInfo,
+            List<UUID> taskUUIDs
+    ) throws IOException, TaskUseCaseException, PropertyException, PropertyConverterException, FilterCriterionException {
+        List<FilterCriterion> finalFilterCriteria = new ArrayList<>();
+
+        List<Task> tasks;
+        if (taskUUIDs != null) {
+            Set<UUID> uuids = new HashSet<>();
+            tasks = new ArrayList<>();
+            for(UUID taskUUID : taskUUIDs) {
+                if (uuids.contains(taskUUID)) {
+                    continue;
+                }
+                uuids.add(taskUUID);
+                Task task = getTask(taskUUID);
+                if (task != null) {
+                    tasks.add(getTask(taskUUID));
+                }
+            }
+        } else {
+            tasks = getTasks();
         }
 
         if (filterCriterionInfo != null) {
@@ -108,15 +206,17 @@ public class TaskUseCaseImpl implements TaskUseCase {
             }
         }
 
-        if (sorter != null) {
-            try {
-                tasks = sorter.sort(tasks, propertyManager);
-            } catch (PropertyException | PropertyNotComparableException e) {
-                throw new TaskUseCaseException("Failed to sort tasks: " + e.getMessage());
+        return tasks;
+    }
+
+
+    private void sortTaskTrees(List<TaskHierarchy> taskHierarchies, PropertySorter<TaskHierarchy> propertySorter, PropertyManager propertyManager) throws PropertyException, PropertyNotComparableException, IOException {
+        propertySorter.sort(taskHierarchies, propertyManager);
+        for (TaskHierarchy taskHierarchy : taskHierarchies) {
+            if (taskHierarchy.getChildren() != null) {
+                sortTaskTrees(taskHierarchy.getChildren(), propertySorter, propertyManager);
             }
         }
-
-        return tasks;
     }
 
     private Task getTask(UUID uuid) throws IOException {
@@ -274,9 +374,9 @@ public class TaskUseCaseImpl implements TaskUseCase {
         throw new RuntimeException();
     }
 
-    private final TaskRepository taskRepository;
-    private final PropertyManager propertyManager;
-    private final UUIDGenerator uuidGenerator;
-    private final PropertyConverter propertyConverter;
+    private TaskRepository taskRepository;
+    private PropertyManager propertyManager;
+    private UUIDGenerator uuidGenerator;
+    private PropertyConverter propertyConverter;
 
 }

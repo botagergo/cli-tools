@@ -28,6 +28,11 @@ public class Task extends PropertyOwner {
         return obj instanceof Task t && properties.equals(t.properties);
     }
 
+    @Override
+    public String toString() {
+        return properties.toString();
+    }
+
     private final HashMap<String, Object> properties;
 
 }

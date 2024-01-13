@@ -1,5 +1,6 @@
 package task_manager.core.repository;
 
+import lombok.NonNull;
 import task_manager.core.data.Task;
 
 import java.io.IOException;
@@ -8,11 +9,11 @@ import java.util.UUID;
 
 public interface TaskRepository {
 
-    Task create(Task task) throws IOException;
-    Task get(UUID uuid) throws IOException;
+    Task create(@NonNull Task task) throws IOException;
+    Task get(@NonNull UUID uuid) throws IOException;
     List<Task> getAll() throws IOException;
-    Task update(Task task) throws IOException;
-    boolean delete(UUID uuid) throws IOException;
+    Task update(@NonNull UUID taskUuid, @NonNull Task task) throws IOException;
+    boolean delete(@NonNull UUID uuid) throws IOException;
     void deleteAll() throws IOException;
 
 }

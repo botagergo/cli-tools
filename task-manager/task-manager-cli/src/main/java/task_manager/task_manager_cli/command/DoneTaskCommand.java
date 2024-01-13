@@ -38,7 +38,7 @@ public final class DoneTaskCommand extends Command {
             for (Task task : tasks) {
                 context.getTempIDMappingUseCase().delete(task.getUUID());
                 context.getPropertyManager().setProperty(task, "done", true);
-                Task updatedTask = context.getTaskUseCase().modifyTask(task);
+                Task updatedTask = context.getTaskUseCase().modifyTask(task.getUUID(), task);
 
                 if (tasks.size() == 1) {
                     int tempID = context.getTempIDMappingUseCase().getOrCreateID(updatedTask.getUUID());
