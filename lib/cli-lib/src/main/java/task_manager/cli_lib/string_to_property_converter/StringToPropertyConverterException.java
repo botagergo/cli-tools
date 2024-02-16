@@ -25,7 +25,10 @@ public class StringToPropertyConverterException extends Exception {
         InvalidPropertyOption,
         MissingPropertyValue,
         InvalidDate,
-        InvalidTime
+        InvalidTime,
+        InvalidTempId,
+        TempIdNotFound,
+        InvalidUuid
     }
 
 }

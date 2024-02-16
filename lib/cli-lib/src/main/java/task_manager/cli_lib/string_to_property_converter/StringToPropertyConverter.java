@@ -10,6 +10,7 @@ import task_manager.core.property.*;
 import task_manager.logic.use_case.label.LabelUseCase;
 import task_manager.logic.use_case.ordered_label.OrderedLabelUseCase;
 import task_manager.logic.use_case.property_descriptor.PropertyDescriptorUseCase;
+import task_manager.logic.use_case.temp_id_mapping.TempIDMappingUseCase;
 import task_manager.property_lib.Property;
 import task_manager.property_lib.PropertyDescriptor;
 import task_manager.property_lib.PropertyException;
@@ -26,11 +27,13 @@ public class StringToPropertyConverter {
     public StringToPropertyConverter(
             LabelUseCase labelUseCase,
             OrderedLabelUseCase orderedLabelUseCase,
-            PropertyDescriptorUseCase propertyDescriptorUseCase
+            PropertyDescriptorUseCase propertyDescriptorUseCase,
+            TempIDMappingUseCase tempIDMappingUseCase
     ) {
         this.labelUseCase = labelUseCase;
         this.orderedLabelUseCase = orderedLabelUseCase;
         this.propertyDescriptorUseCase = propertyDescriptorUseCase;
+        this.tempIDMappingUseCase = tempIDMappingUseCase;
         this.dateTimeParser = new DateTimeParser();
     }
 
@@ -201,17 +204,31 @@ public class StringToPropertyConverter {
         try {
             return UUID.fromString(propertyValueStr);
         } catch (IllegalArgumentException e1) {
-
-            PropertyDescriptor.Subtype.LabelSubtype labelSubtype = getLabelSubtype(propertyDescriptor);
-            Label label = labelUseCase.findLabel(labelSubtype.labelName(), propertyValueStr);
-            if (label == null && createUuidIfNotExists
-                    && Utils.yesNo("Label '" + propertyValueStr + "' does not exist. Do you want to create it?")) {
-                label = labelUseCase.createLabel(labelSubtype.labelName(), propertyValueStr);
-            }
-            if (label != null) {
-                return label.uuid();
+            PropertyDescriptor.Subtype.UUIDSubtype uuidSubtype = propertyDescriptor.getUuidSubtypeUnchecked();
+            if (uuidSubtype instanceof PropertyDescriptor.Subtype.LabelSubtype labelSubtype) {
+                Label label = labelUseCase.findLabel(labelSubtype.labelName(), propertyValueStr);
+                if (label == null && createUuidIfNotExists
+                        && Utils.yesNo("Label '" + propertyValueStr + "' does not exist. Do you want to create it?")) {
+                    label = labelUseCase.createLabel(labelSubtype.labelName(), propertyValueStr);
+                }
+                if (label != null) {
+                    return label.uuid();
+                } else {
+                    throw new StringToPropertyConverterException(StringToPropertyConverterException.Type.LabelNotFound, "Label not found: " + labelSubtype.labelName(), labelSubtype.labelName());
+                }
+            } else if (tempIDMappingUseCase != null && uuidSubtype instanceof PropertyDescriptor.Subtype.TaskSubtype) {
+                try {
+                    int tempId = Integer.parseInt(propertyValueStr);
+                    UUID uuid = tempIDMappingUseCase.getUUID(tempId);
+                    if (uuid == null) {
+                        throw new StringToPropertyConverterException(StringToPropertyConverterException.Type.TempIdNotFound, "Temporary ID not found: " + propertyValueStr, propertyValueStr);
+                    }
+                    return uuid;
+                } catch (NumberFormatException e) {
+                    throw new StringToPropertyConverterException(StringToPropertyConverterException.Type.InvalidTempId, "Invalid temporary ID (must be a natural number): " + propertyValueStr, propertyValueStr);
+                }
             } else {
-                throw new StringToPropertyConverterException(StringToPropertyConverterException.Type.LabelNotFound, "Label not found: " + labelSubtype.labelName(), labelSubtype.labelName());
+                throw new StringToPropertyConverterException(StringToPropertyConverterException.Type.InvalidUuid, "Invalid UUID: " + propertyValueStr, propertyValueStr);
             }
         }
     }
@@ -258,19 +275,10 @@ public class StringToPropertyConverter {
         return (PropertyDescriptor.Subtype.OrderedLabelSubtype)integerSubtype;
     }
 
-    private static PropertyDescriptor.Subtype.LabelSubtype getLabelSubtype(PropertyDescriptor propertyDescriptor) throws StringToPropertyConverterException {
-        PropertyDescriptor.Subtype.UUIDSubtype uuidSubtype = propertyDescriptor.getUuidSubtypeUnchecked();
-        if (!(uuidSubtype instanceof PropertyDescriptor.Subtype.LabelSubtype)) {
-            throw new StringToPropertyConverterException(StringToPropertyConverterException.Type.NoAssociatedLabel,
-                    "Property '" + propertyDescriptor.name() + "' is not a label", propertyDescriptor.name());
-        }
-
-        return (PropertyDescriptor.Subtype.LabelSubtype)uuidSubtype;
-    }
-
     private final PropertyDescriptorUseCase propertyDescriptorUseCase;
     private final LabelUseCase labelUseCase;
     private final OrderedLabelUseCase orderedLabelUseCase;
+    private final TempIDMappingUseCase tempIDMappingUseCase;
     private final DateTimeParser dateTimeParser;
 
 }

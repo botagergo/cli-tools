@@ -136,22 +136,14 @@ public class StringToPropertyConverterTest {
     }
 
     @Test
-    public void test_stringToProperty_uuid_noAssociatedLabel_throws() throws IOException {
+    public void test_stringToProperty_uuid_invalidUuid_throws() throws IOException {
         try {
             propertyConverter.stringToProperty(
                     getPropertyDescriptor(PropertyDescriptor.Type.UUID, null, PropertyDescriptor.Multiplicity.SINGLE), List.of("tag"), true);
             fail();
         } catch (StringToPropertyConverterException e) {
-            assertEquals(e.getExceptionType(), StringToPropertyConverterException.Type.NoAssociatedLabel);
-            assertEquals(e.getArgument(), "test");
-        }
-        try {
-            propertyConverter.stringToProperty(
-                    getPropertyDescriptor(PropertyDescriptor.Type.UUID, null, PropertyDescriptor.Multiplicity.SINGLE), List.of("tag"), true);
-            fail();
-        } catch (StringToPropertyConverterException e) {
-            assertEquals(e.getExceptionType(), StringToPropertyConverterException.Type.NoAssociatedLabel);
-            assertEquals(e.getArgument(), "test");
+            assertEquals(e.getExceptionType(), StringToPropertyConverterException.Type.InvalidUuid);
+            assertEquals(e.getArgument(), "tag");
         }
     }
     @Mock
