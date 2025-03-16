@@ -2,10 +2,8 @@ package task_manager.task_manager_cli.command_line;
 
 import com.google.inject.Inject;
 import lombok.AllArgsConstructor;
-import org.jline.reader.LineReader;
+import org.jline.reader.*;
 import org.jline.reader.LineReader.Option;
-import org.jline.reader.LineReaderBuilder;
-import org.jline.reader.UserInterruptException;
 import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
 import task_manager.init.Initializer;
@@ -15,7 +13,7 @@ import task_manager.property_lib.PropertyDescriptorCollection;
 import task_manager.task_manager_cli.Context;
 
 import java.io.IOException;
-import java.util.List;
+import java.util.*;
 
 @AllArgsConstructor(onConstructor = @__(@Inject))
 public class JlineCommandLine implements CommandLine {
@@ -27,20 +25,24 @@ public class JlineCommandLine implements CommandLine {
         }
 
         Context context = ((ExecutorImpl) executor).getContext();
-
         List<PropertyDescriptor> propertyDescriptors = context.getPropertyDescriptorUseCase().getPropertyDescriptors();
         context.getPropertyManager().setPropertyDescriptorCollection(PropertyDescriptorCollection.fromList(propertyDescriptors));
 
         context.getPropertyManager()
                 .registerPseudoPropertyProvider("id", new TaskIDPseudoPropertyProvider(context.getTempIDMappingUseCase()));
-
         Terminal terminal = TerminalBuilder.builder()
                 .nativeSignals(true)
                 .signalHandler(Terminal.SignalHandler.SIG_IGN)
                 .build();
 
+        Completer completer = buildCompleter(context);
         LineReader reader = LineReaderBuilder.builder().terminal(terminal)
-            .option(Option.DISABLE_EVENT_EXPANSION, true).build();
+                .completer(completer)
+                .parser(new Parser())
+                .completionMatcher(new CompletionMatcher())
+                .option(Option.RECOGNIZE_EXACT, true)
+                .option(Option.GROUP_PERSIST, true)
+                .option(Option.DISABLE_EVENT_EXPANSION, true).build();
 
         String line;
         String prompt = "> ";
@@ -58,6 +60,12 @@ public class JlineCommandLine implements CommandLine {
 
             }
         }
+    }
+
+    private Completer buildCompleter(Context context) {
+        return new Completer(
+                context,
+                List.of("add", "list", "modify", "delete", "clear", "done"));
     }
 
     private final Initializer initializer;

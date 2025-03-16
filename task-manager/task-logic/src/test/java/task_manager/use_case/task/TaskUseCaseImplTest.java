@@ -7,6 +7,7 @@ import org.testng.annotations.Test;
 import task_manager.core.data.*;
 import task_manager.core.property.FilterPropertySpec;
 import task_manager.logic.filter.FilterCriterionException;
+import task_manager.logic.use_case.temp_id_mapping.TempIDMappingUseCase;
 import task_manager.property_lib.Property;
 import task_manager.property_lib.PropertyDescriptor;
 import task_manager.property_lib.PropertyException;
@@ -36,7 +37,8 @@ public class TaskUseCaseImplTest {
                 simpleTaskRepository,
                 propertyManager,
                 null,
-                propertyConverter
+                propertyConverter,
+                tempIDMappingUseCase
         );
 
         initPropertyDescriptors();
@@ -337,6 +339,7 @@ public class TaskUseCaseImplTest {
     private final UUID uuid8 = uuidGenerator.getUUID();
 
     @InjectMocks private PropertyConverter propertyConverter;
+    @Mock private TempIDMappingUseCase tempIDMappingUseCase;
     private TaskUseCaseImpl taskUseCase;
     private PropertyManager propertyManager;
     private SimpleTaskRepository simpleTaskRepository;

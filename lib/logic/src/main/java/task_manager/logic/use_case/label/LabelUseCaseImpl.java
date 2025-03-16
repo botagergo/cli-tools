@@ -7,7 +7,7 @@ import task_manager.core.repository.LabelRepositoryFactory;
 import task_manager.util.UUIDGenerator;
 
 import java.io.IOException;
-import java.util.UUID;
+import java.util.*;
 
 @AllArgsConstructor(onConstructor = @__(@Inject))
 public class LabelUseCaseImpl implements LabelUseCase {
@@ -35,6 +35,11 @@ public class LabelUseCaseImpl implements LabelUseCase {
     @Override
     public void deleteAllLabels(String labelName) throws IOException {
         labelRepositoryFactory.getLabelRepository(labelName).deleteAll();
+    }
+
+    @Override
+    public List<Label> getLabels(String labelName) throws IOException {
+        return labelRepositoryFactory.getLabelRepository(labelName).getAll();
     }
 
     private final LabelRepositoryFactory labelRepositoryFactory;

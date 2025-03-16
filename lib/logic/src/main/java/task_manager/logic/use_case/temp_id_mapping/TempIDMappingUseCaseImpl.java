@@ -25,6 +25,11 @@ public class TempIDMappingUseCaseImpl implements TempIDMappingUseCase {
         tempIDMappingRepository.delete(uuid);
     }
 
+    @Override
+    public void deleteAll() throws IOException {
+        tempIDMappingRepository.deleteAll();
+    }
+
     private final TempIDMappingRepository tempIDMappingRepository;
 
 }

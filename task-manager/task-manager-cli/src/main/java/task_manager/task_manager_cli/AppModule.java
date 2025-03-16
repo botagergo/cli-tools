@@ -42,6 +42,7 @@ public class AppModule extends AbstractModule {
     @Override
     protected void configure() {
         String basePath = System.getenv("TASK_MANAGER_BASE_PATH");
+        System.out.println(basePath);
         if (basePath == null) {
             basePath = System.getProperty("user.home") + "/.config/task_manager/";
         }

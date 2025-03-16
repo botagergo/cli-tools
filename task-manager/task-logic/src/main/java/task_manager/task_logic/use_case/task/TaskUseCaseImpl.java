@@ -16,6 +16,7 @@ import task_manager.logic.PropertyComparator;
 import task_manager.logic.PropertyNotComparableException;
 import task_manager.logic.filter.*;
 import task_manager.logic.sorter.PropertySorter;
+import task_manager.logic.use_case.temp_id_mapping.TempIDMappingUseCase;
 import task_manager.property_lib.*;
 import task_manager.util.UUIDGenerator;
 
@@ -47,6 +48,7 @@ public class TaskUseCaseImpl implements TaskUseCase {
         if (!taskRepository.delete(uuid)) {
             throw new TaskUseCaseException(String.format(TaskUseCaseException.taskNotFoundMessage, uuid));
         }
+        tempIDMappingUseCase.delete(uuid);
     }
 
     @Override
@@ -226,6 +228,7 @@ public class TaskUseCaseImpl implements TaskUseCase {
     @Override
     public void deleteAllTasks() throws IOException {
         taskRepository.deleteAll();
+        tempIDMappingUseCase.deleteAll();
     }
 
     private FilterCriterion getFilterCriterion(FilterPropertySpec propertySpec) throws TaskUseCaseException {
@@ -378,5 +381,6 @@ public class TaskUseCaseImpl implements TaskUseCase {
     private PropertyManager propertyManager;
     private UUIDGenerator uuidGenerator;
     private PropertyConverter propertyConverter;
+    private TempIDMappingUseCase tempIDMappingUseCase;
 
 }

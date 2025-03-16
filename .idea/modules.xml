@@ -9,11 +9,16 @@
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/lib/core/task-manager.lib.core.test.iml" filepath="$PROJECT_DIR$/.idea/modules/lib/core/task-manager.lib.core.test.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/lib/db/task-manager.lib.db.main.iml" filepath="$PROJECT_DIR$/.idea/modules/lib/db/task-manager.lib.db.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/lib/db/task-manager.lib.db.test.iml" filepath="$PROJECT_DIR$/.idea/modules/lib/db/task-manager.lib.db.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/lib/init/task-manager.lib.init.main.iml" filepath="$PROJECT_DIR$/.idea/modules/lib/init/task-manager.lib.init.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/lib/logic/task-manager.lib.logic.main.iml" filepath="$PROJECT_DIR$/.idea/modules/lib/logic/task-manager.lib.logic.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/lib/logic/task-manager.lib.logic.test.iml" filepath="$PROJECT_DIR$/.idea/modules/lib/logic/task-manager.lib.logic.test.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/lib/property-lib/task-manager.lib.property-lib.main.iml" filepath="$PROJECT_DIR$/.idea/modules/lib/property-lib/task-manager.lib.property-lib.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/lib/property-lib/task-manager.lib.property-lib.test.iml" filepath="$PROJECT_DIR$/.idea/modules/lib/property-lib/task-manager.lib.property-lib.test.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/lib/util/task-manager.lib.util.main.iml" filepath="$PROJECT_DIR$/.idea/modules/lib/util/task-manager.lib.util.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/task-manager/task-logic/task-manager.task-manager.task-logic.main.iml" filepath="$PROJECT_DIR$/.idea/modules/task-manager/task-logic/task-manager.task-manager.task-logic.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/task-manager/task-logic/task-manager.task-manager.task-logic.test.iml" filepath="$PROJECT_DIR$/.idea/modules/task-manager/task-logic/task-manager.task-manager.task-logic.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/task-manager/task-manager-cli/task-manager.task-manager.task-manager-cli.main.iml" filepath="$PROJECT_DIR$/.idea/modules/task-manager/task-manager-cli/task-manager.task-manager.task-manager-cli.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/task-manager/task-manager-cli/task-manager.task-manager.task-manager-cli.test.iml" filepath="$PROJECT_DIR$/.idea/modules/task-manager/task-manager-cli/task-manager.task-manager.task-manager-cli.test.iml" />
     </modules>
   </component>
 </project>

@@ -8,5 +8,5 @@ public interface TempIDMappingRepository {
     int getOrCreateID(UUID uuid) throws IOException;
     UUID getUUID(int id) throws IOException;
     boolean delete(UUID uuid) throws  IOException;
-
+    void deleteAll() throws IOException;
 }

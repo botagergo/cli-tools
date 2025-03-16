@@ -62,6 +62,15 @@ public class JsonTempIDMappingRepository extends SimpleJsonRepository<TempIDMapp
     }
 
     @Override
+    public void deleteAll() throws IOException {
+        TempIDMappings mappings = getData();
+        mappings.mappings.clear();
+        mappings.nextID = 1;
+        mappings.freeIDs.clear();
+        writeData();
+    }
+
+    @Override
     protected TempIDMappings getEmptyData() {
         return new TempIDMappings();
     }

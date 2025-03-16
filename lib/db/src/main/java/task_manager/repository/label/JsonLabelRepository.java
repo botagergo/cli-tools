@@ -29,6 +29,7 @@ public class JsonLabelRepository extends SimpleJsonRepository<ArrayList<Label>> 
                 .findAny().orElse(null);
     }
 
+    @Override
     public List<Label> getAll() throws IOException {
         return getData();
     }

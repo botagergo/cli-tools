@@ -7,4 +7,5 @@ public interface TempIDMappingUseCase {
     int getOrCreateID(UUID uuid) throws IOException;
     UUID getUUID(int id) throws IOException;
     void delete(UUID uuid) throws IOException;
+    void deleteAll() throws IOException;
 }
