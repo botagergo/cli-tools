@@ -1,10 +1,12 @@
 package task_manager.property_lib;
 
+import lombok.NonNull;
+
 public record PropertyDescriptor(
-        String name,
-        Type type,
+        @NonNull String name,
+        @NonNull Type type,
         Subtype subtype,
-        Multiplicity multiplicity,
+        @NonNull Multiplicity multiplicity,
         Object defaultValue,
         boolean isPseudoProperty
 ) {
@@ -56,13 +58,13 @@ public record PropertyDescriptor(
         interface StringSubtype extends Subtype {}
         interface UUIDSubtype extends Subtype {}
         interface IntegerSubtype extends Subtype {}
-        record LabelSubtype(String labelName) implements UUIDSubtype {
+        record LabelSubtype(String labelType) implements UUIDSubtype {
             @Override
             public String name() {
                 return "Label";
             }
         }
-        record OrderedLabelSubtype(String orderedLabelName) implements IntegerSubtype {
+        record OrderedLabelSubtype(String orderedLabelType) implements IntegerSubtype {
             @Override
             public String name() {
                 return "OrderedLabel";

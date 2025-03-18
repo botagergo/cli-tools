@@ -28,6 +28,7 @@ public final class ListTasksCommand extends Command {
             SortingInfo sortingInfo = null;
             List<String> propertiesToList = null;
             String actualViewName = viewName;
+            Boolean actualHierarchical = hierarchical;
 
             List<UUID> taskUUIDs = CommandUtil.getUUIDsFromTempIDs(context, tempIDs);
             List<FilterPropertySpec> filterPropertySpecs = CommandUtil.getFilterPropertySpecs(context, filterPropertyArgs);
@@ -55,8 +56,8 @@ public final class ListTasksCommand extends Command {
                     outputFormat = viewInfo.outputFormat();
                 }
 
-                if (hierarchical == null) {
-                    hierarchical = viewInfo.hierarchical();
+                if (actualHierarchical == null) {
+                    actualHierarchical = viewInfo.hierarchical();
                 }
             }
 
@@ -72,11 +73,11 @@ public final class ListTasksCommand extends Command {
                 outputFormat = OutputFormat.TEXT;
             }
 
-            if (hierarchical == null) {
-                hierarchical = true;
+            if (actualHierarchical == null) {
+                actualHierarchical = true;
             }
 
-            if (hierarchical) {
+            if (actualHierarchical) {
                 if (outputFormat != OutputFormat.TEXT) {
                     System.out.println("outputFormat can only be text when printing tasks hierarchically");
                     return;

@@ -47,13 +47,7 @@ public class CommandUtil {
             List<FilterPropertySpec> filterPropertySpecs,
             @NonNull ChangeType changeType
     ) throws PropertyException, IOException {
-        // No need for confirmation if temporary IDs were specified,
-        // or if there is only one matching task
-        if (tempIDs != null || tasks.size() < 2) {
-            return tasks;
-        }
-
-        String message = getMessageFromChangeType(tasks, filterPropertySpecs, changeType);
+        String message = getMessageFromChangeType(tasks, tempIDs, filterPropertySpecs, changeType);
 
         char answer = prompt(message, "ynsp");
         switch (answer) {
@@ -74,22 +68,28 @@ public class CommandUtil {
         }
     }
 
-    private static String getMessageFromChangeType(List<Task> tasks, List<FilterPropertySpec> filterPropertySpecs, ChangeType changeType) {
+    private static String getMessageFromChangeType(
+            List<Task> tasks,
+            List<Integer> tempIDs,
+            List<FilterPropertySpec> filterPropertySpecs,
+            ChangeType changeType) {
         String message;
-        if (filterPropertySpecs == null) {
+        String taskStr = tasks.size() > 1 ? "tasks" : "task";
+        if ((filterPropertySpecs == null || filterPropertySpecs.isEmpty())
+                && (tempIDs == null || tempIDs.isEmpty())) {
             message = switch (changeType) {
                 case DELETE ->
-                        "No filter was specified, delete all (" + tasks.size() + ") tasks? ([y]es/[n]o/[s]how/[p]ick) ";
+                        "No filter was specified, delete all (" + tasks.size() + ") " + taskStr + "? ([y]es/[n]o/[s]how/[p]ick) ";
                 case DONE ->
-                        "No filter was specified, mark all (" + tasks.size() + ") tasks as done? ([y]es/[n]o/[s]how/[p]ick) ";
+                        "No filter was specified, mark all (" + tasks.size() + ") " + taskStr + " as done? ([y]es/[n]o/[s]how/[p]ick) ";
                 case MODIFY ->
-                        "No filter was specified, modify all (" + tasks.size() + ") tasks? ([y]es/[n]o/[s]how/[p]ick) ";
+                        "No filter was specified, modify all (" + tasks.size() + ") " + taskStr + "? ([y]es/[n]o/[s]how/[p]ick) ";
             };
         } else {
             message = switch (changeType) {
-                case DELETE -> "Deleting " + tasks.size() + " tasks. Continue? ([y]es/[n]o/[s]how/[p]ick) ";
-                case DONE -> "Marking " + tasks.size() + " tasks as done. Continue? ([y]es/[n]o/[s]how/[p]ick) ";
-                case MODIFY -> "Modifying " + tasks.size() + " tasks. Continue? ([y]es/[n]o/[s]how/[p]ick) ";
+                case DELETE -> "Deleting " + tasks.size() + " " + taskStr + ". Continue? ([y]es/[n]o/[s]how/[p]ick) ";
+                case DONE -> "Marking " + tasks.size() + " " + taskStr + " as done. Continue? ([y]es/[n]o/[s]how/[p]ick) ";
+                case MODIFY -> "Modifying " + tasks.size() + " " + taskStr + ". Continue? ([y]es/[n]o/[s]how/[p]ick) ";
             };
         }
         return message;

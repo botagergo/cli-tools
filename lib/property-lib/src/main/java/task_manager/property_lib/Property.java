@@ -64,7 +64,6 @@ public class Property {
         if (value == null) {
             return null;
         }
-
         return (String) value;
     }
 
@@ -75,10 +74,13 @@ public class Property {
                     PropertyDescriptor.Type.UUID, null);
         }
 
+        return getUuidUnchecked();
+    }
+
+    public UUID getUuidUnchecked() {
         if (value == null) {
             return null;
         }
-
         return (UUID) value;
     }
 
@@ -112,7 +114,6 @@ public class Property {
         if (value == null) {
             return null;
         }
-
         return (Integer) value;
     }
 
@@ -160,7 +161,6 @@ public class Property {
         }
     }
 
-    @SuppressWarnings("unchecked")
     public List<UUID> getUuidList() throws PropertyException {
         if (propertyDescriptor.type() != PropertyDescriptor.Type.UUID) {
             throw new PropertyException(PropertyException.Type.TypeMismatch,
@@ -172,14 +172,39 @@ public class Property {
                     PropertyDescriptor.Type.UUID, null);
         }
 
-        if (value == null) {
-            return null;
-        }
-
-        return (List<UUID>) value;
+        return getUuidListUnchecked();
     }
 
     @SuppressWarnings("unchecked")
+    public List<UUID> getUuidListUnchecked() {
+        if (value == null) {
+            return null;
+        }
+        return (List<UUID>) value;
+    }
+
+    public List<Integer> getIntegerList() throws PropertyException {
+        if (propertyDescriptor.type() != PropertyDescriptor.Type.Integer) {
+            throw new PropertyException(PropertyException.Type.TypeMismatch,
+                    propertyDescriptor.name(), propertyDescriptor, value,
+                    PropertyDescriptor.Type.Integer, null);
+        } else if (propertyDescriptor.multiplicity() != PropertyDescriptor.Multiplicity.LIST) {
+            throw new PropertyException(PropertyException.Type.WrongMultiplicity,
+                    propertyDescriptor.name(), propertyDescriptor, value,
+                    PropertyDescriptor.Type.Integer, null);
+        }
+
+        return getIntegerListUnchecked();
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<Integer> getIntegerListUnchecked() {
+        if (value == null) {
+            return null;
+        }
+        return (List<Integer>) value;
+    }
+
     public List<String> getStringList() throws PropertyException {
         if (propertyDescriptor.type() != PropertyDescriptor.Type.String) {
             throw new PropertyException(PropertyException.Type.TypeMismatch,
@@ -191,14 +216,17 @@ public class Property {
                     PropertyDescriptor.Type.String, null);
         }
 
-        if (value == null) {
-            return null;
-        }
-
-        return (List<String>) value;
+        return getStringListUnchecked();
     }
 
     @SuppressWarnings("unchecked")
+    public List<String> getStringListUnchecked() {
+        if (value == null) {
+            return null;
+        }
+        return (List<String>) value;
+    }
+
     public List<Boolean> getBooleanList() throws PropertyException {
         if (propertyDescriptor.type() != PropertyDescriptor.Type.Boolean) {
             throw new PropertyException(PropertyException.Type.TypeMismatch,
@@ -210,14 +238,17 @@ public class Property {
                     PropertyDescriptor.Type.Boolean, null);
         }
 
-        if (value == null) {
-            return null;
-        }
-
-        return (List<Boolean>) value;
+        return getBooleanListUnchecked();
     }
 
     @SuppressWarnings("unchecked")
+    public List<Boolean> getBooleanListUnchecked() {
+        if (value == null) {
+            return null;
+        }
+        return (List<Boolean>) value;
+    }
+
     public Set<UUID> getUuidSet() throws PropertyException {
         if (propertyDescriptor.type() != PropertyDescriptor.Type.UUID) {
             throw new PropertyException(PropertyException.Type.TypeMismatch,
@@ -229,14 +260,39 @@ public class Property {
                     PropertyDescriptor.Type.UUID, null);
         }
 
-        if (value == null) {
-            return null;
-        }
-
-        return (Set<UUID>) value;
+        return getUuidSetUnchecked();
     }
 
     @SuppressWarnings("unchecked")
+    public Set<UUID> getUuidSetUnchecked() {
+        if (value == null) {
+            return null;
+        }
+        return (Set<UUID>) value;
+    }
+
+    public Set<Integer> getIntegerSet() throws PropertyException {
+        if (propertyDescriptor.type() != PropertyDescriptor.Type.Integer) {
+            throw new PropertyException(PropertyException.Type.TypeMismatch,
+                    propertyDescriptor.name(), propertyDescriptor, value,
+                    PropertyDescriptor.Type.Integer, null);
+        } else if (propertyDescriptor.multiplicity() != PropertyDescriptor.Multiplicity.SET) {
+            throw new PropertyException(PropertyException.Type.WrongMultiplicity,
+                    propertyDescriptor.name(), propertyDescriptor, value,
+                    PropertyDescriptor.Type.Integer, null);
+        }
+
+        return getIntegerSetUnchecked();
+    }
+
+    @SuppressWarnings("unchecked")
+    public Set<Integer> getIntegerSetUnchecked() {
+        if (value == null) {
+            return null;
+        }
+        return (Set<Integer>) value;
+    }
+
     public Set<String> getStringSet() throws PropertyException {
         if (propertyDescriptor.type() != PropertyDescriptor.Type.String) {
             throw new PropertyException(PropertyException.Type.TypeMismatch,
@@ -248,57 +304,69 @@ public class Property {
                     PropertyDescriptor.Type.String, null);
         }
 
-        if (value == null) {
-            return null;
-        }
-
-        return (Set<String>) value;
+        return getStringSetUnchecked();
     }
 
     @SuppressWarnings("unchecked")
+    public Set<String> getStringSetUnchecked() {
+        if (value == null) {
+            return null;
+        }
+        return (Set<String>) value;
+    }
+
     public List<Object> getList() throws PropertyException {
         if (propertyDescriptor.multiplicity() != PropertyDescriptor.Multiplicity.LIST) {
             throw new PropertyException(PropertyException.Type.WrongMultiplicity,
                     propertyDescriptor.name(), propertyDescriptor, value, null, null);
         }
 
-        if (value == null) {
-            return null;
-        }
-
-        return (List<Object>) value;
+        return getListUnchecked();
     }
 
     @SuppressWarnings("unchecked")
+    public List<Object> getListUnchecked() {
+        if (value == null) {
+            return null;
+        }
+        return (List<Object>) value;
+    }
+
     public Set<Object> getSet() throws PropertyException {
         if (propertyDescriptor.multiplicity() != PropertyDescriptor.Multiplicity.SET) {
             throw new PropertyException(PropertyException.Type.WrongMultiplicity,
                     propertyDescriptor.name(), propertyDescriptor, value, null, null);
         }
 
+        return getSetUnchecked();
+    }
+
+    @SuppressWarnings("unchecked")
+    public Set<Object> getSetUnchecked() throws PropertyException {
         if (value == null) {
             return null;
         }
         return (Set<Object>) value;
     }
 
-
-    @SuppressWarnings("unchecked")
     public Collection<Object> getCollection() throws PropertyException {
         if (propertyDescriptor.multiplicity() != PropertyDescriptor.Multiplicity.SET
-        && propertyDescriptor.multiplicity() != PropertyDescriptor.Multiplicity.LIST) {
+                && propertyDescriptor.multiplicity() != PropertyDescriptor.Multiplicity.LIST) {
             throw new PropertyException(PropertyException.Type.WrongMultiplicity,
                     propertyDescriptor.name(), propertyDescriptor, value, null, null);
         }
 
-        if (value == null) {
-            return null;
-        }
-
-        return (Collection<Object>) value;
+        return getCollectionUnchecked();
     }
 
     @SuppressWarnings("unchecked")
+    public Collection<Object> getCollectionUnchecked() {
+        if (value == null) {
+            return null;
+        }
+        return (Collection<Object>) value;
+    }
+
     public Set<Boolean> getBooleanSet() throws PropertyException {
         if (propertyDescriptor.type() != PropertyDescriptor.Type.Boolean) {
             throw new PropertyException(PropertyException.Type.TypeMismatch,
@@ -310,18 +378,22 @@ public class Property {
                     PropertyDescriptor.Type.Boolean, null);
         }
 
+        return getBooleanSetUnchecked();
+    }
+
+    @SuppressWarnings("unchecked")
+    public Set<Boolean> getBooleanSetUnchecked() {
         if (value == null) {
             return null;
         }
-
         return (Set<Boolean>) value;
     }
 
     private static List<Object> convertPropertyValueList(PropertyDescriptor propertyDescriptor, Object propertyValues) throws PropertyException {
         if (!(propertyValues instanceof List<?> propertyValuesList)) {
             throw new PropertyException(PropertyException.Type.WrongValueType,
-                propertyDescriptor.name(), propertyDescriptor, propertyValues,
-                propertyDescriptor.type(), null);
+                    propertyDescriptor.name(), propertyDescriptor, propertyValues,
+                    propertyDescriptor.type(), null);
         }
 
         for (Object propertyValue : propertyValuesList) {

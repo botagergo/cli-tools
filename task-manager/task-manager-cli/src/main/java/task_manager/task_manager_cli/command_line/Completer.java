@@ -62,10 +62,10 @@ class Completer implements org.jline.reader.Completer {
 
             try {
                 if (propertyDescriptor.subtype() instanceof PropertyDescriptor.Subtype.LabelSubtype labelSubtype) {
-                    List<Label> labels = context.getLabelUseCase().getLabels(labelSubtype.labelName());
+                    List<Label> labels = context.getLabelUseCase().getLabels(labelSubtype.labelType());
                     labelStrs = labels.stream().map(Label::text).toList();
                 } else if (propertyDescriptor.subtype() instanceof PropertyDescriptor.Subtype.OrderedLabelSubtype orderedLabelSubtype) {
-                    List<OrderedLabel> labels = context.getOrderedLabelUseCase().getOrderedLabels(orderedLabelSubtype.orderedLabelName());
+                    List<OrderedLabel> labels = context.getOrderedLabelUseCase().getOrderedLabels(orderedLabelSubtype.orderedLabelType());
                     labelStrs = labels.stream().map(OrderedLabel::text).toList();
                 }
             } catch (IOException e) {

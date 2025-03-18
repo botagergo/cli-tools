@@ -206,15 +206,15 @@ public class StringToPropertyConverter {
         } catch (IllegalArgumentException e1) {
             PropertyDescriptor.Subtype.UUIDSubtype uuidSubtype = propertyDescriptor.getUuidSubtypeUnchecked();
             if (uuidSubtype instanceof PropertyDescriptor.Subtype.LabelSubtype labelSubtype) {
-                Label label = labelUseCase.findLabel(labelSubtype.labelName(), propertyValueStr);
+                Label label = labelUseCase.findLabel(labelSubtype.labelType(), propertyValueStr);
                 if (label == null && createUuidIfNotExists
                         && Utils.yesNo("Label '" + propertyValueStr + "' does not exist. Do you want to create it?")) {
-                    label = labelUseCase.createLabel(labelSubtype.labelName(), propertyValueStr);
+                    label = labelUseCase.createLabel(labelSubtype.labelType(), propertyValueStr);
                 }
                 if (label != null) {
                     return label.uuid();
                 } else {
-                    throw new StringToPropertyConverterException(StringToPropertyConverterException.Type.LabelNotFound, "Label not found: " + labelSubtype.labelName(), labelSubtype.labelName());
+                    throw new StringToPropertyConverterException(StringToPropertyConverterException.Type.LabelNotFound, "Label not found: " + labelSubtype.labelType(), labelSubtype.labelType());
                 }
             } else if (tempIDMappingUseCase != null && uuidSubtype instanceof PropertyDescriptor.Subtype.TaskSubtype) {
                 try {
@@ -238,13 +238,13 @@ public class StringToPropertyConverter {
             return Integer.parseInt(propertyValueStr);
         } catch (NumberFormatException e1) {
             PropertyDescriptor.Subtype.OrderedLabelSubtype orderedLabelSubtype = getOrderedLabelSubtype(propertyDescriptor);
-            OrderedLabel orderedLabel = orderedLabelUseCase.findOrderedLabel(orderedLabelSubtype.orderedLabelName(), propertyValueStr);
+            OrderedLabel orderedLabel = orderedLabelUseCase.findOrderedLabel(orderedLabelSubtype.orderedLabelType(), propertyValueStr);
 
             if (orderedLabel != null) {
                 return orderedLabel.value();
             } else {
                 throw new StringToPropertyConverterException(StringToPropertyConverterException.Type.OrderedLabelNotFound,
-                        "Ordered label not found: " + orderedLabelSubtype.orderedLabelName(), orderedLabelSubtype.orderedLabelName());
+                        "Ordered label not found: " + orderedLabelSubtype.orderedLabelType(), orderedLabelSubtype.orderedLabelType());
             }
         }
     }

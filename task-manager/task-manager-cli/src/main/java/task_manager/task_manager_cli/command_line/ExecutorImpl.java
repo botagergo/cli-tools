@@ -41,7 +41,6 @@ public class ExecutorImpl implements Executor {
 
         CommandParser parser = commandParserFactory.getParser(argList);
         if (parser == null) {
-            System.out.println("Unknown command: " + argList.getCommandName());
             return;
         }
 
