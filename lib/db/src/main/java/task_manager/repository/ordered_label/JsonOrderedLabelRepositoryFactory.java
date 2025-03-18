@@ -24,8 +24,8 @@ public class JsonOrderedLabelRepositoryFactory implements OrderedLabelRepository
     }
 
     @Override
-    public OrderedLabelRepository getOrderedLabelRepository(String orderedLabelName) {
-        return repositories.computeIfAbsent(orderedLabelName, (key) -> new JsonOrderedLabelRepository(Paths.get(basePath.toString(), orderedLabelName + ".json").toFile()));
+    public OrderedLabelRepository getOrderedLabelRepository(String orderedLabelType) {
+        return repositories.computeIfAbsent(orderedLabelType, (key) -> new JsonOrderedLabelRepository(Paths.get(basePath.toString(), orderedLabelType + ".json").toFile()));
     }
 
 }

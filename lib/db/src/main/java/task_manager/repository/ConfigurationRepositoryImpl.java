@@ -8,16 +8,23 @@ import org.github.gestalt.config.builder.GestaltBuilder;
 import org.github.gestalt.config.exceptions.GestaltException;
 import org.github.gestalt.config.reflect.TypeCapture;
 import org.github.gestalt.config.source.FileConfigSourceBuilder;
+import shadow.org.codehaus.plexus.util.ExceptionUtils;
 import task_manager.core.repository.ConfigurationRepository;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.*;
 
 @Log4j2
 public class ConfigurationRepositoryImpl implements ConfigurationRepository {
 
     @Inject
-    public ConfigurationRepositoryImpl(@Named("configurationYamlFile") File configFile) {
+    public ConfigurationRepositoryImpl(@Named("configurationYamlFile") File configFile) throws IOException {
+        if (!configFile.exists()) {
+            if (!configFile.createNewFile()) {
+                log.warn("Failed to create config file at " + configFile);
+            }
+        }
         try {
             gestalt = new GestaltBuilder()
                     .addSource(FileConfigSourceBuilder.builder().setFile(configFile).build())
@@ -53,11 +60,10 @@ public class ConfigurationRepositoryImpl implements ConfigurationRepository {
     private <T> T getProperty(String propertyName, Class<T> type, T defValue) {
         try {
             return gestalt.getConfig(propertyName, type);
-        } catch (NoSuchElementException e) {
-            log.debug("ConfigurationRepositoryImpl.getProperty - property \"" + propertyName + "\" not found, returning default");
-            return defValue;
         } catch (GestaltException e) {
-            log.error("ConfigurationRepositoryImpl.getProperty - unable to get config parameter '" + propertyName + ", returning default': " + e.getMessage());
+            log.debug("property \"" + propertyName + "\" not found, returning default value");
+            log.trace(e.getMessage());
+            log.trace(ExceptionUtils.getStackTrace(e));
             return defValue;
         }
     }
@@ -65,11 +71,10 @@ public class ConfigurationRepositoryImpl implements ConfigurationRepository {
     private <T> T getPropertyWithGenericType(String propertyName, TypeCapture<T> typeCapture, T defValue) {
         try {
             return gestalt.getConfig(propertyName, typeCapture);
-        } catch (NoSuchElementException e) {
-            log.debug("ConfigurationRepositoryImpl.getProperty - property \"" + propertyName + "\" not found, returning default");
-            return defValue;
         } catch (GestaltException e) {
-            log.error("ConfigurationRepositoryImpl.getProperty - unable to get config parameter '" + propertyName + ", returning default': " + e.getMessage());
+            log.debug("property \"" + propertyName + "\" not found, returning default value");
+            log.trace(e.getMessage());
+            log.trace(ExceptionUtils.getStackTrace(e));
             return defValue;
         }
     }

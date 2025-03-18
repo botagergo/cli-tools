@@ -23,23 +23,23 @@ public class LabelUseCaseImpl implements LabelUseCase {
     }
 
     @Override
-    public Label createLabel(String labelName, String labelText) throws IOException {
-        return createLabel(labelName, new Label(uuidGenerator.getUUID(), labelText));
+    public Label createLabel(String labelType, String labelText) throws IOException {
+        return createLabel(labelType, new Label(uuidGenerator.getUUID(), labelText));
     }
 
     @Override
-    public Label createLabel(String labelName, Label label) throws IOException {
-        return labelRepositoryFactory.getLabelRepository(labelName).create(label);
+    public Label createLabel(String labelType, Label label) throws IOException {
+        return labelRepositoryFactory.getLabelRepository(labelType).create(label);
     }
 
     @Override
-    public void deleteAllLabels(String labelName) throws IOException {
-        labelRepositoryFactory.getLabelRepository(labelName).deleteAll();
+    public void deleteAllLabels(String labelType) throws IOException {
+        labelRepositoryFactory.getLabelRepository(labelType).deleteAll();
     }
 
     @Override
-    public List<Label> getLabels(String labelName) throws IOException {
-        return labelRepositoryFactory.getLabelRepository(labelName).getAll();
+    public List<Label> getLabels(String labelType) throws IOException {
+        return labelRepositoryFactory.getLabelRepository(labelType).getAll();
     }
 
     private final LabelRepositoryFactory labelRepositoryFactory;

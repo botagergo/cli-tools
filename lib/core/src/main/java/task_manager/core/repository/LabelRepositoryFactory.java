@@ -4,7 +4,6 @@ import java.util.List;
 
 public interface LabelRepositoryFactory {
 
-    LabelRepository getLabelRepository(String labelName);
-    List<String> getLabelNames();
+    LabelRepository getLabelRepository(String labelType);
 
 }

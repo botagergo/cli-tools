@@ -6,11 +6,11 @@ import java.io.IOException;
 import java.util.List;
 
 public interface OrderedLabelUseCase {
-    OrderedLabel getOrderedLabel(String labelName, int labelValue) throws IOException;
+    OrderedLabel getOrderedLabel(String labelType, int labelValue) throws IOException;
 
     OrderedLabel findOrderedLabel(String labelType, String labelText) throws IOException;
 
-    void createOrderedLabel(String labelName, String labelText) throws IOException;
+    void createOrderedLabel(String labelType, String labelText) throws IOException;
 
     List<OrderedLabel> getOrderedLabels(String labelType) throws IOException;
 }

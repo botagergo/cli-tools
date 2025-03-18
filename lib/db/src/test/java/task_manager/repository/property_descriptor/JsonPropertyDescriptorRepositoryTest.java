@@ -224,7 +224,7 @@ public class JsonPropertyDescriptorRepositoryTest {
                 "multiplicity":"SET",
                 "subtype": {
                     "@type":"PropertyDescriptor$Subtype$LabelSubtype",
-                    "labelName":"label1"
+                    "labelType":"label1"
                 },
                 "defaultValue":null
             }

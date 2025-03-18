@@ -14,9 +14,9 @@ import java.util.UUID;
 public class MongoLabelRepository implements LabelRepository {
 
     public MongoLabelRepository(MongoClient mongoClient, String databaseName,
-        String labelName) {
+        String labelType) {
         MongoDatabase mongoDatabase = mongoClient.getDatabase(databaseName);
-        mongoCollection = mongoDatabase.getCollection(labelName);
+        mongoCollection = mongoDatabase.getCollection(labelType);
     }
 
     @Override

@@ -17,8 +17,8 @@ public class MongoLabelRepositoryFactory implements LabelRepositoryFactory {
     }
 
     @Override
-    public LabelRepository getLabelRepository(String labelName) {
-        return new MongoLabelRepository(mongoClient, databaseName, labelName);
+    public LabelRepository getLabelRepository(String labelType) {
+        return new MongoLabelRepository(mongoClient, databaseName, labelType);
     }
 
     private final MongoClient mongoClient;

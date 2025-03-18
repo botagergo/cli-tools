@@ -10,7 +10,6 @@ import task_manager.core.repository.LabelRepositoryFactory;
 import java.io.File;
 import java.nio.file.Paths;
 import java.util.HashMap;
-import java.util.List;
 
 @Singleton
 public class JsonLabelRepositoryFactory implements LabelRepositoryFactory {
@@ -21,13 +20,8 @@ public class JsonLabelRepositoryFactory implements LabelRepositoryFactory {
     }
 
     @Override
-    public LabelRepository getLabelRepository(String labelName) {
-        return repositories.computeIfAbsent(labelName, (key) -> new JsonLabelRepository(Paths.get(basePath.toString(), labelName + ".json").toFile()));
-    }
-
-    @Override
-    public List<String> getLabelNames() {
-        return repositories.keySet().stream().toList();
+    public LabelRepository getLabelRepository(String labelType) {
+        return repositories.computeIfAbsent(labelType, (key) -> new JsonLabelRepository(Paths.get(basePath.toString(), labelType + ".json").toFile()));
     }
 
     @NonNull private final File basePath;
