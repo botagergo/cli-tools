@@ -47,6 +47,10 @@ public class CommandUtil {
             List<FilterPropertySpec> filterPropertySpecs,
             @NonNull ChangeType changeType
     ) throws PropertyException, IOException {
+        if (tempIDs != null && !tempIDs.isEmpty()) {
+            return tasks;
+        }
+
         String message = getMessageFromChangeType(tasks, tempIDs, filterPropertySpecs, changeType);
 
         char answer = prompt(message, "ynsp");
