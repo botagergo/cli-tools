@@ -33,4 +33,9 @@ public class OrderedLabelUseCaseImpl implements OrderedLabelUseCase {
         return orderedLabelRepositoryFactory.getOrderedLabelRepository(labelType).getAll();
     }
 
+    @Override
+    public void deleteAllOrderedLabels(String labelType) throws IOException {
+        orderedLabelRepositoryFactory.getOrderedLabelRepository(labelType).deleteAll();
+    }
+
 }

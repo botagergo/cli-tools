@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DatabindException;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import lombok.Getter;
 
@@ -16,6 +17,7 @@ public abstract class JsonRepository<T_Json, T_Stored> {
     public JsonRepository(File jsonFile) {
         this.jsonFile = jsonFile;
         this.objectMapper = new ObjectMapper();
+        this.objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
     }
 
     public T_Stored getData() throws IOException {

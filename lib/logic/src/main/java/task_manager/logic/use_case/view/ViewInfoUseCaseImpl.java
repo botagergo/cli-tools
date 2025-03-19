@@ -16,6 +16,16 @@ public class ViewInfoUseCaseImpl implements ViewInfoUseCase {
         return viewInfoRepository.get(name);
     }
 
+    @Override
+    public void addViewInfo(ViewInfo viewInfo) throws IOException {
+        viewInfoRepository.create(viewInfo);
+    }
+
+    @Override
+    public void deleteAllViewInfos() throws IOException {
+        viewInfoRepository.deleteAll();
+    }
+
     private final ViewInfoRepository viewInfoRepository;
 
 }

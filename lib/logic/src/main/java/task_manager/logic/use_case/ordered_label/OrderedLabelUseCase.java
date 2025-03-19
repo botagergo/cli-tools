@@ -13,4 +13,6 @@ public interface OrderedLabelUseCase {
     void createOrderedLabel(String labelType, String labelText) throws IOException;
 
     List<OrderedLabel> getOrderedLabels(String labelType) throws IOException;
+
+    void deleteAllOrderedLabels(String labelType) throws IOException;
 }

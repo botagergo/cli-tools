@@ -54,6 +54,12 @@ public class JsonOrderedLabelRepository extends JsonRepository<ArrayList<String>
     }
 
     @Override
+    public void deleteAll() throws IOException {
+        getData().clear();
+        writeData();
+    }
+
+    @Override
     public ArrayList<String> getEmptyData() {
         return new ArrayList<>();
     }

@@ -1,5 +1,6 @@
 package task_manager.core.repository;
 
+import java.io.IOException;
 import java.util.Map;
 
 public interface ConfigurationRepository {
@@ -14,4 +15,6 @@ public interface ConfigurationRepository {
     String openAiApiKey();
 
     Map<String, String> commandAliases();
+
+    void reload() throws IOException;
 }

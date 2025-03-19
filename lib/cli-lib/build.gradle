@@ -18,6 +18,7 @@ dependencies {
 
     implementation project(':lib:util')
     implementation project(':lib:property-lib')
+    testImplementation project(':lib:property-lib')
     implementation project(':lib:logic')
     implementation project(':lib:core')
 }

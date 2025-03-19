@@ -31,7 +31,7 @@ public class ConfigurationRepositoryImpl implements ConfigurationRepository {
                     .build();
             gestalt.loadConfigs();
         } catch (GestaltException e) {
-            throw new RuntimeException(e);
+            throw new IOException(e);
         }
     }
 
@@ -55,6 +55,14 @@ public class ConfigurationRepositoryImpl implements ConfigurationRepository {
 
     public Map<String, String> commandAliases() {
         return getPropertyWithGenericType("commandAliases", new TypeCapture<>() {}, Map.of());
+    }
+
+    public void reload() throws IOException {
+        try {
+            gestalt.loadConfigs();
+        } catch (GestaltException e) {
+            throw new IOException(e);
+        }
     }
 
     private <T> T getProperty(String propertyName, Class<T> type, T defValue) {

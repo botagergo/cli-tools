@@ -15,4 +15,6 @@ public interface OrderedLabelRepository {
 
     OrderedLabel find(String text) throws IOException;
 
+    void deleteAll() throws IOException;
+
 }

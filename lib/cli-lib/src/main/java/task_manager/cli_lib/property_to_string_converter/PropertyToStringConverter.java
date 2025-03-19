@@ -75,17 +75,20 @@ public class PropertyToStringConverter {
         if (propertyDescriptor.multiplicity() == PropertyDescriptor.Multiplicity.SINGLE) {
             return property.getStringUnchecked();
         } else if (propertyDescriptor.multiplicity() == PropertyDescriptor.Multiplicity.LIST) {
-            return stringStreamToString(property.getStringListUnchecked().stream());
+            return stringStreamToString(property.getStringListUnchecked().stream(), false);
         } else if (propertyDescriptor.multiplicity() == PropertyDescriptor.Multiplicity.SET) {
-            return stringStreamToString(property.getStringListUnchecked().stream().sorted());
+            return stringStreamToString(property.getStringSetUnchecked().stream(), true);
         } else {
             throw new RuntimeException();
         }
     }
 
-    private String stringStreamToString(Stream<String> stringStream) {
-        return stringStream.map(string -> Objects.requireNonNullElse(string, nullString))
-                .collect(Collectors.joining(listSeparator));
+    private String stringStreamToString(Stream<String> stringStream, boolean sort) {
+        var stream = stringStream.map(string -> Objects.requireNonNullElse(string, nullStringInList));
+        if (sort) {
+            stream = stream.sorted();
+        }
+        return stream.collect(Collectors.joining(listSeparator));
     }
 
     private String uuidToString(Property property) throws IOException {
@@ -93,9 +96,9 @@ public class PropertyToStringConverter {
         if (propertyDescriptor.multiplicity() == PropertyDescriptor.Multiplicity.SINGLE) {
             return uuidToString(property.getUuidUnchecked(), propertyDescriptor);
         } else if (propertyDescriptor.multiplicity() == PropertyDescriptor.Multiplicity.LIST) {
-            return uuidStreamToString(property.getUuidListUnchecked().stream(), propertyDescriptor);
+            return uuidStreamToString(property.getUuidListUnchecked().stream(), propertyDescriptor, false);
         } else if (propertyDescriptor.multiplicity() == PropertyDescriptor.Multiplicity.SET) {
-            return uuidStreamToString(property.getUuidSetUnchecked().stream(), propertyDescriptor);
+            return uuidStreamToString(property.getUuidSetUnchecked().stream(), propertyDescriptor, true);
         } else {
             throw new RuntimeException();
         }
@@ -113,40 +116,48 @@ public class PropertyToStringConverter {
         }
     }
 
-    private String uuidStreamToString(Stream<UUID> uuids, PropertyDescriptor propertyDescriptor) throws IOException {
+    private String uuidStreamToString(Stream<UUID> uuids, PropertyDescriptor propertyDescriptor, boolean sort) throws IOException {
         if (propertyDescriptor.subtype() != null) {
             if (propertyDescriptor.subtype() instanceof PropertyDescriptor.Subtype.LabelSubtype labelSubtype) {
-                return labelUuidStreamToString(uuids, labelSubtype.labelType());
+                return labelUuidStreamToString(uuids, labelSubtype.labelType(), sort);
             } else {
                 throw new RuntimeException();
             }
         } else {
-            return uuidStreamToString(uuids);
+            return uuidStreamToString(uuids, sort);
         }
     }
 
-    private String labelUuidStreamToString(Stream<UUID> uuids, String labelType) throws IOException {
+    private String labelUuidStreamToString(Stream<UUID> uuids, String labelType, boolean sort) throws IOException {
         List<String> str = new ArrayList<>();
         for (UUID uuid : uuids.toArray(UUID[]::new)) {
             if (uuid == null) {
-                str.add(nullString);
+                str.add(nullStringInList);
             } else {
                 str.add(labelUuidToString(uuid, labelType));
             }
         }
-        return str.stream().collect(Collectors.joining(listSeparator));
+        var stream = str.stream();
+        if (sort) {
+            stream = stream.sorted();
+        }
+        return stream.collect(Collectors.joining(listSeparator));
     }
 
-    private String uuidStreamToString(Stream<UUID> uuids) throws IOException {
+    private String uuidStreamToString(Stream<UUID> uuids, boolean sort) throws IOException {
         List<String> str = new ArrayList<>();
         for (UUID uuid : uuids.toArray(UUID[]::new)) {
             if (uuid == null) {
-                str.add(nullString);
+                str.add(nullStringInList);
             } else {
                 str.add(uuid.toString());
             }
         }
-        return str.stream().collect(Collectors.joining(listSeparator));
+        var stream = str.stream();
+        if (sort) {
+            stream = stream.sorted();
+        }
+        return stream.collect(Collectors.joining(listSeparator));
     }
 
     private String labelUuidToString(UUID uuid, String labelType) throws IOException {
@@ -163,9 +174,9 @@ public class PropertyToStringConverter {
         if (propertyDescriptor.multiplicity() == PropertyDescriptor.Multiplicity.SINGLE) {
             return integerToString(property.getIntegerUnchecked(), propertyDescriptor);
         } else if (propertyDescriptor.multiplicity() == PropertyDescriptor.Multiplicity.LIST) {
-            return integerStreamToString(property.getIntegerListUnchecked().stream(), propertyDescriptor);
+            return integerStreamToString(property.getIntegerListUnchecked().stream(), propertyDescriptor, false);
         } else if (propertyDescriptor.multiplicity() == PropertyDescriptor.Multiplicity.SET) {
-            return integerStreamToString(property.getIntegerListUnchecked().stream().sorted());
+            return integerStreamToString(property.getIntegerListUnchecked().stream(), propertyDescriptor, true);
         } else {
             throw new RuntimeException();
         }
@@ -183,31 +194,40 @@ public class PropertyToStringConverter {
         }
     }
 
-    private String integerStreamToString(Stream<Integer> integers, PropertyDescriptor propertyDescriptor) throws IOException {
+    private String integerStreamToString(Stream<Integer> integers, PropertyDescriptor propertyDescriptor, boolean sort) throws IOException {
         if (propertyDescriptor.subtype() != null) {
             if (propertyDescriptor.subtype() instanceof PropertyDescriptor.Subtype.OrderedLabelSubtype orderedLabelSubtype) {
-                return orderedLabelIntegerStreamToString(integers, orderedLabelSubtype.orderedLabelType());
+                return orderedLabelIntegerStreamToString(integers, orderedLabelSubtype.orderedLabelType(), sort);
             } else {
                 throw new RuntimeException();
             }
         } else {
-            return integerStreamToString(integers);
+            return integerStreamToString(integers, sort);
         }
     }
 
-    private String orderedLabelIntegerStreamToString(Stream<Integer> integers, String orderedLabelType) throws IOException {
+    private String integerStreamToString(Stream<Integer> integers, boolean sort) {
+        var stream = integers.map(integer -> integer == null ? nullStringInList : integer.toString());
+        if (sort) {
+             stream = stream.sorted();
+        }
+        return stream.collect(Collectors.joining(listSeparator));
+    }
+
+    private String orderedLabelIntegerStreamToString(Stream<Integer> integers, String orderedLabelType, boolean sort) throws IOException {
         List<String> str = new ArrayList<>();
         for (Integer integer : integers.toArray(Integer[]::new)) {
             if (integer == null) {
-                str.add(nullString);
+                str.add(nullStringInList);
             } else {
                 str.add(orderedLabelIntegerToString(integer, orderedLabelType));
             }
         }
-        return str.stream().collect(Collectors.joining(listSeparator));    }
-
-    private String integerStreamToString(Stream<Integer> integers) {
-        return integers.map(Object::toString).collect(Collectors.joining(listSeparator));
+        var stream = str.stream();
+        if (sort) {
+            stream = stream.sorted();
+        }
+        return stream.collect(Collectors.joining(listSeparator));
     }
 
     private String orderedLabelIntegerToString(Integer integer, String labelType) throws IOException {
@@ -222,18 +242,20 @@ public class PropertyToStringConverter {
     private String booleanToString(Property property) {
         PropertyDescriptor propertyDescriptor = property.getPropertyDescriptor();
         if (propertyDescriptor.multiplicity() == PropertyDescriptor.Multiplicity.SINGLE) {
-            return booleanToString(property.getBooleanUnchecked());
+            return booleanToString(property.getBooleanUnchecked(), nullString);
         } else if (propertyDescriptor.multiplicity() == PropertyDescriptor.Multiplicity.LIST) {
-            return property.getBooleanListUnchecked().stream().map(this::booleanToString).collect(Collectors.joining(listSeparator));
+            return property.getBooleanListUnchecked().stream()
+                    .map(bool -> booleanToString(bool, nullStringInList)).collect(Collectors.joining(listSeparator));
         } else if (propertyDescriptor.multiplicity() == PropertyDescriptor.Multiplicity.SET) {
-            return property.getBooleanSetUnchecked().stream().sorted().map(this::booleanToString).collect(Collectors.joining(listSeparator));
+            return property.getBooleanSetUnchecked().stream()
+                    .map(bool -> booleanToString(bool, nullStringInList)).sorted().collect(Collectors.joining(listSeparator));
         } else {
             throw new RuntimeException();
         }
     }
 
-    private String booleanToString(boolean bool) {
-        return bool ? "yes" : "no";
+    private String booleanToString(Boolean bool, String nullString) {
+        return bool == null ? nullString : bool ? "yes" : "no";
     }
 
     private String dateToString(Property property) {
@@ -274,6 +296,7 @@ public class PropertyToStringConverter {
 
     private String listSeparator = ", ";
     private String nullString = "";
+    private String nullStringInList = "<null>";
     private LabelRepositoryFactory labelRepositoryFactory;
     private LabelUseCase labelUseCase;
     private OrderedLabelUseCase orderedLabelUseCase;
