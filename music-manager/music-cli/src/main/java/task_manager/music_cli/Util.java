@@ -1,6 +1,6 @@
-package task_manager.music_cli;
+package common.music_cli;
 
-import task_manager.music_cli.command_parser.CommandParserException;
+import common.music_cli.command_parser.CommandParserException;
 
 public class Util {
 

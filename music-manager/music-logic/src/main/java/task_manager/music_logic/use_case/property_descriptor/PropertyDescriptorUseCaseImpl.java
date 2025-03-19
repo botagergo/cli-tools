@@ -1,10 +1,10 @@
-package task_manager.music_logic.use_case.property_descriptor;
+package common.music_logic.use_case.property_descriptor;
 
 import jakarta.inject.Inject;
-import task_manager.core.repository.ConfigurationRepository;
-import task_manager.core.repository.PropertyDescriptorRepository;
-import task_manager.property_lib.PropertyDescriptor;
-import task_manager.property_lib.PropertyException;
+import common.core.repository.ConfigurationRepository;
+import common.core.repository.PropertyDescriptorRepository;
+import common.property_lib.PropertyDescriptor;
+import common.property_lib.PropertyException;
 
 import java.io.IOException;
 import java.util.List;

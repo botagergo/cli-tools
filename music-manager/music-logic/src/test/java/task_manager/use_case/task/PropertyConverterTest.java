@@ -1,19 +1,19 @@
-package task_manager.use_case.task;
+package common.use_case.task;
 
 import org.mockito.*;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-import task_manager.core.data.Label;
-import task_manager.core.repository.LabelRepository;
-import task_manager.core.repository.LabelRepositoryFactory;
-import task_manager.music_logic.use_case.property_descriptor.PropertyDescriptorUseCase;
-import task_manager.music_logic.use_case.task.PropertyConverter;
-import task_manager.music_logic.use_case.task.PropertyConverterException;
-import task_manager.util.RoundRobinUUIDGenerator;
-import task_manager.util.UUIDGenerator;
-import task_manager.util.Utils;
-import task_manager.property_lib.PropertyDescriptor;
+import common.core.data.Label;
+import common.core.repository.LabelRepository;
+import common.core.repository.LabelRepositoryFactory;
+import common.music_logic.use_case.property_descriptor.PropertyDescriptorUseCase;
+import common.music_logic.use_case.task.PropertyConverter;
+import common.music_logic.use_case.task.PropertyConverterException;
+import common.util.RoundRobinUUIDGenerator;
+import common.util.UUIDGenerator;
+import common.util.Utils;
+import common.property_lib.PropertyDescriptor;
 
 import java.io.IOException;
 import java.util.List;

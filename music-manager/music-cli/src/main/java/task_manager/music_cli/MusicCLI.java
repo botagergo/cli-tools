@@ -1,4 +1,4 @@
-package task_manager.music_cli;
+package common.music_cli;
 
 import java.io.IOException;
 import java.util.*;
@@ -9,9 +9,9 @@ import lombok.NonNull;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.commons.lang3.tuple.Pair;
-import task_manager.cli_lib.tokenizer.TokenList;
-import task_manager.music_cli.command_line.CommandLine;
-import task_manager.music_cli.command_line.Executor;
+import common.cli.tokenizer.TokenList;
+import common.music_cli.command_line.CommandLine;
+import common.music_cli.command_line.Executor;
 
 @Log4j2
 public class MusicCLI {

@@ -1,4 +1,4 @@
-package task_manager.music_cli.command.string_to_property_converter;
+package common.music_cli.command.string_to_property_converter;
 
 import lombok.Getter;
 

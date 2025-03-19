@@ -1,4 +1,4 @@
-package task_manager.music_cli.command_parser;
+package common.music_cli.command_parser;
 
 public class CommandParserException extends Exception {
 

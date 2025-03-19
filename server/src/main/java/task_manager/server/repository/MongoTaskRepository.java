@@ -1,11 +1,11 @@
-package task_manager.server.repository;
+package common.server.repository;
 
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
-import task_manager.core.data.Task;
-import task_manager.core.repository.TaskRepository;
+import common.core.data.Task;
+import common.core.repository.TaskRepository;
 
 import java.util.*;
 

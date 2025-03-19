@@ -1,7 +1,7 @@
-package task_manager.music_logic.use_case.view;
+package common.music_logic.use_case.view;
 
-import task_manager.core.data.ViewInfo;
-import task_manager.property_lib.PropertyManager;
+import common.core.data.ViewInfo;
+import common.property_lib.PropertyManager;
 
 import java.io.IOException;
 

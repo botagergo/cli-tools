@@ -1,10 +1,10 @@
-package task_manager.music_logic.use_case.task;
+package common.music_logic.use_case.task;
 
 import jakarta.inject.Inject;
-import task_manager.core.data.Label;
-import task_manager.core.repository.LabelRepository;
-import task_manager.core.repository.LabelRepositoryFactory;
-import task_manager.property_lib.PropertyDescriptor;
+import common.core.data.Label;
+import common.core.repository.LabelRepository;
+import common.core.repository.LabelRepositoryFactory;
+import common.property_lib.PropertyDescriptor;
 
 import java.io.IOException;
 import java.util.ArrayList;

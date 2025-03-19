@@ -1,7 +1,7 @@
-package task_manager.music_cli.command.property_modifier;
+package common.music_cli.command.property_modifier;
 
 import lombok.Getter;
-import task_manager.core.property.ModifyPropertySpec;
+import common.core.property.ModifyPropertySpec;
 
 @Getter
 public class PropertyModifierException extends Exception {

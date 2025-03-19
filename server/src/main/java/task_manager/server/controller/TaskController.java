@@ -1,4 +1,4 @@
-package task_manager.server.controller;
+package common.server.controller;
 
 import com.google.inject.Inject;
 import lombok.extern.log4j.Log4j2;
@@ -7,12 +7,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.ErrorResponseException;
 import org.springframework.web.bind.annotation.*;
-import task_manager.core.data.Task;
-import task_manager.logic.filter.FilterCriterionException;
-import task_manager.task_logic.use_case.task.PropertyConverterException;
-import task_manager.task_logic.use_case.task.TaskUseCase;
-import task_manager.task_logic.use_case.task.TaskUseCaseException;
-import task_manager.server.ProblemDetails;
+import common.core.data.Task;
+import common.service.filter.FilterCriterionException;
+import common.task_logic.service.task.PropertyConverterException;
+import common.task_logic.service.task.TaskUseCase;
+import common.task_logic.service.task.TaskUseCaseException;
+import common.server.ProblemDetails;
 
 import java.io.IOException;
 import java.util.UUID;

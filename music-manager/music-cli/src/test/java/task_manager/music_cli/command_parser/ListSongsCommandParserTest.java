@@ -1,15 +1,15 @@
-package task_manager.music_cli.command_parser;
+package common.music_cli.command_parser;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.testng.annotations.Test;
-import task_manager.cli_lib.argument.ArgumentList;
-import task_manager.core.data.SortingCriterion;
-import task_manager.core.property.Affinity;
-import task_manager.music_cli.Context;
-import task_manager.music_cli.command.ListSongsCommand;
-import task_manager.cli_lib.argument.OptionArgument;
-import task_manager.cli_lib.argument.PropertyArgument;
-import task_manager.cli_lib.argument.SpecialArgument;
+import common.cli.argument.ArgumentList;
+import common.core.data.SortingCriterion;
+import common.core.property.Affinity;
+import common.music_cli.Context;
+import common.music_cli.command.ListSongsCommand;
+import common.cli.argument.OptionArgument;
+import common.cli.argument.PropertyArgument;
+import common.cli.argument.SpecialArgument;
 
 import java.util.LinkedHashMap;
 import java.util.List;

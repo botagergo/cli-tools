@@ -1,8 +1,8 @@
-package task_manager.music_cli;
+package common.music_cli;
 
 import org.testng.Assert;
 import org.testng.annotations.Test;
-import task_manager.music_cli.command_parser.CommandParserException;
+import common.music_cli.command_parser.CommandParserException;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertThrows;

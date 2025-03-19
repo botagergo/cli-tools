@@ -1,4 +1,4 @@
-package task_manager.music_cli.command_line;
+package common.music_cli.command_line;
 
 import com.google.inject.Inject;
 import lombok.AllArgsConstructor;
@@ -8,10 +8,10 @@ import org.jline.reader.LineReaderBuilder;
 import org.jline.reader.UserInterruptException;
 import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
-import task_manager.music_logic.pseudo_property_provider.TaskIDPseudoPropertyProvider;
-import task_manager.property_lib.PropertyDescriptor;
-import task_manager.property_lib.PropertyDescriptorCollection;
-import task_manager.music_cli.Context;
+import common.music_logic.pseudo_property_provider.TaskIDPseudoPropertyProvider;
+import common.property_lib.PropertyDescriptor;
+import common.property_lib.PropertyDescriptorCollection;
+import common.music_cli.Context;
 
 import java.io.IOException;
 import java.util.List;

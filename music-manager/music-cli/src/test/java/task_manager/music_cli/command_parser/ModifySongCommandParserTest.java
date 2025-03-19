@@ -1,11 +1,11 @@
-package task_manager.music_cli.command_parser;
+package common.music_cli.command_parser;
 
 import org.testng.annotations.Test;
-import task_manager.cli_lib.argument.ArgumentList;
-import task_manager.core.property.Affinity;
-import task_manager.music_cli.Context;
-import task_manager.cli_lib.argument.PropertyArgument;
-import task_manager.music_cli.command.ModifySongCommand;
+import common.cli.argument.ArgumentList;
+import common.core.property.Affinity;
+import common.music_cli.Context;
+import common.cli.argument.PropertyArgument;
+import common.music_cli.command.ModifySongCommand;
 
 import java.util.ArrayList;
 import java.util.Arrays;

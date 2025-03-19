@@ -1,7 +1,4 @@
-package task_manager.music_cli.command.property_modifier;
-
-import task_manager.core.property.*;
-import task_manager.property_lib.*;
+package common.music_cli.command.property_modifier;
 
 import java.io.IOException;
 import java.util.List;

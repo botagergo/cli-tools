@@ -1,18 +1,18 @@
-package task_manager.music_cli.command_line;
+package common.music_cli.command_line;
 
 import jakarta.inject.Inject;
 import lombok.Getter;
 import lombok.Setter;
-import task_manager.cli_lib.argument.ArgumentList;
-import task_manager.cli_lib.tokenizer.MismatchedQuotesException;
-import task_manager.cli_lib.tokenizer.TokenList;
-import task_manager.cli_lib.tokenizer.Tokenizer;
-import task_manager.music_cli.Context;
-import task_manager.music_cli.command.Command;
-import task_manager.music_cli.command.CommandExecutor;
-import task_manager.music_cli.command_parser.CommandParser;
-import task_manager.music_cli.command_parser.CommandParserFactory;
-import task_manager.music_cli.command_parser.CommandParserException;
+import common.cli.argument.ArgumentList;
+import common.cli.tokenizer.MismatchedQuotesException;
+import common.cli.tokenizer.TokenList;
+import common.cli.tokenizer.Tokenizer;
+import common.music_cli.Context;
+import common.music_cli.command.Command;
+import common.music_cli.command.CommandExecutor;
+import common.music_cli.command_parser.CommandParser;
+import common.music_cli.command_parser.CommandParserFactory;
+import common.music_cli.command_parser.CommandParserException;
 
 @Getter
 public class ExecutorImpl implements Executor {

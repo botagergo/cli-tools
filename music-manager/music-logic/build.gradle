@@ -17,6 +17,6 @@ dependencies {
 
     implementation project(':lib:util')
     implementation project(':lib:property-lib')
-    implementation project(':lib:logic')
+    implementation project(':lib:service')
     implementation project(':lib:core')
 }

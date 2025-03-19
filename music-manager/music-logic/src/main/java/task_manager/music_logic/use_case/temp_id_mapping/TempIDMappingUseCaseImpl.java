@@ -1,8 +1,8 @@
-package task_manager.music_logic.use_case.temp_id_mapping;
+package common.music_logic.use_case.temp_id_mapping;
 
 import jakarta.inject.Inject;
 import lombok.AllArgsConstructor;
-import task_manager.core.repository.TempIDMappingRepository;
+import common.core.repository.TempIDMappingRepository;
 
 import java.io.IOException;
 import java.util.UUID;

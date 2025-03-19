@@ -1,7 +1,7 @@
-package task_manager.music_logic.use_case.task;
+package common.music_logic.use_case.task;
 
 import lombok.Getter;
-import task_manager.property_lib.PropertyDescriptor;
+import common.property_lib.PropertyDescriptor;
 
 @Getter
 public class PropertyConverterException extends Exception {

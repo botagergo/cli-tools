@@ -1,10 +1,10 @@
-package task_manager.music_logic.use_case.label;
+package common.music_logic.use_case.label;
 
 import jakarta.inject.Inject;
 import lombok.AllArgsConstructor;
-import task_manager.core.data.Label;
-import task_manager.core.repository.LabelRepositoryFactory;
-import task_manager.util.UUIDGenerator;
+import common.core.data.Label;
+import common.core.repository.LabelRepositoryFactory;
+import common.util.UUIDGenerator;
 
 import java.io.IOException;
 import java.util.UUID;

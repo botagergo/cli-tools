@@ -1,21 +1,21 @@
-package task_manager.music_cli.command.string_to_property_converter;
+package common.music_cli.command.string_to_property_converter;
 
 import jakarta.inject.Inject;
 import lombok.NonNull;
-import task_manager.cli_lib.argument.PropertyArgument;
-import task_manager.core.data.Label;
-import task_manager.core.data.OrderedLabel;
-import task_manager.core.data.Predicate;
-import task_manager.core.property.Affinity;
-import task_manager.core.property.FilterPropertySpec;
-import task_manager.core.property.ModifyPropertySpec;
-import task_manager.music_logic.use_case.label.LabelUseCase;
-import task_manager.music_logic.use_case.ordered_label.OrderedLabelUseCase;
-import task_manager.music_logic.use_case.property_descriptor.PropertyDescriptorUseCase;
-import task_manager.property_lib.Property;
-import task_manager.property_lib.PropertyDescriptor;
-import task_manager.property_lib.PropertyException;
-import task_manager.util.Utils;
+import common.cli.argument.PropertyArgument;
+import common.core.data.Label;
+import common.core.data.OrderedLabel;
+import common.core.data.Predicate;
+import common.core.property.Affinity;
+import common.core.property.FilterPropertySpec;
+import common.core.property.ModifyPropertySpec;
+import common.music_logic.use_case.label.LabelUseCase;
+import common.music_logic.use_case.ordered_label.OrderedLabelUseCase;
+import common.music_logic.use_case.property_descriptor.PropertyDescriptorUseCase;
+import common.property_lib.Property;
+import common.property_lib.PropertyDescriptor;
+import common.property_lib.PropertyException;
+import common.util.Utils;
 
 import java.io.IOException;
 import java.util.ArrayList;

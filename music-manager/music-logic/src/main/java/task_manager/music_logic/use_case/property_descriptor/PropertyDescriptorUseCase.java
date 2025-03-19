@@ -1,7 +1,7 @@
-package task_manager.music_logic.use_case.property_descriptor;
+package common.music_logic.use_case.property_descriptor;
 
-import task_manager.property_lib.PropertyDescriptor;
-import task_manager.property_lib.PropertyException;
+import common.property_lib.PropertyDescriptor;
+import common.property_lib.PropertyException;
 
 import java.io.IOException;
 import java.util.List;

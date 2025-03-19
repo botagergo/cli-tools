@@ -1,8 +1,8 @@
-package task_manager.music_cli.command_parser;
+package common.music_cli.command_parser;
 
 import lombok.NonNull;
-import task_manager.music_cli.Context;
-import task_manager.music_cli.Util;
+import common.music_cli.Context;
+import common.music_cli.Util;
 
 import java.util.ArrayList;
 import java.util.List;

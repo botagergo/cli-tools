@@ -1,10 +1,10 @@
-package task_manager.music_cli;
+package common.music_cli;
 
 import com.google.inject.AbstractModule;
-import task_manager.cli_lib.tokenizer.Tokenizer;
-import task_manager.cli_lib.tokenizer.TokenizerImpl;
-import task_manager.util.RoundRobinUUIDGenerator;
-import task_manager.util.UUIDGenerator;
+import common.cli.tokenizer.Tokenizer;
+import common.cli.tokenizer.TokenizerImpl;
+import common.util.RoundRobinUUIDGenerator;
+import common.util.UUIDGenerator;
 
 public class TestModule extends AbstractModule {
 

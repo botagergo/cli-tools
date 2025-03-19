@@ -1,7 +1,7 @@
-package task_manager.music_cli.command_parser;
+package common.music_cli.command_parser;
 
 import org.testng.annotations.Test;
-import task_manager.cli_lib.argument.ArgumentList;
+import common.cli.argument.ArgumentList;
 
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;

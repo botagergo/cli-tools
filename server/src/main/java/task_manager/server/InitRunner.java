@@ -1,9 +1,9 @@
-package task_manager.server;
+package common.server;
 
 import jakarta.inject.Inject;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
-import task_manager.init.Initializer;
+import common.init.Initializer;
 
 @Component
 public class InitRunner implements CommandLineRunner {

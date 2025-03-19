@@ -1,15 +1,15 @@
-package task_manager.music_cli.command;
+package common.music_cli.command;
 
 import lombok.NonNull;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import task_manager.core.data.Task;
-import task_manager.core.property.FilterPropertySpec;
-import task_manager.core.property.ModifyPropertySpec;
-import task_manager.music_cli.Context;
-import task_manager.cli_lib.argument.PropertyArgument;
-import task_manager.music_cli.command.property_modifier.PropertyModifier;
-import task_manager.music_cli.command.string_to_property_converter.StringToPropertyConverterException;
+import common.core.data.Task;
+import common.core.property.FilterPropertySpec;
+import common.core.property.ModifyPropertySpec;
+import common.music_cli.Context;
+import common.cli.argument.PropertyArgument;
+import common.music_cli.command.property_modifier.PropertyModifier;
+import common.music_cli.command.string_to_property_converter.StringToPropertyConverterException;
 
 import java.util.List;
 import java.util.UUID;

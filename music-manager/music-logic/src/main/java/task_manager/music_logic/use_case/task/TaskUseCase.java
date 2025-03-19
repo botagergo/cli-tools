@@ -1,11 +1,11 @@
-package task_manager.music_logic.use_case.task;
+package common.music_logic.use_case.task;
 
-import task_manager.core.data.FilterCriterionInfo;
-import task_manager.core.data.SortingInfo;
-import task_manager.core.data.Task;
-import task_manager.core.property.FilterPropertySpec;
-import task_manager.logic.filter.FilterCriterionException;
-import task_manager.property_lib.PropertyException;
+import common.core.data.FilterCriterionInfo;
+import common.core.data.SortingInfo;
+import common.core.data.Task;
+import common.core.property.FilterPropertySpec;
+import common.service.filter.FilterCriterionException;
+import common.property_lib.PropertyException;
 
 import java.io.IOException;
 import java.util.List;

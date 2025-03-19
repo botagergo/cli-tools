@@ -1,6 +1,6 @@
-package task_manager.music_logic.use_case.label;
+package common.music_logic.use_case.label;
 
-import task_manager.core.data.Label;
+import common.core.data.Label;
 
 import java.io.IOException;
 import java.util.UUID;

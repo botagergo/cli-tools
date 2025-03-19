@@ -1,4 +1,4 @@
-package task_manager.music_logic.use_case.task;
+package common.music_logic.use_case.task;
 
 public class TaskUseCaseException extends Exception {
 

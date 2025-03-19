@@ -1,8 +1,8 @@
-package task_manager.music_cli.command;
+package common.music_cli.command;
 
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import task_manager.music_cli.Context;
+import common.music_cli.Context;
 
 @Log4j2
 public class ClearCommand implements Command {

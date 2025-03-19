@@ -1,4 +1,4 @@
-package task_manager.music_logic.use_case.temp_id_mapping;
+package common.music_logic.use_case.temp_id_mapping;
 
 import java.io.IOException;
 import java.util.UUID;

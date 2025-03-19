@@ -1,6 +1,6 @@
-package task_manager.music_logic.use_case.ordered_label;
+package common.music_logic.use_case.ordered_label;
 
-import task_manager.core.data.OrderedLabel;
+import common.core.data.OrderedLabel;
 
 import java.io.IOException;
 

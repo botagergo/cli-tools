@@ -1,4 +1,4 @@
-package task_manager.music_logic.use_case;
+package common.music_logic.use_case;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 

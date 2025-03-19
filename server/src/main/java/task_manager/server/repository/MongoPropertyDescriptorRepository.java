@@ -1,11 +1,11 @@
-package task_manager.server.repository;
+package common.server.repository;
 
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import org.apache.commons.lang3.NotImplementedException;
 import org.bson.Document;
-import task_manager.core.repository.PropertyDescriptorRepository;
+import common.core.repository.PropertyDescriptorRepository;
 
 import java.util.ArrayList;
 import java.util.List;

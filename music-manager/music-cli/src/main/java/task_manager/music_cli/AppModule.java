@@ -1,39 +1,38 @@
-package task_manager.music_cli;
+package common.music_cli;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.name.Names;
-import task_manager.cli_lib.tokenizer.Tokenizer;
-import task_manager.cli_lib.tokenizer.TokenizerImpl;
-import task_manager.core.repository.*;
-import task_manager.music_logic.use_case.label.LabelUseCase;
-import task_manager.music_logic.use_case.label.LabelUseCaseImpl;
-import task_manager.music_logic.use_case.ordered_label.OrderedLabelUseCase;
-import task_manager.music_logic.use_case.ordered_label.OrderedLabelUseCaseImpl;
-import task_manager.music_logic.use_case.property_descriptor.PropertyDescriptorUseCase;
-import task_manager.music_logic.use_case.property_descriptor.PropertyDescriptorUseCaseImpl;
-import task_manager.music_logic.use_case.task.TaskUseCase;
-import task_manager.music_logic.use_case.task.TaskUseCaseImpl;
-import task_manager.music_logic.use_case.temp_id_mapping.TempIDMappingUseCase;
-import task_manager.music_logic.use_case.temp_id_mapping.TempIDMappingUseCaseImpl;
-import task_manager.music_logic.use_case.view.ViewInfoUseCase;
-import task_manager.music_logic.use_case.view.ViewInfoUseCaseImpl;
-import task_manager.property_lib.PropertyManager;
-import task_manager.music_cli.command_parser.CommandParserFactory;
-import task_manager.music_cli.command_parser.CommandParserFactoryImpl;
-import task_manager.repository.ConfigurationRepositoryImpl;
-import task_manager.repository.JsonStateRepository;
-import task_manager.repository.label.JsonLabelRepositoryFactory;
-import task_manager.repository.ordered_label.JsonOrderedLabelRepositoryFactory;
-import task_manager.repository.property_descriptor.JsonPropertyDescriptorRepository;
-import task_manager.repository.task.JsonTaskRepository;
-import task_manager.repository.temp_id_mapping.JsonTempIDMappingRepository;
-import task_manager.repository.view.JsonViewInfoRepository;
-import task_manager.music_cli.command_line.CommandLine;
-import task_manager.music_cli.command_line.Executor;
-import task_manager.music_cli.command_line.ExecutorImpl;
-import task_manager.music_cli.command_line.JlineCommandLine;
-import task_manager.util.RandomUUIDGenerator;
-import task_manager.util.UUIDGenerator;
+import common.cli.tokenizer.Tokenizer;
+import common.cli.tokenizer.TokenizerImpl;
+import common.music_logic.use_case.label.LabelUseCase;
+import common.music_logic.use_case.label.LabelUseCaseImpl;
+import common.music_logic.use_case.ordered_label.OrderedLabelUseCase;
+import common.music_logic.use_case.ordered_label.OrderedLabelUseCaseImpl;
+import common.music_logic.use_case.property_descriptor.PropertyDescriptorUseCase;
+import common.music_logic.use_case.property_descriptor.PropertyDescriptorUseCaseImpl;
+import common.music_logic.use_case.task.TaskUseCase;
+import common.music_logic.use_case.task.TaskUseCaseImpl;
+import common.music_logic.use_case.temp_id_mapping.TempIDMappingUseCase;
+import common.music_logic.use_case.temp_id_mapping.TempIDMappingUseCaseImpl;
+import common.music_logic.use_case.view.ViewInfoUseCase;
+import common.music_logic.use_case.view.ViewInfoUseCaseImpl;
+import common.property_lib.PropertyManager;
+import common.music_cli.command_parser.CommandParserFactory;
+import common.music_cli.command_parser.CommandParserFactoryImpl;
+import common.repository.ConfigurationRepositoryImpl;
+import common.repository.JsonStateRepository;
+import common.repository.label.JsonLabelRepositoryFactory;
+import common.repository.ordered_label.JsonOrderedLabelRepositoryFactory;
+import common.repository.property_descriptor.JsonPropertyDescriptorRepository;
+import common.repository.task.JsonTaskRepository;
+import common.repository.temp_id_mapping.JsonTempIDMappingRepository;
+import common.repository.view.JsonViewInfoRepository;
+import common.music_cli.command_line.CommandLine;
+import common.music_cli.command_line.Executor;
+import common.music_cli.command_line.ExecutorImpl;
+import common.music_cli.command_line.JlineCommandLine;
+import common.util.RandomUUIDGenerator;
+import common.util.UUIDGenerator;
 
 import java.io.File;
 
@@ -43,7 +42,7 @@ public class AppModule extends AbstractModule {
     protected void configure() {
         String basePath = System.getenv("TASK_MANAGER_BASE_PATH");
         if (basePath == null) {
-            basePath = System.getProperty("user.home") + "/.config/task_manager/";
+            basePath = System.getProperty("user.home") + "/.config/common/";
         }
 
         bind(Tokenizer.class).to(TokenizerImpl.class);

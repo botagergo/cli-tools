@@ -1,6 +1,6 @@
-package task_manager.music_cli.command_line;
+package common.music_cli.command_line;
 
-import task_manager.cli_lib.tokenizer.TokenList;
+import common.cli.tokenizer.TokenList;
 
 public interface Executor {
 

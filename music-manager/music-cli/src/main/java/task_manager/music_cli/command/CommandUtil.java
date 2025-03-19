@@ -1,4 +1,4 @@
-package task_manager.music_cli.command;
+package common.music_cli.command;
 
 import com.inamik.text.tables.GridTable;
 import com.inamik.text.tables.SimpleTable;
@@ -7,16 +7,16 @@ import com.inamik.text.tables.grid.Util;
 import lombok.NonNull;
 import lombok.extern.log4j.Log4j2;
 import org.fusesource.jansi.Ansi;
-import task_manager.core.data.Label;
-import task_manager.core.data.OrderedLabel;
-import task_manager.core.data.Task;
-import task_manager.core.property.FilterPropertySpec;
-import task_manager.property_lib.Property;
-import task_manager.property_lib.PropertyException;
-import task_manager.property_lib.PropertyManager;
-import task_manager.music_cli.Context;
-import task_manager.cli_lib.argument.PropertyArgument;
-import task_manager.music_cli.command.string_to_property_converter.StringToPropertyConverterException;
+import common.core.data.Label;
+import common.core.data.OrderedLabel;
+import common.core.data.Task;
+import common.core.property.FilterPropertySpec;
+import common.property_lib.Property;
+import common.property_lib.PropertyException;
+import common.property_lib.PropertyManager;
+import common.music_cli.Context;
+import common.cli.argument.PropertyArgument;
+import common.music_cli.command.string_to_property_converter.StringToPropertyConverterException;
 
 import java.io.IOException;
 import java.io.PrintWriter;

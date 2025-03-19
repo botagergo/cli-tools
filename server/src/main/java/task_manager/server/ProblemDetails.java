@@ -1,4 +1,4 @@
-package task_manager.server;
+package common.server;
 
 import java.net.URI;
 import org.springframework.http.HttpStatus;

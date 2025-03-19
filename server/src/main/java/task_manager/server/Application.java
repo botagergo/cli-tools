@@ -1,4 +1,4 @@
-package task_manager.server;
+package common.server;
 
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
@@ -8,18 +8,18 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.filter.CommonsRequestLoggingFilter;
-import task_manager.init.Initializer;
-import task_manager.task_logic.use_case.label.LabelUseCaseImpl;
-import task_manager.task_logic.use_case.ordered_label.OrderedLabelUseCaseImpl;
-import task_manager.task_logic.use_case.property_descriptor.PropertyDescriptorUseCaseImpl;
-import task_manager.task_logic.use_case.task.TaskUseCaseImpl;
-import task_manager.task_logic.use_case.view.ViewInfoUseCaseImpl;
-import task_manager.repository.label.JsonLabelRepository;
-import task_manager.repository.ordered_label.JsonOrderedLabelRepositoryFactory;
-import task_manager.repository.view.JsonViewInfoRepository;
-import task_manager.server.repository.MongoLabelRepositoryFactory;
-import task_manager.server.repository.MongoPropertyDescriptorRepository;
-import task_manager.server.repository.MongoTaskRepository;
+import common.init.Initializer;
+import common.task_logic.service.label.LabelUseCaseImpl;
+import common.task_logic.service.ordered_label.OrderedLabelUseCaseImpl;
+import common.task_logic.service.property_descriptor.PropertyDescriptorUseCaseImpl;
+import common.task_logic.service.task.TaskUseCaseImpl;
+import common.task_logic.service.view.ViewInfoUseCaseImpl;
+import common.repository.label.JsonLabelRepository;
+import common.repository.ordered_label.JsonOrderedLabelRepositoryFactory;
+import common.repository.view.JsonViewInfoRepository;
+import common.server.repository.MongoLabelRepositoryFactory;
+import common.server.repository.MongoPropertyDescriptorRepository;
+import common.server.repository.MongoTaskRepository;
 
 import java.io.File;
 
@@ -44,12 +44,12 @@ public class Application {
 
     @Bean
     JsonLabelRepository statusRepository() {
-        return new JsonLabelRepository(new File(System.getProperty("user.home") + "/.config/task_manager/"));
+        return new JsonLabelRepository(new File(System.getProperty("user.home") + "/.config/common/"));
     }
 
     @Bean
     JsonOrderedLabelRepositoryFactory orderedLabelRepositoryFactory() {
-        return new JsonOrderedLabelRepositoryFactory(new File(System.getProperty("user.home") + "/.config/task_manager/"));
+        return new JsonOrderedLabelRepositoryFactory(new File(System.getProperty("user.home") + "/.config/common/"));
     }
 
     @Bean

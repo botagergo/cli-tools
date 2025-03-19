@@ -13,5 +13,5 @@ dependencies {
 	implementation project(':core')
 	implementation project(':db')
 	implementation project(':init')
-	implementation project(':task-logic')
+	implementation project(':service')
 }

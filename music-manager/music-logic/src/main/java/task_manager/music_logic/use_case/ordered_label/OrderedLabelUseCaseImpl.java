@@ -1,9 +1,9 @@
-package task_manager.music_logic.use_case.ordered_label;
+package common.music_logic.use_case.ordered_label;
 
 import jakarta.inject.Inject;
 import lombok.AllArgsConstructor;
-import task_manager.core.data.OrderedLabel;
-import task_manager.core.repository.OrderedLabelRepositoryFactory;
+import common.core.data.OrderedLabel;
+import common.core.repository.OrderedLabelRepositoryFactory;
 
 import java.io.IOException;
 

@@ -1,4 +1,4 @@
-package task_manager.music_cli.command_line;
+package common.music_cli.command_line;
 
 import java.io.IOException;
 

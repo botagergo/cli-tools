@@ -14,19 +14,18 @@ plugins {
  * in the user manual at https://docs.gradle.org/8.0.1/userguide/multi_project_builds.html
  */
 
-rootProject.name = 'task-manager'
+rootProject.name = 'cli-tools'
 
-include('lib:util')
-include('lib:core')
-include('lib:db')
-include('lib:logic')
-include('lib:init')
-include('lib:property-lib')
-include('lib:cli-lib')
+include('common:util')
+include('common:core')
+include('common:db')
+include('common:backend')
+include('common:property-lib')
+include('common:cli')
 
-// include('music-manager:music-logic')
+// include('music-manager:music-service')
 // include('music-manager:music-cli')
 
-include('task-manager:task-logic')
-include('task-manager:task-manager-cli')
+include('task-manager:backend')
+include('task-manager:cli')
 // include('server')

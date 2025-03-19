@@ -1,11 +1,11 @@
-package task_manager.server.repository;
+package common.server.repository;
 
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
-import task_manager.core.data.Label;
-import task_manager.core.repository.LabelRepository;
+import common.core.data.Label;
+import common.core.repository.LabelRepository;
 
 import java.util.ArrayList;
 import java.util.List;

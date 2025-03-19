@@ -20,19 +20,19 @@ dependencies {
     implementation project(':lib:cli-lib')
     implementation project(':lib:core')
     implementation project(':lib:db')
-    implementation project(':lib:logic')
-    implementation project(':music-manager:music-logic')
+    implementation project(':lib:service')
+    implementation project(':music-manager:music-service')
 }
 
 application {
-    mainClass = 'task_manager.music_cli.MusicCLI'
+    mainClass = 'common.music_cli.MusicCLI'
 }
 
 jar {
     duplicatesStrategy(DuplicatesStrategy.EXCLUDE)
 
     manifest {
-        attributes "Main-Class": "task_manager.music_cli.MusicCLI"
+        attributes "Main-Class": "common.music_cli.MusicCLI"
         attributes "Multi-Release": true
     }
 }

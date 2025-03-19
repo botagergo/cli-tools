@@ -1,6 +1,6 @@
-package task_manager.music_cli.command;
+package common.music_cli.command;
 
-import task_manager.music_cli.Context;
+import common.music_cli.Context;
 
 public class CommandExecutor {
 
