@@ -5,8 +5,9 @@ import java.util.HashMap;
 
 public class PseudoPropertyManager {
 
-    public PseudoPropertyManager() {
+    public PseudoPropertyManager(PropertyManager propertyManager) {
         this.pseudoPropertyProviders = new HashMap<>();
+        this.propertyManager = propertyManager;
     }
 
     public Property getPseudoProperty(PropertyOwner propertyOwner, PropertyDescriptor propertyDescriptor) throws IOException, PropertyException {
@@ -15,7 +16,7 @@ public class PseudoPropertyManager {
             return null;
         }
 
-        Object propertyValue = pseudoPropertyProvider.getProperty(propertyOwner);
+        Object propertyValue = pseudoPropertyProvider.getProperty(propertyManager, propertyOwner);
         return Property.from(propertyDescriptor, propertyValue);
     }
 
@@ -24,5 +25,6 @@ public class PseudoPropertyManager {
     }
 
     private final HashMap<String, PseudoPropertyProvider> pseudoPropertyProviders;
+    private final PropertyManager propertyManager;
 
 }

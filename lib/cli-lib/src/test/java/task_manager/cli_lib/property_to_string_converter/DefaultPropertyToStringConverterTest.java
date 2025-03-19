@@ -19,7 +19,7 @@ import java.util.UUID;
 import static org.testng.Assert.*;
 import static task_manager.property_lib.PropertyDescriptor.Multiplicity.*;
 
-public class PropertyToStringConverterTest {
+public class DefaultPropertyToStringConverterTest {
 
     @BeforeMethod
     public void setUp() {
@@ -282,7 +282,7 @@ public class PropertyToStringConverterTest {
     }
     @Mock private LabelUseCase labelUseCase;
     @Mock private OrderedLabelUseCase orderedLabelUseCase;
-    private final PropertyToStringConverter propertyToStringConverter = new PropertyToStringConverter(
+    private final DefaultPropertyToStringConverter propertyToStringConverter = new DefaultPropertyToStringConverter(
             labelUseCase,
             orderedLabelUseCase,
             new DateTimeFormatter());

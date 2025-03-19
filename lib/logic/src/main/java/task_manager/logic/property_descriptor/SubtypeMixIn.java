@@ -1,4 +1,4 @@
-package task_manager.repository.property_descriptor;
+package task_manager.logic.property_descriptor;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;

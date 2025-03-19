@@ -7,7 +7,7 @@ import org.jline.reader.LineReader.Option;
 import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
 import task_manager.init.Initializer;
-import task_manager.task_logic.pseudo_property_provider.TaskIDPseudoPropertyProvider;
+import task_manager.logic.pseudo_property_provider.TempIDPseudoPropertyProvider;
 import task_manager.property_lib.PropertyDescriptor;
 import task_manager.property_lib.PropertyDescriptorCollection;
 import task_manager.task_manager_cli.Context;
@@ -28,8 +28,6 @@ public class JlineCommandLine implements CommandLine {
         List<PropertyDescriptor> propertyDescriptors = context.getPropertyDescriptorUseCase().getPropertyDescriptors();
         context.getPropertyManager().setPropertyDescriptorCollection(PropertyDescriptorCollection.fromList(propertyDescriptors));
 
-        context.getPropertyManager()
-                .registerPseudoPropertyProvider("id", new TaskIDPseudoPropertyProvider(context.getTempIDMappingUseCase()));
         Terminal terminal = TerminalBuilder.builder()
                 .nativeSignals(true)
                 .signalHandler(Terminal.SignalHandler.SIG_IGN)

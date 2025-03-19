@@ -9,6 +9,8 @@ import jakarta.inject.Inject;
 import lombok.extern.log4j.Log4j2;
 import org.fusesource.jansi.Ansi;
 import task_manager.cli_lib.DateTimeFormatter;
+import task_manager.cli_lib.property_to_string_converter.DefaultPropertyToStringConverter;
+import task_manager.cli_lib.property_to_string_converter.MainPropertyToStringConverter;
 import task_manager.cli_lib.property_to_string_converter.PropertyToStringConverter;
 import task_manager.core.data.*;
 import task_manager.property_lib.Property;
@@ -29,13 +31,14 @@ public class TaskPrinter {
                            List<String> propertiesToList,
                            OutputFormat outputFormat) throws PropertyException, IOException {
 
-        PropertyToStringConverter propertyToStringConverter = new PropertyToStringConverter(
+        DefaultPropertyToStringConverter propertyToStringConverter = new DefaultPropertyToStringConverter(
                 context.getLabelUseCase(),
                 context.getOrderedLabelUseCase(),
                 new DateTimeFormatter());
+        MainPropertyToStringConverter mainPropertyToStringConverter = new MainPropertyToStringConverter(context.getPropertyToStringConverterRepository(), propertyToStringConverter);
 
         if (outputFormat.equals(OutputFormat.TEXT)) {
-            printTasksText(context, propertyToStringConverter, tasks, propertiesToList);
+            printTasksText(context, mainPropertyToStringConverter, tasks, propertiesToList);
         } else if (outputFormat.equals(OutputFormat.JSON)) {
             System.out.println(getObjectMapper().writeValueAsString(tasks));
         } else if (outputFormat.equals(OutputFormat.PRETTY_JSON)) {
@@ -49,17 +52,18 @@ public class TaskPrinter {
             List<String> propertiesToList) throws PropertyException, IOException {
         SimpleTable table = SimpleTable.of().nextRow();
 
-        PropertyToStringConverter propertyToStringConverter = new PropertyToStringConverter(
+        DefaultPropertyToStringConverter propertyToStringConverter = new DefaultPropertyToStringConverter(
                 context.getLabelUseCase(),
                 context.getOrderedLabelUseCase(),
                 new DateTimeFormatter());
+        MainPropertyToStringConverter mainPropertyToStringConverter = new MainPropertyToStringConverter(context.getPropertyToStringConverterRepository(), propertyToStringConverter);
 
         for (String propertyName : propertiesToList) {
             table.nextCell().addLine(String.format(" %s ", propertyName.toUpperCase()));
         }
 
         for (TaskHierarchy taskHierarchy : taskHierarchies) {
-            addTaskHierarchyToTable(table, context, propertyToStringConverter, taskHierarchy, propertiesToList, 0);
+            addTaskHierarchyToTable(table, context, mainPropertyToStringConverter, taskHierarchy, propertiesToList, 0);
         }
 
         GridTable gridTable = Border.of(Border.Chars.of('+', '-', '|')).apply(table.toGrid());
@@ -108,7 +112,7 @@ public class TaskPrinter {
             if (propertyName.equals("id")) {
                 propertyString = getIDStr(context, taskHierarchy);
             } else {
-                propertyString = propertyToStringConverter.propertyToString(property);
+                propertyString = propertyToStringConverter.propertyToString(propertyName, property);
             }
 
             if (propertyName.equals("name")) {
@@ -151,7 +155,7 @@ public class TaskPrinter {
             if (propertyName.equals("id")) {
                 propertyString = getIDStr(context, task);
             } else {
-                propertyString = propertyToStringConverter.propertyToString(property);
+                propertyString = propertyToStringConverter.propertyToString(propertyName, property);
             }
 
             if (propertyName.equals("name")) {

@@ -2,10 +2,7 @@ package task_manager.repository;
 
 import com.fasterxml.jackson.core.exc.StreamReadException;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.DatabindException;
-import com.fasterxml.jackson.databind.JavaType;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import lombok.Getter;
 
@@ -30,6 +27,9 @@ public abstract class JsonRepository<T_Json, T_Stored> {
     protected JavaType constructType(TypeFactory typeFactory) {
         return null;
     }
+    protected TypeReference<T_Json> getTypeReference() {
+        return null;
+    };
 
     protected T_Json getEmptyData() {
         return null;
@@ -44,7 +44,16 @@ public abstract class JsonRepository<T_Json, T_Stored> {
                     parent.mkdirs();
                 }
             }
-            objectMapper.writeValue(jsonFile, storedToJsonData(data));
+            TypeReference<T_Json> typeReference = getTypeReference();
+            if (typeReference != null) {
+                objectMapper
+                        .writerFor(typeReference)
+                        .writeValue(jsonFile, storedToJsonData(data));
+            } else {
+                objectMapper
+                        .writeValue(jsonFile, storedToJsonData(data));
+            }
+
         } catch (IOException e) {
             throw new IOException("Failed to write JSON file: " + jsonFile, e);
         }

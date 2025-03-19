@@ -10,11 +10,12 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+@Setter
+@Getter
 @Log4j2
 public class PropertyManager {
 
     public PropertyManager() {
-        this.pseudoPropertyManager = new PseudoPropertyManager();
         this.propertyDescriptorCollection = new PropertyDescriptorCollection();
     }
 
@@ -28,8 +29,9 @@ public class PropertyManager {
 
     public Property getProperty(PropertyOwner propertyOwner, PropertyDescriptor propertyDescriptor)
             throws PropertyException, IOException {
-        if (propertyDescriptor.isPseudoProperty()) {
-            return pseudoPropertyManager.getPseudoProperty(propertyOwner, propertyDescriptor);
+        if (propertyDescriptor.pseudoPropertyProvider() != null) {
+            Object propertyValue = propertyDescriptor.pseudoPropertyProvider().getProperty(this, propertyOwner);
+            return Property.from(propertyDescriptor, propertyValue);
         } else {
             Object propertyValue = getPropertyValue(propertyOwner, propertyDescriptor);
             return Property.from(propertyDescriptor, propertyValue);
@@ -129,10 +131,6 @@ public class PropertyManager {
         return propertyDescriptor;
     }
 
-    public void registerPseudoPropertyProvider(String name, PseudoPropertyProvider pseudoPropertyProvider) {
-        pseudoPropertyManager.registerPseudoPropertyProvider(name, pseudoPropertyProvider);
-    }
-
     private Object getPropertyValue(PropertyOwner propertyOwner,
                                     PropertyDescriptor propertyDescriptor) {
         Object propertyValue = propertyOwner.getProperties().get(propertyDescriptor.name());
@@ -143,9 +141,6 @@ public class PropertyManager {
         return propertyValue;
     }
 
-    @Setter
-    @Getter
     private PropertyDescriptorCollection propertyDescriptorCollection;
-    private final PseudoPropertyManager pseudoPropertyManager;
 
 }

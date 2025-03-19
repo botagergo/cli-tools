@@ -8,7 +8,7 @@ public record PropertyDescriptor(
         Subtype subtype,
         @NonNull Multiplicity multiplicity,
         Object defaultValue,
-        boolean isPseudoProperty
+        PseudoPropertyProvider pseudoPropertyProvider
 ) {
 
     public PropertyDescriptor {

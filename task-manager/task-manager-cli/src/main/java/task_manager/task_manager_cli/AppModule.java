@@ -22,7 +22,7 @@ import task_manager.repository.ConfigurationRepositoryImpl;
 import task_manager.repository.JsonStateRepository;
 import task_manager.repository.label.JsonLabelRepositoryFactory;
 import task_manager.repository.ordered_label.JsonOrderedLabelRepositoryFactory;
-import task_manager.repository.property_descriptor.JsonPropertyDescriptorRepository;
+import task_manager.logic.property_descriptor.JsonPropertyDescriptorRepository;
 import task_manager.repository.task.JsonTaskRepository;
 import task_manager.repository.temp_id_mapping.JsonTempIDMappingRepository;
 import task_manager.repository.view.JsonViewInfoRepository;
@@ -74,6 +74,7 @@ public class AppModule extends AbstractModule {
         bind(File.class).annotatedWith(Names.named("propertyDescriptorJsonFile")).toInstance(new File(basePath + "property_descriptor.json"));
         bind(File.class).annotatedWith(Names.named("viewInfoJsonFile")).toInstance(new File(basePath + "view_info.json"));
         bind(File.class).annotatedWith(Names.named("stateJsonFile")).toInstance(new File(basePath + "state.json"));
+        bind(File.class).annotatedWith(Names.named("propertyToStringConverterJsonFile")).toInstance(new File(basePath + "property_to_string_converter.json"));
         bind(File.class).annotatedWith(Names.named("configurationYamlFile")).toInstance(new File(basePath + "config.yaml"));
         bind(File.class).annotatedWith(Names.named("basePath")).toInstance(new File(basePath));
     }

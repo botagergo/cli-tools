@@ -7,6 +7,7 @@ import jakarta.inject.Inject;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import task_manager.cli_lib.property_to_string_converter.JsonPropertyToStringConverterRepository;
 import task_manager.cli_lib.string_to_property_converter.StringToPropertyConverter;
 import task_manager.core.repository.ConfigurationRepository;
 import task_manager.logic.use_case.label.LabelUseCase;
@@ -40,6 +41,8 @@ public class Context {
     @Inject private StringToPropertyConverter stringToPropertyConverter;
 
     @Inject private TempIDMappingUseCase tempIDMappingUseCase;
+
+    @Inject private JsonPropertyToStringConverterRepository propertyToStringConverterRepository;
 
     @Inject private ConfigurationRepository configurationRepository;
 

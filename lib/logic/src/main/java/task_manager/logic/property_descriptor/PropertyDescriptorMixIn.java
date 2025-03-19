@@ -1,11 +1,10 @@
-package task_manager.repository.property_descriptor;
+package task_manager.logic.property_descriptor;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import task_manager.property_lib.PropertyDescriptor;
+import task_manager.property_lib.PseudoPropertyProvider;
 import task_manager.repository.ObjectDeserializer;
 import task_manager.repository.ObjectSerializer;
 
@@ -25,5 +24,5 @@ public record PropertyDescriptorMixIn(
         @JsonProperty
         Object defaultValue,
 
-        @JsonProperty boolean isPseudoProperty
+        @JsonProperty PseudoPropertyProvider pseudoPropertyProvider
 ) { }

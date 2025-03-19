@@ -1,11 +1,14 @@
-package task_manager.repository.property_descriptor;
+package task_manager.logic.property_descriptor;
 
+import com.fasterxml.jackson.databind.InjectableValues;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import task_manager.core.repository.PropertyDescriptorRepository;
+import task_manager.logic.use_case.temp_id_mapping.TempIDMappingUseCase;
 import task_manager.property_lib.PropertyDescriptor;
+import task_manager.property_lib.PseudoPropertyProvider;
 import task_manager.repository.SimpleJsonRepository;
 
 import java.io.File;
@@ -17,10 +20,18 @@ import java.util.Map;
 public class JsonPropertyDescriptorRepository extends SimpleJsonRepository<HashMap<String, PropertyDescriptor>> implements PropertyDescriptorRepository {
 
     @Inject
-    public JsonPropertyDescriptorRepository(@Named("propertyDescriptorJsonFile") File jsonFile) {
+    public JsonPropertyDescriptorRepository(
+            @Named("propertyDescriptorJsonFile") File jsonFile,
+            TempIDMappingUseCase tempIDMappingUseCase
+    ) {
         super(jsonFile);
         getObjectMapper().addMixIn(PropertyDescriptor.class, PropertyDescriptorMixIn.class);
         getObjectMapper().addMixIn(PropertyDescriptor.Subtype.class, SubtypeMixIn.class);
+        getObjectMapper().addMixIn(PseudoPropertyProvider.class, PseudoPropertyProviderMixIn.class);
+
+        InjectableValues injectableValues = new InjectableValues.Std()
+                .addValue(TempIDMappingUseCase.class, tempIDMappingUseCase);
+        getObjectMapper().setInjectableValues(injectableValues);
     }
 
     @Override

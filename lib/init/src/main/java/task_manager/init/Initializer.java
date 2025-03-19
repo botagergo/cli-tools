@@ -5,6 +5,7 @@ import jakarta.inject.Named;
 import org.yaml.snakeyaml.Yaml;
 import task_manager.core.data.*;
 import task_manager.core.repository.ConfigurationRepository;
+import task_manager.logic.pseudo_property_provider.TempIDPseudoPropertyProvider;
 import task_manager.logic.use_case.label.LabelUseCase;
 import task_manager.logic.use_case.ordered_label.OrderedLabelUseCase;
 import task_manager.logic.use_case.property_descriptor.PropertyDescriptorUseCase;
@@ -49,6 +50,7 @@ public class Initializer {
         initializeEfforts();
         initializeViewInfo();
         initializeConfig();
+
     }
 
     private void initializeStatuses() throws IOException {
@@ -61,31 +63,31 @@ public class Initializer {
 
     private void initializePropertyDescriptors() throws IOException {
         propertyDescriptorUseCase.createPropertyDescriptor(
-                new PropertyDescriptor("name", PropertyDescriptor.Type.String, null, PropertyDescriptor.Multiplicity.SINGLE, "", false));
+                new PropertyDescriptor("name", PropertyDescriptor.Type.String, null, PropertyDescriptor.Multiplicity.SINGLE, "", null));
         propertyDescriptorUseCase.createPropertyDescriptor(
-                new PropertyDescriptor("uuid", PropertyDescriptor.Type.UUID, null, PropertyDescriptor.Multiplicity.SINGLE, "", false));
+                new PropertyDescriptor("uuid", PropertyDescriptor.Type.UUID, null, PropertyDescriptor.Multiplicity.SINGLE, "", null));
         propertyDescriptorUseCase.createPropertyDescriptor(
-                new PropertyDescriptor("done", PropertyDescriptor.Type.Boolean, null, PropertyDescriptor.Multiplicity.SINGLE, false, false));
+                new PropertyDescriptor("done", PropertyDescriptor.Type.Boolean, null, PropertyDescriptor.Multiplicity.SINGLE, false, null));
         propertyDescriptorUseCase.createPropertyDescriptor(
-                new PropertyDescriptor("tags", PropertyDescriptor.Type.UUID, new PropertyDescriptor.Subtype.LabelSubtype("tag"), PropertyDescriptor.Multiplicity.SET, new LinkedHashSet<>(), false));
+                new PropertyDescriptor("tags", PropertyDescriptor.Type.UUID, new PropertyDescriptor.Subtype.LabelSubtype("tag"), PropertyDescriptor.Multiplicity.SET, new LinkedHashSet<>(), null));
         propertyDescriptorUseCase.createPropertyDescriptor(
-                new PropertyDescriptor("status", PropertyDescriptor.Type.UUID, new PropertyDescriptor.Subtype.LabelSubtype("status"), PropertyDescriptor.Multiplicity.SINGLE, null, false));
+                new PropertyDescriptor("status", PropertyDescriptor.Type.UUID, new PropertyDescriptor.Subtype.LabelSubtype("status"), PropertyDescriptor.Multiplicity.SINGLE, null, null));
         propertyDescriptorUseCase.createPropertyDescriptor(
-                new PropertyDescriptor("priority", PropertyDescriptor.Type.Integer, new PropertyDescriptor.Subtype.OrderedLabelSubtype("priority"), PropertyDescriptor.Multiplicity.SINGLE, null, false));
+                new PropertyDescriptor("priority", PropertyDescriptor.Type.Integer, new PropertyDescriptor.Subtype.OrderedLabelSubtype("priority"), PropertyDescriptor.Multiplicity.SINGLE, null, null));
         propertyDescriptorUseCase.createPropertyDescriptor(
-                new PropertyDescriptor("effort", PropertyDescriptor.Type.Integer, new PropertyDescriptor.Subtype.OrderedLabelSubtype("effort"), PropertyDescriptor.Multiplicity.SINGLE, null, false));
+                new PropertyDescriptor("effort", PropertyDescriptor.Type.Integer, new PropertyDescriptor.Subtype.OrderedLabelSubtype("effort"), PropertyDescriptor.Multiplicity.SINGLE, null, null));
         propertyDescriptorUseCase.createPropertyDescriptor(
-                new PropertyDescriptor("id", PropertyDescriptor.Type.Integer, null, PropertyDescriptor.Multiplicity.SINGLE, null, true));
+                new PropertyDescriptor("id", PropertyDescriptor.Type.Integer, null, PropertyDescriptor.Multiplicity.SINGLE, null, new TempIDPseudoPropertyProvider(null)));
         propertyDescriptorUseCase.createPropertyDescriptor(
-                new PropertyDescriptor("startDate", PropertyDescriptor.Type.String, new PropertyDescriptor.Subtype.DateSubtype(), PropertyDescriptor.Multiplicity.SINGLE, null, false));
+                new PropertyDescriptor("startDate", PropertyDescriptor.Type.String, new PropertyDescriptor.Subtype.DateSubtype(), PropertyDescriptor.Multiplicity.SINGLE, null, null));
         propertyDescriptorUseCase.createPropertyDescriptor(
-                new PropertyDescriptor("startTime", PropertyDescriptor.Type.String, new PropertyDescriptor.Subtype.TimeSubtype(), PropertyDescriptor.Multiplicity.SINGLE, null, false));
+                new PropertyDescriptor("startTime", PropertyDescriptor.Type.String, new PropertyDescriptor.Subtype.TimeSubtype(), PropertyDescriptor.Multiplicity.SINGLE, null, null));
         propertyDescriptorUseCase.createPropertyDescriptor(
-                new PropertyDescriptor("dueDate", PropertyDescriptor.Type.String, new PropertyDescriptor.Subtype.DateSubtype(), PropertyDescriptor.Multiplicity.SINGLE, null, false));
+                new PropertyDescriptor("dueDate", PropertyDescriptor.Type.String, new PropertyDescriptor.Subtype.DateSubtype(), PropertyDescriptor.Multiplicity.SINGLE, null, null));
         propertyDescriptorUseCase.createPropertyDescriptor(
-                new PropertyDescriptor("dueTime", PropertyDescriptor.Type.String, new PropertyDescriptor.Subtype.TimeSubtype(), PropertyDescriptor.Multiplicity.SINGLE, null, false));
+                new PropertyDescriptor("dueTime", PropertyDescriptor.Type.String, new PropertyDescriptor.Subtype.TimeSubtype(), PropertyDescriptor.Multiplicity.SINGLE, null, null));
         propertyDescriptorUseCase.createPropertyDescriptor(
-                new PropertyDescriptor("parent", PropertyDescriptor.Type.UUID, new PropertyDescriptor.Subtype.TaskSubtype(), PropertyDescriptor.Multiplicity.SINGLE, null, false));
+                new PropertyDescriptor("parent", PropertyDescriptor.Type.UUID, new PropertyDescriptor.Subtype.TaskSubtype(), PropertyDescriptor.Multiplicity.SINGLE, null, null));
     }
 
     private void initializePriorities() throws IOException {
