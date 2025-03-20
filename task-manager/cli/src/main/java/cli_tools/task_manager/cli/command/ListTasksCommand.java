@@ -28,10 +28,9 @@ public final class ListTasksCommand extends Command {
         try {
             FilterCriterionInfo filterCriterionInfo = null;
             SortingInfo sortingInfo = null;
-            List<String> propertiesToList = null;
             String actualViewName = viewName;
             Boolean actualHierarchical = hierarchical;
-
+            List<String> actualProperties = List.of("name", "status", "tags");
             List<UUID> taskUUIDs = CommandUtil.getUUIDsFromTempIDs(context, tempIDs);
             List<FilterPropertySpec> filterPropertySpecs = CommandUtil.getFilterPropertySpecs(context, filterPropertyArgs);
 
@@ -51,7 +50,7 @@ public final class ListTasksCommand extends Command {
                 }
 
                 if (viewInfo.propertiesToList() != null) {
-                    propertiesToList = viewInfo.propertiesToList();
+                    actualProperties = viewInfo.propertiesToList();
                 }
 
                 if (outputFormat == null) {
@@ -67,10 +66,6 @@ public final class ListTasksCommand extends Command {
                 sortingInfo = new SortingInfo(sortingCriteria);
             }
 
-            if (propertiesToList == null) {
-                propertiesToList = List.of("name", "status", "tags");
-            }
-
             if (outputFormat == null) {
                 outputFormat = OutputFormat.TEXT;
             }
@@ -79,17 +74,22 @@ public final class ListTasksCommand extends Command {
                 actualHierarchical = true;
             }
 
+            if (properties != null && !properties.isEmpty()) {
+                actualProperties = properties;
+            }
+
             if (actualHierarchical) {
                 if (outputFormat != OutputFormat.TEXT) {
                     System.out.println("outputFormat can only be text when printing tasks hierarchically");
                     return;
                 }
                 List<TaskHierarchy> taskHierarchies = context.getTaskService().getTaskHierarchies(filterPropertySpecs, sortingInfo, filterCriterionInfo, taskUUIDs);
-                context.getTaskPrinter().printTaskHierarchies(context, taskHierarchies, propertiesToList);
+                context.getTaskPrinter().printTaskHierarchies(context, taskHierarchies, actualProperties);
             } else {
                 List<Task> tasks = context.getTaskService().getTasks(filterPropertySpecs, sortingInfo, filterCriterionInfo, taskUUIDs);
-                context.getTaskPrinter().printTasks(context, tasks, propertiesToList, outputFormat);
+                context.getTaskPrinter().printTasks(context, tasks, actualProperties, outputFormat);
             }
+
         } catch (Exception e) {
             System.out.println("ERROR: " + e.getMessage());
             log.error("{}\n{}", e.getMessage(), ExceptionUtils.getStackTrace(e));
@@ -104,12 +104,12 @@ public final class ListTasksCommand extends Command {
         return viewInfo;
     }
 
-    private List<@NonNull String> queries;
     private List<@NonNull SortingCriterion> sortingCriteria;
     private List<@NonNull PropertyArgument> filterPropertyArgs;
     private String viewName;
     private OutputFormat outputFormat;
     private Boolean hierarchical;
     private List<@NonNull Integer> tempIDs;
+    private List<String> properties;
 }
 

@@ -8,37 +8,38 @@ import cli_tools.common.core.data.SortingCriterion;
 import cli_tools.task_manager.cli.Context;
 import cli_tools.task_manager.cli.command.Command;
 import cli_tools.task_manager.cli.command.ListTasksCommand;
+import lombok.extern.log4j.Log4j2;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Log4j2
 public class ListTasksCommandParser extends CommandParser {
 
     @Override
     public Command parse(Context context, ArgumentList argList) throws CommandParserException {
-        ListTasksCommand command = new ListTasksCommand();
+            ListTasksCommand command = new ListTasksCommand();
 
         if (!argList.getModifyPropertyArguments().isEmpty()) {
-            throw new CommandParserException("Unexpected property arguments");
-        }
-
-        if (argList.getSpecialArguments().containsKey('?')) {
-            command.setQueries(argList.getSpecialArguments().get('?').stream().map(SpecialArgument::value).collect(Collectors.toList()));
+            throw new CommandParserException("unexpected property arguments");
         }
 
         if (argList.getTrailingNormalArguments().size() == 1) {
             command.setViewName(String.join(" ", argList.getTrailingNormalArguments()));
         } else if (argList.getTrailingNormalArguments().size() > 1) {
-            throw new CommandParserException("One normal argument expected: view name");
+            throw new CommandParserException("one normal argument expected: view name");
         }
 
-        command.setFilterPropertyArgs(argList.getFilterPropertyArguments());
+        if (!argList.getFilterPropertyArguments().isEmpty()) {
+            command.setFilterPropertyArgs(argList.getFilterPropertyArguments());
+        }
 
         for (OptionArgument optionArg : argList.getOptionArguments()) {
             switch (optionArg.optionName()) {
                 case "sort" -> command.setSortingCriteria(parseSortingCriteria(optionArg.values()));
                 case "view" -> command.setViewName(parseSingleOptionValue("view", optionArg.values()));
+                case "properties" -> command.setProperties(parseProperties(optionArg.values()));
                 case "outputFormat" -> command.setOutputFormat(parseOutputFormat(optionArg.values()));
                 case "hierarchical" -> command.setHierarchical(parseHierarchical(optionArg.values()));
                 default -> throw new InvalidOptionException(optionArg.optionName());
@@ -53,13 +54,13 @@ public class ListTasksCommandParser extends CommandParser {
 
     private List<SortingCriterion> parseSortingCriteria(List<String> values) throws CommandParserException {
         if (values.isEmpty()) {
-            throw new CommandParserException("Sorting criterion list is empty");
+            throw new CommandParserException("sorting criterion list is empty");
         }
 
         List<SortingCriterion> sortingCriteria = new ArrayList<>();
         for (String criterion : values) {
             if (criterion.isEmpty()) {
-                throw new CommandParserException("Empty sorting criterion");
+                throw new CommandParserException("empty sorting criterion");
             }
 
             boolean ascending = true;
@@ -71,7 +72,7 @@ public class ListTasksCommandParser extends CommandParser {
             }
 
             if (criterion.isEmpty()) {
-                throw new CommandParserException("Invalid sorting criterion");
+                throw new CommandParserException("invalid sorting criterion");
             }
 
             sortingCriteria.add(new SortingCriterion(criterion, ascending));
@@ -87,28 +88,36 @@ public class ListTasksCommandParser extends CommandParser {
             case "json" -> { return OutputFormat.JSON; }
             case "prettyJson" -> { return OutputFormat.PRETTY_JSON; }
             default ->
-                    throw new CommandParserException("Invalid output format: " + outputFormat + "\nValid formats: text, json, prettyJson");
+                    throw new CommandParserException("invalid output format: " + outputFormat + "\nvalid formats: text, json, prettyJson");
         }
     }
 
     private boolean parseHierarchical(List<String> values) throws CommandParserException {
         if (values.size() != 1) {
-            throw new CommandParserException("Value of 'hierarchical must be true or false");
+            throw new CommandParserException("value of 'hierarchical must be true or false");
         }
 
         switch (values.get(0)) {
             case "true" -> { return true; }
             case "false" -> { return false; }
             default ->
-                    throw new CommandParserException("Value of 'hierarchical must be true or false");
+                    throw new CommandParserException("value of .hierarchical must be true or false");
         }
+    }
+
+    private List<String> parseProperties(List<String> values) {
+        if (values.isEmpty()) {
+            log.warn("empty list received in .properties option, ignoring");
+            return null;
+        }
+        return values;
     }
 
     private String parseSingleOptionValue(String optionArgumentName, List<String> valueList) throws CommandParserException {
         if (valueList.isEmpty()) {
-            throw new CommandParserException("No " + optionArgumentName + " was specified");
+            throw new CommandParserException("no " + optionArgumentName + " was specified");
         } else if (valueList.size() != 1) {
-            throw new CommandParserException("Only one " + optionArgumentName + " can be specified");
+            throw new CommandParserException("only one " + optionArgumentName + " can be specified");
         }
 
         return valueList.get(0);
