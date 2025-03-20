@@ -39,7 +39,7 @@ public class CollectionContainsFilterCriterionTest {
     }
 
     @Test
-    public void test_check_listContains() throws PropertyException, IOException {
+    public void test_listContains() throws PropertyException, IOException {
         Mockito.when(propertyOwner.getProperties()).thenReturn(Utils.newHashMap(
                 "test_string_list", Utils.newArrayList("value1", "value2", "value3"),
                 "test_boolean_list", Utils.newArrayList(true, false, true),
@@ -51,7 +51,7 @@ public class CollectionContainsFilterCriterionTest {
     }
 
     @Test
-    public void test_check_setContains() throws PropertyException, IOException {
+    public void test_setContains() throws PropertyException, IOException {
         Mockito.when(propertyOwner.getProperties()).thenReturn(Utils.newHashMap(
                 "test_string_set", Utils.newLinkedHashSet("value1", "value2", "value3"),
                 "test_boolean_set", Utils.newLinkedHashSet(true, false, true),
@@ -63,7 +63,7 @@ public class CollectionContainsFilterCriterionTest {
     }
 
     @Test
-    public void test_check_listDoesNotContain() throws PropertyException, IOException {
+    public void test_listDoesNotContain() throws PropertyException, IOException {
         Mockito.when(propertyOwner.getProperties()).thenReturn(Utils.newHashMap(
                 "test_string_list", Utils.newArrayList("value1", "value2", "value3"),
                 "test_boolean_list", Utils.newArrayList(true, false, true),
@@ -75,7 +75,7 @@ public class CollectionContainsFilterCriterionTest {
     }
 
     @Test
-    public void test_check_setDoesNotContain() throws PropertyException, IOException {
+    public void test_setDoesNotContain() throws PropertyException, IOException {
         Mockito.when(propertyOwner.getProperties()).thenReturn(Utils.newHashMap(
                 "test_string_set", Utils.newLinkedHashSet("value1", "value2", "value3"),
                 "test_boolean_set", Utils.newLinkedHashSet(true, false, true),
@@ -87,7 +87,7 @@ public class CollectionContainsFilterCriterionTest {
     }
 
     @Test
-    public void test_check_listContainsNull() throws PropertyException, IOException {
+    public void test_listContainsNull() throws PropertyException, IOException {
         Mockito.when(propertyOwner.getProperties()).thenReturn(Utils.newHashMap(
                 "test_string_list", Utils.newArrayList("value1", "value2", null),
                 "test_boolean_list", Utils.newArrayList(true, null, true),
@@ -99,7 +99,7 @@ public class CollectionContainsFilterCriterionTest {
     }
 
     @Test
-    public void test_check_setContainsNull() throws PropertyException, IOException {
+    public void test_setContainsNull() throws PropertyException, IOException {
         Mockito.when(propertyOwner.getProperties()).thenReturn(Utils.newHashMap(
                 "test_string_set", Utils.newLinkedHashSet("value1", "value2", null),
                 "test_boolean_set", Utils.newLinkedHashSet(true, null),
@@ -111,13 +111,13 @@ public class CollectionContainsFilterCriterionTest {
     }
 
     @Test
-    public void test_check_listContainsEmpty() throws PropertyException, IOException {
+    public void test_listContainsEmpty() throws PropertyException, IOException {
         Mockito.when(propertyOwner.getProperties()).thenReturn(Utils.newHashMap("test_string_list", Utils.newArrayList("value1", "value2")));
         Assert.assertTrue(new CollectionContainsFilterCriterion("test_string_list", Utils.newArrayList()).check(propertyOwner, propertyManager));
     }
 
     @Test
-    public void test_check_setContainsEmpty() throws PropertyException, IOException {
+    public void test_setContainsEmpty() throws PropertyException, IOException {
         Mockito.when(propertyOwner.getProperties()).thenReturn(Utils.newHashMap("test_string_set", Utils.newLinkedHashSet("value1", "value2")));
         Assert.assertTrue(new CollectionContainsFilterCriterion("test_string_set", Sets.newLinkedHashSet()).check(propertyOwner, propertyManager));
     }

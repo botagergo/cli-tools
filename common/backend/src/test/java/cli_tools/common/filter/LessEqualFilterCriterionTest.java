@@ -31,46 +31,46 @@ public class LessEqualFilterCriterionTest {
     }
 
     @Test
-    public void test_check_lessEqual_string() throws PropertyException, IOException {
+    public void test_lessEqual_string() throws PropertyException, IOException {
         Mockito.when(propertyOwner.getProperties()).thenReturn(Utils.newHashMap("test_string", "str1"));
         assertLessEqualNullsFirst("test_string", "str1");
         assertLessEqualNullsFirst("test_string", "str2");
     }
 
     @Test
-    public void test_check_notLessEqual_string() throws PropertyException, IOException {
+    public void test_notLessEqual_string() throws PropertyException, IOException {
         Mockito.when(propertyOwner.getProperties()).thenReturn(Utils.newHashMap("test_string", "str1"));
         assertNotLessEqualNullsFirst("test_string", "str0");
     }
 
     @Test
-    public void test_check_lessEqual_boolean() throws PropertyException, IOException {
+    public void test_lessEqual_boolean() throws PropertyException, IOException {
         Mockito.when(propertyOwner.getProperties()).thenReturn(Utils.newHashMap("test_boolean", false));
         assertLessEqualNullsFirst("test_boolean", true);
         assertLessEqualNullsFirst("test_boolean", false);
     }
 
     @Test
-    public void test_check_notLessEqual_boolean() throws PropertyException, IOException {
+    public void test_notLessEqual_boolean() throws PropertyException, IOException {
         Mockito.when(propertyOwner.getProperties()).thenReturn(Utils.newHashMap("test_boolean", true));
         assertNotLessEqualNullsFirst("test_boolean", false);
     }
 
     @Test
-    public void test_check_lessEqual_integer() throws PropertyException, IOException {
+    public void test_lessEqual_integer() throws PropertyException, IOException {
         Mockito.when(propertyOwner.getProperties()).thenReturn(Utils.newHashMap("test_integer", 4));
         assertLessEqualNullsFirst("test_integer", 10);
         assertLessEqualNullsFirst("test_integer", 4);
     }
 
     @Test
-    public void test_check_notLessEqual_integer() throws PropertyException, IOException {
+    public void test_notLessEqual_integer() throws PropertyException, IOException {
         Mockito.when(propertyOwner.getProperties()).thenReturn(Utils.newHashMap("test_integer", 10));
         assertNotLessEqualNullsFirst("test_integer", 2);
     }
 
     @Test
-    public void test_check_lessEqual_withNulls() throws PropertyException, IOException {
+    public void test_lessEqual_withNulls() throws PropertyException, IOException {
         Mockito.when(propertyOwner.getProperties()).thenReturn(Utils.newHashMap("test_integer1", 10, "test_integer2", null));
         assertNotLessEqualNullsFirst("test_integer1", null);
         assertLessEqualNullsFirst("test_integer2", 4);

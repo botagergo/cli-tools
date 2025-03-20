@@ -31,46 +31,46 @@ public class GreaterFilterCriterionTest {
     }
 
     @Test
-    public void test_check_greater_string() throws PropertyException, IOException {
+    public void test_greater_string() throws PropertyException, IOException {
         Mockito.when(propertyOwner.getProperties()).thenReturn(Utils.newHashMap("test_string", "str2"));
         assertGreaterNullsFirst("test_string", "str1");
     }
 
     @Test
-    public void test_check_notGreater_string() throws PropertyException, IOException {
+    public void test_notGreater_string() throws PropertyException, IOException {
         Mockito.when(propertyOwner.getProperties()).thenReturn(Utils.newHashMap("test_string", "str1"));
         assertNotGreaterNullsFirst("test_string", "str1");
         assertNotGreaterNullsFirst("test_string", "str2");
     }
 
     @Test
-    public void test_check_greater_boolean() throws PropertyException, IOException {
+    public void test_greater_boolean() throws PropertyException, IOException {
         Mockito.when(propertyOwner.getProperties()).thenReturn(Utils.newHashMap("test_boolean", true));
         assertGreaterNullsFirst("test_boolean", false);
     }
 
     @Test
-    public void test_check_notGreater_boolean() throws PropertyException, IOException {
+    public void test_notGreater_boolean() throws PropertyException, IOException {
         Mockito.when(propertyOwner.getProperties()).thenReturn(Utils.newHashMap("test_boolean", false));
         assertNotGreaterNullsFirst("test_boolean", true);
         assertNotGreaterNullsFirst("test_boolean", false);
     }
 
     @Test
-    public void test_check_greater_integer() throws PropertyException, IOException {
+    public void test_greater_integer() throws PropertyException, IOException {
         Mockito.when(propertyOwner.getProperties()).thenReturn(Utils.newHashMap("test_integer", 4));
         assertGreaterNullsFirst("test_integer", 2);
     }
 
     @Test
-    public void test_check_notGreater_integer() throws PropertyException, IOException {
+    public void test_notGreater_integer() throws PropertyException, IOException {
         Mockito.when(propertyOwner.getProperties()).thenReturn(Utils.newHashMap("test_integer", 4));
         assertNotGreaterNullsFirst("test_integer", 10);
         assertNotGreaterNullsFirst("test_integer", 4);
     }
 
     @Test
-    public void test_check_withNulls() throws PropertyException, IOException {
+    public void test_withNulls() throws PropertyException, IOException {
         Mockito.when(propertyOwner.getProperties()).thenReturn(Utils.newHashMap("test_integer1", 10, "test_integer2", null));
         assertGreaterNullsFirst("test_integer1", null);
         assertNotGreaterNullsFirst("test_integer2", 4);

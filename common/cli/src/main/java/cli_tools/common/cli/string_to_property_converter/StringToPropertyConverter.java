@@ -1,27 +1,30 @@
 package cli_tools.common.cli.string_to_property_converter;
 
+import cli_tools.common.cli.DateTimeParser;
+import cli_tools.common.cli.argument.PropertyArgument;
+import cli_tools.common.core.data.Label;
+import cli_tools.common.core.data.OrderedLabel;
+import cli_tools.common.core.data.Predicate;
 import cli_tools.common.core.data.property.Affinity;
 import cli_tools.common.core.data.property.FilterPropertySpec;
 import cli_tools.common.core.data.property.ModifyPropertySpec;
 import cli_tools.common.label.service.LabelService;
 import cli_tools.common.ordered_label.service.OrderedLabelService;
 import cli_tools.common.property_descriptor.service.PropertyDescriptorService;
-import cli_tools.common.temp_id_mapping.service.TempIDMappingService;
-import jakarta.inject.Inject;
-import lombok.NonNull;
-import cli_tools.common.cli.DateTimeParser;
-import cli_tools.common.core.data.Label;
-import cli_tools.common.core.data.OrderedLabel;
-import cli_tools.common.core.data.Predicate;
 import cli_tools.common.property_lib.Property;
 import cli_tools.common.property_lib.PropertyDescriptor;
 import cli_tools.common.property_lib.PropertyException;
-import cli_tools.common.cli.argument.PropertyArgument;
+import cli_tools.common.temp_id_mapping.service.TempIDMappingService;
 import cli_tools.common.util.Utils;
+import jakarta.inject.Inject;
+import lombok.NonNull;
 
 import java.io.IOException;
 import java.time.format.DateTimeParseException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.UUID;
 
 public class StringToPropertyConverter {
 
@@ -49,17 +52,28 @@ public class StringToPropertyConverter {
             String propertyName = entry.propertyName();
             List<String> propertyValue = entry.values();
 
-            if (propertyValue == null) {
+            Predicate predicate = parsePredicate(entry.option());
+
+            if (propertyValue == null && !(predicate == Predicate.NULL || predicate == Predicate.EMPTY)) {
                 throw new StringToPropertyConverterException(
                         StringToPropertyConverterException.Type.MissingPropertyValue,
-                        "Missing property value for property '" + propertyName + "'",
+                        "missing value for property '" + propertyName + "'",
+                        propertyName);
+            } else if (propertyValue != null && (predicate == Predicate.NULL || predicate == Predicate.EMPTY)) {
+                throw new StringToPropertyConverterException(
+                        StringToPropertyConverterException.Type.UnexpectedPropertyValue,
+                        "unexpected property value for predicate '" + entry.option() + "'",
                         propertyName);
             }
 
             PropertyDescriptor propertyDescriptor = propertyDescriptorService.findPropertyDescriptor(propertyName);
-            Property property = Property.fromUnchecked(propertyDescriptor, stringToProperty(propertyDescriptor, propertyValue, createUuidIfNotExists));
 
-            filterPropertySpecs.add(new FilterPropertySpec(property, entry.affinity() == Affinity.NEGATIVE, parsePredicate(entry.option())));
+            if (propertyValue == null) {
+                filterPropertySpecs.add(new FilterPropertySpec(propertyName, null, entry.affinity() == Affinity.NEGATIVE, predicate));
+            } else {
+                Property property = Property.fromUnchecked(propertyDescriptor, stringToProperty(propertyDescriptor, propertyValue, createUuidIfNotExists));
+                filterPropertySpecs.add(new FilterPropertySpec(propertyName, property, entry.affinity() == Affinity.NEGATIVE, parsePredicate(entry.option())));
+            }
         }
 
         return filterPropertySpecs;
@@ -177,6 +191,10 @@ public class StringToPropertyConverter {
             return Predicate.GREATER;
         } else if (predicateStr.equals("greater_equal")) {
             return Predicate.GREATER_EQUAL;
+        } else if (predicateStr.equals("null")) {
+            return Predicate.NULL;
+        } else if (predicateStr.equals("empty")) {
+            return Predicate.EMPTY;
         } else {
             throw new StringToPropertyConverterException(StringToPropertyConverterException.Type.InvalidPredicate, "Invalid option: " + predicateStr, predicateStr);
         }
@@ -194,9 +212,15 @@ public class StringToPropertyConverter {
 
     private ModifyPropertySpec.ModificationType getModificationType(@NonNull Affinity affinity) {
         switch (affinity) {
-            case POSITIVE -> { return ModifyPropertySpec.ModificationType.ADD_VALUES; }
-            case NEGATIVE -> { return ModifyPropertySpec.ModificationType.REMOVE_VALUES; }
-            case NEUTRAL -> { return ModifyPropertySpec.ModificationType.SET_VALUE; }
+            case POSITIVE -> {
+                return ModifyPropertySpec.ModificationType.ADD_VALUES;
+            }
+            case NEGATIVE -> {
+                return ModifyPropertySpec.ModificationType.REMOVE_VALUES;
+            }
+            case NEUTRAL -> {
+                return ModifyPropertySpec.ModificationType.SET_VALUE;
+            }
         }
 
         throw new RuntimeException();
@@ -274,7 +298,7 @@ public class StringToPropertyConverter {
                     "Property '" + propertyDescriptor.name() + "' is not a label", propertyDescriptor.name());
         }
 
-        return (PropertyDescriptor.Subtype.OrderedLabelSubtype)integerSubtype;
+        return (PropertyDescriptor.Subtype.OrderedLabelSubtype) integerSubtype;
     }
 
     private final PropertyDescriptorService propertyDescriptorService;

@@ -5,7 +5,8 @@ import lombok.NonNull;
 import cli_tools.common.property_lib.Property;
 
 public record FilterPropertySpec(
-        @NonNull Property property,
+        String propertyName,
+        Property property,
         boolean negate,
         Predicate predicate) {
 

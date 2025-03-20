@@ -1,9 +1,6 @@
 package cli_tools.common.property_lib;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -421,7 +418,7 @@ public class Property {
         return Collections.unmodifiableSet(propertyValuesSet);
     }
 
-    private final PropertyDescriptor propertyDescriptor;
+    @NonNull private final PropertyDescriptor propertyDescriptor;
     private final Object value;
 
 }

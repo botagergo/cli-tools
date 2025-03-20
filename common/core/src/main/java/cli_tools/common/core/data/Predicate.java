@@ -6,5 +6,7 @@ public enum Predicate {
     LESS,
     LESS_EQUAL,
     GREATER,
-    GREATER_EQUAL
+    GREATER_EQUAL,
+    NULL,
+    EMPTY
 }

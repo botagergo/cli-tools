@@ -30,7 +30,7 @@ public class OrFilterCriterionTest {
     }
 
     @Test
-    public void test_check_equals() throws PropertyException, IOException {
+    public void test_equals() throws PropertyException, IOException {
         Mockito.when(propertyOwner.getProperties()).thenReturn(Utils.newHashMap("test_boolean1", true, "test_boolean2", false));
         Assert.assertTrue(checkEqual(true, false));
 
@@ -42,7 +42,7 @@ public class OrFilterCriterionTest {
     }
 
     @Test
-    public void test_check_not_equals() throws PropertyException, IOException {
+    public void test_not_equals() throws PropertyException, IOException {
         Mockito.when(propertyOwner.getProperties()).thenReturn(Utils.newHashMap("test_boolean1", true, "test_boolean2", false));
         Assert.assertFalse(checkEqual(false, true));
 

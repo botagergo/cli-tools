@@ -24,6 +24,7 @@ public class StringToPropertyConverterException extends Exception {
         NoAssociatedLabel,
         InvalidPropertyOption,
         MissingPropertyValue,
+        UnexpectedPropertyValue,
         InvalidDate,
         InvalidTime,
         InvalidTempId,

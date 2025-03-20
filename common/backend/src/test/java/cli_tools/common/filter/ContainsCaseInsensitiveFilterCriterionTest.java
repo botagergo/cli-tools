@@ -32,7 +32,7 @@ public class ContainsCaseInsensitiveFilterCriterionTest {
     }
 
     @Test
-    public void test_check_contains() throws PropertyException, IOException {
+    public void test_contains() throws PropertyException, IOException {
         Mockito.when(propertyOwner.getProperties()).thenReturn(Utils.newHashMap("test_string", "string_value"));
         Assert.assertTrue(new ContainsCaseInsensitiveFilterCriterion("test_string", "string").check(propertyOwner, propertyManager));
         Assert.assertTrue(new ContainsCaseInsensitiveFilterCriterion("test_string", "VaLuE").check(propertyOwner, propertyManager));
@@ -41,7 +41,7 @@ public class ContainsCaseInsensitiveFilterCriterionTest {
     }
 
     @Test
-    public void test_check_doesNotContain() throws PropertyException, IOException {
+    public void test_doesNotContain() throws PropertyException, IOException {
         Mockito.when(propertyOwner.getProperties()).thenReturn(Utils.newHashMap("test_string", "string_value"));
         Assert.assertFalse(new ContainsCaseInsensitiveFilterCriterion("test_string", "value1").check(propertyOwner, propertyManager));
     }

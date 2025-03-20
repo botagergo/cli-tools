@@ -133,7 +133,7 @@ public class TaskServiceImplTest {
         initTasks();
         List<Task> tasks = taskUseCase.getTasks(
                 List.of(
-                        new FilterPropertySpec(Property.from(propertyManager.getPropertyDescriptorCollection().get("name"), "other"), false, Predicate.CONTAINS)
+                        new FilterPropertySpec("name", Property.from(propertyManager.getPropertyDescriptorCollection().get("name"), "other"), false, Predicate.CONTAINS)
                 ),
                 null, null, null
         );
@@ -168,7 +168,7 @@ public class TaskServiceImplTest {
                 ));
         List<Task> tasks = taskUseCase.getTasks(
                 List.of(
-                        new FilterPropertySpec(Property.from(propertyManager.getPropertyDescriptorCollection().get("done"), true), false, Predicate.EQUALS)
+                        new FilterPropertySpec("done", Property.from(propertyManager.getPropertyDescriptorCollection().get("done"), true), false, Predicate.EQUALS)
                 ),
                 new SortingInfo(List.of(new SortingCriterion("name", false))),
                 new FilterCriterionInfo(

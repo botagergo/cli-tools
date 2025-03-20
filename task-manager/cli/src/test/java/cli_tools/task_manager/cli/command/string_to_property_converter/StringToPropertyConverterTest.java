@@ -1,27 +1,27 @@
 package cli_tools.task_manager.cli.command.string_to_property_converter;
 
-import cli_tools.common.core.data.property.Affinity;
-import cli_tools.common.core.data.property.FilterPropertySpec;
-import cli_tools.common.core.data.property.ModifyPropertySpec;
-import org.mockito.*;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import cli_tools.common.cli.argument.PropertyArgument;
 import cli_tools.common.cli.string_to_property_converter.StringToPropertyConverter;
 import cli_tools.common.cli.string_to_property_converter.StringToPropertyConverterException;
 import cli_tools.common.core.data.Label;
 import cli_tools.common.core.data.OrderedLabel;
 import cli_tools.common.core.data.Predicate;
+import cli_tools.common.core.data.property.Affinity;
+import cli_tools.common.core.data.property.FilterPropertySpec;
+import cli_tools.common.core.data.property.ModifyPropertySpec;
 import cli_tools.common.label.service.LabelService;
 import cli_tools.common.ordered_label.service.OrderedLabelService;
 import cli_tools.common.property_descriptor.service.PropertyDescriptorService;
 import cli_tools.common.property_lib.Property;
 import cli_tools.common.property_lib.PropertyDescriptor;
 import cli_tools.common.property_lib.PropertyException;
-import cli_tools.common.cli.argument.PropertyArgument;
 import cli_tools.common.util.RoundRobinUUIDGenerator;
 import cli_tools.common.util.UUIDGenerator;
 import cli_tools.common.util.Utils;
+import org.mockito.*;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -30,12 +30,12 @@ import java.util.Set;
 import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.fail;
+import static org.testng.Assert.*;
 
 public class StringToPropertyConverterTest {
 
-    @BeforeClass public void initMocks() {
+    @BeforeClass
+    public void initMocks() {
         MockitoAnnotations.openMocks(this);
     }
 
@@ -112,16 +112,18 @@ public class StringToPropertyConverterTest {
         assertEquals(propertyConverter.stringToProperty(
                 getPropertyDescriptor(PropertyDescriptor.Type.Boolean, null, PropertyDescriptor.Multiplicity.LIST), List.of("true", "false"), true), List.of(true, false));
     }
+
     @Mock
     private PropertyDescriptorService propertyDescriptorService;
 
     @Test
     public void test_stringToProperty_uuidList_successful() throws IOException, StringToPropertyConverterException {
         assertEquals(propertyConverter.stringToProperty(
-                getPropertyDescriptor(PropertyDescriptor.Type.UUID, null, PropertyDescriptor.Multiplicity.LIST),
-                List.of(uuid1.toString(), uuid2.toString(), uuid3.toString()), true),
+                        getPropertyDescriptor(PropertyDescriptor.Type.UUID, null, PropertyDescriptor.Multiplicity.LIST),
+                        List.of(uuid1.toString(), uuid2.toString(), uuid3.toString()), true),
                 List.of(uuid1, uuid2, uuid3));
     }
+
     @Mock
     private LabelService labelService;
 
@@ -148,6 +150,7 @@ public class StringToPropertyConverterTest {
             assertEquals(e.getArgument(), "tag");
         }
     }
+
     @Mock
     private OrderedLabelService orderedLabelService;
 
@@ -212,7 +215,8 @@ public class StringToPropertyConverterTest {
         assertEquals(propertyConverter.parsePredicate("less_equal"), Predicate.LESS_EQUAL);
         assertEquals(propertyConverter.parsePredicate("greater"), Predicate.GREATER);
         assertEquals(propertyConverter.parsePredicate("greater_equal"), Predicate.GREATER_EQUAL);
-
+        assertEquals(propertyConverter.parsePredicate("null"), Predicate.NULL);
+        assertEquals(propertyConverter.parsePredicate("empty"), Predicate.EMPTY);
     }
 
     @Test
@@ -222,30 +226,35 @@ public class StringToPropertyConverterTest {
         mockitoPropertyDescriptor("string_list_property", PropertyDescriptor.Type.String, PropertyDescriptor.Multiplicity.LIST);
         mockitoPropertyDescriptor("uuid_set_property", PropertyDescriptor.Type.UUID, PropertyDescriptor.Multiplicity.SET);
 
-        List<PropertyArgument> properties =  List.of(
+        List<PropertyArgument> properties = List.of(
                 new PropertyArgument(Affinity.NEUTRAL, "boolean_property", "contains", List.of("true")),
                 new PropertyArgument(Affinity.NEUTRAL, "integer_property", "less", List.of("123")),
                 new PropertyArgument(Affinity.POSITIVE, "string_list_property", "equals", List.of("true", "false")),
-                new PropertyArgument(Affinity.NEGATIVE, "uuid_set_property", null, List.of(uuid1.toString(), uuid2.toString()))
+                new PropertyArgument(Affinity.NEGATIVE, "uuid_set_property", null, List.of(uuid1.toString(), uuid2.toString())),
+                new PropertyArgument(Affinity.NEUTRAL, "uuid_set_property", "null", null),
+                new PropertyArgument(Affinity.NEUTRAL, "uuid_set_property", "empty", null)
         );
         List<FilterPropertySpec> propertySpecs = propertyConverter.convertPropertiesForFiltering(properties, true);
         assertEquals(propertySpecs, List.of(
-                new FilterPropertySpec(Property.fromUnchecked(
+                new FilterPropertySpec("boolean_property", Property.fromUnchecked(
                         new PropertyDescriptor("boolean_property", PropertyDescriptor.Type.Boolean, null, PropertyDescriptor.Multiplicity.SINGLE, null, null),
                         true
                 ), false, Predicate.CONTAINS),
-                new FilterPropertySpec(Property.fromUnchecked(
+                new FilterPropertySpec("integer_property", Property.fromUnchecked(
                         new PropertyDescriptor("integer_property", PropertyDescriptor.Type.Integer, null, PropertyDescriptor.Multiplicity.SINGLE, null, null),
                         123
                 ), false, Predicate.LESS),
-                new FilterPropertySpec(Property.fromUnchecked(
+                new FilterPropertySpec("string_list_property", Property.fromUnchecked(
                         new PropertyDescriptor("string_list_property", PropertyDescriptor.Type.String, null, PropertyDescriptor.Multiplicity.LIST, null, null),
                         List.of("true", "false")
                 ), false, Predicate.EQUALS),
-                new FilterPropertySpec(Property.fromUnchecked(
+                new FilterPropertySpec("uuid_set_property", Property.fromUnchecked(
                         new PropertyDescriptor("uuid_set_property", PropertyDescriptor.Type.UUID, null, PropertyDescriptor.Multiplicity.SET, null, null),
                         Set.of(uuid1, uuid2)
-                ), true, null)
+                ), true, null),
+                new FilterPropertySpec("uuid_set_property", null, false, Predicate.NULL),
+                new FilterPropertySpec("uuid_set_property", null, false, Predicate.EMPTY)
+
         ));
     }
 
@@ -254,7 +263,7 @@ public class StringToPropertyConverterTest {
         mockitoPropertyDescriptor("boolean_property", PropertyDescriptor.Type.Boolean, PropertyDescriptor.Multiplicity.SINGLE);
 
         try {
-            List<PropertyArgument> properties =  List.of(
+            List<PropertyArgument> properties = List.of(
                     new PropertyArgument(Affinity.NEUTRAL, "boolean_property", "invalid_predicate", List.of("true"))
             );
             propertyConverter.convertPropertiesForFiltering(properties, true);
@@ -266,13 +275,37 @@ public class StringToPropertyConverterTest {
     }
 
     @Test
+    public void test_convertPropertiesForFilter_operandNull() throws PropertyException, IOException {
+        mockitoPropertyDescriptor("boolean_property", PropertyDescriptor.Type.Boolean, PropertyDescriptor.Multiplicity.SINGLE);
+
+        List<PropertyArgument> properties = List.of(
+                new PropertyArgument(Affinity.NEUTRAL, "boolean_property", "contains", null)
+        );
+        assertThrows(StringToPropertyConverterException.class, () -> propertyConverter.convertPropertiesForFiltering(properties, true));
+    }
+
+    @Test
+    public void test_convertPropertiesForFilter_operandNotNull() throws PropertyException, IOException {
+        mockitoPropertyDescriptor("boolean_property", PropertyDescriptor.Type.Boolean, PropertyDescriptor.Multiplicity.SINGLE);
+
+        List<PropertyArgument> properties1 = List.of(
+                new PropertyArgument(Affinity.NEUTRAL, "boolean_property", "null", List.of("123"))
+        );
+        assertThrows(StringToPropertyConverterException.class, () -> propertyConverter.convertPropertiesForFiltering(properties1, true));
+        List<PropertyArgument> properties2 = List.of(
+                new PropertyArgument(Affinity.NEUTRAL, "boolean_property", "empty", List.of("123"))
+        );
+        assertThrows(StringToPropertyConverterException.class, () -> propertyConverter.convertPropertiesForFiltering(properties2, true));
+    }
+
+    @Test
     public void test_convertPropertiesForModification() throws IOException, StringToPropertyConverterException, PropertyException {
         mockitoPropertyDescriptor("boolean_property", PropertyDescriptor.Type.Boolean, PropertyDescriptor.Multiplicity.SINGLE);
         mockitoPropertyDescriptor("integer_property", PropertyDescriptor.Type.Integer, PropertyDescriptor.Multiplicity.SINGLE);
         mockitoPropertyDescriptor("string_list_property", PropertyDescriptor.Type.String, PropertyDescriptor.Multiplicity.LIST);
         mockitoPropertyDescriptor("uuid_set_property", PropertyDescriptor.Type.UUID, PropertyDescriptor.Multiplicity.SET);
 
-        List<PropertyArgument> properties =  List.of(
+        List<PropertyArgument> properties = List.of(
                 new PropertyArgument(Affinity.NEUTRAL, "boolean_property", null, List.of("true")),
                 new PropertyArgument(Affinity.NEUTRAL, "integer_property", null, List.of("123")),
                 new PropertyArgument(Affinity.POSITIVE, "string_list_property", null, List.of("true", "false")),
@@ -333,7 +366,7 @@ public class StringToPropertyConverterTest {
         mockitoPropertyDescriptor("boolean_property", PropertyDescriptor.Type.Boolean, PropertyDescriptor.Multiplicity.SINGLE);
 
         try {
-            List<PropertyArgument> properties =  List.of(
+            List<PropertyArgument> properties = List.of(
                     new PropertyArgument(Affinity.NEUTRAL, "boolean_property", "invalid_option", null)
             );
             propertyConverter.convertPropertiesForModification(properties, true);
@@ -420,6 +453,7 @@ public class StringToPropertyConverterTest {
         Mockito.when(propertyDescriptorService.findPropertyDescriptor(name)).thenReturn(new PropertyDescriptor(name,
                 type, null, multiplicity, null, null));
     }
+
     private final UUID uuid1 = uuidGenerator.getUUID();
     private final UUID uuid2 = uuidGenerator.getUUID();
     private final UUID uuid3 = uuidGenerator.getUUID();

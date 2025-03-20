@@ -1,5 +1,6 @@
 package cli_tools.task_manager.task.service;
 
+import cli_tools.common.core.data.Predicate;
 import cli_tools.common.core.data.property.FilterPropertySpec;
 import cli_tools.common.filter.*;
 import cli_tools.common.property_lib.Property;
@@ -63,13 +64,13 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public List<Task> getTasks(
-            List<FilterPropertySpec> propertySpecs,
+            List<FilterPropertySpec> filterPropertySpecs,
             SortingInfo sortingInfo,
             FilterCriterionInfo filterCriterionInfo,
             List<UUID> taskUUIDs
     ) throws IOException, TaskServiceException, PropertyException, PropertyConverterException, FilterCriterionException {
 
-        List<Task> tasks = getUnsortedTasks(propertySpecs, filterCriterionInfo, taskUUIDs);
+        List<Task> tasks = getUnsortedTasks(filterPropertySpecs, filterCriterionInfo, taskUUIDs);
 
         if (sortingInfo != null) {
             PropertySorter<Task> propertySorter = new PropertySorter<>(sortingInfo.sortingCriteria());
@@ -164,7 +165,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     private List<Task> getUnsortedTasks(
-            List<FilterPropertySpec> propertySpecs,
+            List<FilterPropertySpec> filterPropertySpecs,
             FilterCriterionInfo filterCriterionInfo,
             List<UUID> taskUUIDs
     ) throws IOException, TaskServiceException, PropertyException, PropertyConverterException, FilterCriterionException {
@@ -192,8 +193,8 @@ public class TaskServiceImpl implements TaskService {
             finalFilterCriteria.add(createFilterCriterion(filterCriterionInfo, propertyManager));
         }
 
-        if (propertySpecs != null) {
-            for (FilterPropertySpec propertySpec : propertySpecs) {
+        if (filterPropertySpecs != null) {
+            for (FilterPropertySpec propertySpec : filterPropertySpecs) {
                 FilterCriterion filterCriterion = getFilterCriterion(propertySpec);
 
                 if (propertySpec.negate()) {
@@ -236,68 +237,78 @@ public class TaskServiceImpl implements TaskService {
         tempIDMappingService.deleteAll();
     }
 
-    private FilterCriterion getFilterCriterion(FilterPropertySpec propertySpec) throws TaskServiceException {
-        if (propertySpec.predicate() == null) {
-            return new EqualFilterCriterion(
-                    propertySpec.property().getPropertyDescriptor().name(),
-                    propertySpec.property().getValue());
+    private FilterCriterion getFilterCriterion(FilterPropertySpec filterPropertySpec) throws TaskServiceException {
+        Property property = filterPropertySpec.property();
+
+        if (filterPropertySpec.predicate() == Predicate.NULL) {
+            return new NullFilterCriterion(filterPropertySpec.propertyName());
+        } else if (filterPropertySpec.predicate() == Predicate.EMPTY) {
+            return new EmptyFilterCriterion(filterPropertySpec.propertyName());
         }
 
-        switch (propertySpec.predicate()) {
+        PropertyDescriptor propertyDescriptor = property.getPropertyDescriptor();
+
+        if (filterPropertySpec.predicate() == null) {
+            return new EqualFilterCriterion(
+                    propertyDescriptor.name(),
+                    property.getValue());
+        }
+
+        switch (filterPropertySpec.predicate()) {
             case EQUALS -> {
                 return new EqualFilterCriterion(
-                        propertySpec.property().getPropertyDescriptor().name(),
-                        propertySpec.property().getValue());
+                        propertyDescriptor.name(),
+                        property.getValue());
             }
             case CONTAINS -> {
                 try {
-                    if (propertySpec.property().getPropertyDescriptor().type() == PropertyDescriptor.Type.String) {
+                    if (propertyDescriptor.type() == PropertyDescriptor.Type.String) {
                         return new ContainsCaseInsensitiveFilterCriterion(
-                                propertySpec.property().getPropertyDescriptor().name(),
-                                propertySpec.property().getString());
-                    } else if (propertySpec.property().getPropertyDescriptor().isCollection()) {
+                                propertyDescriptor.name(),
+                                property.getString());
+                    } else if (propertyDescriptor.isCollection()) {
                         return new CollectionContainsFilterCriterion(
-                                propertySpec.property().getPropertyDescriptor().name(),
-                                propertySpec.property().getCollection());
+                                propertyDescriptor.name(),
+                                property.getCollection());
                     } else {
                         throw new TaskServiceException("Illegal type for CONTAINS predicate: "
-                                + propertySpec.property().getPropertyDescriptor());
+                                + propertyDescriptor.type());
                     }
                 } catch (PropertyException e) {
                     throw new TaskServiceException("Failed to filter tasks: " + e.getMessage());
                 }
             }
             case LESS -> {
-                if (!PropertyComparator.isComparable(propertySpec.property().getPropertyDescriptor())) {
+                if (!PropertyComparator.isComparable(propertyDescriptor)) {
                     throw new TaskServiceException("Illegal type for LESS predicate: "
-                            + propertySpec.property().getPropertyDescriptor());
+                            + propertyDescriptor.type());
                 }
-                return new LessFilterCriterion(propertySpec.property().getPropertyDescriptor().name(),
-                        propertySpec.property(), new PropertyComparator(true));
+                return new LessFilterCriterion(propertyDescriptor.name(),
+                        property, new PropertyComparator(true));
             }
             case LESS_EQUAL -> {
-                if (!PropertyComparator.isComparable(propertySpec.property().getPropertyDescriptor())) {
+                if (!PropertyComparator.isComparable(propertyDescriptor)) {
                     throw new TaskServiceException("Illegal type for LESS_EQUAL predicate: "
-                            + propertySpec.property().getPropertyDescriptor());
+                            + propertyDescriptor.type());
                 }
-                return new LessEqualFilterCriterion(propertySpec.property().getPropertyDescriptor().name(),
-                        propertySpec.property(), new PropertyComparator(true));
+                return new LessEqualFilterCriterion(propertyDescriptor.name(),
+                        property, new PropertyComparator(true));
             }
             case GREATER -> {
-                if (!PropertyComparator.isComparable(propertySpec.property().getPropertyDescriptor())) {
+                if (!PropertyComparator.isComparable(propertyDescriptor)) {
                     throw new TaskServiceException("Illegal type for GREATER predicate: "
-                            + propertySpec.property().getPropertyDescriptor());
+                            + propertyDescriptor.type());
                 }
-                return new GreaterFilterCriterion(propertySpec.property().getPropertyDescriptor().name(),
-                        propertySpec.property(), new PropertyComparator(false));
+                return new GreaterFilterCriterion(propertyDescriptor.name(),
+                        property, new PropertyComparator(false));
             }
             case GREATER_EQUAL -> {
-                if (!PropertyComparator.isComparable(propertySpec.property().getPropertyDescriptor())) {
+                if (!PropertyComparator.isComparable(filterPropertySpec.property().getPropertyDescriptor())) {
                     throw new TaskServiceException("Illegal type for GREATER_EQUAL predicate: "
-                            + propertySpec.property().getPropertyDescriptor());
+                            + propertyDescriptor.type());
                 }
-                return new GreaterEqualFilterCriterion(propertySpec.property().getPropertyDescriptor().name(),
-                        propertySpec.property(), new PropertyComparator(false));
+                return new GreaterEqualFilterCriterion(propertyDescriptor.name(),
+                        property, new PropertyComparator(false));
             }
         }
 
