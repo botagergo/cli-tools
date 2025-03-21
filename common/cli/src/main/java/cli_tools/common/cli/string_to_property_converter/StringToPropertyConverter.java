@@ -43,16 +43,16 @@ public class StringToPropertyConverter {
     }
 
     public List<FilterPropertySpec> convertPropertiesForFiltering(
-            @NonNull List<PropertyArgument> properties,
+            @NonNull List<PropertyArgument> propertyArguments,
             boolean createUuidIfNotExists
     ) throws IOException, StringToPropertyConverterException, PropertyException {
         List<FilterPropertySpec> filterPropertySpecs = new ArrayList<>();
 
-        for (PropertyArgument entry : properties) {
-            String propertyName = entry.propertyName();
-            List<String> propertyValue = entry.values();
+        for (PropertyArgument propertyArgument : propertyArguments) {
+            String propertyName = propertyArgument.propertyName();
+            List<String> propertyValue = propertyArgument.values();
 
-            Predicate predicate = parsePredicate(entry.option());
+            Predicate predicate = parsePredicate(propertyArgument.option());
 
             if (propertyValue == null && !(predicate == Predicate.NULL || predicate == Predicate.EMPTY)) {
                 throw new StringToPropertyConverterException(
@@ -62,17 +62,17 @@ public class StringToPropertyConverter {
             } else if (propertyValue != null && (predicate == Predicate.NULL || predicate == Predicate.EMPTY)) {
                 throw new StringToPropertyConverterException(
                         StringToPropertyConverterException.Type.UnexpectedPropertyValue,
-                        "unexpected property value for predicate '" + entry.option() + "'",
+                        "unexpected property value for predicate '" + predicate + "'",
                         propertyName);
             }
 
             PropertyDescriptor propertyDescriptor = propertyDescriptorService.findPropertyDescriptor(propertyName);
 
             if (propertyValue == null) {
-                filterPropertySpecs.add(new FilterPropertySpec(propertyName, null, entry.affinity() == Affinity.NEGATIVE, predicate));
+                filterPropertySpecs.add(new FilterPropertySpec(propertyDescriptor, null, propertyArgument.affinity() == Affinity.NEGATIVE, predicate));
             } else {
-                Property property = Property.fromUnchecked(propertyDescriptor, stringToProperty(propertyDescriptor, propertyValue, createUuidIfNotExists));
-                filterPropertySpecs.add(new FilterPropertySpec(propertyName, property, entry.affinity() == Affinity.NEGATIVE, parsePredicate(entry.option())));
+                List<Object> convertedValue = stringListToProperty(propertyDescriptor, propertyValue, createUuidIfNotExists);
+                filterPropertySpecs.add(new FilterPropertySpec(propertyDescriptor, convertedValue, propertyArgument.affinity() == Affinity.NEGATIVE, parsePredicate(propertyArgument.option())));
             }
         }
 
@@ -106,7 +106,11 @@ public class StringToPropertyConverter {
         return modifyPropertySpecs;
     }
 
-    public Object stringToProperty(PropertyDescriptor propertyDescriptor, List<String> propertyValueList, boolean createUuidIfNotExists) throws StringToPropertyConverterException, IOException {
+    public Object stringToProperty(
+            PropertyDescriptor propertyDescriptor,
+            List<String> propertyValueList,
+            boolean createUuidIfNotExists
+    ) throws StringToPropertyConverterException, IOException {
         if (propertyValueList.isEmpty()) {
             throw new StringToPropertyConverterException(StringToPropertyConverterException.Type.EmptyList, "Property value is empty", propertyDescriptor.name());
         }
@@ -162,7 +166,7 @@ public class StringToPropertyConverter {
         } else if (propertyDescriptor.type() == PropertyDescriptor.Type.Integer) {
             return stringToIntegerProperty(propertyDescriptor, propertyValue);
         } else {
-            throw new RuntimeException("This should not happen");
+            throw new RuntimeException();
         }
     }
 
@@ -183,6 +187,8 @@ public class StringToPropertyConverter {
             return Predicate.EQUALS;
         } else if (predicateStr.equals("contains")) {
             return Predicate.CONTAINS;
+        }  else if (predicateStr.equals("in")) {
+            return Predicate.IN;
         } else if (predicateStr.equals("less")) {
             return Predicate.LESS;
         } else if (predicateStr.equals("less_equal")) {

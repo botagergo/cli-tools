@@ -18,7 +18,6 @@ rootProject.name = 'cli-tools'
 
 include('common:util')
 include('common:core')
-include('common:db')
 include('common:backend')
 include('common:property-lib')
 include('common:cli')

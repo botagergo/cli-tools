@@ -27,6 +27,14 @@ public record PropertyDescriptor(
         return multiplicity == Multiplicity.LIST || multiplicity == Multiplicity.SET;
     }
 
+    public boolean isList() {
+        return multiplicity == Multiplicity.LIST;
+    }
+
+    public boolean isSet() {
+        return multiplicity == Multiplicity.SET;
+    }
+
     public Subtype.UUIDSubtype getUuidSubtypeUnchecked() {
         if (subtype == null) {
             return null;
@@ -45,7 +53,7 @@ public record PropertyDescriptor(
 
     @Override
     public String toString() {
-        return type.toString() + " " + multiplicity;
+        return type + " " + multiplicity;
     }
 
     public enum Type {

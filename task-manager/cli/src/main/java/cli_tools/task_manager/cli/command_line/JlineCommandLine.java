@@ -1,6 +1,6 @@
 package cli_tools.task_manager.cli.command_line;
 
-import cli_tools.task_manager.init.Initializer;
+import cli_tools.task_manager.cli.init.Initializer;
 import com.google.inject.Inject;
 import lombok.AllArgsConstructor;
 import org.jline.reader.*;

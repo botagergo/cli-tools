@@ -1,30 +1,30 @@
 package cli_tools.task_manager.task.service;
 
+import cli_tools.common.core.data.FilterCriterionInfo;
 import cli_tools.common.core.data.Predicate;
+import cli_tools.common.core.data.SortingInfo;
 import cli_tools.common.core.data.property.FilterPropertySpec;
 import cli_tools.common.filter.*;
+import cli_tools.common.property_comparator.PropertyComparator;
+import cli_tools.common.property_comparator.PropertyNotComparableException;
+import cli_tools.common.property_converter.PropertyConverter;
+import cli_tools.common.property_converter.PropertyConverterException;
 import cli_tools.common.property_lib.Property;
 import cli_tools.common.property_lib.PropertyDescriptor;
 import cli_tools.common.property_lib.PropertyException;
 import cli_tools.common.property_lib.PropertyManager;
+import cli_tools.common.sorter.PropertySorter;
+import cli_tools.common.temp_id_mapping.service.TempIDMappingService;
+import cli_tools.common.util.UUIDGenerator;
+import cli_tools.task_manager.task.Task;
+import cli_tools.task_manager.task.TaskHierarchy;
+import cli_tools.task_manager.task.repository.TaskRepository;
 import jakarta.inject.Inject;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import org.apache.commons.lang3.NotImplementedException;
-import cli_tools.common.core.data.FilterCriterionInfo;
-import cli_tools.common.core.data.SortingInfo;
-import cli_tools.task_manager.task.Task;
-import cli_tools.task_manager.task.TaskHierarchy;
-import cli_tools.task_manager.task.repository.TaskRepository;
-import cli_tools.common.property_comparator.PropertyComparator;
-import cli_tools.common.property_comparator.PropertyNotComparableException;
-import cli_tools.common.property_converter.PropertyConverter;
-import cli_tools.common.property_converter.PropertyConverterException;
-import cli_tools.common.sorter.PropertySorter;
-import cli_tools.common.temp_id_mapping.service.TempIDMappingService;
-import cli_tools.common.util.UUIDGenerator;
 
 import java.io.IOException;
 import java.util.*;
@@ -77,7 +77,7 @@ public class TaskServiceImpl implements TaskService {
             try {
                 propertySorter.sort(tasks, propertyManager);
             } catch (PropertyException | PropertyNotComparableException e) {
-                throw new TaskServiceException("Failed to sort tasks: " + e.getMessage());
+                throw new TaskServiceException("failed to sort tasks: " + e.getMessage());
             }
         }
 
@@ -105,7 +105,7 @@ public class TaskServiceImpl implements TaskService {
             try {
                 sortTaskTrees(taskHierarchies, sorter, propertyManager);
             } catch (PropertyException | PropertyNotComparableException e) {
-                throw new TaskServiceException("Failed to sort tasks: " + e.getMessage());
+                throw new TaskServiceException("failed to sort tasks: " + e.getMessage());
             }
         }
 
@@ -168,14 +168,14 @@ public class TaskServiceImpl implements TaskService {
             List<FilterPropertySpec> filterPropertySpecs,
             FilterCriterionInfo filterCriterionInfo,
             List<UUID> taskUUIDs
-    ) throws IOException, TaskServiceException, PropertyException, PropertyConverterException, FilterCriterionException {
+    ) throws IOException, TaskServiceException, PropertyException, PropertyConverterException {
         List<FilterCriterion> finalFilterCriteria = new ArrayList<>();
 
         List<Task> tasks;
         if (taskUUIDs != null) {
             Set<UUID> uuids = new HashSet<>();
             tasks = new ArrayList<>();
-            for(UUID taskUUID : taskUUIDs) {
+            for (UUID taskUUID : taskUUIDs) {
                 if (uuids.contains(taskUUID)) {
                     continue;
                 }
@@ -194,10 +194,10 @@ public class TaskServiceImpl implements TaskService {
         }
 
         if (filterPropertySpecs != null) {
-            for (FilterPropertySpec propertySpec : filterPropertySpecs) {
-                FilterCriterion filterCriterion = getFilterCriterion(propertySpec);
+            for (FilterPropertySpec filterPropertySpec : filterPropertySpecs) {
+                FilterCriterion filterCriterion = getFilterCriterion(filterPropertySpec);
 
-                if (propertySpec.negate()) {
+                if (filterPropertySpec.negate()) {
                     filterCriterion = new NotFilterCriterion(filterCriterion);
                 }
 
@@ -238,87 +238,84 @@ public class TaskServiceImpl implements TaskService {
     }
 
     private FilterCriterion getFilterCriterion(FilterPropertySpec filterPropertySpec) throws TaskServiceException {
-        Property property = filterPropertySpec.property();
-
-        if (filterPropertySpec.predicate() == Predicate.NULL) {
-            return new NullFilterCriterion(filterPropertySpec.propertyName());
-        } else if (filterPropertySpec.predicate() == Predicate.EMPTY) {
-            return new EmptyFilterCriterion(filterPropertySpec.propertyName());
-        }
-
-        PropertyDescriptor propertyDescriptor = property.getPropertyDescriptor();
-
-        if (filterPropertySpec.predicate() == null) {
-            return new EqualFilterCriterion(
-                    propertyDescriptor.name(),
-                    property.getValue());
-        }
-
-        switch (filterPropertySpec.predicate()) {
-            case EQUALS -> {
-                return new EqualFilterCriterion(
-                        propertyDescriptor.name(),
-                        property.getValue());
-            }
-            case CONTAINS -> {
-                try {
-                    if (propertyDescriptor.type() == PropertyDescriptor.Type.String) {
-                        return new ContainsCaseInsensitiveFilterCriterion(
-                                propertyDescriptor.name(),
-                                property.getString());
-                    } else if (propertyDescriptor.isCollection()) {
-                        return new CollectionContainsFilterCriterion(
-                                propertyDescriptor.name(),
-                                property.getCollection());
-                    } else {
-                        throw new TaskServiceException("Illegal type for CONTAINS predicate: "
-                                + propertyDescriptor.type());
-                    }
-                } catch (PropertyException e) {
-                    throw new TaskServiceException("Failed to filter tasks: " + e.getMessage());
-                }
-            }
-            case LESS -> {
-                if (!PropertyComparator.isComparable(propertyDescriptor)) {
-                    throw new TaskServiceException("Illegal type for LESS predicate: "
-                            + propertyDescriptor.type());
-                }
-                return new LessFilterCriterion(propertyDescriptor.name(),
-                        property, new PropertyComparator(true));
-            }
-            case LESS_EQUAL -> {
-                if (!PropertyComparator.isComparable(propertyDescriptor)) {
-                    throw new TaskServiceException("Illegal type for LESS_EQUAL predicate: "
-                            + propertyDescriptor.type());
-                }
-                return new LessEqualFilterCriterion(propertyDescriptor.name(),
-                        property, new PropertyComparator(true));
-            }
-            case GREATER -> {
-                if (!PropertyComparator.isComparable(propertyDescriptor)) {
-                    throw new TaskServiceException("Illegal type for GREATER predicate: "
-                            + propertyDescriptor.type());
-                }
-                return new GreaterFilterCriterion(propertyDescriptor.name(),
-                        property, new PropertyComparator(false));
-            }
-            case GREATER_EQUAL -> {
-                if (!PropertyComparator.isComparable(filterPropertySpec.property().getPropertyDescriptor())) {
-                    throw new TaskServiceException("Illegal type for GREATER_EQUAL predicate: "
-                            + propertyDescriptor.type());
-                }
-                return new GreaterEqualFilterCriterion(propertyDescriptor.name(),
-                        property, new PropertyComparator(false));
-            }
-        }
-
-        throw new RuntimeException();
+        List<Object> operand = filterPropertySpec.operand();
+        return createFilterCriterion(filterPropertySpec.propertyDescriptor(), filterPropertySpec.predicate(), operand);
     }
 
-    private FilterCriterion createFilterCriterion(@NonNull FilterCriterionInfo filterCriterionInfo, @NonNull PropertyManager propertyManager) throws PropertyException, IOException, PropertyConverterException, FilterCriterionException {
+    private FilterCriterion createFilterCriterion(
+            PropertyDescriptor propertyDescriptor, Predicate predicate, List<Object> operand
+    ) throws TaskServiceException {
+        String propertyName = propertyDescriptor.name();
+
+        if (predicate == null || predicate.equals(Predicate.EQUALS)) {
+            Object finalOperand;
+            if (propertyDescriptor.isList()) {
+                finalOperand = operand;
+            } else if (propertyDescriptor.isSet()) {
+                finalOperand = Set.copyOf(operand);
+            } else if (operand.size() != 1) {
+                throw new TaskServiceException("one argument expected for predicate 'equals' of property '" + propertyName + "'");
+            } else {
+                finalOperand = operand.get(0);
+            }
+            return new EqualFilterCriterion(propertyName, finalOperand);
+        } else if (predicate == Predicate.LESS || predicate == Predicate.LESS_EQUAL ||
+                predicate == Predicate.GREATER || predicate == Predicate.GREATER_EQUAL) {
+            if (!PropertyComparator.isComparable(propertyDescriptor)) {
+                throw new TaskServiceException("predicate: " + predicate + " is incompatible with property '" + propertyName + "'");
+            } else if (operand.size() != 1) {
+                throw new TaskServiceException("one argument expected for predicate '" + predicate + "' of property '" + propertyName + "'");
+            }
+            Property property = Property.fromUnchecked(propertyDescriptor, operand.get(0));
+            switch (predicate) {
+                case LESS -> {
+                    return new LessFilterCriterion(propertyName, property, new PropertyComparator(true));
+                }
+                case LESS_EQUAL -> {
+                    return new LessEqualFilterCriterion(propertyName, property, new PropertyComparator(true));
+                }
+                case GREATER -> {
+                    return new GreaterFilterCriterion(propertyName, property, new PropertyComparator(false));
+                }
+                case GREATER_EQUAL -> {
+                    return new GreaterEqualFilterCriterion(propertyName, property, new PropertyComparator(false));
+                }
+            }
+        }
+
+        switch (predicate) {
+            case CONTAINS -> {
+                if (propertyDescriptor.isCollection()) {
+                    return new CollectionContainsFilterCriterion(propertyName, operand);
+                } else if (propertyDescriptor.type() == PropertyDescriptor.Type.String) {
+                    if (operand.size() != 1) {
+                        throw new TaskServiceException("one argument expected for predicate 'contains' of property '" + propertyName + "'");
+                    }
+                    return new ContainsCaseInsensitiveFilterCriterion(propertyName, (String) operand.get(0));
+                } else {
+                    throw new TaskServiceException("predicate 'contains' is incompatible with property '" + propertyName + "'");
+                }
+            }
+            case IN -> {
+                return new InFilterCriterion(propertyName, operand);
+            }
+            case NULL -> {
+                return new NullFilterCriterion(propertyName);
+            }
+            case EMPTY -> {
+                return new EmptyFilterCriterion(propertyName);
+            }
+        }
+
+        throw new RuntimeException("predicate '" + predicate + "' not implemented");
+    }
+
+    private FilterCriterion createFilterCriterion(@NonNull FilterCriterionInfo filterCriterionInfo, @NonNull PropertyManager propertyManager) throws PropertyException, IOException, PropertyConverterException, TaskServiceException {
         switch (filterCriterionInfo.type()) {
             case PROPERTY -> {
-                return createPropertyFilterCriterion(filterCriterionInfo, propertyManager);
+                PropertyDescriptor propertyDescriptor = propertyManager.getPropertyDescriptor(filterCriterionInfo.propertyName());
+                List<Object> operand = propertyConverter.convertProperty(propertyDescriptor, filterCriterionInfo.operands());
+                return createFilterCriterion(propertyDescriptor, filterCriterionInfo.predicate(), operand);
             }
             case AND -> {
                 ArrayList<FilterCriterion> filterCriteria = new ArrayList<>();
@@ -338,59 +335,9 @@ public class TaskServiceImpl implements TaskService {
                 return new NotFilterCriterion(createFilterCriterion(
                         filterCriterionInfo.children().get(0), propertyManager));
             }
-            default -> throw new NotImplementedException(filterCriterionInfo.type() + " filter criterion is not yet supported");
+            default ->
+                    throw new NotImplementedException(filterCriterionInfo.type() + " filter criterion is not yet supported");
         }
-    }
-
-    @SuppressWarnings("unchecked")
-    private FilterCriterion createPropertyFilterCriterion(FilterCriterionInfo filterCriterionInfo, PropertyManager propertyManager) throws PropertyException, IOException, PropertyConverterException, FilterCriterionException {
-        PropertyDescriptor propertyDescriptor = propertyManager.getPropertyDescriptor(filterCriterionInfo.propertyName());
-        Object operand = propertyConverter.convertProperty(propertyDescriptor, filterCriterionInfo.operands());
-
-        switch (filterCriterionInfo.predicate()) {
-            case EQUALS -> {
-                return new EqualFilterCriterion(filterCriterionInfo.propertyName(), operand);
-            }
-            case CONTAINS -> {
-                if (propertyDescriptor.isCollection()) {
-                    return new CollectionContainsFilterCriterion(filterCriterionInfo.propertyName(), (Collection<Object>) operand);
-                } else if (propertyDescriptor.type() == PropertyDescriptor.Type.String) {
-                    return new ContainsCaseInsensitiveFilterCriterion(filterCriterionInfo.propertyName(), (String) operand);
-                } else {
-                    throw new FilterCriterionException(FilterCriterionException.Type.InvalidTypeForPredicate, propertyDescriptor, filterCriterionInfo.predicate());
-                }
-            }
-            case LESS -> {
-                if (!PropertyComparator.isComparable(propertyDescriptor)) {
-                    throw new FilterCriterionException(FilterCriterionException.Type.InvalidTypeForPredicate, propertyDescriptor, filterCriterionInfo.predicate());
-                } else {
-                    return new LessFilterCriterion(filterCriterionInfo.propertyName(), Property.fromUnchecked(propertyDescriptor, operand), new PropertyComparator(true));
-                }
-            }
-            case LESS_EQUAL -> {
-                if (!PropertyComparator.isComparable(propertyDescriptor)) {
-                    throw new FilterCriterionException(FilterCriterionException.Type.InvalidTypeForPredicate, propertyDescriptor, filterCriterionInfo.predicate());
-                } else {
-                    return new LessEqualFilterCriterion(filterCriterionInfo.propertyName(), Property.fromUnchecked(propertyDescriptor, operand), new PropertyComparator(true));
-                }
-            }
-            case GREATER -> {
-                if (!PropertyComparator.isComparable(propertyDescriptor)) {
-                    throw new FilterCriterionException(FilterCriterionException.Type.InvalidTypeForPredicate, propertyDescriptor, filterCriterionInfo.predicate());
-                } else {
-                    return new GreaterFilterCriterion(filterCriterionInfo.propertyName(), Property.fromUnchecked(propertyDescriptor, operand), new PropertyComparator(true));
-                }
-            }
-            case GREATER_EQUAL -> {
-                if (!PropertyComparator.isComparable(propertyDescriptor)) {
-                    throw new FilterCriterionException(FilterCriterionException.Type.InvalidTypeForPredicate, propertyDescriptor, filterCriterionInfo.predicate());
-                } else {
-                    return new GreaterEqualFilterCriterion(filterCriterionInfo.propertyName(), Property.fromUnchecked(propertyDescriptor, operand), new PropertyComparator(true));
-                }
-            }
-        }
-
-        throw new RuntimeException();
     }
 
     private TaskRepository taskRepository;

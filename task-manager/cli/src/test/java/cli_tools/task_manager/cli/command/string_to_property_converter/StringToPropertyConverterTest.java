@@ -26,7 +26,6 @@ import org.testng.annotations.Test;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -236,24 +235,17 @@ public class StringToPropertyConverterTest {
         );
         List<FilterPropertySpec> propertySpecs = propertyConverter.convertPropertiesForFiltering(properties, true);
         assertEquals(propertySpecs, List.of(
-                new FilterPropertySpec("boolean_property", Property.fromUnchecked(
+                new FilterPropertySpec(
                         new PropertyDescriptor("boolean_property", PropertyDescriptor.Type.Boolean, null, PropertyDescriptor.Multiplicity.SINGLE, null, null),
-                        true
-                ), false, Predicate.CONTAINS),
-                new FilterPropertySpec("integer_property", Property.fromUnchecked(
-                        new PropertyDescriptor("integer_property", PropertyDescriptor.Type.Integer, null, PropertyDescriptor.Multiplicity.SINGLE, null, null),
-                        123
-                ), false, Predicate.LESS),
-                new FilterPropertySpec("string_list_property", Property.fromUnchecked(
-                        new PropertyDescriptor("string_list_property", PropertyDescriptor.Type.String, null, PropertyDescriptor.Multiplicity.LIST, null, null),
-                        List.of("true", "false")
-                ), false, Predicate.EQUALS),
-                new FilterPropertySpec("uuid_set_property", Property.fromUnchecked(
-                        new PropertyDescriptor("uuid_set_property", PropertyDescriptor.Type.UUID, null, PropertyDescriptor.Multiplicity.SET, null, null),
-                        Set.of(uuid1, uuid2)
-                ), true, null),
-                new FilterPropertySpec("uuid_set_property", null, false, Predicate.NULL),
-                new FilterPropertySpec("uuid_set_property", null, false, Predicate.EMPTY)
+                        List.of(true), false, Predicate.CONTAINS),
+                new FilterPropertySpec(new PropertyDescriptor("integer_property", PropertyDescriptor.Type.Integer, null, PropertyDescriptor.Multiplicity.SINGLE, null, null),
+                        List.of(123), false, Predicate.LESS),
+                new FilterPropertySpec(new PropertyDescriptor("string_list_property", PropertyDescriptor.Type.String, null, PropertyDescriptor.Multiplicity.LIST, null, null),
+                        List.of("true", "false"), false, Predicate.EQUALS),
+                new FilterPropertySpec(new PropertyDescriptor("uuid_set_property", PropertyDescriptor.Type.UUID, null, PropertyDescriptor.Multiplicity.SET, null, null),
+                        List.of(uuid1, uuid2), true, null),
+                new FilterPropertySpec(new PropertyDescriptor("uuid_set_property", PropertyDescriptor.Type.UUID, null, PropertyDescriptor.Multiplicity.SET, null, null), null, false, Predicate.NULL),
+                new FilterPropertySpec(new PropertyDescriptor("uuid_set_property", PropertyDescriptor.Type.UUID, null, PropertyDescriptor.Multiplicity.SET, null, null), null, false, Predicate.EMPTY)
 
         ));
     }

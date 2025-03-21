@@ -8,7 +8,6 @@ import cli_tools.common.property_lib.PropertyDescriptor;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.UUID;
 
@@ -19,38 +18,12 @@ public class PropertyConverter {
         this.labelRepositoryFactory = labelRepositoryFactory;
     }
 
-    public Object convertProperty(PropertyDescriptor propertyDescriptor, List<Object> propertyValueList) throws PropertyConverterException, IOException {
-        if (propertyValueList.isEmpty()) {
-            throw new PropertyConverterException(PropertyConverterException.Type.EmptyList, propertyDescriptor, null);
-        }
-
-        if (!propertyDescriptor.isCollection() && propertyValueList.size() != 1) {
-            throw new PropertyConverterException(PropertyConverterException.Type.NotACollection, propertyDescriptor, null);
-        }
-
-        if (propertyDescriptor.multiplicity() == PropertyDescriptor.Multiplicity.LIST) {
-            return convertPropertyList(propertyDescriptor, propertyValueList);
-        } else if (propertyDescriptor.multiplicity() == PropertyDescriptor.Multiplicity.SET) {
-            return convertPropertySet(propertyDescriptor, propertyValueList);
-        } else {
-            return convertSingleProperty(propertyDescriptor, propertyValueList.get(0));
-        }
-    }
-
-    public List<Object> convertPropertyList(PropertyDescriptor propertyDescriptor, List<Object> propertyValueList) throws PropertyConverterException, IOException {
+    public List<Object> convertProperty(PropertyDescriptor propertyDescriptor, List<Object> propertyValueList) throws PropertyConverterException, IOException {
         List<Object> convertedPropertyValueList = new ArrayList<>();
         for (Object propertyValue : propertyValueList) {
             convertedPropertyValueList.add(convertSingleProperty(propertyDescriptor, propertyValue));
         }
         return convertedPropertyValueList;
-    }
-
-    public LinkedHashSet<Object> convertPropertySet(PropertyDescriptor propertyDescriptor, List<Object> propertyValueList) throws PropertyConverterException, IOException {
-        LinkedHashSet<Object> convertedPropertyValueSet = new LinkedHashSet<>();
-        for (Object propertyValue : propertyValueList) {
-            convertedPropertyValueSet.add(convertSingleProperty(propertyDescriptor, propertyValue));
-        }
-        return convertedPropertyValueSet;
     }
 
     private Object convertSingleProperty(PropertyDescriptor propertyDescriptor, Object propertyValue) throws PropertyConverterException, IOException {

@@ -1,4 +1,4 @@
-package cli_tools.task_manager.init;
+package cli_tools.task_manager.cli.init;
 
 import cli_tools.common.core.data.*;
 import cli_tools.common.label.service.LabelService;
@@ -92,17 +92,17 @@ public class Initializer {
 
     private void initializePriorities() throws IOException {
         orderedLabelService.deleteAllOrderedLabels("priority");
-        orderedLabelService.createOrderedLabel("priority", "low");
-        orderedLabelService.createOrderedLabel("priority", "medium");
-        orderedLabelService.createOrderedLabel("priority", "high");
+        orderedLabelService.createOrderedLabel("priority", "Low");
+        orderedLabelService.createOrderedLabel("priority", "Medium");
+        orderedLabelService.createOrderedLabel("priority", "High");
     }
 
     private void initializeEfforts() throws IOException {
         orderedLabelService.deleteAllOrderedLabels("effort");
-        orderedLabelService.createOrderedLabel("effort", "trivial");
-        orderedLabelService.createOrderedLabel("effort", "low");
-        orderedLabelService.createOrderedLabel("effort", "medium");
-        orderedLabelService.createOrderedLabel("effort", "high");
+        orderedLabelService.createOrderedLabel("effort", "Trivial");
+        orderedLabelService.createOrderedLabel("effort", "Low");
+        orderedLabelService.createOrderedLabel("effort", "Medium");
+        orderedLabelService.createOrderedLabel("effort", "High");
     }
 
     private void initializeViewInfo() throws IOException {

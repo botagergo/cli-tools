@@ -30,7 +30,6 @@ dependencies {
     implementation project(':common:property-lib')
     implementation project(':common:cli')
     implementation project(':common:core')
-    implementation project(':common:db')
     implementation project(':common:backend')
     implementation project(':task-manager:backend')
 }
