@@ -28,7 +28,8 @@ public class PropertyConverter {
 
     private Object convertSingleProperty(PropertyDescriptor propertyDescriptor, Object propertyValue) throws PropertyConverterException, IOException {
         if (propertyDescriptor.type() == PropertyDescriptor.Type.String
-            || propertyDescriptor.type() == PropertyDescriptor.Type.Boolean) {
+                || propertyDescriptor.type() == PropertyDescriptor.Type.Boolean
+                || propertyDescriptor.type() == PropertyDescriptor.Type.Integer) {
             return propertyValue;
         } else if (propertyDescriptor.type() == PropertyDescriptor.Type.UUID) {
             return convertUuidProperty(propertyDescriptor, propertyValue);

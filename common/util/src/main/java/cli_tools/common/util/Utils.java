@@ -36,6 +36,16 @@ public class Utils {
         return ret;
     }
 
+    public static <K, V> HashMap<K, V> newHashMap(K key1, V value1, K key2, V value2, K key3, V value3, K key4, V value4, K key5, V value5) {
+        HashMap<K, V> ret = new HashMap<>();
+        ret.put(key1, value1);
+        ret.put(key2, value2);
+        ret.put(key3, value3);
+        ret.put(key4, value4);
+        ret.put(key5, value5);
+        return ret;
+    }
+
     public static <K, V> LinkedHashMap<K, V> newLinkedHashMap(K key1, V value1, K key2, V value2) {
         LinkedHashMap<K, V> ret = new LinkedHashMap<>();
         ret.put(key1, value1);

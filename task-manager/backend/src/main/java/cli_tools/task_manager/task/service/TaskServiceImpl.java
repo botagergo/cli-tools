@@ -68,7 +68,7 @@ public class TaskServiceImpl implements TaskService {
             SortingInfo sortingInfo,
             FilterCriterionInfo filterCriterionInfo,
             List<UUID> taskUUIDs
-    ) throws IOException, TaskServiceException, PropertyException, PropertyConverterException, FilterCriterionException {
+    ) throws IOException, TaskServiceException, PropertyException, PropertyConverterException {
 
         List<Task> tasks = getUnsortedTasks(filterPropertySpecs, filterCriterionInfo, taskUUIDs);
 
@@ -90,7 +90,7 @@ public class TaskServiceImpl implements TaskService {
             SortingInfo sortingInfo,
             FilterCriterionInfo filterCriterionInfo,
             List<UUID> taskUUIDs
-    ) throws IOException, TaskServiceException, PropertyException, PropertyConverterException, FilterCriterionException {
+    ) throws IOException, TaskServiceException, PropertyException, PropertyConverterException {
         List<Task> tasks = getUnsortedTasks(propertySpecs, filterCriterionInfo, taskUUIDs);
 
         List<TaskHierarchy> taskHierarchies = new ArrayList<>();

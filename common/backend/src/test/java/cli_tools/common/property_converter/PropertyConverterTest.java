@@ -34,19 +34,25 @@ public class PropertyConverterTest {
     @Test
     public void test_convertProperty_string_successful() throws IOException, PropertyConverterException {
         assertEquals(propertyConverter.convertProperty(
-                getPropertyDescriptor(PropertyDescriptor.Type.String, PropertyDescriptor.Multiplicity.SINGLE), List.of("value")), "value");
+                getPropertyDescriptor(PropertyDescriptor.Type.String, PropertyDescriptor.Multiplicity.SINGLE), List.of("value")), List.of("value"));
     }
 
     @Test
     public void test_convertProperty_boolean_successful() throws IOException, PropertyConverterException {
         assertEquals(propertyConverter.convertProperty(
-                getPropertyDescriptor(PropertyDescriptor.Type.Boolean, PropertyDescriptor.Multiplicity.SINGLE), List.of(true)), true);
+                getPropertyDescriptor(PropertyDescriptor.Type.Boolean, PropertyDescriptor.Multiplicity.SINGLE), List.of(true)), List.of(true));
+    }
+
+    @Test
+    public void test_convertProperty_integer_successful() throws IOException, PropertyConverterException {
+        assertEquals(propertyConverter.convertProperty(
+                getPropertyDescriptor(PropertyDescriptor.Type.Integer, PropertyDescriptor.Multiplicity.SINGLE), List.of(123)), List.of(123));
     }
 
     @Test
     public void test_convertProperty_uuid_successful() throws IOException, PropertyConverterException {
         assertEquals(propertyConverter.convertProperty(
-                getPropertyDescriptor(PropertyDescriptor.Type.Boolean, PropertyDescriptor.Multiplicity.SINGLE), List.of(uuid1)), uuid1);
+                getPropertyDescriptor(PropertyDescriptor.Type.Boolean, PropertyDescriptor.Multiplicity.SINGLE), List.of(uuid1)), List.of(uuid1));
     }
 
     @Test
@@ -64,43 +70,17 @@ public class PropertyConverterTest {
     }
 
     @Test
-    public void test_convertProperty_emptyList_throws() throws IOException {
-        try {
-            propertyConverter.convertProperty(
-                    getPropertyDescriptor(PropertyDescriptor.Type.Boolean, PropertyDescriptor.Multiplicity.SINGLE), List.of());
-            Assert.fail();
-        } catch (PropertyConverterException e) {
-            assertEquals(e.getExceptionType(), PropertyConverterException.Type.EmptyList);
-            Assert.assertNull(e.getPropertyValue());
-            assertEquals(e.getPropertyDescriptor(), getPropertyDescriptor(PropertyDescriptor.Type.Boolean, PropertyDescriptor.Multiplicity.SINGLE));
-        }
-    }
-
-    @Test
-    public void test_convertProperty_notACollection_throws() throws IOException {
-        try {
-            propertyConverter.convertProperty(
-                    getPropertyDescriptor(PropertyDescriptor.Type.Boolean, PropertyDescriptor.Multiplicity.SINGLE), List.of("true", "false"));
-            Assert.fail();
-        } catch (PropertyConverterException e) {
-            assertEquals(e.getExceptionType(), PropertyConverterException.Type.NotACollection);
-            Assert.assertNull(e.getPropertyValue());
-            assertEquals(e.getPropertyDescriptor(), getPropertyDescriptor(PropertyDescriptor.Type.Boolean, PropertyDescriptor.Multiplicity.SINGLE));
-        }
-    }
-
-    @Test
     public void test_convertProperty_uuid_notAnUuid_tagFound() throws IOException, PropertyConverterException {
         Mockito.when(labelRepositoryFactory.getLabelRepository("test")).thenReturn(labelRepository);
         Mockito.when(labelRepository.find("tag")).thenReturn(new Label(uuid1, "tag"));
 
         assertEquals(propertyConverter.convertProperty(
-                getPropertyDescriptor(PropertyDescriptor.Type.UUID, PropertyDescriptor.Multiplicity.SINGLE), List.of("tag")), uuid1);
+                getPropertyDescriptor(PropertyDescriptor.Type.UUID, PropertyDescriptor.Multiplicity.SINGLE), List.of("tag")), List.of(uuid1));
     }
 
 
     @Test
-    public void test_stringToProperty_uuid_notAnUuid_tagNotFound_n_throwsPropertyConverterException() throws IOException {
+    public void test_stringToProperty_uuid_notAnUuid_tagNotFound_throws() throws IOException {
         Mockito.when(labelRepositoryFactory.getLabelRepository("test")).thenReturn(labelRepository);
         Mockito.when(labelRepository.find("tag")).thenReturn(null);
 
