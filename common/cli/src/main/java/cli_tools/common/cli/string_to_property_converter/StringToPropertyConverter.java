@@ -52,7 +52,7 @@ public class StringToPropertyConverter {
             String propertyName = propertyArgument.propertyName();
             List<String> propertyValue = propertyArgument.values();
 
-            Predicate predicate = parsePredicate(propertyArgument.option());
+            Predicate predicate = parsePredicate(propertyArgument.predicate());
 
             if (propertyValue == null && !(predicate == Predicate.NULL || predicate == Predicate.EMPTY)) {
                 throw new StringToPropertyConverterException(
@@ -72,7 +72,7 @@ public class StringToPropertyConverter {
                 filterPropertySpecs.add(new FilterPropertySpec(propertyDescriptor, null, propertyArgument.affinity() == Affinity.NEGATIVE, predicate));
             } else {
                 List<Object> convertedValue = stringListToProperty(propertyDescriptor, propertyValue, createUuidIfNotExists);
-                filterPropertySpecs.add(new FilterPropertySpec(propertyDescriptor, convertedValue, propertyArgument.affinity() == Affinity.NEGATIVE, parsePredicate(propertyArgument.option())));
+                filterPropertySpecs.add(new FilterPropertySpec(propertyDescriptor, convertedValue, propertyArgument.affinity() == Affinity.NEGATIVE, parsePredicate(propertyArgument.predicate())));
             }
         }
 
@@ -100,7 +100,7 @@ public class StringToPropertyConverter {
                     propertyDescriptor,
                     property,
                     getModificationType(entry.affinity()),
-                    parseOption(entry.option())));
+                    parseOption(entry.predicate())));
         }
 
         return modifyPropertySpecs;

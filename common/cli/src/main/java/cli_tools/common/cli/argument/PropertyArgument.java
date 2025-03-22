@@ -8,6 +8,6 @@ import java.util.List;
 public record PropertyArgument(
         @NonNull Affinity affinity,
         @NonNull String propertyName,
-        String option,
+        String predicate,
         List<String> values
 ) { }

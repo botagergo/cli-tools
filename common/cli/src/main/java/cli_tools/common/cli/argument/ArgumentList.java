@@ -1,25 +1,40 @@
 package cli_tools.common.cli.argument;
 
-import cli_tools.common.cli.tokenizer.TokenList;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
-import org.apache.commons.lang3.tuple.Pair;
 import cli_tools.common.core.data.property.Affinity;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Set;
 
 @Setter
 @Getter
 public class ArgumentList {
+
+    private static final char SINGLE_QUOTE = '\'';
+    private static final char DOUBLE_QUOTE = '\"';
+
+    @NonNull private String commandName = "";
+    @NonNull private List<String> leadingNormalArguments = new ArrayList<>();
+    @NonNull private List<String> trailingNormalArguments = new ArrayList<>();
+    @NonNull private LinkedHashMap<Character, List<SpecialArgument>> specialArguments = new LinkedHashMap<>();
+    @NonNull private List<PropertyArgument> filterPropertyArguments = new ArrayList<>();
+    @NonNull private List<PropertyArgument> modifyPropertyArguments = new ArrayList<>();
+    @NonNull private List<OptionArgument> optionArguments = new ArrayList<>();
+
+    public static class ArgumentListException extends Exception {
+        public ArgumentListException(String msg) {
+            super(msg);
+        }
+    }
+
     public ArgumentList(
             @NonNull String commandName,
             @NonNull List<String> leadingNormalArguments,
             @NonNull List<String> trailingNormalArguments,
-            @NonNull LinkedHashMap<Character,List<SpecialArgument>> specialArguments,
+            @NonNull LinkedHashMap<Character, List<SpecialArgument>> specialArguments,
             @NonNull List<PropertyArgument> filterPropertyArguments,
             @NonNull List<PropertyArgument> modifyPropertyArguments,
             @NonNull List<OptionArgument> optionArguments
@@ -33,104 +48,93 @@ public class ArgumentList {
         this.optionArguments = optionArguments;
     }
 
-    public ArgumentList() {
-        this("", new ArrayList<>(), new ArrayList<>(), new LinkedHashMap<>(),
-                new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
-    }
+    public ArgumentList() {}
 
-    public static ArgumentList from(TokenList tokenList) {
-        if (tokenList.tokens().isEmpty()) {
-            return new ArgumentList("", new ArrayList<>(), new ArrayList<>(),
-                    new LinkedHashMap<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
+    public static ArgumentList from(List<String> tokens) throws ArgumentListException {
+        if (tokens.isEmpty()) {
+            return new ArgumentList();
         }
-
         ArgumentList argList = new ArgumentList();
-
-        for (int i = 0; i < tokenList.tokens().size(); i++) {
-            String token = tokenList.tokens().get(i);
-            boolean isPropertyArg = false;
-            int j;
-            for (j = 0; j < token.length(); j++) {
-                char currChar = token.charAt(j);
-                if ((currChar == '.' || currChar == '+' || currChar == '-')
-                        && !tokenList.escapedPositions().contains(Pair.of(i, j))) {
-                    isPropertyArg = true;
-                }
-
-                if (currChar == ':' && !tokenList.escapedPositions().contains(Pair.of(i, j))) {
-                    parsePropertyArgument(i, tokenList, argList, j);
-                    break;
-                } else if (isPropertyArg && j == token.length() - 1) {
-                    parsePropertyArgument(i, tokenList, argList, -1);
-                    break;
-                }
-            }
-
-            if (j >= token.length()) {
-                if (argList.commandName.isEmpty()) {
-                    if (token.matches("^[a-z]+$")) {
-                        argList.commandName = token;
-                    } else {
-                        argList.leadingNormalArguments.add(token);
-                    }
-                } else {
-                    argList.trailingNormalArguments.add(token);
-                }
-            }
+        for (String token : tokens) {
+            parseAndAddArgument(token, argList);
         }
-
         return argList;
     }
 
-    private static void parsePropertyArgument(int tokenIndex, TokenList tokenList, ArgumentList argList, int colonIndex) {
-        String token = tokenList.tokens().get(tokenIndex);
-        int startInd = 0;
+    private static void parseAndAddArgument(String token, ArgumentList argList) throws ArgumentListException {
+        StringBuilder currentToken = new StringBuilder();
+        boolean isPropertyArg = false;
+        char currentQuote = 0;
+        boolean quoteFound = false;
+        for (int index = 0; index < token.length(); index++) {
+            char currentChar = token.charAt(index);
+            if (currentChar == '\\') {
+                index++;
+                if (index < token.length()) {
+                    currentToken.append(token.charAt(index));
+                }
+                continue;
+            }
+            if (currentChar == SINGLE_QUOTE || currentChar == DOUBLE_QUOTE) {
+                if (currentQuote == 0) {
+                    currentQuote = currentChar;
+                    quoteFound = true;
+                } else if (currentChar == currentQuote) {
+                    currentQuote = 0;
+                }
+            } else if (currentQuote != 0) {
+                currentToken.append(currentChar);
+                continue;
+            }
+            if ("+-.".indexOf(currentChar) >= 0) {
+                isPropertyArg = true;
+            } else if (currentChar == ':') {
+                if (quoteFound) {
+                    throw new ArgumentListException("quotes are not allowed on the left side of property/predicate arguments");
+                }
+                parsePropertyArgument(currentToken.toString(), token.substring(index + 1), argList);
+                return;
+            }
+            currentToken.append(currentChar);
+            if (isPropertyArg && index == token.length() - 1) {
+                parsePropertyArgument(currentToken.toString(), null, argList);
+                return;
+            }
+        }
+        if (argList.commandName.isEmpty() && token.matches("^[a-z]+$")) {
+            argList.commandName = token;
+        } else {
+            (argList.commandName.isEmpty() ? argList.leadingNormalArguments : argList.trailingNormalArguments).add(token);
+        }
+    }
+
+    private static void parsePropertyArgument(String leftPart, String rightPart, ArgumentList argList) {
+        boolean skipFirst = false;
         Affinity affinity = Affinity.NEUTRAL;
         boolean isOption = false;
-        if (token.charAt(0) == '-') {
-            affinity = Affinity.NEGATIVE;
-            startInd = 1;
-        } else if (token.charAt(0) == '+') {
-            affinity = Affinity.POSITIVE;
-            startInd = 1;
-        } else if (token.charAt(0) == '.') {
-            isOption = true;
-            startInd = 1;
+        if (!leftPart.isEmpty()) {
+            char firstChar = leftPart.charAt(0);
+            if (firstChar == '-') {
+                affinity = Affinity.NEGATIVE;
+                skipFirst = true;
+            } else if (firstChar == '+') {
+                affinity = Affinity.POSITIVE;
+                skipFirst = true;
+            } else if (firstChar == '.') {
+                isOption = true;
+                skipFirst = true;
+            }
+            if (skipFirst) {
+                leftPart = leftPart.substring(1);
+            }
         }
-
-        String name = colonIndex != -1
-                ? token.substring(startInd, colonIndex)
-                : token.substring(startInd);
-
-        ArrayList<String> valueList = null;
-        if (colonIndex != -1) {
-            valueList = getValues(
-                    token.substring(colonIndex + 1), ',',
-                    tokenList.escapedPositions(),
-                    tokenIndex, colonIndex + 1
-            );
-        }
-
+        List<String> valueList = rightPart != null ? getValues(rightPart, ',') : null;
         if (isOption) {
-            argList.optionArguments.add(new OptionArgument(name, valueList));
+            argList.optionArguments.add(new OptionArgument(leftPart, valueList));
         } else {
-            ArrayList<String> nameList = getValues(
-                    name, '.',
-                    tokenList.escapedPositions(),
-                    tokenIndex, startInd
-            );
-
-            String propertyName = "";
-            String predicate = null;
-
-            if (!nameList.isEmpty()) {
-                propertyName = nameList.get(0);
-            }
-
-            if (nameList.size() >= 2) {
-                predicate = nameList.get(1);
-            }
-
+            List<String> nameList = getValues(leftPart, '.');
+            String propertyName = !nameList.isEmpty() ? nameList.get(0) : "";
+            String predicate = nameList.size() >= 2 ? nameList.get(1) : null;
             if (argList.commandName.isEmpty()) {
                 argList.filterPropertyArguments.add(new PropertyArgument(affinity, propertyName, predicate, valueList));
             } else {
@@ -139,34 +143,35 @@ public class ArgumentList {
         }
     }
 
-
-    private static ArrayList<String> getValues(String valueListStr,
-                                               char separator,
-                                               Set<Pair<Integer, Integer>> escapedPositions,
-                                               int argIndex,
-                                               int baseIndex
-    ) {
-        ArrayList<String> valueList = new ArrayList<>();
-
-        int fromPos = 0;
-        int separatorPos = valueListStr.indexOf(separator, fromPos);
-        while(separatorPos != -1) {
-            if (!escapedPositions.contains(Pair.of(argIndex, baseIndex+separatorPos))) {
-                valueList.add(valueListStr.substring(fromPos, separatorPos));
-                fromPos = separatorPos+1;
+    private static ArrayList<String> getValues(String valueListStr, char separator) {
+        ArrayList<String> values = new ArrayList<>();
+        StringBuilder currentValue = new StringBuilder();
+        char currentQuote = 0;
+        for (int i = 0; i < valueListStr.length(); i++) {
+            char currentChar = valueListStr.charAt(i);
+            if (currentChar == '\\') {
+                i++;
+                if (i < valueListStr.length()) {
+                    currentValue.append(valueListStr.charAt(i));
+                }
+                continue;
             }
-            separatorPos = valueListStr.indexOf(separator, separatorPos+1);
+            if (currentChar == SINGLE_QUOTE || currentChar == DOUBLE_QUOTE) {
+                if (currentQuote == 0) {
+                    currentQuote = currentChar;
+                } else if (currentChar == currentQuote) {
+                    currentQuote = 0;
+                }
+            } else if (currentQuote != 0) {
+                currentValue.append(currentChar);
+            } else if (currentChar == separator) {
+                values.add(currentValue.toString());
+                currentValue = new StringBuilder();
+            } else {
+                currentValue.append(currentChar);
+            }
         }
-        valueList.add(valueListStr.substring(fromPos));
-
-        return valueList;
+        values.add(currentValue.toString());
+        return values;
     }
-
-    @NonNull private String commandName;
-    @NonNull private List<String> leadingNormalArguments;
-    @NonNull private List<String> trailingNormalArguments;
-    @NonNull private LinkedHashMap<Character, List<SpecialArgument>> specialArguments;
-    @NonNull private List<PropertyArgument> filterPropertyArguments;
-    @NonNull private List<PropertyArgument> modifyPropertyArguments;
-    @NonNull private List<OptionArgument> optionArguments;
 }

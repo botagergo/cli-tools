@@ -1,7 +1,9 @@
 package cli_tools.common.cli.tokenizer;
 
+import java.util.List;
+
 public interface Tokenizer {
 
-    TokenList tokenize(String line) throws MismatchedQuotesException;
+    List<String> tokenize(String line) throws MismatchedQuotesException;
 
 }

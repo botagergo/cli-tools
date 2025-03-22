@@ -1,17 +1,13 @@
 package cli_tools.common.cli.tokenizer;
 
-import org.apache.commons.lang3.tuple.Pair;
-
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 public class TokenizerImpl implements Tokenizer {
 
     @Override
-    public TokenList tokenize(String line) throws MismatchedQuotesException {
+    public List<String> tokenize(String line) throws MismatchedQuotesException {
         ArrayList<String> tokens = new ArrayList<>();
-        Set<Pair<Integer, Integer>> escapedPositions = new HashSet<>();
         StringBuilder currentToken = new StringBuilder();
 
         char currentQuote = 0;
@@ -23,8 +19,8 @@ public class TokenizerImpl implements Tokenizer {
 
             if (!isEscaped && currentChar == '\\') {
                 isEscaped = true;
+                currentToken.append(currentChar);
             } else if (isEscaped) {
-                escapedPositions.add(Pair.of(tokens.size(), currentToken.length()));
                 currentToken.append(currentChar);
                 isEscaped = false;
             } else if (currentChar == '\'' || currentChar == '"') {
@@ -32,15 +28,10 @@ public class TokenizerImpl implements Tokenizer {
                     currentQuote = currentChar;
                 } else if (currentChar == currentQuote) {
                     currentQuote = 0;
-                } else {
-                    currentToken.append(currentChar);
                 }
-            } else if (currentQuote == 0) {
-                if (Character.isWhitespace(currentChar)) {
-                    addToken(tokens, currentToken);
-                } else {
-                    currentToken.append(currentChar);
-                }
+                currentToken.append(currentChar);
+            } else if (currentQuote == 0 && Character.isWhitespace(currentChar)) {
+                addToken(tokens, currentToken);
             } else {
                 currentToken.append(currentChar);
             }
@@ -54,7 +45,7 @@ public class TokenizerImpl implements Tokenizer {
             throw new MismatchedQuotesException(line);
         }
 
-        return new TokenList(tokens, escapedPositions);
+        return tokens;
     }
 
     private void addToken(ArrayList<String> tokens, StringBuilder token) {

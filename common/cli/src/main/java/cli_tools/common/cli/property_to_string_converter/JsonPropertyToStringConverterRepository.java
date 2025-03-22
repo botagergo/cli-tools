@@ -43,4 +43,9 @@ public class JsonPropertyToStringConverterRepository extends SimpleJsonRepositor
         return typeFactory.constructMapType(HashMap.class, String.class, PropertyToStringConverter.class);
     }
 
+    @Override
+    protected HashMap<String, PropertyToStringConverter> getEmptyData() {
+        return new HashMap<>();
+    }
+
 }

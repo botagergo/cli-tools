@@ -11,17 +11,18 @@ import lombok.Getter;
 import lombok.Setter;
 import cli_tools.common.cli.argument.ArgumentList;
 import cli_tools.common.cli.tokenizer.MismatchedQuotesException;
-import cli_tools.common.cli.tokenizer.TokenList;
 import cli_tools.common.cli.tokenizer.Tokenizer;
+
+import java.util.List;
 
 @Getter
 public class ExecutorImpl implements Executor {
 
     public void execute(String commandStr) {
-        TokenList tokenList;
+        List<String> tokens;
         try {
-            tokenList = tokenizer.tokenize(commandStr);
-            if (tokenList.tokens().isEmpty()) {
+            tokens = tokenizer.tokenize(commandStr);
+            if (tokens.isEmpty()) {
                 return;
             }
         } catch (MismatchedQuotesException e) {
@@ -29,11 +30,17 @@ public class ExecutorImpl implements Executor {
             return;
         }
 
-        execute(tokenList);
+        execute(tokens);
     }
 
-    public void execute(TokenList tokenList) {
-        ArgumentList argList = ArgumentList.from(tokenList);
+    public void execute(List<String> tokens) {
+        ArgumentList argList = null;
+        try {
+            argList = ArgumentList.from(tokens);
+        } catch (ArgumentList.ArgumentListException e) {
+            System.out.println("Syntax error: " + e);
+        }
+
         if (argList.getCommandName().equals("exit")) {
             _shouldExit = true;
             return;

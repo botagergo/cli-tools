@@ -10,8 +10,6 @@ import com.google.inject.Injector;
 import lombok.NonNull;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.apache.commons.lang3.tuple.Pair;
-import cli_tools.common.cli.tokenizer.TokenList;
 
 @Log4j2
 public class TaskManagerCLI {
@@ -33,17 +31,14 @@ public class TaskManagerCLI {
         }
     }
 
-    private static @NonNull TokenList getTokenList(String[] args) {
+    private static @NonNull List<String> getTokenList(String[] args) {
         List<String> argList = new ArrayList<>();
-        HashSet<Pair<Integer, Integer>> escapedIndices = new HashSet<>();
 
-        for (int i = 0; i < args.length; i++) {
-            String arg = args[i];
+        for (String arg : args) {
             StringBuilder sb = new StringBuilder();
-            for (int j = 0; j < arg.length();) {
-                if (arg.charAt(j) == '\\' && j < arg.length()-1) {
-                    escapedIndices.add(Pair.of(i, j));
-                    sb.append(arg.charAt(j+1));
+            for (int j = 0; j < arg.length(); ) {
+                if (arg.charAt(j) == '\\' && j < arg.length() - 1) {
+                    sb.append(arg.charAt(j + 1));
                     j += 2;
                 } else {
                     sb.append(arg.charAt(j));
@@ -53,7 +48,7 @@ public class TaskManagerCLI {
             argList.add(sb.toString());
         }
 
-        return new TokenList(argList, escapedIndices);
+        return argList;
     }
 
 }

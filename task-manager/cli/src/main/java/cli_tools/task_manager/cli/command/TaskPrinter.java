@@ -122,7 +122,7 @@ public class TaskPrinter {
             }
 
             if (i == 0 && depth > 0) {
-                propertyString = " •".repeat(depth) + propertyString;
+                propertyString = " •".repeat(depth) + " " + propertyString;
             }
 
             table.nextCell().addLine(" " + propertyString + " ");
