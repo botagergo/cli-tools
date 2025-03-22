@@ -16,6 +16,9 @@ public class ContainsCaseInsensitiveFilterCriterion extends PropertyFilterCriter
 
     @Override
     public boolean check_(Property property) throws PropertyException {
+        if (operand == null) {
+            return false;
+        }
         String propertyValueStr = property.getString();
         return propertyValueStr.toLowerCase().contains(operand.toLowerCase());
     }

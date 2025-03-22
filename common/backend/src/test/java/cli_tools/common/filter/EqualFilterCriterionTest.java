@@ -26,6 +26,7 @@ public class EqualFilterCriterionTest {
         propertyManager = new PropertyManager();
         addPropertyDescriptor("test_string", PropertyDescriptor.Type.String, PropertyDescriptor.Multiplicity.SINGLE);
         addPropertyDescriptor("test_boolean", PropertyDescriptor.Type.Boolean, PropertyDescriptor.Multiplicity.SINGLE);
+        addPropertyDescriptor("test_integer", PropertyDescriptor.Type.Integer, PropertyDescriptor.Multiplicity.SINGLE);
         addPropertyDescriptor("test_uuid", PropertyDescriptor.Type.UUID, PropertyDescriptor.Multiplicity.SINGLE);
         addPropertyDescriptor("test_string_list", PropertyDescriptor.Type.String, PropertyDescriptor.Multiplicity.LIST);
     }
@@ -45,6 +46,12 @@ public class EqualFilterCriterionTest {
     public void test_boolean_equals() throws PropertyException, IOException {
         Mockito.when(propertyOwner.getProperties()).thenReturn(Utils.newHashMap("test_boolean", true));
         Assert.assertTrue(checkEquals("test_boolean", true));
+    }
+
+    @Test
+    public void test_integer_equals() throws PropertyException, IOException {
+        Mockito.when(propertyOwner.getProperties()).thenReturn(Utils.newHashMap("test_integer", 123));
+        Assert.assertTrue(checkEquals("test_integer", 123));
     }
 
     @Test
@@ -81,6 +88,18 @@ public class EqualFilterCriterionTest {
 
         Mockito.when(propertyOwner.getProperties()).thenReturn(new HashMap<>());
         Assert.assertFalse(checkEqualsWithDefault("test_boolean", false));
+    }
+
+    @Test
+    public void test_integer_not_equal() throws PropertyException, IOException {
+        Mockito.when(propertyOwner.getProperties()).thenReturn(Utils.newHashMap("test_integer", 123));
+        Assert.assertFalse(checkEquals("test_integer", 456));
+
+        Mockito.when(propertyOwner.getProperties()).thenReturn(Utils.newHashMap("test_integer", 123));
+        Assert.assertFalse(checkEquals("test_integer", null));
+
+        Mockito.when(propertyOwner.getProperties()).thenReturn(new HashMap<>());
+        Assert.assertFalse(checkEqualsWithDefault("test_integer", 123));
     }
 
     @Test

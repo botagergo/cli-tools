@@ -14,7 +14,7 @@ public class CollectionContainsFilterCriterion extends PropertyFilterCriterion {
 
     @Override
     public boolean check_(Property property) throws PropertyException {
-        return property.getCollection().containsAll(operand);
+        return operand != null && property.getCollection().containsAll(operand);
     }
 
     private final Collection<Object> operand;

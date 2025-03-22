@@ -14,7 +14,7 @@ public class InFilterCriterion extends PropertyFilterCriterion {
 
     @Override
     public boolean check_(Property property) throws PropertyException {
-        return operand.contains(property.getValue());
+        return operand != null && operand.contains(property.getValue());
     }
 
     private final Collection<Object> operand;

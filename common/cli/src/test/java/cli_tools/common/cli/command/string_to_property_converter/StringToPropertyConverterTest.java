@@ -210,6 +210,7 @@ public class StringToPropertyConverterTest {
     public void test_convertPredicate_successful() throws StringToPropertyConverterException {
         assertEquals(propertyConverter.parsePredicate("equals"), Predicate.EQUALS);
         assertEquals(propertyConverter.parsePredicate("contains"), Predicate.CONTAINS);
+        assertEquals(propertyConverter.parsePredicate("in"), Predicate.IN);
         assertEquals(propertyConverter.parsePredicate("less"), Predicate.LESS);
         assertEquals(propertyConverter.parsePredicate("less_equal"), Predicate.LESS_EQUAL);
         assertEquals(propertyConverter.parsePredicate("greater"), Predicate.GREATER);
