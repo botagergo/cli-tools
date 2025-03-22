@@ -22,6 +22,7 @@ public class CommandParserFactoryImpl implements CommandParserFactory {
     @Override
     public CommandParser getParser(ArgumentList argList) {
         String commandName = argList.getCommandName();
+
         String resolvedAlias = configurationRepository.commandAliases().get(commandName);
         if (resolvedAlias != null) {
             commandName = resolvedAlias;
@@ -40,12 +41,12 @@ public class CommandParserFactoryImpl implements CommandParserFactory {
             } else if (matchingCommands.size() > 1) {
                 String commandNames = matchingCommands.stream()
                         .map(Map.Entry::getKey).sorted().collect(Collectors.joining(", "));
-                System.out.println("Multiple commands match \"" + argList.getCommandName() + "\": " + commandNames);
+                System.out.println("ERROR: multiple commands match \"" + argList.getCommandName() + "\": " + commandNames);
                 return null;
             }
         }
 
-        System.out.println("Unknown command \"" + argList.getCommandName() + "\"");
+        System.out.println("ERROR: unknown command \"" + argList.getCommandName() + "\"");
         return null;
     }
 

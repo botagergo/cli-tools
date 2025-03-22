@@ -34,14 +34,21 @@ public class ExecutorImpl implements Executor {
     }
 
     public void execute(List<String> tokens) {
-        ArgumentList argList = null;
+        ArgumentList argList;
         try {
             argList = ArgumentList.from(tokens);
         } catch (ArgumentList.ArgumentListException e) {
-            System.out.println("Syntax error: " + e);
+            System.out.println("ERROR: " + e);
+            return;
         }
 
-        if (argList.getCommandName().equals("exit")) {
+        String commandName = argList.getCommandName();
+        if (commandName == null || commandName.isEmpty()) {
+            System.out.println("ERROR: no command specified");
+            return;
+        }
+
+        if (commandName.equals("exit")) {
             _shouldExit = true;
             return;
         }

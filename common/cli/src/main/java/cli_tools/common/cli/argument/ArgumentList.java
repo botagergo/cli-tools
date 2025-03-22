@@ -16,7 +16,7 @@ public class ArgumentList {
     private static final char SINGLE_QUOTE = '\'';
     private static final char DOUBLE_QUOTE = '\"';
 
-    @NonNull private String commandName = "";
+    private String commandName = null;
     @NonNull private List<String> leadingNormalArguments = new ArrayList<>();
     @NonNull private List<String> trailingNormalArguments = new ArrayList<>();
     @NonNull private LinkedHashMap<Character, List<SpecialArgument>> specialArguments = new LinkedHashMap<>();
@@ -31,7 +31,7 @@ public class ArgumentList {
     }
 
     public ArgumentList(
-            @NonNull String commandName,
+            String commandName,
             @NonNull List<String> leadingNormalArguments,
             @NonNull List<String> trailingNormalArguments,
             @NonNull LinkedHashMap<Character, List<SpecialArgument>> specialArguments,
@@ -101,10 +101,10 @@ public class ArgumentList {
                 return;
             }
         }
-        if (argList.commandName.isEmpty() && token.matches("^[a-z]+$")) {
+        if (argList.commandName == null && token.matches("^[a-z]+$")) {
             argList.commandName = token;
         } else {
-            (argList.commandName.isEmpty() ? argList.leadingNormalArguments : argList.trailingNormalArguments).add(token);
+            (argList.commandName == null ? argList.leadingNormalArguments : argList.trailingNormalArguments).add(token);
         }
     }
 
@@ -135,7 +135,7 @@ public class ArgumentList {
             List<String> nameList = getValues(leftPart, '.');
             String propertyName = !nameList.isEmpty() ? nameList.get(0) : "";
             String predicate = nameList.size() >= 2 ? nameList.get(1) : null;
-            if (argList.commandName.isEmpty()) {
+            if (argList.commandName == null) {
                 argList.filterPropertyArguments.add(new PropertyArgument(affinity, propertyName, predicate, valueList));
             } else {
                 argList.modifyPropertyArguments.add(new PropertyArgument(affinity, propertyName, predicate, valueList));

@@ -11,7 +11,7 @@ public class ArgumentListTest {
     @Test
     public void test_from_empty() throws ArgumentList.ArgumentListException {
         ArgumentList argList = ArgumentList.from(List.of());
-        Assert.assertEquals(argList.getCommandName(), "");
+        Assert.assertNull(argList.getCommandName());
         Assert.assertEquals(argList.getTrailingNormalArguments().size(), 0);
         Assert.assertEquals(argList.getSpecialArguments().size(), 0);
         Assert.assertEquals(argList.getModifyPropertyArguments().size(), 0);

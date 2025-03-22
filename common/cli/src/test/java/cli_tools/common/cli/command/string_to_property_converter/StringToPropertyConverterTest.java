@@ -429,7 +429,7 @@ public class StringToPropertyConverterTest {
             fail();
         } catch (StringToPropertyConverterException e) {
             assertEquals(e.getExceptionType(), StringToPropertyConverterException.Type.LabelNotFound);
-            assertEquals(e.getArgument(), "test");
+            assertEquals(e.getArgument(), "tag");
         }
     }
 
