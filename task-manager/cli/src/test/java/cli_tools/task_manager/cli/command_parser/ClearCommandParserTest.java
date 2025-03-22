@@ -2,7 +2,7 @@ package cli_tools.task_manager.cli.command_parser;
 
 import org.testng.annotations.Test;
 import cli_tools.common.cli.argument.ArgumentList;
-import cli_tools.task_manager.cli.Context;
+import cli_tools.task_manager.cli.TaskManagerContext;
 import cli_tools.task_manager.cli.command.ClearCommand;
 
 import static org.testng.Assert.assertNotNull;
@@ -22,6 +22,6 @@ public class ClearCommandParserTest {
     }
 
     private final ClearCommandParser parser = new ClearCommandParser();
-    private final Context context = new Context();
+    private final TaskManagerContext context = new TaskManagerContext();
 
 }

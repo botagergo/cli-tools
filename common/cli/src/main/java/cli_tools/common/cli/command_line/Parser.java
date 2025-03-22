@@ -1,8 +1,8 @@
-package cli_tools.task_manager.cli.command_line;
+package cli_tools.common.cli.command_line;
 
 import org.jline.reader.impl.DefaultParser;
 
-class Parser extends DefaultParser {
+public class Parser extends DefaultParser {
 
     @Override
     public boolean isDelimiterChar(CharSequence buffer, int pos) {

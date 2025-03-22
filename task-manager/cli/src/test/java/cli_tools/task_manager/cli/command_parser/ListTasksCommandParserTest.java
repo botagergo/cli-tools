@@ -1,5 +1,6 @@
 package cli_tools.task_manager.cli.command_parser;
 
+import cli_tools.common.cli.command_parser.CommandParserException;
 import cli_tools.common.core.data.OutputFormat;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.testng.annotations.Test;
@@ -9,12 +10,11 @@ import cli_tools.common.cli.argument.ArgumentList;
 import cli_tools.common.cli.argument.OptionArgument;
 import cli_tools.common.cli.argument.PropertyArgument;
 import cli_tools.common.cli.argument.SpecialArgument;
-import cli_tools.task_manager.cli.Context;
+import cli_tools.task_manager.cli.TaskManagerContext;
 import cli_tools.task_manager.cli.command.ListTasksCommand;
 
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 import static org.testng.Assert.*;
 
@@ -201,5 +201,5 @@ public class ListTasksCommandParserTest {
     }
 
     private final ListTasksCommandParser parser = new ListTasksCommandParser();
-    private final Context context = new Context();
+    private final TaskManagerContext context = new TaskManagerContext();
 }

@@ -1,10 +1,11 @@
 package cli_tools.task_manager.cli.command_parser;
 
+import cli_tools.common.cli.command_parser.CommandParserException;
 import org.testng.annotations.Test;
 import cli_tools.common.core.data.property.Affinity;
 import cli_tools.common.cli.argument.ArgumentList;
 import cli_tools.common.cli.argument.PropertyArgument;
-import cli_tools.task_manager.cli.Context;
+import cli_tools.task_manager.cli.TaskManagerContext;
 import cli_tools.task_manager.cli.command.DeleteTaskCommand;
 
 import java.util.List;
@@ -33,7 +34,7 @@ public class DeleteTaskCommandParserTest {
 
     @Test
     public void test_parse_invalidTaskID() {
-        assertThrows(CommandParserException.class, () -> parse(getArgList(List.of("1.0", "1"), List.of())));
+        assertThrows(IllegalArgumentException.class, () -> parse(getArgList(List.of("1.0", "1"), List.of())));
     }
 
     @Test
@@ -81,6 +82,6 @@ public class DeleteTaskCommandParserTest {
     }
 
     private final DeleteTaskCommandParser parser = new DeleteTaskCommandParser();
-    private final Context context = new Context();
+    private final TaskManagerContext context = new TaskManagerContext();
 
 }

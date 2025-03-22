@@ -15,7 +15,7 @@ import cli_tools.common.util.RoundRobinUUIDGenerator;
 import cli_tools.common.util.UUIDGenerator;
 import cli_tools.common.util.Utils;
 import cli_tools.task_manager.task.Task;
-import cli_tools.task_manager.task.TaskHierarchy;
+import cli_tools.task_manager.task.PropertyOwnerTree;
 import common.task.repository.SimpleTaskRepository;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -559,7 +559,7 @@ public class TaskServiceImplTest {
                 Task.fromMap(Utils.newHashMap("name", "task7", "uuid", uuid7, "parent", uuid6)),
                 Task.fromMap(Utils.newHashMap("name", "task8", "uuid", uuid8, "parent", uuid6))
         ));
-        List<TaskHierarchy> taskHierarchies = taskUseCase.getTaskHierarchies(null, new SortingInfo(List.of(new SortingCriterion("name", false))), null, null);
+        List<PropertyOwnerTree> taskHierarchies = taskUseCase.getTaskHierarchies(null, new SortingInfo(List.of(new SortingCriterion("name", false))), null, null);
         assertEquals(taskHierarchies.size(), 2);
         assertEquals(taskHierarchies.get(0).getParent(), Task.fromMap(Utils.newHashMap("name", "task5", "uuid", uuid5)));
         assertEquals(taskHierarchies.get(0).getChildren().size(), 0);

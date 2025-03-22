@@ -1,5 +1,7 @@
 package cli_tools.task_manager.cli.command;
 
+import cli_tools.common.cli.command.Command;
+import cli_tools.task_manager.cli.TaskManagerContext;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
@@ -8,7 +10,6 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import cli_tools.common.cli.argument.PropertyArgument;
 import cli_tools.task_manager.task.Task;
 import cli_tools.common.core.data.property.FilterPropertySpec;
-import cli_tools.task_manager.cli.Context;
 
 import java.util.List;
 import java.util.UUID;
@@ -19,17 +20,19 @@ import java.util.UUID;
 public final class DeleteTaskCommand extends Command {
 
     @Override
-    public void execute(Context context) {
+    public void execute(cli_tools.common.cli.Context context) {
         log.traceEntry();
 
-        try {
-            List<UUID> taskUUIDs = CommandUtil.getUUIDsFromTempIDs(context, tempIDs);
-            List<FilterPropertySpec> filterPropertySpecs = CommandUtil.getFilterPropertySpecs(context, filterPropertyArgs);
+        TaskManagerContext taskManagerContext = (TaskManagerContext) context;
 
-            List<Task> tasks = context.getTaskService().getTasks(
+        try {
+            List<UUID> taskUUIDs = CommandUtil.getUUIDsFromTempIDs(taskManagerContext, tempIDs);
+            List<FilterPropertySpec> filterPropertySpecs = CommandUtil.getFilterPropertySpecs(taskManagerContext, filterPropertyArgs);
+
+            List<Task> tasks = taskManagerContext.getTaskService().getTasks(
                     filterPropertySpecs, null, null, taskUUIDs);
 
-            List<Task> tasksToDelete = CommandUtil.confirmAndGetTasksToChange(context, tasks, tempIDs, filterPropertySpecs, CommandUtil.ChangeType.DELETE);
+            List<Task> tasksToDelete = CommandUtil.confirmAndGetTasksToChange(taskManagerContext, tasks, tempIDs, filterPropertySpecs, CommandUtil.ChangeType.DELETE);
             if (tasksToDelete == null || tasksToDelete.isEmpty()) {
                 return;
             }
@@ -38,7 +41,7 @@ public final class DeleteTaskCommand extends Command {
 
             for (UUID uuid : uuids) {
                 context.getTempIDMappingService().delete(uuid);
-                context.getTaskService().deleteTask(uuid);
+                taskManagerContext.getTaskService().deleteTask(uuid);
             }
         } catch (Exception e) {
             System.out.println("ERROR: " + e.getMessage());

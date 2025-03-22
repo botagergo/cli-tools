@@ -1,18 +1,20 @@
 package cli_tools.task_manager.cli.command_parser;
 
+import cli_tools.common.cli.Context;
 import cli_tools.common.cli.argument.ArgumentList;
 import cli_tools.common.cli.argument.OptionArgument;
-import cli_tools.common.cli.argument.SpecialArgument;
+import cli_tools.common.cli.command_parser.CommandParser;
+import cli_tools.common.cli.command_parser.CommandParserException;
+import cli_tools.common.cli.command_parser.InvalidOptionException;
+import cli_tools.common.cli.command_parser.ParseUtil;
 import cli_tools.common.core.data.OutputFormat;
 import cli_tools.common.core.data.SortingCriterion;
-import cli_tools.task_manager.cli.Context;
-import cli_tools.task_manager.cli.command.Command;
+import cli_tools.common.cli.command.Command;
 import cli_tools.task_manager.cli.command.ListTasksCommand;
 import lombok.extern.log4j.Log4j2;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Log4j2
 public class ListTasksCommandParser extends CommandParser {
@@ -46,7 +48,7 @@ public class ListTasksCommandParser extends CommandParser {
             }
         }
 
-        command.setTempIDs(ParseUtil.getTaskIDs(context, argList.getLeadingNormalArguments()));
+        command.setTempIDs(ParseUtil.getTempIds(context, argList.getLeadingNormalArguments()));
 
         return command;
     }

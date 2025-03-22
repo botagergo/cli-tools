@@ -1,11 +1,11 @@
-package cli_tools.task_manager.cli.command_line;
+package cli_tools.common.cli.command_line;
 
-import cli_tools.task_manager.cli.Context;
-import cli_tools.task_manager.cli.command.Command;
-import cli_tools.task_manager.cli.command.CommandExecutor;
-import cli_tools.task_manager.cli.command_parser.CommandParser;
-import cli_tools.task_manager.cli.command_parser.CommandParserException;
-import cli_tools.task_manager.cli.command_parser.CommandParserFactory;
+import cli_tools.common.cli.Context;
+import cli_tools.common.cli.command.Command;
+import cli_tools.common.cli.command.CommandExecutor;
+import cli_tools.common.cli.command_parser.CommandParser;
+import cli_tools.common.cli.command_parser.CommandParserException;
+import cli_tools.common.cli.command_parser.CommandParserFactory;
 import jakarta.inject.Inject;
 import lombok.Getter;
 import lombok.Setter;

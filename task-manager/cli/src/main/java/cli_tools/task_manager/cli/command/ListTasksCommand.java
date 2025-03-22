@@ -1,8 +1,9 @@
 package cli_tools.task_manager.cli.command;
 
+import cli_tools.common.cli.command.Command;
 import cli_tools.common.core.data.*;
 import cli_tools.task_manager.task.Task;
-import cli_tools.task_manager.task.TaskHierarchy;
+import cli_tools.task_manager.task.PropertyOwnerTree;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
@@ -11,7 +12,7 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import cli_tools.common.cli.argument.PropertyArgument;
 import cli_tools.common.core.data.property.FilterPropertySpec;
 import cli_tools.task_manager.task.service.TaskServiceException;
-import cli_tools.task_manager.cli.Context;
+import cli_tools.task_manager.cli.TaskManagerContext;
 
 import java.io.IOException;
 import java.util.List;
@@ -22,8 +23,10 @@ import java.util.UUID;
 @Setter
 public final class ListTasksCommand extends Command {
     @Override
-    public void execute(Context context) {
+    public void execute(cli_tools.common.cli.Context context) {
         log.traceEntry();
+
+        TaskManagerContext taskManagerContext = (TaskManagerContext) context;
 
         try {
             FilterCriterionInfo filterCriterionInfo = null;
@@ -31,15 +34,15 @@ public final class ListTasksCommand extends Command {
             String actualViewName = viewName;
             Boolean actualHierarchical = hierarchical;
             List<String> actualProperties = List.of("name", "status", "tags");
-            List<UUID> taskUUIDs = CommandUtil.getUUIDsFromTempIDs(context, tempIDs);
-            List<FilterPropertySpec> filterPropertySpecs = CommandUtil.getFilterPropertySpecs(context, filterPropertyArgs);
+            List<UUID> taskUUIDs = CommandUtil.getUUIDsFromTempIDs(taskManagerContext, tempIDs);
+            List<FilterPropertySpec> filterPropertySpecs = CommandUtil.getFilterPropertySpecs(taskManagerContext, filterPropertyArgs);
 
             if (actualViewName == null) {
                 actualViewName = context.getConfigurationRepository().defaultView();
             }
 
             if (actualViewName != null) {
-                ViewInfo viewInfo = getView(context, actualViewName);
+                ViewInfo viewInfo = getView(taskManagerContext, actualViewName);
 
                 if (viewInfo.sortingInfo() != null) {
                     sortingInfo = viewInfo.sortingInfo();
@@ -83,11 +86,11 @@ public final class ListTasksCommand extends Command {
                     System.out.println("outputFormat can only be text when printing tasks hierarchically");
                     return;
                 }
-                List<TaskHierarchy> taskHierarchies = context.getTaskService().getTaskHierarchies(filterPropertySpecs, sortingInfo, filterCriterionInfo, taskUUIDs);
-                context.getTaskPrinter().printTaskHierarchies(context, taskHierarchies, actualProperties);
+                List<PropertyOwnerTree> taskHierarchies = taskManagerContext.getTaskService().getTaskHierarchies(filterPropertySpecs, sortingInfo, filterCriterionInfo, taskUUIDs);
+                taskManagerContext.getTaskPrinter().printTaskTrees(taskManagerContext, taskHierarchies, actualProperties);
             } else {
-                List<Task> tasks = context.getTaskService().getTasks(filterPropertySpecs, sortingInfo, filterCriterionInfo, taskUUIDs);
-                context.getTaskPrinter().printTasks(context, tasks, actualProperties, outputFormat);
+                List<Task> tasks = taskManagerContext.getTaskService().getTasks(filterPropertySpecs, sortingInfo, filterCriterionInfo, taskUUIDs);
+                taskManagerContext.getTaskPrinter().printTasks(taskManagerContext, tasks, actualProperties, outputFormat);
             }
 
         } catch (Exception e) {
@@ -96,7 +99,7 @@ public final class ListTasksCommand extends Command {
         }
     }
 
-    private @NonNull ViewInfo getView(Context context, String viewName) throws TaskServiceException, IOException {
+    private @NonNull ViewInfo getView(TaskManagerContext context, String viewName) throws TaskServiceException, IOException {
         ViewInfo viewInfo = context.getViewInfoService().getViewInfo(viewName);
         if (viewInfo == null) {
             throw new TaskServiceException("View '" + viewName + "' does not exist");

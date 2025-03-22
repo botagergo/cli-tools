@@ -17,7 +17,7 @@ import cli_tools.common.sorter.PropertySorter;
 import cli_tools.common.temp_id_mapping.service.TempIDMappingService;
 import cli_tools.common.util.UUIDGenerator;
 import cli_tools.task_manager.task.Task;
-import cli_tools.task_manager.task.TaskHierarchy;
+import cli_tools.task_manager.task.PropertyOwnerTree;
 import cli_tools.task_manager.task.repository.TaskRepository;
 import jakarta.inject.Inject;
 import lombok.AllArgsConstructor;
@@ -85,7 +85,8 @@ public class TaskServiceImpl implements TaskService {
     }
 
 
-    public List<TaskHierarchy> getTaskHierarchies(
+    @Override
+    public List<PropertyOwnerTree> getTaskHierarchies(
             List<FilterPropertySpec> propertySpecs,
             SortingInfo sortingInfo,
             FilterCriterionInfo filterCriterionInfo,
@@ -93,15 +94,15 @@ public class TaskServiceImpl implements TaskService {
     ) throws IOException, TaskServiceException, PropertyException, PropertyConverterException {
         List<Task> tasks = getUnsortedTasks(propertySpecs, filterCriterionInfo, taskUUIDs);
 
-        List<TaskHierarchy> taskHierarchies = new ArrayList<>();
-        Map<UUID, TaskHierarchy> taskTreeMap = new HashMap<>();
+        List<PropertyOwnerTree> taskHierarchies = new ArrayList<>();
+        Map<UUID, PropertyOwnerTree> taskTreeMap = new HashMap<>();
 
         for (Task task : tasks) {
             addTaskHierarchy(taskHierarchies, taskTreeMap, task);
         }
 
         if (sortingInfo != null) {
-            PropertySorter<TaskHierarchy> sorter = new PropertySorter<>(sortingInfo.sortingCriteria());
+            PropertySorter<PropertyOwnerTree> sorter = new PropertySorter<>(sortingInfo.sortingCriteria());
             try {
                 sortTaskTrees(taskHierarchies, sorter, propertyManager);
             } catch (PropertyException | PropertyNotComparableException e) {
@@ -112,18 +113,18 @@ public class TaskServiceImpl implements TaskService {
         return taskHierarchies;
     }
 
-    private TaskHierarchy addTaskHierarchy(List<TaskHierarchy> taskHierarchies, Map<UUID, TaskHierarchy> taskTreeMap, Task task) throws IOException, PropertyException {
-        TaskHierarchy taskHierarchy = taskTreeMap.get(task.getUUID());
+    private PropertyOwnerTree addTaskHierarchy(List<PropertyOwnerTree> taskHierarchies, Map<UUID, PropertyOwnerTree> taskTreeMap, Task task) throws IOException, PropertyException {
+        PropertyOwnerTree taskHierarchy = taskTreeMap.get(task.getUUID());
         if (taskHierarchy != null) {
             return taskHierarchy;
         }
 
-        taskHierarchy = new TaskHierarchy(task, new ArrayList<>());
+        taskHierarchy = new PropertyOwnerTree(task, new ArrayList<>());
         taskTreeMap.put(task.getUUID(), taskHierarchy);
 
         UUID parentUuid = propertyManager.getProperty(taskHierarchy.getParent(), "parent").getUuid();
         if (parentUuid != null) {
-            TaskHierarchy parentTaskHierarchy = taskTreeMap.get(parentUuid);
+            PropertyOwnerTree parentTaskHierarchy = taskTreeMap.get(parentUuid);
             if (parentTaskHierarchy == null) {
                 parentTaskHierarchy = addTaskHierarchy(taskHierarchies, taskTreeMap, parentUuid);
             }
@@ -138,18 +139,18 @@ public class TaskServiceImpl implements TaskService {
         return taskHierarchy;
     }
 
-    private TaskHierarchy addTaskHierarchy(List<TaskHierarchy> taskHierarchies, Map<UUID, TaskHierarchy> taskTreeMap, UUID uuid) throws IOException, PropertyException {
-        TaskHierarchy taskHierarchy = taskTreeMap.get(uuid);
+    private PropertyOwnerTree addTaskHierarchy(List<PropertyOwnerTree> taskHierarchies, Map<UUID, PropertyOwnerTree> taskTreeMap, UUID uuid) throws IOException, PropertyException {
+        PropertyOwnerTree taskHierarchy = taskTreeMap.get(uuid);
         if (taskHierarchy != null) {
             return taskHierarchy;
         }
 
-        taskHierarchy = new TaskHierarchy(getTask(uuid), new ArrayList<>());
+        taskHierarchy = new PropertyOwnerTree(getTask(uuid), new ArrayList<>());
         taskTreeMap.put(uuid, taskHierarchy);
 
         UUID parentUuid = propertyManager.getProperty(taskHierarchy.getParent(), "parent").getUuid();
         if (parentUuid != null) {
-            TaskHierarchy parentTaskHierarchy = taskTreeMap.get(parentUuid);
+            PropertyOwnerTree parentTaskHierarchy = taskTreeMap.get(parentUuid);
             if (parentTaskHierarchy == null) {
                 parentTaskHierarchy = addTaskHierarchy(taskHierarchies, taskTreeMap, getTask(parentUuid));
             }
@@ -218,9 +219,9 @@ public class TaskServiceImpl implements TaskService {
     }
 
 
-    private void sortTaskTrees(List<TaskHierarchy> taskHierarchies, PropertySorter<TaskHierarchy> propertySorter, PropertyManager propertyManager) throws PropertyException, PropertyNotComparableException, IOException {
+    private void sortTaskTrees(List<PropertyOwnerTree> taskHierarchies, PropertySorter<PropertyOwnerTree> propertySorter, PropertyManager propertyManager) throws PropertyException, PropertyNotComparableException, IOException {
         propertySorter.sort(taskHierarchies, propertyManager);
-        for (TaskHierarchy taskHierarchy : taskHierarchies) {
+        for (PropertyOwnerTree taskHierarchy : taskHierarchies) {
             if (taskHierarchy.getChildren() != null) {
                 sortTaskTrees(taskHierarchy.getChildren(), propertySorter, propertyManager);
             }

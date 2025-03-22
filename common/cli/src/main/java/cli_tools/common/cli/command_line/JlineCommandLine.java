@@ -1,6 +1,6 @@
-package cli_tools.task_manager.cli.command_line;
+package cli_tools.common.cli.command_line;
 
-import cli_tools.task_manager.cli.init.Initializer;
+import cli_tools.common.cli.Context;
 import com.google.inject.Inject;
 import lombok.AllArgsConstructor;
 import org.jline.reader.*;
@@ -9,7 +9,6 @@ import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
 import cli_tools.common.property_lib.PropertyDescriptor;
 import cli_tools.common.property_lib.PropertyDescriptorCollection;
-import cli_tools.task_manager.cli.Context;
 
 import java.io.IOException;
 import java.util.*;
@@ -19,10 +18,6 @@ public class JlineCommandLine implements CommandLine {
 
     @Override
     public void run() throws IOException {
-        if (initializer.needsInitialization()) {
-            initializer.initialize();
-        }
-
         Context context = ((ExecutorImpl) executor).getContext();
         List<PropertyDescriptor> propertyDescriptors = context.getPropertyDescriptorService().getPropertyDescriptors();
         context.getPropertyManager().setPropertyDescriptorCollection(PropertyDescriptorCollection.fromList(propertyDescriptors));
@@ -32,11 +27,11 @@ public class JlineCommandLine implements CommandLine {
                 .signalHandler(Terminal.SignalHandler.SIG_IGN)
                 .build();
 
-        cli_tools.task_manager.cli.command_line.Completer completer = buildCompleter(context);
+        cli_tools.common.cli.command_line.Completer completer = buildCompleter(context);
         LineReader reader = LineReaderBuilder.builder().terminal(terminal)
                 .completer(completer)
-                .parser(new Parser())
-                .completionMatcher(new CompletionMatcher())
+                .parser(new cli_tools.common.cli.command_line.Parser())
+                .completionMatcher(new cli_tools.common.cli.command_line.CompletionMatcher())
                 .option(Option.RECOGNIZE_EXACT, true)
                 .option(Option.GROUP_PERSIST, true)
                 .option(Option.DISABLE_EVENT_EXPANSION, true).build();
@@ -59,13 +54,11 @@ public class JlineCommandLine implements CommandLine {
         }
     }
 
-    private cli_tools.task_manager.cli.command_line.Completer buildCompleter(Context context) {
-        return new Completer(
-                context,
-                List.of("add", "list", "modify", "delete", "clear", "done"));
+    private cli_tools.common.cli.command_line.Completer buildCompleter(Context context) {
+        return new cli_tools.common.cli.command_line.Completer(context, commands);
     }
 
-    private final Initializer initializer;
     private final Executor executor;
+    private final List<String> commands;
 
 }

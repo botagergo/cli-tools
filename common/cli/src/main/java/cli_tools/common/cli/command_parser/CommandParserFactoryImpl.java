@@ -1,4 +1,4 @@
-package cli_tools.task_manager.cli.command_parser;
+package cli_tools.common.cli.command_parser;
 
 import jakarta.inject.Inject;
 import cli_tools.common.cli.argument.ArgumentList;
@@ -12,8 +12,11 @@ import java.util.stream.Collectors;
 public class CommandParserFactoryImpl implements CommandParserFactory {
 
     @Inject
-    public CommandParserFactoryImpl(ConfigurationRepository configurationRepository) {
+    public CommandParserFactoryImpl(
+            ConfigurationRepository configurationRepository,
+            Map<String, Supplier<CommandParser>> commandMapping) {
         this.configurationRepository = configurationRepository;
+        this.commandMapping = commandMapping;
     }
 
     @Override
@@ -46,16 +49,6 @@ public class CommandParserFactoryImpl implements CommandParserFactory {
         return null;
     }
 
-    private final Map<String, Supplier<CommandParser>> commandMapping = Map.of(
-            "add", AddTaskCommandParser::new,
-            "list", ListTasksCommandParser::new,
-            "done", DoneTaskCommandParser::new,
-            "clear", ClearCommandParser::new,
-            "delete", DeleteTaskCommandParser::new,
-            "modify", ModifyTaskCommandParser::new,
-            "ai", AICommandParser::new
-    );
-
     private final ConfigurationRepository configurationRepository;
-
+    private final Map<String, Supplier<CommandParser>> commandMapping;
 }

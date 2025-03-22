@@ -1,4 +1,4 @@
-package cli_tools.task_manager.cli.command_line;
+package cli_tools.common.cli.command_line;
 
 import org.jline.reader.CompletingParsedLine;
 import org.jline.reader.LineReader;
@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Map;
 
-class CompletionMatcher extends CompletionMatcherImpl {
+public class CompletionMatcher extends CompletionMatcherImpl {
     @Override
     protected void defaultMatchers(
             Map<LineReader.Option, Boolean> options,

@@ -1,10 +1,11 @@
 package cli_tools.task_manager.cli.command_parser;
 
+import cli_tools.common.cli.command_parser.CommandParserException;
 import org.testng.annotations.Test;
 import cli_tools.common.core.data.property.Affinity;
 import cli_tools.common.cli.argument.ArgumentList;
 import cli_tools.common.cli.argument.PropertyArgument;
-import cli_tools.task_manager.cli.Context;
+import cli_tools.task_manager.cli.TaskManagerContext;
 import cli_tools.task_manager.cli.command.AddTaskCommand;
 
 import java.util.ArrayList;
@@ -126,6 +127,6 @@ public class AddTaskCommandParserTest {
     }
 
     private final AddTaskCommandParser parser = new AddTaskCommandParser();
-    private final Context context = new Context();
+    private final TaskManagerContext context = new TaskManagerContext();
 
 }

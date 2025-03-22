@@ -1,5 +1,6 @@
-package cli_tools.task_manager.cli.command_line;
+package cli_tools.common.cli.command_line;
 
+import cli_tools.common.cli.Context;
 import lombok.extern.log4j.Log4j2;
 import org.jline.reader.Candidate;
 import org.jline.reader.LineReader;
@@ -9,13 +10,12 @@ import cli_tools.common.core.data.Label;
 import cli_tools.common.core.data.OrderedLabel;
 import cli_tools.common.property_lib.PropertyDescriptor;
 import cli_tools.common.property_lib.PropertyException;
-import cli_tools.task_manager.cli.Context;
 
 import java.io.IOException;
 import java.util.List;
 
 @Log4j2
-class Completer implements org.jline.reader.Completer {
+public class Completer implements org.jline.reader.Completer {
 
     public Completer(Context context, List<String> commands) {
         this.context = context;

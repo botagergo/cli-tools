@@ -1,5 +1,5 @@
 
-package cli_tools.task_manager.cli.command_parser;
+package cli_tools.common.cli.command_parser;
 
 public class InvalidOptionException extends CommandParserException {
 

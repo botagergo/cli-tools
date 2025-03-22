@@ -1,12 +1,15 @@
-package cli_tools.task_manager.cli.command_parser;
+package cli_tools.common.cli.command_parser;
 
+import cli_tools.common.cli.Context;
+import cli_tools.common.cli.argument.ArgumentList;
+import cli_tools.common.cli.command.Command;
+import cli_tools.common.core.repository.ConfigurationRepository;
+import lombok.AllArgsConstructor;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-import cli_tools.common.cli.argument.ArgumentList;
-import cli_tools.common.core.repository.ConfigurationRepository;
 
 import java.util.Map;
 
@@ -16,38 +19,25 @@ public class CommandParserFactoryImplTest {
     @BeforeClass
     public void initMocks() {
         MockitoAnnotations.openMocks(this);
-        commandParserFactory = new CommandParserFactoryImpl(configurationRepository);
+        commandParserFactory = new CommandParserFactoryImpl(configurationRepository, Map.of(
+                "add", () -> getTestCommandParser("add"),
+                "list", () -> getTestCommandParser("list"),
+                "delete", () -> getTestCommandParser("delete"),
+                "duplicate", () -> getTestCommandParser("delete")
+        ));
     }
 
     @Test
-    public void testAdd() {
+    public void test_found() {
         Mockito.when(configurationRepository.allowCommandPrefix()).thenReturn(false);
         Mockito.when(configurationRepository.commandAliases()).thenReturn(Map.of());
-        assertTrue(
-                commandParserFactory.getParser(getArgList("add")) instanceof AddTaskCommandParser);
-    }
-
-    @Test
-    public void testDone() {
-        Mockito.when(configurationRepository.allowCommandPrefix()).thenReturn(false);
-        Mockito.when(configurationRepository.commandAliases()).thenReturn(Map.of());
-        assertTrue(commandParserFactory
-                .getParser(getArgList("done")) instanceof DoneTaskCommandParser);
-    }
-
-    @Test
-    public void testList() {
-        Mockito.when(configurationRepository.allowCommandPrefix()).thenReturn(false);
-        Mockito.when(configurationRepository.commandAliases()).thenReturn(Map.of());
-        assertTrue(commandParserFactory
-                .getParser(getArgList("list")) instanceof ListTasksCommandParser);
+        assertCommandParserName("add", "add");
     }
 
     @Test
     public void testUnknown() {
         Mockito.when(configurationRepository.allowCommandPrefix()).thenReturn(false);
         Mockito.when(configurationRepository.commandAliases()).thenReturn(Map.of());
-        assertNull(commandParserFactory.getParser(getArgList("del")));
         assertNull(commandParserFactory.getParser(getArgList("unknown")));
         assertNull(commandParserFactory.getParser(getArgList("")));
     }
@@ -56,26 +46,27 @@ public class CommandParserFactoryImplTest {
     public void testPrefix() {
         Mockito.when(configurationRepository.allowCommandPrefix()).thenReturn(true);
         Mockito.when(configurationRepository.commandAliases()).thenReturn(Map.of());
-        assertTrue(commandParserFactory
-                .getParser(getArgList("del")) instanceof DeleteTaskCommandParser);
-        assertTrue(commandParserFactory
-                .getParser(getArgList("m")) instanceof ModifyTaskCommandParser);
+        assertCommandParserName("lis", "list");
+        assertCommandParserName("a", "add");
     }
 
     @Test
     public void testPrefixMultipleMatches() {
         Mockito.when(configurationRepository.allowCommandPrefix()).thenReturn(true);
         Mockito.when(configurationRepository.commandAliases()).thenReturn(Map.of());
-        assertNull(commandParserFactory.getParser(getArgList("a")));
+        assertNull(commandParserFactory.getParser(getArgList("d")));
     }
 
     @Test
     public void testAlias() {
         Mockito.when(configurationRepository.commandAliases()).thenReturn(Map.of("ls", "list", "del", "delete"));
-        assertTrue(commandParserFactory
-                .getParser(getArgList("del")) instanceof DeleteTaskCommandParser);
-        assertTrue(commandParserFactory
-                .getParser(getArgList("ls")) instanceof ListTasksCommandParser);
+        assertCommandParserName("del", "delete");
+        assertCommandParserName("ls", "list");
+    }
+
+    private void assertCommandParserName(String command, String name) {
+        CommandParser parser = commandParserFactory.getParser(getArgList(command));
+        assertEquals(((TestCommandParser) parser).name, name);
     }
 
     private ArgumentList getArgList(String commandName) {
@@ -84,6 +75,28 @@ public class CommandParserFactoryImplTest {
         return argList;
     }
 
-    @Mock ConfigurationRepository configurationRepository;
+    private CommandParser getTestCommandParser(String name) {
+        return new TestCommandParser(name);
+    }
+
+    @Mock
+    ConfigurationRepository configurationRepository;
     CommandParserFactoryImpl commandParserFactory;
+}
+
+@AllArgsConstructor
+class TestCommandParser extends CommandParser {
+
+    @Override
+    public Command parse(Context context, ArgumentList argList) throws CommandParserException {
+        return new Command() {
+            @Override
+            public void execute(Context context) {
+
+            }
+        };
+    }
+
+    public final String name;
+
 }

@@ -1,5 +1,7 @@
 package cli_tools.task_manager.cli.command;
 
+import cli_tools.common.cli.command.Command;
+import cli_tools.task_manager.cli.TaskManagerContext;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
@@ -8,7 +10,6 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import cli_tools.common.cli.argument.PropertyArgument;
 import cli_tools.task_manager.task.Task;
 import cli_tools.common.core.data.property.FilterPropertySpec;
-import cli_tools.task_manager.cli.Context;
 
 import java.util.List;
 import java.util.UUID;
@@ -19,18 +20,20 @@ import java.util.UUID;
 public final class DoneTaskCommand extends Command {
 
     @Override
-    public void execute(Context context) {
+    public void execute(cli_tools.common.cli.Context context) {
         log.traceEntry();
 
-        try {
-            List<UUID> taskUUIDs = CommandUtil.getUUIDsFromTempIDs(context, tempIDs);
-            List<FilterPropertySpec> filterPropertySpecs = CommandUtil.getFilterPropertySpecs(context, filterPropertyArgs);
+        TaskManagerContext taskManagerContext = (TaskManagerContext) context;
 
-            List<Task> tasks = context.getTaskService().getTasks(
+        try {
+            List<UUID> taskUUIDs = CommandUtil.getUUIDsFromTempIDs(taskManagerContext, tempIDs);
+            List<FilterPropertySpec> filterPropertySpecs = CommandUtil.getFilterPropertySpecs(taskManagerContext, filterPropertyArgs);
+
+            List<Task> tasks = taskManagerContext.getTaskService().getTasks(
                     filterPropertySpecs, null, null, taskUUIDs
             );
 
-            tasks = CommandUtil.confirmAndGetTasksToChange(context, tasks, tempIDs, filterPropertySpecs, CommandUtil.ChangeType.DONE);
+            tasks = CommandUtil.confirmAndGetTasksToChange(taskManagerContext, tasks, tempIDs, filterPropertySpecs, CommandUtil.ChangeType.DONE);
             if (tasks == null || tasks.isEmpty()) {
                 return;
             }
@@ -38,11 +41,11 @@ public final class DoneTaskCommand extends Command {
             for (Task task : tasks) {
                 context.getTempIDMappingService().delete(task.getUUID());
                 context.getPropertyManager().setProperty(task, "done", true);
-                Task updatedTask = context.getTaskService().modifyTask(task.getUUID(), task);
+                Task updatedTask = taskManagerContext.getTaskService().modifyTask(task.getUUID(), task);
 
                 if (tasks.size() == 1) {
                     int tempID = context.getTempIDMappingService().getOrCreateID(updatedTask.getUUID());
-                    context.setPrevTaskID(tempID);
+                    context.setPrevTempId(tempID);
                 }
             }
         } catch (Exception e) {

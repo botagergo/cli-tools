@@ -4,7 +4,7 @@ import lombok.NonNull;
 import cli_tools.common.core.data.FilterCriterionInfo;
 import cli_tools.common.core.data.SortingInfo;
 import cli_tools.task_manager.task.Task;
-import cli_tools.task_manager.task.TaskHierarchy;
+import cli_tools.task_manager.task.PropertyOwnerTree;
 import cli_tools.common.core.data.property.FilterPropertySpec;
 import cli_tools.common.filter.FilterCriterionException;
 import cli_tools.common.property_converter.PropertyConverterException;
@@ -29,7 +29,7 @@ public interface TaskService {
             FilterCriterionInfo filterCriterionInfo,
             List<UUID> taskUUIDs) throws IOException, TaskServiceException, PropertyException, PropertyConverterException, FilterCriterionException;
 
-    List<TaskHierarchy> getTaskHierarchies(
+    List<PropertyOwnerTree> getTaskHierarchies(
             List<FilterPropertySpec> propertySpecs,
             SortingInfo sortingInfo,
             FilterCriterionInfo filterCriterionInfo,

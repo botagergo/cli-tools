@@ -9,7 +9,7 @@ import cli_tools.task_manager.task.Task;
 import cli_tools.common.core.data.property.FilterPropertySpec;
 import cli_tools.common.property_lib.PropertyException;
 import cli_tools.common.property_lib.PropertyManager;
-import cli_tools.task_manager.cli.Context;
+import cli_tools.task_manager.cli.TaskManagerContext;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -19,20 +19,20 @@ import java.util.UUID;
 
 @Log4j2
 public class CommandUtil {
-    public static List<UUID> getUUIDsFromTempIDs(@NonNull Context context, List<Integer> tempIDs) throws IOException {
+    public static List<UUID> getUUIDsFromTempIDs(@NonNull TaskManagerContext context, List<Integer> tempIDs) throws IOException {
         if (tempIDs != null && !tempIDs.isEmpty()) {
-            List<UUID> taskUUIDs = new ArrayList<>();
+            List<UUID> uuids = new ArrayList<>();
             for (int tempID : tempIDs) {
                 UUID uuid = context.getTempIDMappingService().getUUID(tempID);
-                taskUUIDs.add(uuid);
+                uuids.add(uuid);
             }
-            return taskUUIDs;
+            return uuids;
         } else {
             return null;
         }
     }
 
-    public static List<FilterPropertySpec> getFilterPropertySpecs(@NonNull Context context, List<PropertyArgument> filterPropertyArgs) throws StringToPropertyConverterException, PropertyException, IOException {
+    public static List<FilterPropertySpec> getFilterPropertySpecs(@NonNull TaskManagerContext context, List<PropertyArgument> filterPropertyArgs) throws StringToPropertyConverterException, PropertyException, IOException {
         if (filterPropertyArgs != null && !filterPropertyArgs.isEmpty()) {
             return context.getStringToPropertyConverter().convertPropertiesForFiltering(filterPropertyArgs, false);
         } else {
@@ -41,7 +41,7 @@ public class CommandUtil {
     }
 
     public static List<Task> confirmAndGetTasksToChange(
-            @NonNull Context context,
+            @NonNull TaskManagerContext context,
             @NonNull List<Task> tasks,
             List<Integer> tempIDs,
             List<FilterPropertySpec> filterPropertySpecs,

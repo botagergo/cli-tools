@@ -1,32 +1,23 @@
-package cli_tools.task_manager.cli;
+package cli_tools.common.cli;
 
-import cli_tools.task_manager.cli.command.TaskPrinter;
-import com.theokanning.openai.completion.chat.ChatMessage;
-import com.theokanning.openai.service.FunctionExecutor;
-import com.theokanning.openai.service.OpenAiService;
-import jakarta.inject.Inject;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
 import cli_tools.common.cli.property_to_string_converter.JsonPropertyToStringConverterRepository;
 import cli_tools.common.cli.string_to_property_converter.StringToPropertyConverter;
 import cli_tools.common.core.repository.ConfigurationRepository;
 import cli_tools.common.label.service.LabelService;
 import cli_tools.common.ordered_label.service.OrderedLabelService;
 import cli_tools.common.property_descriptor.service.PropertyDescriptorService;
+import cli_tools.common.property_lib.PropertyManager;
 import cli_tools.common.temp_id_mapping.service.TempIDMappingService;
 import cli_tools.common.view.service.ViewInfoService;
-import cli_tools.common.property_lib.PropertyManager;
-import cli_tools.task_manager.task.service.TaskService;
-
-import java.util.List;
+import jakarta.inject.Inject;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 @ToString
 @Setter
 @Getter
-public class Context {
-
-    @Inject private TaskService taskService;
+public abstract class Context {
 
     @Inject private LabelService labelService;
 
@@ -46,14 +37,6 @@ public class Context {
 
     @Inject private ConfigurationRepository configurationRepository;
 
-    @Inject private TaskPrinter taskPrinter;
-
-    private OpenAiService openAiService;
-
-    private List<ChatMessage> openAiChatMessages;
-
-    private FunctionExecutor openAiFunctionExecutor;
-
-    private Integer prevTaskID = null;
+    private Integer prevTempId = null;
 
 }

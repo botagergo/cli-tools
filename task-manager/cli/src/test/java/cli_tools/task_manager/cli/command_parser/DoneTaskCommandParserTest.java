@@ -1,11 +1,12 @@
 package cli_tools.task_manager.cli.command_parser;
 
+import cli_tools.common.cli.command_parser.CommandParserException;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.testng.annotations.Test;
 import cli_tools.common.core.data.property.Affinity;
 import cli_tools.common.cli.argument.ArgumentList;
 import cli_tools.common.cli.argument.PropertyArgument;
-import cli_tools.task_manager.cli.Context;
+import cli_tools.task_manager.cli.TaskManagerContext;
 import cli_tools.task_manager.cli.command.DoneTaskCommand;
 
 import java.util.List;
@@ -34,7 +35,7 @@ public class DoneTaskCommandParserTest {
 
     @Test
     public void test_parse_invalidTaskID() {
-        assertThrows(CommandParserException.class, () -> parse(getArgList(List.of("1asdf", "2"), List.of())));
+        assertThrows(IllegalArgumentException.class, () -> parse(getArgList(List.of("1asdf", "2"), List.of())));
     }
 
     @Test
@@ -82,5 +83,5 @@ public class DoneTaskCommandParserTest {
     }
 
     private final DoneTaskCommandParser parser = new DoneTaskCommandParser();
-    private final Context context = new Context();
+    private final TaskManagerContext context = new TaskManagerContext();
 }

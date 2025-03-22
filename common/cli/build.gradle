@@ -14,7 +14,7 @@ dependencies {
     testCompileOnly         'org.projectlombok:lombok:1.18.26'
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.26'
     testImplementation      'org.testng:testng:7.7.0'
-
+    implementation          'org.jline:jline:3.29.0'
 
     implementation project(':common:util')
     implementation project(':common:property-lib')

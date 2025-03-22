@@ -1,4 +1,4 @@
-package cli_tools.task_manager.cli.command.string_to_property_converter;
+package cli_tools.common.cli.command.string_to_property_converter;
 
 import cli_tools.common.cli.argument.PropertyArgument;
 import cli_tools.common.cli.string_to_property_converter.StringToPropertyConverter;

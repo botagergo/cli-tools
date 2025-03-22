@@ -2,7 +2,7 @@ package cli_tools.task_manager.cli.command;
 
 import cli_tools.common.core.data.OutputFormat;
 import cli_tools.task_manager.task.Task;
-import cli_tools.task_manager.task.TaskHierarchy;
+import cli_tools.task_manager.task.PropertyOwnerTree;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.inamik.text.tables.GridTable;
 import com.inamik.text.tables.SimpleTable;
@@ -18,7 +18,7 @@ import cli_tools.common.cli.property_to_string_converter.PropertyToStringConvert
 import cli_tools.common.property_lib.Property;
 import cli_tools.common.property_lib.PropertyException;
 import cli_tools.common.property_lib.PropertyOwner;
-import cli_tools.task_manager.cli.Context;
+import cli_tools.task_manager.cli.TaskManagerContext;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -29,7 +29,7 @@ public class TaskPrinter {
 
     @Inject public TaskPrinter() {}
 
-    public void printTasks(Context context, List<Task> tasks,
+    public void printTasks(TaskManagerContext context, List<Task> tasks,
                            List<String> propertiesToList,
                            OutputFormat outputFormat) throws PropertyException, IOException {
 
@@ -48,9 +48,9 @@ public class TaskPrinter {
         }
     }
 
-    public void printTaskHierarchies(
-            Context context,
-            List<TaskHierarchy> taskHierarchies,
+    public void printTaskTrees(
+            cli_tools.common.cli.Context context,
+            List<PropertyOwnerTree> taskTrees,
             List<String> propertiesToList) throws PropertyException, IOException {
         SimpleTable table = SimpleTable.of().nextRow();
 
@@ -64,15 +64,15 @@ public class TaskPrinter {
             table.nextCell().addLine(String.format(" %s ", propertyName.toUpperCase()));
         }
 
-        for (TaskHierarchy taskHierarchy : taskHierarchies) {
-            addTaskHierarchyToTable(table, context, mainPropertyToStringConverter, taskHierarchy, propertiesToList, 0);
+        for (PropertyOwnerTree taskTree : taskTrees) {
+            addTaskTreeToTable(table, context, mainPropertyToStringConverter, taskTree, propertiesToList, 0);
         }
 
         GridTable gridTable = Border.of(Border.Chars.of('+', '-', '|')).apply(table.toGrid());
         Util.print(gridTable, new PrintWriter(System.out, true));
     }
 
-    private void printTasksText(Context context,
+    private void printTasksText(TaskManagerContext context,
                                 PropertyToStringConverter propertyToStringConverter,
                                 List<Task> tasks,
                                 List<String> propertiesToList) throws PropertyException, IOException {
@@ -90,15 +90,15 @@ public class TaskPrinter {
         Util.print(gridTable, new PrintWriter(System.out, true));
     }
 
-    private void addTaskHierarchyToTable(
+    private void addTaskTreeToTable(
             SimpleTable table,
-            Context context,
+            cli_tools.common.cli.Context context,
             PropertyToStringConverter propertyToStringConverter,
-            TaskHierarchy taskHierarchy,
+            PropertyOwnerTree taskTree,
             List<String> propertiesToList,
             int depth) throws IOException, PropertyException {
         Ansi done;
-        if (context.getPropertyManager().getProperty(taskHierarchy, "done").getBoolean()) {
+        if (context.getPropertyManager().getProperty(taskTree, "done").getBoolean()) {
             done = Ansi.ansi().a("✓ ");
         } else {
             done = Ansi.ansi().a("");
@@ -108,11 +108,11 @@ public class TaskPrinter {
 
         for (int i = 0; i < propertiesToList.size(); i++) {
             String propertyName = propertiesToList.get(i);
-            Property property = context.getPropertyManager().getProperty(taskHierarchy, propertyName);
+            Property property = context.getPropertyManager().getProperty(taskTree, propertyName);
             String propertyString;
 
             if (propertyName.equals("id")) {
-                propertyString = getIDStr(context, taskHierarchy);
+                propertyString = getIDStr(context, taskTree);
             } else {
                 propertyString = propertyToStringConverter.propertyToString(propertyName, property);
             }
@@ -128,16 +128,16 @@ public class TaskPrinter {
             table.nextCell().addLine(" " + propertyString + " ");
         }
 
-        if (taskHierarchy.getChildren() != null) {
-            for (TaskHierarchy child : taskHierarchy.getChildren()) {
-                addTaskHierarchyToTable(table, context, propertyToStringConverter, child, propertiesToList, depth+1);
+        if (taskTree.getChildren() != null) {
+            for (PropertyOwnerTree child : taskTree.getChildren()) {
+                addTaskTreeToTable(table, context, propertyToStringConverter, child, propertiesToList, depth+1);
             }
         }
     }
 
     private void addTaskToTable(
             SimpleTable table,
-            Context context,
+            TaskManagerContext context,
             PropertyToStringConverter propertyToStringConverter,
             Task task,
             List<String> propertiesToList) throws IOException, PropertyException {
@@ -168,7 +168,7 @@ public class TaskPrinter {
         }
     }
 
-    private String getIDStr(Context context, PropertyOwner propertyOwner) throws PropertyException, IOException {
+    private String getIDStr(cli_tools.common.cli.Context context, PropertyOwner propertyOwner) throws PropertyException, IOException {
         return context.getPropertyManager().getProperty(propertyOwner, "id").getInteger().toString();
     }
 

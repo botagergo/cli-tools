@@ -1,5 +1,7 @@
 package cli_tools.task_manager.cli.command;
 
+import cli_tools.common.cli.command.Command;
+import cli_tools.task_manager.cli.TaskManagerContext;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
@@ -9,7 +11,6 @@ import cli_tools.common.cli.argument.PropertyArgument;
 import cli_tools.common.cli.property_modifier.PropertyModifier;
 import cli_tools.task_manager.task.Task;
 import cli_tools.common.core.data.property.ModifyPropertySpec;
-import cli_tools.task_manager.cli.Context;
 
 import java.util.List;
 
@@ -19,7 +20,7 @@ import java.util.List;
 public final class AddTaskCommand extends Command {
 
     @Override
-    public void execute(Context context) {
+    public void execute(cli_tools.common.cli.Context context) {
         log.traceEntry();
 
         try {
@@ -32,9 +33,9 @@ public final class AddTaskCommand extends Command {
                 PropertyModifier.modifyProperties(context.getPropertyManager(), task, propertySpecs);
             }
 
-            Task addedTask = context.getTaskService().addTask(task);
+            Task addedTask = ((TaskManagerContext) context).getTaskService().addTask(task);
             int tempID = context.getTempIDMappingService().getOrCreateID(addedTask.getUUID());
-            context.setPrevTaskID(tempID);
+            context.setPrevTempId(tempID);
         } catch (Exception e) {
             System.out.println("ERROR: " + e.getMessage());
             log.error("{}\n{}", e.getMessage(), ExceptionUtils.getStackTrace(e));

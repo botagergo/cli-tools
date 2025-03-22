@@ -1,8 +1,8 @@
-package cli_tools.task_manager.cli.command;
+package cli_tools.common.cli.command;
 
+import cli_tools.common.cli.Context;
 import lombok.Getter;
 import lombok.Setter;
-import cli_tools.task_manager.cli.Context;
 
 @Setter
 @Getter
