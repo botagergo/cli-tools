@@ -246,7 +246,7 @@ public class StringToPropertyConverter {
                 if (label != null) {
                     return label.uuid();
                 } else {
-                    throw new StringToPropertyConverterException(StringToPropertyConverterException.Type.LabelNotFound, "Label not found: " + labelSubtype.labelType(), labelSubtype.labelType());
+                    throw new StringToPropertyConverterException(StringToPropertyConverterException.Type.LabelNotFound, "Label not found: " + propertyValueStr, propertyValueStr);
                 }
             } else if (tempIDMappingService != null && uuidSubtype instanceof PropertyDescriptor.Subtype.TaskSubtype) {
                 try {
