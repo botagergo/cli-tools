@@ -16,5 +16,7 @@ public interface ConfigurationRepository {
 
     Map<String, String> commandAliases();
 
+    boolean disableConfirmation();
+
     void reload() throws IOException;
 }

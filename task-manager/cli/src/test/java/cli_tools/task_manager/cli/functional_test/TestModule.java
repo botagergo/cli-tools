@@ -1,10 +1,13 @@
-package cli_tools.task_manager.cli;
+package cli_tools.task_manager.cli.functional_test;
 
-import cli_tools.common.configuration.ConfigurationRepositoryImpl;
+import cli_tools.common.cli.Context;
 import cli_tools.common.core.repository.*;
 import cli_tools.common.repository.JsonStateRepository;
+import cli_tools.task_manager.cli.TaskManagerContext;
+import cli_tools.task_manager.cli.command_parser.*;
 import cli_tools.task_manager.task.repository.TaskRepository;
 import com.google.inject.AbstractModule;
+import com.google.inject.Provides;
 import com.google.inject.name.Names;
 import cli_tools.common.cli.tokenizer.Tokenizer;
 import cli_tools.common.cli.tokenizer.TokenizerImpl;
@@ -27,25 +30,43 @@ import cli_tools.common.property_descriptor.repository.JsonPropertyDescriptorRep
 import cli_tools.task_manager.task.repository.JsonTaskRepository;
 import cli_tools.common.temp_id_mapping.repository.JsonTempIDMappingRepository;
 import cli_tools.common.view.repository.JsonViewInfoRepository;
-import cli_tools.task_manager.cli.command_line.CommandLine;
-import cli_tools.task_manager.cli.command_line.Executor;
-import cli_tools.task_manager.cli.command_line.ExecutorImpl;
-import cli_tools.task_manager.cli.command_line.JlineCommandLine;
-import cli_tools.task_manager.cli.command_parser.CommandParserFactory;
-import cli_tools.task_manager.cli.command_parser.CommandParserFactoryImpl;
+import cli_tools.common.cli.command_line.Executor;
+import cli_tools.common.cli.command_line.ExecutorImpl;
+import cli_tools.common.cli.command_parser.CommandParserFactory;
+import cli_tools.common.cli.command_parser.CommandParserFactoryImpl;
 import cli_tools.common.util.RandomUUIDGenerator;
 import cli_tools.common.util.UUIDGenerator;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Map;
 
-public class AppModule extends AbstractModule {
+public class TestModule extends AbstractModule {
+    @Provides
+    protected CommandParserFactory getCommandParserFactory(ConfigurationRepository configurationRepository) {
+        return new CommandParserFactoryImpl(configurationRepository, Map.of(
+                "add", AddTaskCommandParser::new,
+                "list", ListTasksCommandParser::new,
+                "done", DoneTaskCommandParser::new,
+                "clear", ClearCommandParser::new,
+                "delete", DeleteTaskCommandParser::new,
+                "modify", ModifyTaskCommandParser::new,
+                "ai", AICommandParser::new
+        ));
+    }
 
     @Override
     protected void configure() {
-        String basePath = System.getenv("TASK_MANAGER_BASE_PATH");
-        if (basePath == null) {
-            basePath = System.getProperty("user.home") + "/.config/task-manager/";
+        Path tempDir;
+        try {
+            tempDir = Files.createTempDirectory("task-manager-ft-basic");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
+
+        String basePath = tempDir.toString();
 
         bind(Tokenizer.class).to(TokenizerImpl.class);
         bind(TaskRepository.class).to(JsonTaskRepository.class).asEagerSingleton();
@@ -53,7 +74,7 @@ public class AppModule extends AbstractModule {
         bind(LabelRepositoryFactory.class).to(JsonLabelRepositoryFactory.class).asEagerSingleton();
         bind(OrderedLabelRepositoryFactory.class).to(JsonOrderedLabelRepositoryFactory.class).asEagerSingleton();
         bind(PropertyDescriptorRepository.class).to(JsonPropertyDescriptorRepository.class).asEagerSingleton();
-        bind(ConfigurationRepository.class).to(ConfigurationRepositoryImpl.class).asEagerSingleton();
+        bind(ConfigurationRepository.class).to(MockConfigurationRepository.class).asEagerSingleton();
         bind(StateRepository.class).to(JsonStateRepository.class).asEagerSingleton();
         bind(UUIDGenerator.class).to(RandomUUIDGenerator.class).asEagerSingleton();
         bind(TaskService.class).to(TaskServiceImpl.class).asEagerSingleton();
@@ -63,11 +84,10 @@ public class AppModule extends AbstractModule {
         bind(PropertyDescriptorService.class).to(PropertyDescriptorServiceImpl.class).asEagerSingleton();
         bind(TempIDMappingService.class).to(TempIDMappingServiceImpl.class).asEagerSingleton();
         bind(TempIDMappingRepository.class).to(JsonTempIDMappingRepository.class).asEagerSingleton();
-        bind(CommandParserFactory.class).to(CommandParserFactoryImpl.class).asEagerSingleton();
         bind(PropertyManager.class).asEagerSingleton();
-        bind(CommandLine.class).to(JlineCommandLine.class);
         bind(Executor.class).to(ExecutorImpl.class);
         bind(LabelService.class).to(LabelServiceImpl.class).asEagerSingleton();
+        bind(Context.class).to(TaskManagerContext.class);
 
         bind(File.class).annotatedWith(Names.named("taskJsonFile")).toInstance(new File(basePath + "task.json"));
         bind(File.class).annotatedWith(Names.named("tempIdMappingJsonFile")).toInstance(new File(basePath + "temp_id_mapping.json"));

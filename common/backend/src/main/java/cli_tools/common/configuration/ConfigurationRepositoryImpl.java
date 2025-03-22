@@ -57,6 +57,11 @@ public class ConfigurationRepositoryImpl implements ConfigurationRepository {
         return getPropertyWithGenericType("commandAliases", new TypeCapture<>() {}, Map.of());
     }
 
+    public boolean disableConfirmation() {
+        return getProperty("disableConfirmation", Boolean.class, false);
+    }
+
+
     public void reload() throws IOException {
         try {
             gestalt.loadConfigs();

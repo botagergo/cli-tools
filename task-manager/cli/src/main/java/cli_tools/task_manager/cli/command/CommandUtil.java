@@ -47,7 +47,7 @@ public class CommandUtil {
             List<FilterPropertySpec> filterPropertySpecs,
             @NonNull ChangeType changeType
     ) throws PropertyException, IOException {
-        if (tempIDs != null && !tempIDs.isEmpty()) {
+        if (context.getConfigurationRepository().disableConfirmation() || tempIDs != null && !tempIDs.isEmpty()) {
             return tasks;
         }
 
