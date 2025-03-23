@@ -1,7 +1,10 @@
 package cli_tools.task_manager.task.repository;
 
-import cli_tools.common.repository.SimpleJsonRepository;
+import cli_tools.common.repository.JsonRepository;
+import cli_tools.common.repository.MapDeserializer;
+import cli_tools.common.repository.MapSerializer;
 import com.fasterxml.jackson.databind.JavaType;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
@@ -12,14 +15,20 @@ import cli_tools.task_manager.task.Task;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Singleton
-public class JsonTaskRepository extends SimpleJsonRepository<ArrayList<Task>> implements TaskRepository {
+public class JsonTaskRepository extends JsonRepository<List<HashMap<String, Object>>, List<Task>> implements TaskRepository {
 
     @Inject
     public JsonTaskRepository(@Named("taskJsonFile") File jsonPath) {
         super(jsonPath);
-        getObjectMapper().addMixIn(Task.class, TaskMixIn.class);
+
+        SimpleModule simpleModule = new SimpleModule();
+        simpleModule.addSerializer(new MapSerializer());
+        simpleModule.addDeserializer(HashMap.class, new MapDeserializer());
+
+        getObjectMapper().registerModule(simpleModule);
     }
 
     @Override
@@ -34,7 +43,7 @@ public class JsonTaskRepository extends SimpleJsonRepository<ArrayList<Task>> im
 
     @Override
     public Task get(@NonNull UUID uuid) throws IOException {
-        ArrayList<Task> tasks = getData();
+        List<Task> tasks = getData();
 
         for (Task task : tasks) {
             if (Objects.equals(uuid, task.getUUID())) {
@@ -51,8 +60,13 @@ public class JsonTaskRepository extends SimpleJsonRepository<ArrayList<Task>> im
     }
 
     @Override
+    protected List<HashMap<String, Object>> getEmptyData() {
+        return new ArrayList<>();
+    }
+
+    @Override
     public Task update(@NonNull UUID taskUuid, @NonNull Task task) throws IOException {
-        ArrayList<Task> tasks = getData();
+        List<Task> tasks = getData();
 
         Optional<Task> taskToUpdateOptional = tasks.stream().filter(t -> t.getUUID() == taskUuid).findFirst();
         if (taskToUpdateOptional.isEmpty()) {
@@ -70,7 +84,7 @@ public class JsonTaskRepository extends SimpleJsonRepository<ArrayList<Task>> im
 
     @Override
     public boolean delete(@NonNull UUID uuid) throws IOException {
-        ArrayList<Task> tasks = getData();
+        List<Task> tasks = getData();
 
         for (Task task : tasks) {
             if (task.getUUID().equals(uuid)) {
@@ -90,12 +104,17 @@ public class JsonTaskRepository extends SimpleJsonRepository<ArrayList<Task>> im
     }
 
     @Override
-    public ArrayList<Task> getEmptyData() {
-        return new ArrayList<>();
+    protected JavaType constructType(TypeFactory typeFactory) {
+        return typeFactory.constructCollectionType(ArrayList.class, HashMap.class);
     }
 
     @Override
-    protected JavaType constructType(TypeFactory typeFactory) {
-        return typeFactory.constructCollectionType(ArrayList.class, Task.class);
+    protected ArrayList<Task> jsonToStoredData(List<HashMap<String, Object>> data) {
+        return data.stream().map(Task::fromMap).collect(Collectors.toCollection(ArrayList::new));
+    }
+
+    @Override
+    protected List<HashMap<String, Object>> storedToJsonData(List<Task> data) {
+        return data.stream().map(Task::getProperties).collect(Collectors.toList());
     }
 }

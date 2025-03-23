@@ -25,6 +25,10 @@ public class MapDeserializer extends StdDeserializer<HashMap<String, Object>> {
     public HashMap<String, Object> deserialize(JsonParser jp, DeserializationContext ctxt)
             throws IOException {
         JsonNode node = jp.getCodec().readTree(jp);
+        if (!node.isObject()) {
+            throw new IOException("Expected JSON object");
+        }
+
         HashMap<String, Object> properties = new HashMap<>();
 
         Iterator<Map.Entry<String, JsonNode>> fieldsIter = node.fields();

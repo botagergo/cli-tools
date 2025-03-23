@@ -3,6 +3,7 @@ package cli_tools.task_manager.task;
 import cli_tools.common.property_lib.PropertyOwner;
 
 import java.util.HashMap;
+import java.util.Map;
 
 public class Task extends PropertyOwner {
 
@@ -14,8 +15,8 @@ public class Task extends PropertyOwner {
         this.properties = taskMap;
     }
 
-    public static Task fromMap(HashMap<String, Object> taskMap) {
-        return new Task(taskMap);
+    public static Task fromMap(Map<String, Object> taskMap) {
+        return new Task(new HashMap<>(taskMap));
     }
 
     @Override

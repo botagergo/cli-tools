@@ -23,19 +23,15 @@ public class JsonTaskRepositoryTest {
         repository = new JsonTaskRepository(rc.makeTempFile("read_successful", """
                 [
                     {
-                        "properties":{
-                            "name":"s:task1",
-                            "values":{
-                                "type":"list","value": [true, false]
-                            }
+                        "name":"s:task1",
+                        "values":{
+                            "type":"list","value": [true, false]
                         }
                     },
                     {
-                        "properties":{
-                            "name":"s:task2",
-                            "values":{
-                                "type":"set","value": [true, false]
-                            }
+                        "name":"s:task2",
+                        "values":{
+                            "type":"set","value": [true, false]
                         }
                     }
                 ]
@@ -60,19 +56,15 @@ public class JsonTaskRepositoryTest {
         assertEquals(content.replaceAll("\\s", ""), """
                 [
                     {
-                        "properties": {
-                            "name":"s:task1",
-                            "values":{
-                                "type":"list","value": [true, false]
-                            }
+                        "name":"s:task1",
+                        "values":{
+                            "type":"list","value": [true, false]
                         }
                     },
                     {
-                        "properties": {
-                            "name":"s:task2",
-                            "values":{
-                                "type":"set","value": [false, true]
-                            }
+                        "name":"s:task2",
+                        "values":{
+                            "type":"set","value": [false, true]
                         }
                     }
                 ]

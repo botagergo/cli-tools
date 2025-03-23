@@ -97,11 +97,12 @@ public class TaskPrinter {
             PropertyOwnerTree taskTree,
             List<String> propertiesToList,
             int depth) throws IOException, PropertyException {
-        Ansi done;
-        if (context.getPropertyManager().getProperty(taskTree, "done").getBoolean()) {
-            done = Ansi.ansi().a("✓ ");
+        Ansi ansiDone;
+        Boolean done = context.getPropertyManager().getProperty(taskTree, "done").getBoolean();
+        if (done != null && done) {
+            ansiDone = Ansi.ansi().a("✓ ");
         } else {
-            done = Ansi.ansi().a("");
+            ansiDone = Ansi.ansi().a("");
         }
 
         table.nextRow();
@@ -118,7 +119,7 @@ public class TaskPrinter {
             }
 
             if (propertyName.equals("name")) {
-                propertyString = done + propertyString;
+                propertyString = ansiDone + propertyString;
             }
 
             if (i == 0 && depth > 0) {
@@ -141,11 +142,12 @@ public class TaskPrinter {
             PropertyToStringConverter propertyToStringConverter,
             Task task,
             List<String> propertiesToList) throws IOException, PropertyException {
-        Ansi done;
-        if (context.getPropertyManager().getProperty(task, "done").getBoolean()) {
-            done = Ansi.ansi().a("✓ ");
+        Ansi ansiDone;
+        Boolean done = context.getPropertyManager().getProperty(task, "done").getBoolean();
+        if (done != null && done) {
+            ansiDone = Ansi.ansi().a("✓ ");
         } else {
-            done = Ansi.ansi().a("");
+            ansiDone = Ansi.ansi().a("");
         }
 
         table.nextRow();
@@ -161,7 +163,7 @@ public class TaskPrinter {
             }
 
             if (propertyName.equals("name")) {
-                propertyString = done + propertyString;
+                propertyString = ansiDone + propertyString;
             }
 
             table.nextCell().addLine(String.format(" %s ", propertyString));
