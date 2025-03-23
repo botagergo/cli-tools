@@ -52,22 +52,6 @@ public class PropertyManagerTest {
         }
 
         @Test
-        public void test_getProperty_notDefined_returnsDefault() throws PropertyException, IOException {
-                initPropertyDescriptorsWithDefaults();
-
-                assertPropertyEquals("test_string", "default_value");
-                assertPropertyEquals("test_boolean", true);
-                assertPropertyEquals("test_integer", 1122);
-                assertPropertyEquals("test_uuid", uuid1);
-                assertPropertyEquals("test_string_list", Utils.newArrayList("default_value1", "default_value2"));
-                assertPropertyEquals("test_boolean_list", Utils.newArrayList(true, false));
-                assertPropertyEquals("test_uuid_list", Utils.newArrayList(uuid1, uuid2));
-                assertPropertyEquals("test_string_set", Utils.newLinkedHashSet("default_value1", "default_value2"));
-                assertPropertyEquals("test_boolean_set", Utils.newLinkedHashSet(true, false));
-                assertPropertyEquals("test_uuid_set", Utils.newLinkedHashSet(uuid1, uuid2));
-        }
-
-        @Test
         public void test_getProperty() throws PropertyException, IOException {
                 initPropertyDescriptorsWithoutDefaults();
 
@@ -212,16 +196,6 @@ public class PropertyManagerTest {
         }
 
         @Test
-        public void test_addPropertyValues_list_toDefault() throws IOException, PropertyException {
-                initPropertyDescriptorsWithDefaults();
-
-                PropertyOwner propertyOwner = new PropertyOwnerImpl();
-                propertyManager.addPropertyValues(propertyOwner, "test_string_list", Utils.newArrayList("str2", "str3"));
-
-                assertEquals(propertyManager.getProperty(propertyOwner, "test_string_list").getValue(), Utils.newArrayList("default_value1", "default_value2", "str2", "str3"));
-        }
-
-        @Test
         public void test_addPropertyValues_set() throws IOException, PropertyException {
                 initPropertyDescriptorsWithoutDefaults();
 
@@ -285,16 +259,6 @@ public class PropertyManagerTest {
                 propertyManager.addPropertyValues(propertyOwner, "test_string_set", Utils.newLinkedHashSet("str2", "str3"));
 
                 assertEquals(propertyManager.getProperty(propertyOwner, "test_string_set").getValue(), Utils.newLinkedHashSet("str2", "str3"));
-        }
-
-        @Test
-        public void test_addPropertyValues_set_toDefault() throws IOException, PropertyException {
-                initPropertyDescriptorsWithDefaults();
-
-                PropertyOwner propertyOwner = new PropertyOwnerImpl();
-                propertyManager.addPropertyValues(propertyOwner, "test_string_set", Utils.newArrayList("str2", "str3"));
-
-                assertEquals(propertyManager.getProperty(propertyOwner, "test_string_set").getValue(), Utils.newLinkedHashSet("default_value1", "default_value2", "str2", "str3"));
         }
 
         @Test
@@ -399,16 +363,6 @@ public class PropertyManagerTest {
         }
 
         @Test
-        public void test_removePropertyValues_list_fromDefault() throws IOException, PropertyException {
-                initPropertyDescriptorsWithDefaults();
-
-                PropertyOwner propertyOwner = new PropertyOwnerImpl();
-
-                propertyManager.removePropertyValues(propertyOwner, "test_string_list", Utils.newArrayList("default_value1"));
-                assertEquals(propertyManager.getProperty(propertyOwner, "test_string_list").getValue(), Utils.newArrayList("default_value2"));
-        }
-
-        @Test
         public void test_removePropertyValues_notACollection() throws IOException {
                 initPropertyDescriptorsWithoutDefaults();
 
@@ -507,16 +461,6 @@ public class PropertyManagerTest {
 
                 propertyManager.removePropertyValues(propertyOwner, "test_string_set", Utils.newLinkedHashSet("str4", "str2"));
                 assertEquals(propertyManager.getProperty(propertyOwner, "test_string_set").getValue(), Utils.newLinkedHashSet("str1", "str3"));
-        }
-
-        @Test
-        public void test_removeProperty_set_fromDefault() throws IOException, PropertyException {
-                initPropertyDescriptorsWithDefaults();
-
-                PropertyOwner propertyOwner = new PropertyOwnerImpl();
-
-                propertyManager.removePropertyValues(propertyOwner, "test_string_set", Utils.newLinkedHashSet("default_value1"));
-                assertEquals(propertyManager.getProperty(propertyOwner, "test_string_set").getValue(), Utils.newLinkedHashSet("default_value2"));
         }
 
         private void initPropertyDescriptorsWithDefaults() {

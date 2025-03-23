@@ -1,7 +1,9 @@
 package cli_tools.common.property_lib;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class PropertyDescriptorCollection {
 
@@ -19,6 +21,10 @@ public class PropertyDescriptorCollection {
 
     public void addPropertyDescriptor(PropertyDescriptor propertyDescriptor) {
         propertyDescriptors.put(propertyDescriptor.name(), propertyDescriptor);
+    }
+
+    public Map<String, PropertyDescriptor> getAll() {
+        return Collections.unmodifiableMap(propertyDescriptors);
     }
 
     public void clear() {

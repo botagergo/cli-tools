@@ -29,7 +29,7 @@ public interface TaskService {
             FilterCriterionInfo filterCriterionInfo,
             List<UUID> taskUUIDs) throws IOException, TaskServiceException, PropertyException, PropertyConverterException, FilterCriterionException;
 
-    List<PropertyOwnerTree> getTaskHierarchies(
+    List<PropertyOwnerTree> getTaskTrees(
             List<FilterPropertySpec> propertySpecs,
             SortingInfo sortingInfo,
             FilterCriterionInfo filterCriterionInfo,

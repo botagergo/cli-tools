@@ -86,7 +86,7 @@ public final class ListTasksCommand extends Command {
                     System.out.println("outputFormat can only be text when printing tasks hierarchically");
                     return;
                 }
-                List<PropertyOwnerTree> taskHierarchies = taskManagerContext.getTaskService().getTaskHierarchies(filterPropertySpecs, sortingInfo, filterCriterionInfo, taskUUIDs);
+                List<PropertyOwnerTree> taskHierarchies = taskManagerContext.getTaskService().getTaskTrees(filterPropertySpecs, sortingInfo, filterCriterionInfo, taskUUIDs);
                 taskManagerContext.getTaskPrinter().printTaskTrees(taskManagerContext, taskHierarchies, actualProperties);
             } else {
                 List<Task> tasks = taskManagerContext.getTaskService().getTasks(filterPropertySpecs, sortingInfo, filterCriterionInfo, taskUUIDs);

@@ -133,12 +133,7 @@ public class PropertyManager {
 
     private Object getPropertyValue(PropertyOwner propertyOwner,
                                     PropertyDescriptor propertyDescriptor) {
-        Object propertyValue = propertyOwner.getProperties().get(propertyDescriptor.name());
-        if (propertyValue == null) {
-            log.debug("Property '{}' not set, getting default value", propertyDescriptor.name());
-            propertyValue = propertyDescriptor.defaultValue();
-        }
-        return propertyValue;
+        return propertyOwner.getProperties().get(propertyDescriptor.name());
     }
 
     private PropertyDescriptorCollection propertyDescriptorCollection;
