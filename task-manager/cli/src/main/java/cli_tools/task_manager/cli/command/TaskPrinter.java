@@ -42,9 +42,9 @@ public class TaskPrinter {
         if (outputFormat.equals(OutputFormat.TEXT)) {
             printTasksText(context, mainPropertyToStringConverter, tasks, propertiesToList);
         } else if (outputFormat.equals(OutputFormat.JSON)) {
-            System.out.println(getObjectMapper().writeValueAsString(tasks));
+            System.out.println(getObjectMapper().writeValueAsString(tasks.stream().map(Task::getProperties).toList()));
         } else if (outputFormat.equals(OutputFormat.PRETTY_JSON)) {
-            System.out.println(getObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(tasks));
+            System.out.println(getObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(tasks.stream().map(Task::getProperties).toList()));
         }
     }
 
