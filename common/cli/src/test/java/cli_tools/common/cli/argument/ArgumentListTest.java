@@ -67,7 +67,7 @@ public class ArgumentListTest {
     public void test_from_oneTrailingNormalArgWithEscapedSemicolon() throws ArgumentList.ArgumentListException {
         ArgumentList argList = ArgumentList.from(List.of("command", "prop\\:value"));
         Assert.assertEquals(argList.getCommandName(), "command");
-        Assert.assertEquals(argList.getTrailingNormalArguments(), List.of("prop\\:value"));
+        Assert.assertEquals(argList.getTrailingNormalArguments(), List.of("prop:value"));
         Assert.assertEquals(argList.getSpecialArguments().size(), 0);
         Assert.assertEquals(argList.getModifyPropertyArguments().size(), 0);
         Assert.assertEquals(argList.getFilterPropertyArguments().size(), 0);
@@ -92,6 +92,38 @@ public class ArgumentListTest {
         Assert.assertEquals(argList.getCommandName(), "command");
         Assert.assertEquals(argList.getLeadingNormalArguments(), List.of("1", "2", "3"));
         Assert.assertEquals(argList.getTrailingNormalArguments().size(), 0);
+        Assert.assertEquals(argList.getSpecialArguments().size(), 0);
+        Assert.assertEquals(argList.getModifyPropertyArguments().size(), 0);
+        Assert.assertEquals(argList.getFilterPropertyArguments().size(), 0);
+        Assert.assertEquals(argList.getOptionArguments().size(), 0);
+    }
+
+    @Test
+    public void test_from_normalArgInSingleQuotes() throws ArgumentList.ArgumentListException {
+        ArgumentList argList = ArgumentList.from(List.of(
+                "'arg'", "arg1'arg2''arg3'", "''",
+                "command",
+                "'arg'", "arg1'arg2''arg3'", "''"
+                ));
+        Assert.assertEquals(argList.getCommandName(), "command");
+        Assert.assertEquals(argList.getLeadingNormalArguments(), List.of("arg", "arg1arg2arg3", ""));
+        Assert.assertEquals(argList.getTrailingNormalArguments(), List.of("arg", "arg1arg2arg3", ""));
+        Assert.assertEquals(argList.getSpecialArguments().size(), 0);
+        Assert.assertEquals(argList.getModifyPropertyArguments().size(), 0);
+        Assert.assertEquals(argList.getFilterPropertyArguments().size(), 0);
+        Assert.assertEquals(argList.getOptionArguments().size(), 0);
+    }
+
+    @Test
+    public void test_from_normalArgInDoubleQuotes() throws ArgumentList.ArgumentListException {
+        ArgumentList argList = ArgumentList.from(List.of(
+                "\"arg\"", "arg1\"arg2\"\"arg3\"", "\"\"",
+                "command",
+                "\"arg\"", "arg1\"arg2\"\"arg3\"", "\"\""
+        ));
+        Assert.assertEquals(argList.getCommandName(), "command");
+        Assert.assertEquals(argList.getLeadingNormalArguments(), List.of("arg", "arg1arg2arg3", ""));
+        Assert.assertEquals(argList.getTrailingNormalArguments(), List.of("arg", "arg1arg2arg3", ""));
         Assert.assertEquals(argList.getSpecialArguments().size(), 0);
         Assert.assertEquals(argList.getModifyPropertyArguments().size(), 0);
         Assert.assertEquals(argList.getFilterPropertyArguments().size(), 0);

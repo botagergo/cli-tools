@@ -74,8 +74,7 @@ public class ArgumentList {
                     currentToken.append(token.charAt(index));
                 }
                 continue;
-            }
-            if (currentChar == SINGLE_QUOTE || currentChar == DOUBLE_QUOTE) {
+            } else if (currentChar == SINGLE_QUOTE || currentChar == DOUBLE_QUOTE) {
                 if (currentQuote == 0) {
                     currentQuote = currentChar;
                     quoteFound = true;
@@ -85,17 +84,19 @@ public class ArgumentList {
             } else if (currentQuote != 0) {
                 currentToken.append(currentChar);
                 continue;
-            }
-            if ("+-.".indexOf(currentChar) >= 0) {
+            } else if ("+-.".indexOf(currentChar) >= 0) {
                 isPropertyArg = true;
+                currentToken.append(currentChar);
             } else if (currentChar == ':') {
                 if (quoteFound) {
                     throw new ArgumentListException("quotes are not allowed on the left side of property/predicate arguments");
                 }
                 parsePropertyArgument(currentToken.toString(), token.substring(index + 1), argList);
                 return;
+            } else {
+                currentToken.append(currentChar);
             }
-            currentToken.append(currentChar);
+
             if (isPropertyArg && index == token.length() - 1) {
                 parsePropertyArgument(currentToken.toString(), null, argList);
                 return;
@@ -104,7 +105,7 @@ public class ArgumentList {
         if (argList.commandName == null && token.matches("^[a-z]+$")) {
             argList.commandName = token;
         } else {
-            (argList.commandName == null ? argList.leadingNormalArguments : argList.trailingNormalArguments).add(token);
+            (argList.commandName == null ? argList.leadingNormalArguments : argList.trailingNormalArguments).add(currentToken.toString());
         }
     }
 

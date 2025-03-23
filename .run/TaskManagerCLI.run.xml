@@ -1,0 +1,18 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="TaskManagerCLI" type="Application" factoryName="Application" nameIsGenerated="true">
+    <envs>
+      <env name="TASK_MANAGER_BASE_PATH" value="~\.config\task-manager\test\" />
+    </envs>
+    <option name="MAIN_CLASS_NAME" value="cli_tools.task_manager.cli.TaskManagerCLI" />
+    <module name="cli-tools.task-manager.cli.main" />
+    <extension name="coverage">
+      <pattern>
+        <option name="PATTERN" value="cli_tools.task_manager.cli.*" />
+        <option name="ENABLED" value="true" />
+      </pattern>
+    </extension>
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
