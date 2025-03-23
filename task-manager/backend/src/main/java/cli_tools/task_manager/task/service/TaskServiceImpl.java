@@ -24,6 +24,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
+import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.NotImplementedException;
 
 import java.io.IOException;
@@ -32,6 +33,7 @@ import java.util.*;
 @AllArgsConstructor(onConstructor = @__(@Inject))
 @Getter
 @Setter
+@Log4j2
 public class TaskServiceImpl implements TaskService {
 
     @Override
@@ -128,6 +130,7 @@ public class TaskServiceImpl implements TaskService {
         taskTreeMap.put(task.getUUID(), taskTree);
 
         UUID parentUuid = propertyManager.getProperty(taskTree.getParent(), "parent").getUuid();
+
         if (parentUuid != null) {
             PropertyOwnerTree parentTaskTree = taskTreeMap.get(parentUuid);
             if (parentTaskTree == null) {

@@ -24,6 +24,9 @@ public class PropertyManager {
         log.debug("getProperty - {}", propertyName);
 
         PropertyDescriptor propertyDescriptor = getPropertyDescriptor(propertyName);
+        if (propertyDescriptor == null) {
+            throw new PropertyException(PropertyException.Type.NotExist, propertyName, null, null, null, null);
+        }
         return getProperty(propertyOwner, propertyDescriptor);
     }
 
@@ -43,6 +46,10 @@ public class PropertyManager {
         log.debug("setProperty - {}", propertyName);
 
         PropertyDescriptor propertyDescriptor = getPropertyDescriptor(propertyName);
+        if (propertyDescriptor == null) {
+            throw new PropertyException(PropertyException.Type.NotExist, propertyName, null, null, null, null);
+        }
+
         Property property = Property.from(propertyDescriptor, propertyValue);
 
         propertyOwner.getProperties().put(propertyName, property.getValue());
@@ -122,13 +129,7 @@ public class PropertyManager {
     }
 
     public PropertyDescriptor getPropertyDescriptor(String propertyName) throws PropertyException {
-        PropertyDescriptor propertyDescriptor =
-                propertyDescriptorCollection.get(propertyName);
-        if (propertyDescriptor == null) {
-            throw new PropertyException(PropertyException.Type.NotExist, propertyName, null, null,
-                    null, null);
-        }
-        return propertyDescriptor;
+        return propertyDescriptorCollection.get(propertyName);
     }
 
     private Object getPropertyValue(PropertyOwner propertyOwner,

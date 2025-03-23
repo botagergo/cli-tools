@@ -81,6 +81,11 @@ public final class ListTasksCommand extends Command {
                 actualProperties = properties;
             }
 
+            if (actualHierarchical && context.getPropertyManager().getPropertyDescriptor("parent") == null) {
+                log.warn("cannot print tasks hierarchically, because the 'parent' property does not exist");
+                actualHierarchical = false;
+            }
+
             if (actualHierarchical) {
                 if (outputFormat != OutputFormat.TEXT) {
                     System.out.println("outputFormat can only be text when printing tasks hierarchically");

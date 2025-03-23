@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.tuple.Pair;
 import cli_tools.common.core.data.SortingCriterion;
 
@@ -22,6 +23,7 @@ import java.util.*;
 @JsonSerialize
 @JsonDeserialize
 @NoArgsConstructor
+@Log4j2
 public class PropertySorter <T extends PropertyOwner> {
 
     @JsonCreator
@@ -34,6 +36,11 @@ public class PropertySorter <T extends PropertyOwner> {
 
         for (SortingCriterion sortingCriterion : sortingCriteria) {
             PropertyDescriptor propertyDescriptor = propertyManager.getPropertyDescriptor(sortingCriterion.propertyName());
+            if (propertyDescriptor == null) {
+                log.warn("property '{}' does not exist, ignoring sorting criterion", sortingCriterion.propertyName());
+                continue;
+            }
+
             if (!PropertyComparator.isComparable(propertyDescriptor)) {
                 throw new PropertyNotComparableException(propertyDescriptor);
             }
@@ -44,6 +51,11 @@ public class PropertySorter <T extends PropertyOwner> {
                 values.getLeft().add(propertyValue);
             }
             valuesToCompare.add(values);
+        }
+
+        if (valuesToCompare.isEmpty()) {
+            log.warn("no sorting criteria specified, no sorting performed");
+            return;
         }
 
         ListIndexComparator comp = new ListIndexComparator(valuesToCompare);
