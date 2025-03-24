@@ -136,6 +136,32 @@ public class JsonViewInfoRepositoryTest {
     }
 
     @Test
+    public void test_get_operandsMissing() throws IOException {
+        File tempFile = rc.makeTempFile("test_get_existing", """
+        {
+            "view": {
+                "name": "view",
+                "filter": {
+                    "type": "PROPERTY",
+                    "property": "tags",
+                    "predicate": "EMPTY"
+                }
+            }
+        }
+        """);
+        repository = new JsonViewInfoRepository(tempFile);
+        assertEquals(repository.get("view"),
+                new ViewInfo(
+                        "view", null,
+                        new FilterCriterionInfo(
+                                null, FilterCriterionInfo.Type.PROPERTY, "tags",
+                                null, Predicate.EMPTY, null),
+                        null,
+                        null,
+                        false));
+       }
+
+    @Test
     public void test_create() throws IOException {
         File tempFile = rc.getTempFile("test_create");
         repository = new JsonViewInfoRepository(tempFile);

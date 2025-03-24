@@ -5,6 +5,7 @@ import cli_tools.common.core.data.Label;
 import cli_tools.common.core.repository.LabelRepository;
 import cli_tools.common.core.repository.LabelRepositoryFactory;
 import cli_tools.common.property_lib.PropertyDescriptor;
+import lombok.NonNull;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -18,7 +19,7 @@ public class PropertyConverter {
         this.labelRepositoryFactory = labelRepositoryFactory;
     }
 
-    public List<Object> convertProperty(PropertyDescriptor propertyDescriptor, List<Object> propertyValueList) throws PropertyConverterException, IOException {
+    public List<Object> convertProperty(@NonNull PropertyDescriptor propertyDescriptor, @NonNull List<Object> propertyValueList) throws PropertyConverterException, IOException {
         List<Object> convertedPropertyValueList = new ArrayList<>();
         for (Object propertyValue : propertyValueList) {
             convertedPropertyValueList.add(convertSingleProperty(propertyDescriptor, propertyValue));

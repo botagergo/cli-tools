@@ -324,7 +324,7 @@ public class TaskServiceImplTest {
                 new FilterCriterionInfo(
                         "test", FilterCriterionInfo.Type.PROPERTY,
                         "assignees", null,
-                        Predicate.NULL, List.of()
+                        Predicate.NULL, null
                 ),
                 null
         );
@@ -340,7 +340,7 @@ public class TaskServiceImplTest {
                 new FilterCriterionInfo(
                         "test", FilterCriterionInfo.Type.PROPERTY,
                         "assignees", null,
-                        Predicate.EMPTY, List.of()
+                        Predicate.EMPTY, null
                 ),
                 null
         );

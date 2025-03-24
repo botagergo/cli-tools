@@ -323,7 +323,10 @@ public class TaskServiceImpl implements TaskService {
         switch (filterCriterionInfo.type()) {
             case PROPERTY -> {
                 PropertyDescriptor propertyDescriptor = propertyManager.getPropertyDescriptor(filterCriterionInfo.propertyName());
-                List<Object> operand = propertyConverter.convertProperty(propertyDescriptor, filterCriterionInfo.operands());
+                List<Object> operand = null;
+                if (filterCriterionInfo.operands() != null) {
+                    operand = propertyConverter.convertProperty(propertyDescriptor, filterCriterionInfo.operands());
+                }
                 return createFilterCriterion(propertyDescriptor, filterCriterionInfo.predicate(), operand);
             }
             case AND -> {
