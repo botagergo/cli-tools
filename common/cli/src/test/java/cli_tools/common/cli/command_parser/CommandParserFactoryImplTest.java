@@ -19,12 +19,11 @@ public class CommandParserFactoryImplTest {
     @BeforeClass
     public void initMocks() {
         MockitoAnnotations.openMocks(this);
-        commandParserFactory = new CommandParserFactoryImpl(configurationRepository, Map.of(
-                "add", () -> getTestCommandParser("add"),
-                "list", () -> getTestCommandParser("list"),
-                "delete", () -> getTestCommandParser("delete"),
-                "duplicate", () -> getTestCommandParser("delete")
-        ));
+        commandParserFactory = new CommandParserFactoryImpl(configurationRepository);
+        commandParserFactory.registerParser("add", () -> getTestCommandParser("add"));
+        commandParserFactory.registerParser("list", () -> getTestCommandParser("list"));
+        commandParserFactory.registerParser("delete", () -> getTestCommandParser("delete"));
+        commandParserFactory.registerParser("duplicate", () -> getTestCommandParser("duplicate"));
     }
 
     @Test

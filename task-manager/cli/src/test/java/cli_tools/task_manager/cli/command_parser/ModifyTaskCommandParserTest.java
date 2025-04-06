@@ -20,7 +20,7 @@ public class ModifyTaskCommandParserTest {
     @Test
     public void test_parse_noArgs() throws CommandParserException {
         ModifyTaskCommand command = parse(getArgList());
-        assertNull(command.getTempIDs());
+        assertEquals(command.getTempIDs().size(), 0);
     }
 
     @Test

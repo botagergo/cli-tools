@@ -27,7 +27,7 @@ public class ListTasksCommandParserTest {
         assertNull(command.getHierarchical());
         assertNull(command.getProperties());
         assertNull(command.getSortingCriteria());
-        assertNull(command.getTempIDs());
+        assertEquals(command.getTempIDs().size(), 0);
         assertNull(command.getFilterPropertyArgs());
         assertNull(command.getOutputFormat());
 

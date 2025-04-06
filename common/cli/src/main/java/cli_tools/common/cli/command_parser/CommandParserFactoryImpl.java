@@ -13,10 +13,13 @@ public class CommandParserFactoryImpl implements CommandParserFactory {
 
     @Inject
     public CommandParserFactoryImpl(
-            ConfigurationRepository configurationRepository,
-            Map<String, Supplier<CommandParser>> commandMapping) {
+            ConfigurationRepository configurationRepository) {
         this.configurationRepository = configurationRepository;
-        this.commandMapping = commandMapping;
+    }
+
+    @Override
+    public void registerParser(String name, Supplier<CommandParser> commandParserSupplier ) {
+        this.commandMapping.put(name, commandParserSupplier);
     }
 
     @Override
@@ -37,7 +40,12 @@ public class CommandParserFactoryImpl implements CommandParserFactory {
             List<Map.Entry<String, Supplier<CommandParser>>> matchingCommands = commandMapping.entrySet().stream()
                     .filter(entry -> entry.getKey().startsWith(argList.getCommandName())).toList();
             if (matchingCommands.size() == 1) {
-                return matchingCommands.get(0).getValue().get();
+                CommandParser commandParser = matchingCommands.get(0).getValue().get();
+                if (commandParser == null) {
+                    System.out.println("ERROR: failed to create parser for command \"" + argList.getCommandName() + "\"");
+                    return null;
+                }
+                return commandParser;
             } else if (matchingCommands.size() > 1) {
                 String commandNames = matchingCommands.stream()
                         .map(Map.Entry::getKey).sorted().collect(Collectors.joining(", "));
@@ -51,5 +59,5 @@ public class CommandParserFactoryImpl implements CommandParserFactory {
     }
 
     private final ConfigurationRepository configurationRepository;
-    private final Map<String, Supplier<CommandParser>> commandMapping;
+    private final Map<String, Supplier<CommandParser>> commandMapping = new java.util.HashMap<>();
 }

@@ -9,11 +9,12 @@ import java.util.List;
 
 public class ParseUtil {
     public static List<@NonNull Integer> getTempIds(@NonNull Context context, List<String> tempIdArgs) throws CommandParserException {
+        List<Integer> tempIds = new ArrayList<>();
+
         if (tempIdArgs == null || tempIdArgs.isEmpty()) {
-            return null;
+            return tempIds;
         }
 
-        List<Integer> tempIds = new ArrayList<>();
         for (String arg : tempIdArgs) {
             if (arg.equals("~")) {
                 if (context.getPrevTempId() == null) {

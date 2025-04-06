@@ -8,7 +8,7 @@ import java.util.List;
 
 import static org.testng.Assert.*;
 
-public class TestBasic extends TestBase{
+public class TestBasic extends TestBase {
 
     @Test
     void test_basic() throws IOException {

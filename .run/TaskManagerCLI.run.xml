@@ -1,7 +1,7 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="TaskManagerCLI" type="Application" factoryName="Application" nameIsGenerated="true">
     <envs>
-      <env name="TASK_MANAGER_BASE_PATH" value="~\.config\task-manager\test\" />
+      <env name="TASK_MANAGER_BASE_PATH" value="C:\Users\botag\.config\task-manager\test\" />
     </envs>
     <option name="MAIN_CLASS_NAME" value="cli_tools.task_manager.cli.TaskManagerCLI" />
     <module name="cli-tools.task-manager.cli.main" />

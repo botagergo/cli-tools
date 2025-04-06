@@ -1,9 +1,11 @@
 package cli_tools.task_manager.cli.functional_test;
 
 import cli_tools.common.cli.command_line.Executor;
+import cli_tools.common.cli.command_parser.CommandParserFactory;
 import cli_tools.common.property_lib.PropertyDescriptor;
 import cli_tools.common.property_lib.PropertyDescriptorCollection;
 import cli_tools.task_manager.cli.TaskManagerContext;
+import cli_tools.task_manager.cli.command_parser.*;
 import cli_tools.task_manager.cli.init.Initializer;
 import cli_tools.task_manager.task.repository.TaskRepository;
 import com.google.inject.Guice;
@@ -34,11 +36,18 @@ public class TestBase {
         Injector injector = Guice.createInjector(new TestModule());
 
         Initializer initializer = injector.getInstance(Initializer.class);
+        CommandParserFactory commandParserFactory = injector.getInstance(CommandParserFactory.class);
+        context = injector.getInstance(TaskManagerContext.class);
+        configurationRepository = (MockConfigurationRepository) context.getConfigurationRepository();
+
         initializer.initialize();
 
-        context = injector.getInstance(TaskManagerContext.class);
-
-        configurationRepository = (MockConfigurationRepository) context.getConfigurationRepository();
+        commandParserFactory.registerParser("add", AddTaskCommandParser::new);
+        commandParserFactory.registerParser("list", ListTasksCommandParser::new);
+        commandParserFactory.registerParser("done", DoneTaskCommandParser::new);
+        commandParserFactory.registerParser("clear", ClearCommandParser::new);
+        commandParserFactory.registerParser("delete", DeleteTaskCommandParser::new);
+        commandParserFactory.registerParser("modify", ModifyTaskCommandParser::new);
 
         List<PropertyDescriptor> propertyDescriptors = context.getPropertyDescriptorService().getPropertyDescriptors();
         context.getPropertyManager().setPropertyDescriptorCollection(PropertyDescriptorCollection.fromList(propertyDescriptors));

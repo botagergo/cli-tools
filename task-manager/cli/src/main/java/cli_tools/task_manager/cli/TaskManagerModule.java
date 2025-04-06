@@ -1,12 +1,16 @@
 package cli_tools.task_manager.cli;
 
 import cli_tools.common.cli.Context;
+import cli_tools.common.cli.command.custom_command.CustomCommandParserFactory;
+import cli_tools.common.cli.command.custom_command.repository.CustomCommandRepository;
+import cli_tools.common.cli.command.custom_command.repository.JsonCustomCommandRepository;
 import cli_tools.common.cli.command_parser.CommandParserFactory;
 import cli_tools.common.cli.command_parser.CommandParserFactoryImpl;
 import cli_tools.common.configuration.ConfigurationRepositoryImpl;
 import cli_tools.common.core.repository.*;
 import cli_tools.common.repository.JsonStateRepository;
-import cli_tools.task_manager.cli.command_parser.*;
+import cli_tools.task_manager.cli.command.custom_command.CustomCommandDefinitionMixIn;
+import cli_tools.task_manager.cli.command.custom_command.CustomCommandParserFactoryImpl;
 import cli_tools.task_manager.task.repository.TaskRepository;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
@@ -41,36 +45,32 @@ import cli_tools.common.util.UUIDGenerator;
 
 import java.io.File;
 import java.util.List;
-import java.util.Map;
 
 public class TaskManagerModule extends AbstractModule {
-
-    @Provides
-    protected CommandParserFactory getCommandParserFactory(ConfigurationRepository configurationRepository) {
-        return new CommandParserFactoryImpl(configurationRepository, Map.of(
-                "add", AddTaskCommandParser::new,
-                "list", ListTasksCommandParser::new,
-                "done", DoneTaskCommandParser::new,
-                "clear", ClearCommandParser::new,
-                "delete", DeleteTaskCommandParser::new,
-                "modify", ModifyTaskCommandParser::new,
-                "ai", AICommandParser::new
-        ));
-    }
+    String basePath = System.getenv("TASK_MANAGER_BASE_PATH");
 
     @Provides
     protected CommandLine getJlineCommandLine(Executor executor) {
         return new JlineCommandLine(executor, List.of("add", "list", "modify", "delete", "clear", "done"));
     }
 
+    @Provides
+    CustomCommandRepository getCustomCommandRepository() {
+        JsonCustomCommandRepository jsonCustomCommandRepository =
+                new JsonCustomCommandRepository(new File(basePath + "custom_command_definition.json"));
+        jsonCustomCommandRepository.setMixIn(CustomCommandDefinitionMixIn.class);
+        return jsonCustomCommandRepository;
+    }
+
     @Override
     protected void configure() {
-        String basePath = System.getenv("TASK_MANAGER_BASE_PATH");
         if (basePath == null) {
             basePath = System.getProperty("user.home") + "/.config/task-manager/";
         }
 
         bind(Tokenizer.class).to(TokenizerImpl.class);
+        bind(CommandParserFactory.class).to(CommandParserFactoryImpl.class).asEagerSingleton();
+        bind(CustomCommandParserFactory.class).to(CustomCommandParserFactoryImpl.class).asEagerSingleton();
         bind(TaskRepository.class).to(JsonTaskRepository.class).asEagerSingleton();
         bind(ViewInfoRepository.class).to(JsonViewInfoRepository.class).asEagerSingleton();
         bind(LabelRepositoryFactory.class).to(JsonLabelRepositoryFactory.class).asEagerSingleton();

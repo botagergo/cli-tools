@@ -41,20 +41,21 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Map;
 
 public class TestModule extends AbstractModule {
     @Provides
     protected CommandParserFactory getCommandParserFactory(ConfigurationRepository configurationRepository) {
-        return new CommandParserFactoryImpl(configurationRepository, Map.of(
-                "add", AddTaskCommandParser::new,
-                "list", ListTasksCommandParser::new,
-                "done", DoneTaskCommandParser::new,
-                "clear", ClearCommandParser::new,
-                "delete", DeleteTaskCommandParser::new,
-                "modify", ModifyTaskCommandParser::new,
-                "ai", AICommandParser::new
-        ));
+        CommandParserFactory commandParserFactory = new CommandParserFactoryImpl(configurationRepository);
+
+        commandParserFactory.registerParser("add", AddTaskCommandParser::new);
+        commandParserFactory.registerParser("list", ListTasksCommandParser::new);
+        commandParserFactory.registerParser("done", DoneTaskCommandParser::new);
+        commandParserFactory.registerParser("clear", ClearCommandParser::new);
+        commandParserFactory.registerParser("delete", DeleteTaskCommandParser::new);
+        commandParserFactory.registerParser("modify", ModifyTaskCommandParser::new);
+        commandParserFactory.registerParser("ai", AICommandParser::new);
+
+        return commandParserFactory;
     }
 
     @Override

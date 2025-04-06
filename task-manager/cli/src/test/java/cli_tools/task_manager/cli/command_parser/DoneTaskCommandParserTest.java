@@ -18,7 +18,7 @@ public class DoneTaskCommandParserTest {
     @Test
     public void test_parse_noArgs() throws CommandParserException {
         DoneTaskCommand command = parse(getArgList(List.of(), List.of()));
-        assertNull(command.getTempIDs());
+        assertEquals(command.getTempIDs().size(), 0);
     }
 
     @Test
@@ -43,7 +43,7 @@ public class DoneTaskCommandParserTest {
         DoneTaskCommand command = parse(getArgList(List.of(), List.of(
                 new PropertyArgument(Affinity.NEUTRAL, "prop1", null, List.of("value1"))
         )));
-        assertNull(command.getTempIDs());
+        assertEquals(command.getTempIDs().size(), 0);
         assertEquals(command.getFilterPropertyArgs(), List.of(
                 new PropertyArgument(Affinity.NEUTRAL, "prop1", null, List.of("value1"))
         ));
