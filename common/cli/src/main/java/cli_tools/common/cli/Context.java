@@ -1,5 +1,6 @@
 package cli_tools.common.cli;
 
+import cli_tools.common.cli.command_parser.CommandParserFactory;
 import cli_tools.common.cli.property_to_string_converter.JsonPropertyToStringConverterRepository;
 import cli_tools.common.cli.string_to_property_converter.StringToPropertyConverter;
 import cli_tools.common.core.repository.ConfigurationRepository;
@@ -36,6 +37,8 @@ public abstract class Context {
     @Inject private JsonPropertyToStringConverterRepository propertyToStringConverterRepository;
 
     @Inject private ConfigurationRepository configurationRepository;
+
+    @Inject private CommandParserFactory commandParserFactory;
 
     private Integer prevTempId = null;
 

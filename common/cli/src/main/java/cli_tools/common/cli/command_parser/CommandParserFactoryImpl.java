@@ -4,6 +4,7 @@ import jakarta.inject.Inject;
 import cli_tools.common.cli.argument.ArgumentList;
 import cli_tools.common.core.repository.ConfigurationRepository;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
@@ -56,6 +57,11 @@ public class CommandParserFactoryImpl implements CommandParserFactory {
 
         System.out.println("ERROR: unknown command \"" + argList.getCommandName() + "\"");
         return null;
+    }
+
+    @Override
+    public Collection<String> getCommandNames() {
+        return commandMapping.keySet().stream().sorted().toList();
     }
 
     private final ConfigurationRepository configurationRepository;

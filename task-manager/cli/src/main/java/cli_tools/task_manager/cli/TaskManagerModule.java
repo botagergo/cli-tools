@@ -44,15 +44,9 @@ import cli_tools.common.util.RandomUUIDGenerator;
 import cli_tools.common.util.UUIDGenerator;
 
 import java.io.File;
-import java.util.List;
 
 public class TaskManagerModule extends AbstractModule {
     String basePath = System.getenv("TASK_MANAGER_BASE_PATH");
-
-    @Provides
-    protected CommandLine getJlineCommandLine(Executor executor) {
-        return new JlineCommandLine(executor, List.of("add", "list", "modify", "delete", "clear", "done"));
-    }
 
     @Provides
     CustomCommandRepository getCustomCommandRepository() {
@@ -90,6 +84,7 @@ public class TaskManagerModule extends AbstractModule {
         bind(Executor.class).to(ExecutorImpl.class);
         bind(LabelService.class).to(LabelServiceImpl.class).asEagerSingleton();
         bind(Context.class).to(TaskManagerContext.class);
+        bind(CommandLine.class).to(JlineCommandLine.class);
 
         bind(File.class).annotatedWith(Names.named("taskJsonFile")).toInstance(new File(basePath + "task.json"));
         bind(File.class).annotatedWith(Names.named("tempIdMappingJsonFile")).toInstance(new File(basePath + "temp_id_mapping.json"));

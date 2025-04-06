@@ -60,10 +60,9 @@ public class JlineCommandLine implements CommandLine {
     }
 
     private cli_tools.common.cli.command_line.Completer buildCompleter(Context context) {
-        return new cli_tools.common.cli.command_line.Completer(context, commands);
+        return new cli_tools.common.cli.command_line.Completer(context);
     }
 
     private final Executor executor;
-    private final List<String> commands;
 
 }

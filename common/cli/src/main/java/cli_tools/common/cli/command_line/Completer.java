@@ -12,14 +12,15 @@ import cli_tools.common.property_lib.PropertyDescriptor;
 import cli_tools.common.property_lib.PropertyException;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.List;
 
 @Log4j2
 public class Completer implements org.jline.reader.Completer {
 
-    public Completer(Context context, List<String> commands) {
+    public Completer(Context context) {
         this.context = context;
-        this.commands = commands;
+        this.commands = null;
     }
 
     @Override
@@ -29,6 +30,10 @@ public class Completer implements org.jline.reader.Completer {
         int colonIndex = word.indexOf(':');
         if (colonIndex == -1) {
             List<String> properties;
+
+            if (commands == null) {
+                commands = context.getCommandParserFactory().getCommandNames();
+            }
 
             if (shouldCompleteCommands(parsedLine)) {
                 for (String command : commands) {
@@ -109,5 +114,5 @@ public class Completer implements org.jline.reader.Completer {
     }
 
     private final Context context;
-    private final List<String> commands;
+    private Collection<String> commands;
 }
