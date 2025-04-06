@@ -84,6 +84,16 @@ public class TokenizerTest {
     }
 
     @Test
+    public void testNewline() throws MismatchedQuotesException {
+        Assert.assertEquals(tokenizer.tokenize("hello\\nworld"), List.of("hello", "world"));
+        Assert.assertEquals(tokenizer.tokenize("hello\\r\\n\\nworld"), List.of("hello", "world"));
+        Assert.assertEquals(tokenizer.tokenize("'hello\\nworld'"), List.of("'hello\nworld'"));
+        Assert.assertEquals(tokenizer.tokenize("'hello\\r\\nworld'"), List.of("'hello\r\nworld'"));
+        Assert.assertEquals(tokenizer.tokenize("hello\\\nworld"), List.of("hello", "world"));
+        Assert.assertEquals(tokenizer.tokenize("hello\\\r\\\nworld"), List.of("hello", "world"));
+    }
+
+    @Test
     public void testMismatchedQuotes() {
         Assert.assertThrows(MismatchedQuotesException.class, () -> tokenizer.tokenize("'"));
         Assert.assertThrows(MismatchedQuotesException.class, () -> tokenizer.tokenize("\""));

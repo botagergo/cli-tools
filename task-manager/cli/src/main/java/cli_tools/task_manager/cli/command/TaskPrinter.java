@@ -126,7 +126,10 @@ public class TaskPrinter {
                 propertyString = " •".repeat(depth) + " " + propertyString;
             }
 
-            table.nextCell().addLine(" " + propertyString + " ");
+            table.nextCell();
+            for (String line : splitByNewlines(propertyString)) {
+                table.addLine(" " + line + " ");
+            }
         }
 
         if (taskTree.getChildren() != null) {
@@ -166,12 +169,19 @@ public class TaskPrinter {
                 propertyString = ansiDone + propertyString;
             }
 
-            table.nextCell().addLine(String.format(" %s ", propertyString));
+            table.nextCell();
+            for (String line : splitByNewlines(propertyString)) {
+                table.addLine(" " + line + " ");
+            }
         }
     }
 
     private String getIDStr(cli_tools.common.cli.Context context, PropertyOwner propertyOwner) throws PropertyException, IOException {
         return context.getPropertyManager().getProperty(propertyOwner, "id").getInteger().toString();
+    }
+
+    private String[] splitByNewlines(String str) {
+        return str.split("\\r?\\n");
     }
 
     private ObjectMapper getObjectMapper() {

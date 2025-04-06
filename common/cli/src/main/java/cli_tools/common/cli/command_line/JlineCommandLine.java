@@ -27,17 +27,22 @@ public class JlineCommandLine implements CommandLine {
                 .signalHandler(Terminal.SignalHandler.SIG_IGN)
                 .build();
 
+        Parser parser = new cli_tools.common.cli.command_line.Parser();
+
         cli_tools.common.cli.command_line.Completer completer = buildCompleter(context);
         LineReader reader = LineReaderBuilder.builder().terminal(terminal)
                 .completer(completer)
-                .parser(new cli_tools.common.cli.command_line.Parser())
+                .parser(parser)
                 .completionMatcher(new cli_tools.common.cli.command_line.CompletionMatcher())
                 .option(Option.RECOGNIZE_EXACT, true)
                 .option(Option.GROUP_PERSIST, true)
-                .option(Option.DISABLE_EVENT_EXPANSION, true).build();
+                .option(Option.DISABLE_EVENT_EXPANSION, true)
+                .variable(LineReader.SECONDARY_PROMPT_PATTERN, "> ")
+                .variable(LineReader.INDENTATION, 2)
+                .build();
 
         String line;
-        String prompt = "> ";
+        String prompt = "$ ";
         while (true) {
             try {
                 line = reader.readLine(prompt).trim();

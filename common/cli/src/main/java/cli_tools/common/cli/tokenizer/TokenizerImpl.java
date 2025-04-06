@@ -17,9 +17,22 @@ public class TokenizerImpl implements Tokenizer {
         while (i < line.length()) {
             char currentChar = line.charAt(i);
 
+            if (isEscaped) {
+                if (currentChar == 'n') {
+                    currentChar = '\n';
+                    isEscaped = false;
+                } else if (currentChar == 'r') {
+                    currentChar = '\r';
+                    isEscaped = false;
+                } else if (currentChar == '\n' || currentChar == '\r'){
+                    isEscaped = false;
+                } else {
+                    currentToken.append('\\');
+                }
+            }
+
             if (!isEscaped && currentChar == '\\') {
                 isEscaped = true;
-                currentToken.append(currentChar);
             } else if (isEscaped) {
                 currentToken.append(currentChar);
                 isEscaped = false;
