@@ -89,7 +89,7 @@ public class TaskManagerModule extends AbstractModule {
         bind(File.class).annotatedWith(Names.named("taskJsonFile")).toInstance(new File(basePath + "task.json"));
         bind(File.class).annotatedWith(Names.named("tempIdMappingJsonFile")).toInstance(new File(basePath + "temp_id_mapping.json"));
         bind(File.class).annotatedWith(Names.named("propertyDescriptorJsonFile")).toInstance(new File(basePath + "property_descriptor.json"));
-        bind(File.class).annotatedWith(Names.named("viewInfoJsonFile")).toInstance(new File(basePath + "view_info.json"));
+        bind(File.class).annotatedWith(Names.named("viewJsonFile")).toInstance(new File(basePath + "view.json"));
         bind(File.class).annotatedWith(Names.named("stateJsonFile")).toInstance(new File(basePath + "state.json"));
         bind(File.class).annotatedWith(Names.named("propertyToStringConverterJsonFile")).toInstance(new File(basePath + "property_to_string_converter.json"));
         bind(File.class).annotatedWith(Names.named("configurationYamlFile")).toInstance(new File(basePath + "config.yaml"));

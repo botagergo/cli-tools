@@ -21,8 +21,7 @@ public class TestOutputFormat extends TestBase{
 
     @BeforeClass
     void setup1() throws IOException {
-        context.getViewInfoService().addViewInfo(new ViewInfo(
-                "test_output_format",
+        context.getViewInfoService().addViewInfo("test_output_format", new ViewInfo(
                 new SortingInfo(List.of(new SortingCriterion("name", true))),
                 null, null, OutputFormat.JSON, false));
         configurationRepository.defaultView = "test_output_format";

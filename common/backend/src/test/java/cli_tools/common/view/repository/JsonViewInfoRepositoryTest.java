@@ -21,7 +21,6 @@ public class JsonViewInfoRepositoryTest {
         File tempFile = rc.makeTempFile("test_get_existing", """
         {
             "view1": {
-                "name": "view1",
                 "sort": {
                     "criteria": [
                         {"property": "name", "ascending": true},
@@ -41,7 +40,6 @@ public class JsonViewInfoRepositoryTest {
                 }
             },
             "view2": {
-                "name": "view2",
                 "filter": {
                     "name": "filter1",
                     "type": "OR",
@@ -55,7 +53,6 @@ public class JsonViewInfoRepositoryTest {
                 }
             },
             "view3": {
-                "name": "view3",
                 "sort": {
                     "criteria": [
                         {"property": "name", "ascending": true}
@@ -63,14 +60,12 @@ public class JsonViewInfoRepositoryTest {
                 }
             },
             "view4": {
-                "name": "view4"
             }
         }
         """);
         repository = new JsonViewInfoRepository(tempFile);
         assertEquals(repository.get("view1"),
                 new ViewInfo(
-                        "view1",
                         new SortingInfo(
                                 List.of(
                                         new SortingCriterion("name", true),
@@ -93,7 +88,6 @@ public class JsonViewInfoRepositoryTest {
                         false));
         assertEquals(repository.get("view2"),
                 new ViewInfo(
-                        "view2",
                         null,
                         new FilterCriterionInfo(
                                 "filter1",
@@ -112,13 +106,12 @@ public class JsonViewInfoRepositoryTest {
                         false));
         assertEquals(repository.get("view3"),
                 new ViewInfo(
-                        "view3",
                         new SortingInfo(
                                 List.of(new SortingCriterion("name", true))
                         ),
                         null, null, null, false
                 ));
-        assertEquals(repository.get("view4"), new ViewInfo("view4", null, null, null, null, false));
+        assertEquals(repository.get("view4"), new ViewInfo(null, null, null, null, false));
     }
 
     @Test
@@ -140,7 +133,6 @@ public class JsonViewInfoRepositoryTest {
         File tempFile = rc.makeTempFile("test_get_existing", """
         {
             "view": {
-                "name": "view",
                 "filter": {
                     "type": "PROPERTY",
                     "property": "tags",
@@ -152,7 +144,7 @@ public class JsonViewInfoRepositoryTest {
         repository = new JsonViewInfoRepository(tempFile);
         assertEquals(repository.get("view"),
                 new ViewInfo(
-                        "view", null,
+                        null,
                         new FilterCriterionInfo(
                                 null, FilterCriterionInfo.Type.PROPERTY, "tags",
                                 null, Predicate.EMPTY, null),
@@ -165,8 +157,7 @@ public class JsonViewInfoRepositoryTest {
     public void test_create() throws IOException {
         File tempFile = rc.getTempFile("test_create");
         repository = new JsonViewInfoRepository(tempFile);
-        repository.create(new ViewInfo(
-                "view1",
+        repository.create("view1", new ViewInfo(
                 new SortingInfo(
                         List.of(
                                 new SortingCriterion("name", true),
@@ -187,9 +178,8 @@ public class JsonViewInfoRepositoryTest {
                 null,
                 null,
                 false));
-        repository.create(new ViewInfo(
-                        "view2",
-                        null,
+        repository.create("view2", new ViewInfo(
+                null,
                         new FilterCriterionInfo(
                                 "filter1",
                                 FilterCriterionInfo.Type.OR,
@@ -206,19 +196,17 @@ public class JsonViewInfoRepositoryTest {
                 null,
                 false)
         );
-        repository.create(new ViewInfo(
-                "view3",
+        repository.create("view3", new ViewInfo(
                 new SortingInfo(
                         List.of(new SortingCriterion("name", true))
                 ),
                 null, null, null, false
         ));
-        repository.create(new ViewInfo("view4", null, null, null, null, false));
+        repository.create("view4", new ViewInfo(null, null, null, null, false));
 
         assertEquals(Files.readString(tempFile.toPath()).replaceAll("\\s", ""), """
         {
             "view1": {
-                "name": "view1",
                 "sort": {
                     "criteria": [
                         {"property": "name", "ascending": true},
@@ -239,7 +227,6 @@ public class JsonViewInfoRepositoryTest {
                 "hierarchical": false
             },
             "view2": {
-                "name": "view2",
                 "filter": {
                     "name": "filter1",
                     "type": "OR",
@@ -254,7 +241,6 @@ public class JsonViewInfoRepositoryTest {
                 "hierarchical": false
             },
             "view3": {
-                "name": "view3",
                 "sort": {
                     "criteria": [
                         {"property": "name", "ascending": true}
@@ -263,7 +249,6 @@ public class JsonViewInfoRepositoryTest {
                 "hierarchical": false
             },
             "view4": {
-                "name": "view4",
                 "hierarchical": false
             }
         }

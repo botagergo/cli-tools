@@ -6,6 +6,6 @@ import java.io.IOException;
 
 public interface ViewInfoService {
     ViewInfo getViewInfo(String name) throws IOException;
-    void addViewInfo(ViewInfo viewInfo) throws IOException;
+    void addViewInfo(String name, ViewInfo viewInfo) throws IOException;
     void deleteAllViewInfos() throws IOException;
 }

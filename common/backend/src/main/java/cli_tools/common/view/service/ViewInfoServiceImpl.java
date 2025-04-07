@@ -17,8 +17,8 @@ public class ViewInfoServiceImpl implements ViewInfoService {
     }
 
     @Override
-    public void addViewInfo(ViewInfo viewInfo) throws IOException {
-        viewInfoRepository.create(viewInfo);
+    public void addViewInfo(String name, ViewInfo viewInfo) throws IOException {
+        viewInfoRepository.create(name, viewInfo);
     }
 
     @Override

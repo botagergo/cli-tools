@@ -13,7 +13,6 @@ import java.util.List;
 @JsonPropertyOrder({ "name", "sort", "filter" })
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public record ViewInfoMixIn(
-        @JsonProperty(required = true) String name,
         @JsonProperty("sort")
         SortingInfo sortingInfo,
         @JsonProperty("filter")

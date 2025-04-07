@@ -18,7 +18,7 @@ import java.util.HashMap;
 public class JsonViewInfoRepository extends SimpleJsonRepository<HashMap<String, ViewInfo>> implements ViewInfoRepository {
 
     @Inject
-    public JsonViewInfoRepository(@Named("viewInfoJsonFile") File jsonFile) {
+    public JsonViewInfoRepository(@Named("viewJsonFile") File jsonFile) {
         super(jsonFile);
         getObjectMapper().addMixIn(ViewInfo.class, ViewInfoMixIn.class);
         getObjectMapper().addMixIn(SortingInfo.class, SortingInfoMixIn.class);
@@ -32,8 +32,8 @@ public class JsonViewInfoRepository extends SimpleJsonRepository<HashMap<String,
     }
 
     @Override
-    public void create(ViewInfo viewInfo) throws IOException {
-        getData().put(viewInfo.name(), viewInfo);
+    public void create(String name, ViewInfo viewInfo) throws IOException {
+        getData().put(name, viewInfo);
         writeData();
     }
 

@@ -110,16 +110,14 @@ public class Initializer {
 
     private void initializeViewInfo() throws IOException {
         viewInfoService.deleteAllViewInfos();
-        viewInfoService.addViewInfo(new ViewInfo(
-                "default",
+        viewInfoService.addViewInfo("default", new ViewInfo(
                 new SortingInfo(List.of(new SortingCriterion("name", true))),
                 new FilterCriterionInfo("default", FilterCriterionInfo.Type.PROPERTY, "done", null, Predicate.EQUALS, List.of(false)),
                 List.of("id", "name", "status", "tags", "dueDate"),
                 OutputFormat.TEXT,
                 false
         ));
-        viewInfoService.addViewInfo(new ViewInfo(
-                "all",
+        viewInfoService.addViewInfo("all", new ViewInfo(
                 new SortingInfo(List.of(new SortingCriterion("name", true))),
                 null,
                 List.of("id", "name", "status", "tags", "dueDate"),
