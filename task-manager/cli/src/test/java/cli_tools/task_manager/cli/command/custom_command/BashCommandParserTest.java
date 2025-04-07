@@ -32,7 +32,7 @@ public class BashCommandParserTest {
     @Test(expectedExceptions = CommandParserException.class)
     public void test_trailingArguments_throws() throws CommandParserException {
         ArgumentList argList = new ArgumentList();
-        argList.getTrailingNormalArguments().add("arg1");
+        argList.getTrailingPositionalArguments().add("arg1");
 
         BashCommandParser parser = new BashCommandParser("echo $TASK_0_NAME", 1000);
         parser.parse(context, argList);
@@ -60,7 +60,7 @@ public class BashCommandParserTest {
     @Test
     public void testParseValidArguments() throws CommandParserException {
         ArgumentList argList = new ArgumentList();
-        argList.setLeadingNormalArguments(List.of("1", "2"));
+        argList.setLeadingPositionalArguments(List.of("1", "2"));
         argList.setFilterPropertyArguments(List.of(
                 new PropertyArgument(Affinity.POSITIVE, "prop", null, List.of("value"))));
 

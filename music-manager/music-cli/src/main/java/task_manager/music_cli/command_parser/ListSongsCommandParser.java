@@ -27,9 +27,9 @@ public class ListSongsCommandParser implements CommandParser {
             queries = argList.getSpecialArguments().get('?').stream().map(SpecialArgument -> SpecialArgument.value).collect(Collectors.toList());
         }
 
-        if (argList.getTrailingNormalArguments().size() == 1) {
-            viewName = String.join(" ", argList.getTrailingNormalArguments());
-        } else if (argList.getTrailingNormalArguments().size() > 1) {
+        if (argList.getTrailingPositionalArguments().size() == 1) {
+            viewName = String.join(" ", argList.getTrailingPositionalArguments());
+        } else if (argList.getTrailingPositionalArguments().size() > 1) {
             throw new CommandParserException("One normal argument expected: view name");
         }
 
@@ -43,7 +43,7 @@ public class ListSongsCommandParser implements CommandParser {
             }
         }
 
-        List<Integer> ids = ParseUtil.getIDs(context, argList.getLeadingNormalArguments());
+        List<Integer> ids = ParseUtil.getIDs(context, argList.getLeadingPositionalArguments());
 
         return new ListSongsCommand(
                 queries,

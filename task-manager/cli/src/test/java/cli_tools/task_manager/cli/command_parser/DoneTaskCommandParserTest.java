@@ -72,12 +72,12 @@ public class DoneTaskCommandParserTest {
     }
 
     private ArgumentList getArgList(
-            @NonNull List<String> leadingNormalArgs,
+            @NonNull List<String> leadingPositionalArgs,
             @NonNull List<PropertyArgument> filterPropertyArgs
     ) {
         ArgumentList argList = new ArgumentList();
         argList.setCommandName("done");
-        argList.setLeadingNormalArguments(leadingNormalArgs);
+        argList.setLeadingPositionalArguments(leadingPositionalArgs);
         argList.setFilterPropertyArguments(filterPropertyArgs);
         return argList;
     }

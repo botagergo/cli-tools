@@ -24,7 +24,7 @@ public class AddRecordingCommandParserTest {
     }
     
     @Test
-    public void test_parse_oneNormalArg() throws CommandParserException {
+    public void test_parse_onePositionalArg() throws CommandParserException {
         AddSongCommand command = parse(getArgList("task"));
         assertEquals(command.name(), "task");
         assertEquals(command.modifyPropertyArgs().size(), 0);
@@ -35,21 +35,21 @@ public class AddRecordingCommandParserTest {
     }
 
     @Test
-    public void test_parse_oneEmptyNormalArg() throws CommandParserException {
+    public void test_parse_oneEmptyPositionalArg() throws CommandParserException {
         AddSongCommand command = parse(getArgList(""));
         assertEquals(command.name(), "");
         assertEquals(command.modifyPropertyArgs().size(), 0);
     }
     
     @Test
-    public void test_parse_multipleNormalArgs() throws CommandParserException {
+    public void test_parse_multiplePositionalArgs() throws CommandParserException {
         AddSongCommand command = parse(getArgList("my", "simple", "task"));
         assertEquals(command.name(), "my simple task");
         assertEquals(command.modifyPropertyArgs().size(), 0);
     }
     
     @Test
-    public void test_parse_multipleNormalArgsWithWhitespace() throws CommandParserException {
+    public void test_parse_multiplePositionalArgsWithWhitespace() throws CommandParserException {
         AddSongCommand command = parse(getArgList("my ", "simple", " task"));
         assertEquals(command.name(), "my  simple  task");
         assertEquals(command.modifyPropertyArgs().size(), 0);
@@ -94,11 +94,11 @@ public class AddRecordingCommandParserTest {
         ));
     }
 
-    private ArgumentList getArgList(String... normalArgs) {
+    private ArgumentList getArgList(String... PositionalArgs) {
         return new ArgumentList(
                 "add",
                 new ArrayList<>(),
-                Arrays.asList(normalArgs),
+                Arrays.asList(PositionalArgs),
                 new LinkedHashMap<>(),
                 new ArrayList<>(),
                 new ArrayList<>(),
@@ -107,13 +107,13 @@ public class AddRecordingCommandParserTest {
     }
 
     private ArgumentList getArgList(
-            List<String> normalArgs,
+            List<String> PositionalArgs,
             List<PropertyArgument> modifyPropertyArgs
     ) {
         return new ArgumentList(
                 "add",
                 new ArrayList<>(),
-                normalArgs,
+                PositionalArgs,
                 new LinkedHashMap<>(),
                 new ArrayList<>(),
                 modifyPropertyArgs,

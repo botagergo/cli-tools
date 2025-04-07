@@ -86,18 +86,18 @@ public class ModifySongCommandParserTest {
     private ArgumentList getArgList(String... param) {
         ArgumentList argList = new ArgumentList();
         argList.setCommandName("modify");
-        argList.setLeadingNormalArguments(Arrays.asList(param));
+        argList.setLeadingPositionalArguments(Arrays.asList(param));
         return argList;
     }
 
     private ArgumentList getArgList(
-            List<String> leadingNormalArgs,
+            List<String> leadingPositionalArgs,
             List<PropertyArgument> modifyPropertyArgs,
             List<PropertyArgument> filterPropertyArgs
     ) {
         return new ArgumentList(
                 "modify",
-                leadingNormalArgs,
+                leadingPositionalArgs,
                 new ArrayList<>(),
                 new LinkedHashMap<>(),
                 filterPropertyArgs,

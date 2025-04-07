@@ -18,7 +18,7 @@ public class ParseUtil {
         for (String arg : tempIdArgs) {
             if (arg.equals("~")) {
                 if (context.getPrevTempId() == null) {
-                    throw new CommandParserException("No previous temp id exists");
+                    throw new CommandParserException("no previous temp id exists");
                 }
                 tempIds.add(context.getPrevTempId());
             } else {

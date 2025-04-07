@@ -5,6 +5,7 @@ import cli_tools.common.cli.command.custom_command.CustomCommandParserFactory;
 import cli_tools.common.cli.command.custom_command.repository.CustomCommandRepository;
 import cli_tools.common.cli.command_line.CommandLine;
 import cli_tools.common.cli.command_parser.CommandParserFactory;
+import cli_tools.common.core.util.Print;
 import cli_tools.task_manager.cli.command_parser.*;
 import cli_tools.task_manager.cli.init.Initializer;
 import com.google.inject.Guice;
@@ -32,7 +33,7 @@ public class TaskManagerCLI {
                 initializer.initialize();
             }
         } catch (IOException e) {
-            System.out.println("ERROR: " + e.getMessage());
+            Print.printError(e.getMessage());
             log.error(ExceptionUtils.getStackTrace(e));
         }
 
@@ -50,14 +51,14 @@ public class TaskManagerCLI {
                         () -> customCommandParserFactory.createParser(customCommandDefinition));
             }
         } catch (IOException e) {
-            System.out.println("ERROR: " + e.getMessage());
+            Print.printError(e.getMessage());
             log.error(ExceptionUtils.getStackTrace(e));
         }
 
         try {
             commandLine.run();
         } catch (IOException e) {
-            System.out.println("ERROR: " + e.getMessage());
+            Print.printError(e.getMessage());
             log.error(ExceptionUtils.getStackTrace(e));
         }
     }

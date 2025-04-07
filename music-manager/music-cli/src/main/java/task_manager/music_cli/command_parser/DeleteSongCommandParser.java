@@ -13,13 +13,13 @@ public class DeleteSongCommandParser implements CommandParser {
     public Command parse(Context context, ArgumentList argList) throws CommandParserException {
         if (!argList.getModifyPropertyArguments().isEmpty()) {
             throw new CommandParserException("Unexpected property arguments");
-        } else if (!argList.getTrailingNormalArguments().isEmpty()) {
+        } else if (!argList.getTrailingPositionalArguments().isEmpty()) {
             throw new CommandParserException("Unexpected trailing arguments");
         } else if (!argList.getOptionArguments().isEmpty()) {
             throw new CommandParserException("Unexpected option arguments");
         }
 
-        List<Integer> ids = ParseUtil.getIDs(context, argList.getLeadingNormalArguments());
+        List<Integer> ids = ParseUtil.getIDs(context, argList.getLeadingPositionalArguments());
         return new DeleteSongCommand(ids, argList.getFilterPropertyArguments());
     }
 

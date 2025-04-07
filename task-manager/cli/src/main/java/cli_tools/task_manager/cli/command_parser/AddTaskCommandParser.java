@@ -14,14 +14,14 @@ public class AddTaskCommandParser extends CommandParser {
         AddTaskCommand command = new AddTaskCommand();
 
         if (!argList.getFilterPropertyArguments().isEmpty()) {
-            throw new CommandParserException("Unexpected filter arguments");
-        } else if (!argList.getLeadingNormalArguments().isEmpty()) {
-            throw new CommandParserException("Unexpected leading arguments");
+            throw new CommandParserException("command 'add' does not accept filter property arguments");
+        } else if (!argList.getLeadingPositionalArguments().isEmpty()) {
+            throw new CommandParserException("command 'add' does not accept leading positional arguments");
         } else if (!argList.getOptionArguments().isEmpty()) {
-            throw new CommandParserException("Unexpected option arguments");
+            throw new CommandParserException("command 'add' does not accept option arguments");
         }
 
-        command.setName(String.join(" ", argList.getTrailingNormalArguments()));
+        command.setName(String.join(" ", argList.getTrailingPositionalArguments()));
         command.setModifyPropertyArgs(argList.getModifyPropertyArguments());
 
         return command;

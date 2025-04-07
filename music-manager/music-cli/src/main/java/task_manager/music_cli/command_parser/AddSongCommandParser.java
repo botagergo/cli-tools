@@ -12,14 +12,14 @@ public class AddSongCommandParser implements CommandParser {
     public Command parse(@NonNull Context context, ArgumentList argList) throws CommandParserException {
         if (!argList.getFilterPropertyArguments().isEmpty()) {
             throw new CommandParserException("Unexpected filter arguments");
-        } else if (!argList.getLeadingNormalArguments().isEmpty()) {
+        } else if (!argList.getLeadingPositionalArguments().isEmpty()) {
             throw new CommandParserException("Unexpected leading arguments");
         } else if (!argList.getOptionArguments().isEmpty()) {
             throw new CommandParserException("Unexpected option arguments");
         }
 
         return new AddSongCommand(
-                String.join(" ", argList.getTrailingNormalArguments()),
+                String.join(" ", argList.getTrailingPositionalArguments()),
                 argList.getModifyPropertyArguments());
     }
 

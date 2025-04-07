@@ -24,13 +24,13 @@ public class ListTasksCommandParser extends CommandParser {
             ListTasksCommand command = new ListTasksCommand();
 
         if (!argList.getModifyPropertyArguments().isEmpty()) {
-            throw new CommandParserException("unexpected property arguments");
+            throw new CommandParserException("command 'list' does not accept modify property arguments");
         }
 
-        if (argList.getTrailingNormalArguments().size() == 1) {
-            command.setViewName(String.join(" ", argList.getTrailingNormalArguments()));
-        } else if (argList.getTrailingNormalArguments().size() > 1) {
-            throw new CommandParserException("one normal argument expected: view name");
+        if (argList.getTrailingPositionalArguments().size() == 1) {
+            command.setViewName(String.join(" ", argList.getTrailingPositionalArguments()));
+        } else if (argList.getTrailingPositionalArguments().size() > 1) {
+            throw new CommandParserException("one positional argument expected: view name");
         }
 
         if (!argList.getFilterPropertyArguments().isEmpty()) {
@@ -48,7 +48,7 @@ public class ListTasksCommandParser extends CommandParser {
             }
         }
 
-        command.setTempIDs(ParseUtil.getTempIds(context, argList.getLeadingNormalArguments()));
+        command.setTempIDs(ParseUtil.getTempIds(context, argList.getLeadingPositionalArguments()));
 
         return command;
     }
@@ -74,7 +74,7 @@ public class ListTasksCommandParser extends CommandParser {
             }
 
             if (criterion.isEmpty()) {
-                throw new CommandParserException("invalid sorting criterion");
+                throw new CommandParserException("empty sorting criterion");
             }
 
             sortingCriteria.add(new SortingCriterion(criterion, ascending));
@@ -84,32 +84,32 @@ public class ListTasksCommandParser extends CommandParser {
     }
 
     private OutputFormat parseOutputFormat(List<String> values) throws CommandParserException {
-        String outputFormat = parseSingleOptionValue("output format", values);
+        String outputFormat = parseSingleOptionValue("outputFormat", values);
         switch (outputFormat) {
             case "text" -> { return OutputFormat.TEXT; }
             case "json" -> { return OutputFormat.JSON; }
             case "prettyJson" -> { return OutputFormat.PRETTY_JSON; }
             default ->
-                    throw new CommandParserException("invalid output format: " + outputFormat + "\nvalid formats: text, json, prettyJson");
+                    throw new CommandParserException("invalid output format: " + outputFormat + "\nvalid values: text, json, prettyJson");
         }
     }
 
     private boolean parseHierarchical(List<String> values) throws CommandParserException {
         if (values.size() != 1) {
-            throw new CommandParserException("value of 'hierarchical must be true or false");
+            throw new CommandParserException("value of 'hierarchical' must be true or false");
         }
 
         switch (values.get(0)) {
             case "true" -> { return true; }
             case "false" -> { return false; }
             default ->
-                    throw new CommandParserException("value of .hierarchical must be true or false");
+                    throw new CommandParserException("value of 'hierarchical' must be true or false");
         }
     }
 
     private List<String> parseProperties(List<String> values) {
         if (values.isEmpty()) {
-            log.warn("empty list received in .properties option, ignoring");
+            log.warn("empty list received in option 'properties', ignoring");
             return null;
         }
         return values;
@@ -117,9 +117,9 @@ public class ListTasksCommandParser extends CommandParser {
 
     private String parseSingleOptionValue(String optionArgumentName, List<String> valueList) throws CommandParserException {
         if (valueList.isEmpty()) {
-            throw new CommandParserException("no " + optionArgumentName + " was specified");
+            throw new CommandParserException("option '" + optionArgumentName + "' needs an argument");
         } else if (valueList.size() != 1) {
-            throw new CommandParserException("only one " + optionArgumentName + " can be specified");
+            throw new CommandParserException("option '" + optionArgumentName + "'accepts one argument");
         }
 
         return valueList.get(0);

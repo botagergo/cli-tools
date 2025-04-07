@@ -17,8 +17,8 @@ public class ArgumentList {
     private static final char DOUBLE_QUOTE = '\"';
 
     private String commandName = null;
-    @NonNull private List<String> leadingNormalArguments = new ArrayList<>();
-    @NonNull private List<String> trailingNormalArguments = new ArrayList<>();
+    @NonNull private List<String> leadingPositionalArguments = new ArrayList<>();
+    @NonNull private List<String> trailingPositionalArguments = new ArrayList<>();
     @NonNull private LinkedHashMap<Character, List<SpecialArgument>> specialArguments = new LinkedHashMap<>();
     @NonNull private List<PropertyArgument> filterPropertyArguments = new ArrayList<>();
     @NonNull private List<PropertyArgument> modifyPropertyArguments = new ArrayList<>();
@@ -32,16 +32,16 @@ public class ArgumentList {
 
     public ArgumentList(
             String commandName,
-            @NonNull List<String> leadingNormalArguments,
-            @NonNull List<String> trailingNormalArguments,
+            @NonNull List<String> leadingPositionalArguments,
+            @NonNull List<String> trailingPositionalArguments,
             @NonNull LinkedHashMap<Character, List<SpecialArgument>> specialArguments,
             @NonNull List<PropertyArgument> filterPropertyArguments,
             @NonNull List<PropertyArgument> modifyPropertyArguments,
             @NonNull List<OptionArgument> optionArguments
     ) {
         this.commandName = commandName;
-        this.leadingNormalArguments = leadingNormalArguments;
-        this.trailingNormalArguments = trailingNormalArguments;
+        this.leadingPositionalArguments = leadingPositionalArguments;
+        this.trailingPositionalArguments = trailingPositionalArguments;
         this.specialArguments = specialArguments;
         this.filterPropertyArguments = filterPropertyArguments;
         this.modifyPropertyArguments = modifyPropertyArguments;
@@ -105,7 +105,7 @@ public class ArgumentList {
         if (argList.commandName == null && token.matches("^[a-z]+$")) {
             argList.commandName = token;
         } else {
-            (argList.commandName == null ? argList.leadingNormalArguments : argList.trailingNormalArguments).add(currentToken.toString());
+            (argList.commandName == null ? argList.leadingPositionalArguments : argList.trailingPositionalArguments).add(currentToken.toString());
         }
     }
 

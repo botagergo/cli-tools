@@ -15,14 +15,14 @@ public class DoneTaskCommandParser extends CommandParser {
         DoneTaskCommand command = new DoneTaskCommand();
 
         if (!argList.getModifyPropertyArguments().isEmpty()) {
-            throw new CommandParserException("Unexpected property arguments");
-        } else if (!argList.getTrailingNormalArguments().isEmpty()) {
-            throw new CommandParserException("Unexpected trailing arguments");
+            throw new CommandParserException("command 'done' does not accept modify property arguments");
+        } else if (!argList.getTrailingPositionalArguments().isEmpty()) {
+            throw new CommandParserException("command 'done' does not accept trailing positional arguments");
         } else if (!argList.getOptionArguments().isEmpty()) {
-            throw new CommandParserException("Unexpected option arguments");
+            throw new CommandParserException("command 'done' does not accept option arguments");
         }
 
-        command.setTempIDs(ParseUtil.getTempIds(context, argList.getLeadingNormalArguments()));
+        command.setTempIDs(ParseUtil.getTempIds(context, argList.getLeadingPositionalArguments()));
         command.setFilterPropertyArgs(argList.getFilterPropertyArguments());
 
         return command;

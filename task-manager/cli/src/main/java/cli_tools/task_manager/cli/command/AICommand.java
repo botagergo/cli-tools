@@ -1,6 +1,7 @@
 package cli_tools.task_manager.cli.command;
 
 import cli_tools.common.cli.command.Command;
+import cli_tools.common.core.util.Print;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.theokanning.openai.completion.chat.*;
@@ -29,7 +30,7 @@ public final class AICommand extends Command {
             if (taskManagerContext.getOpenAiService() == null) {
                 String openAiApiKey = context.getConfigurationRepository().openAiApiKey();
                 if (openAiApiKey == null) {
-                    System.out.println("OpenAI API key is not configured. Set it with the \"openAiApiKey\" config option.");
+                    Print.printError("OpenAI API key is not configured, set it with the 'openAiApiKey' config option");
                     return;
                 }
                 taskManagerContext.setOpenAiService(new OpenAiService(openAiApiKey));
@@ -65,9 +66,8 @@ public final class AICommand extends Command {
                 executeFunction(taskManagerContext, functionCall);
             }
 
-            //System.out.println(response.getContent());
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            Print.printError(e.getMessage());
         }
     }
 
@@ -152,7 +152,7 @@ public final class AICommand extends Command {
                     taskUuidsList);
             context.getTaskPrinter().printTasks(context, tasks, propertiesToList, OutputFormat.TEXT);
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            Print.printError(e.getMessage());
         }
     }
 
@@ -168,7 +168,7 @@ public final class AICommand extends Command {
                 taskService.addTask(Task.fromMap(taskMap));
             }
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            Print.printError(e.getMessage());
         }
     }
 

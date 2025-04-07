@@ -1,6 +1,8 @@
 package cli_tools.task_manager.cli.command;
 
+import cli_tools.common.cli.Context;
 import cli_tools.common.core.data.OutputFormat;
+import cli_tools.common.core.util.Print;
 import cli_tools.task_manager.task.Task;
 import cli_tools.task_manager.task.PropertyOwnerTree;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -42,14 +44,14 @@ public class TaskPrinter {
         if (outputFormat.equals(OutputFormat.TEXT)) {
             printTasksText(context, mainPropertyToStringConverter, tasks, propertiesToList);
         } else if (outputFormat.equals(OutputFormat.JSON)) {
-            System.out.println(getObjectMapper().writeValueAsString(tasks.stream().map(Task::getProperties).toList()));
+            Print.print(getObjectMapper().writeValueAsString(tasks.stream().map(Task::getProperties).toList()));
         } else if (outputFormat.equals(OutputFormat.PRETTY_JSON)) {
-            System.out.println(getObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(tasks.stream().map(Task::getProperties).toList()));
+            Print.print(getObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(tasks.stream().map(Task::getProperties).toList()));
         }
     }
 
     public void printTaskTrees(
-            cli_tools.common.cli.Context context,
+            Context context,
             List<PropertyOwnerTree> taskTrees,
             List<String> propertiesToList) throws PropertyException, IOException {
         SimpleTable table = SimpleTable.of().nextRow();

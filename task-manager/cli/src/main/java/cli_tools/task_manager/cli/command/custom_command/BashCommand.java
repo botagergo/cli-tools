@@ -4,6 +4,7 @@ import cli_tools.common.cli.Context;
 import cli_tools.common.cli.argument.PropertyArgument;
 import cli_tools.common.cli.command.custom_command.CustomCommand;
 import cli_tools.common.core.data.property.FilterPropertySpec;
+import cli_tools.common.core.util.Print;
 import cli_tools.common.property_lib.Property;
 import cli_tools.common.property_lib.PropertyDescriptor;
 import cli_tools.common.property_lib.PropertyException;
@@ -14,7 +15,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.extern.log4j.Log4j2;
-import org.apache.commons.lang3.exception.ExceptionUtils;
 
 import java.io.IOException;
 import java.util.List;
@@ -46,8 +46,7 @@ public class BashCommand extends CustomCommand {
 
             p.start().waitFor(timeoutMillis, TimeUnit.MILLISECONDS);
         } catch (Exception e) {
-            System.out.println("ERROR: " + e.getMessage());
-            log.error("{}\n{}", e.getMessage(), ExceptionUtils.getStackTrace(e));
+            Print.printAndLogException(e, log);
         }
     }
 

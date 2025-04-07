@@ -1,5 +1,6 @@
 package cli_tools.common.cli.command_parser;
 
+import cli_tools.common.core.util.Print;
 import jakarta.inject.Inject;
 import cli_tools.common.cli.argument.ArgumentList;
 import cli_tools.common.core.repository.ConfigurationRepository;
@@ -43,19 +44,20 @@ public class CommandParserFactoryImpl implements CommandParserFactory {
             if (matchingCommands.size() == 1) {
                 CommandParser commandParser = matchingCommands.get(0).getValue().get();
                 if (commandParser == null) {
-                    System.out.println("ERROR: failed to create parser for command \"" + argList.getCommandName() + "\"");
+                    Print.printError("failed to create parser for command '" + argList.getCommandName() + "'");
                     return null;
                 }
                 return commandParser;
             } else if (matchingCommands.size() > 1) {
                 String commandNames = matchingCommands.stream()
                         .map(Map.Entry::getKey).sorted().collect(Collectors.joining(", "));
-                System.out.println("ERROR: multiple commands match \"" + argList.getCommandName() + "\": " + commandNames);
+                Print.printError("multiple commands match '" + argList.getCommandName() + "': " + commandNames);
                 return null;
             }
         }
 
-        System.out.println("ERROR: unknown command \"" + argList.getCommandName() + "\"");
+
+        Print.printError("no such command: '" + argList.getCommandName() + "'");
         return null;
     }
 

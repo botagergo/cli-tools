@@ -70,12 +70,12 @@ public class DeleteSongCommandParserTest {
     }
 
     private ArgumentList getArgList(
-            List<String> leadingNormalArguments,
+            List<String> leadingPositionalArguments,
             List<PropertyArgument> filterPropertyArguments
     ) {
         ArgumentList argList = new ArgumentList();
         argList.setCommandName("delete");
-        argList.setLeadingNormalArguments(leadingNormalArguments);
+        argList.setLeadingPositionalArguments(leadingPositionalArguments);
         argList.setFilterPropertyArguments(filterPropertyArguments);
         return argList;
     }

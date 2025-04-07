@@ -1,6 +1,7 @@
 package cli_tools.task_manager.cli.command;
 
 import cli_tools.common.cli.command.Command;
+import cli_tools.common.core.util.Print;
 import cli_tools.task_manager.cli.TaskManagerContext;
 import lombok.Getter;
 import lombok.NonNull;
@@ -56,14 +57,14 @@ public final class ModifyTaskCommand extends Command {
 
         } catch (StringToPropertyConverterException e) {
             switch (e.getExceptionType()) {
-                case NotAList -> System.out.println("A list of values was provided, but property '" + e.getArgument() + "' is not a list");
-                case EmptyList -> System.out.println("No value was provided for property '" + e.getArgument() + "'");
-                case LabelNotFound -> System.out.println("No changes were made");
-                case OrderedLabelNotFound -> System.out.println("Label not found: " + e.getArgument());
-                default -> System.out.println(e.getMessage());
+                case NotAList -> Print.printError("a list of values was provided, but property '" + e.getArgument() + "' is not a list");
+                case EmptyList -> Print.printError("no value was provided for property '" + e.getArgument() + "'");
+                case LabelNotFound -> Print.printInfo("no changes were made");
+                case OrderedLabelNotFound -> Print.printError("no such label: '" + e.getArgument() + "'");
+                default -> Print.printError(e.getMessage());
             }
         } catch (Exception e) {
-            System.out.println("ERROR: " + e.getMessage());
+            Print.printError(e.getMessage());
             log.error("{}\n{}", e.getMessage(), ExceptionUtils.getStackTrace(e));
         }
     }

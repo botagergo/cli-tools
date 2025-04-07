@@ -2,6 +2,7 @@ package cli_tools.task_manager.cli.command;
 
 import cli_tools.common.cli.command.Command;
 import cli_tools.common.core.data.*;
+import cli_tools.common.core.util.Print;
 import cli_tools.task_manager.task.Task;
 import cli_tools.task_manager.task.PropertyOwnerTree;
 import lombok.Getter;
@@ -82,13 +83,13 @@ public final class ListTasksCommand extends Command {
             }
 
             if (actualHierarchical && context.getPropertyManager().getPropertyDescriptor("parent") == null) {
-                log.warn("cannot print tasks hierarchically, because the 'parent' property does not exist");
+                log.warn("cannot print tasks hierarchically because the 'parent' property does not exist");
                 actualHierarchical = false;
             }
 
             if (actualHierarchical) {
                 if (outputFormat != OutputFormat.TEXT) {
-                    System.out.println("outputFormat can only be text when printing tasks hierarchically");
+                    Print.printError("'outputFormat' can only be text when printing tasks hierarchically");
                     return;
                 }
                 List<PropertyOwnerTree> taskHierarchies = taskManagerContext.getTaskService().getTaskTrees(filterPropertySpecs, sortingInfo, filterCriterionInfo, taskUUIDs);
@@ -99,7 +100,7 @@ public final class ListTasksCommand extends Command {
             }
 
         } catch (Exception e) {
-            System.out.println("ERROR: " + e.getMessage());
+            Print.printError(e.getMessage());
             log.error("{}\n{}", e.getMessage(), ExceptionUtils.getStackTrace(e));
         }
     }
@@ -107,7 +108,7 @@ public final class ListTasksCommand extends Command {
     private @NonNull ViewInfo getView(TaskManagerContext context, String viewName) throws TaskServiceException, IOException {
         ViewInfo viewInfo = context.getViewInfoService().getViewInfo(viewName);
         if (viewInfo == null) {
-            throw new TaskServiceException("View '" + viewName + "' does not exist");
+            throw new TaskServiceException("no such view: '" + viewName + "'");
         }
         return viewInfo;
     }

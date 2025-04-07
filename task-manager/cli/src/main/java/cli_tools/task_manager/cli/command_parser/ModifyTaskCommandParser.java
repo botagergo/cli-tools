@@ -14,15 +14,15 @@ public class ModifyTaskCommandParser extends CommandParser {
     public Command parse(Context context, ArgumentList argList) throws CommandParserException {
         ModifyTaskCommand command = new ModifyTaskCommand();
 
-        if (!argList.getTrailingNormalArguments().isEmpty()) {
-            throw new CommandParserException("Unexpected trailing arguments");
+        if (!argList.getTrailingPositionalArguments().isEmpty()) {
+            throw new CommandParserException("command 'modify' does not accept trailing positional arguments");
         } else if (!argList.getOptionArguments().isEmpty()) {
-            throw new CommandParserException("Unexpected option arguments");
+            throw new CommandParserException("command 'modify' does not accept option arguments");
         }
 
         command.setModifyPropertyArgs(argList.getModifyPropertyArguments());
         command.setFilterPropertyArgs(argList.getFilterPropertyArguments());
-        command.setTempIDs(ParseUtil.getTempIds(context, argList.getLeadingNormalArguments()));
+        command.setTempIDs(ParseUtil.getTempIds(context, argList.getLeadingPositionalArguments()));
 
         return command;
     }

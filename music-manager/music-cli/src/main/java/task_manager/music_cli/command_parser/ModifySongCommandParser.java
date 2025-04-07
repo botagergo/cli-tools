@@ -11,13 +11,13 @@ public class ModifySongCommandParser implements CommandParser {
 
     @Override
     public Command parse(Context context, ArgumentList argList) throws CommandParserException {
-        if (!argList.getTrailingNormalArguments().isEmpty()) {
+        if (!argList.getTrailingPositionalArguments().isEmpty()) {
             throw new CommandParserException("Unexpected trailing arguments");
         } else if (!argList.getOptionArguments().isEmpty()) {
             throw new CommandParserException("Unexpected option arguments");
         }
 
-        List<Integer> taskIDs = ParseUtil.getIDs(context, argList.getLeadingNormalArguments());
+        List<Integer> taskIDs = ParseUtil.getIDs(context, argList.getLeadingPositionalArguments());
         return new ModifySongCommand(taskIDs, argList.getFilterPropertyArguments(), argList.getModifyPropertyArguments());
     }
 

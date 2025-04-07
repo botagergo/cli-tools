@@ -13,7 +13,7 @@ public class BashCommandParser extends CustomCommandParser {
 
     @Override
     public Command parse(Context context, ArgumentList argList) throws CommandParserException {
-        if (!argList.getTrailingNormalArguments().isEmpty()) {
+        if (!argList.getTrailingPositionalArguments().isEmpty()) {
             throw new CommandParserException("Unexpected trailing arguments");
         } else if (!argList.getOptionArguments().isEmpty()) {
             throw new CommandParserException("Unexpected option arguments");
@@ -22,7 +22,7 @@ public class BashCommandParser extends CustomCommandParser {
         }
 
         return new BashCommand(
-                ParseUtil.getTempIds(context, argList.getLeadingNormalArguments()),
+                ParseUtil.getTempIds(context, argList.getLeadingPositionalArguments()),
                 argList.getFilterPropertyArguments(),
                 commandName,
                 timeoutMillis

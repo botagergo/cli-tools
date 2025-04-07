@@ -34,13 +34,13 @@ public class ListTasksCommandParserTest {
     }
 
     @Test
-    public void test_parse_oneNormalArg() throws CommandParserException {
+    public void test_parse_onePositionalArg() throws CommandParserException {
         ListTasksCommand command = parse(getArgList(List.of(), List.of("viewName"), new LinkedHashMap<>(), List.of(), List.of()));
         assertEquals(command.getViewName(), "viewName");
     }
 
     @Test
-    public void test_parse_twoNormalArgs_throws() {
+    public void test_parse_twoPositionalArgs_throws() {
         assertThrows(CommandParserException.class, () ->
                 parse(getArgList(List.of(), List.of("view1", "view2"), new LinkedHashMap<>(), List.of(), List.of())));
     }
@@ -184,16 +184,16 @@ public class ListTasksCommandParserTest {
     }
 
     private ArgumentList getArgList(
-            @NonNull List<String> leadingNormalArgs,
-            @NonNull List<String> trailingNormalArgs,
+            @NonNull List<String> leadingPositionalArgs,
+            @NonNull List<String> trailingPositionalArgs,
             @NonNull LinkedHashMap<Character, List<SpecialArgument>> specialArgs,
             @NonNull List<OptionArgument> optionArgs,
             @NonNull List<PropertyArgument> filterPropertyArgs
     ) {
         ArgumentList argList = new ArgumentList();
         argList.setCommandName("list");
-        argList.setLeadingNormalArguments(leadingNormalArgs);
-        argList.setTrailingNormalArguments(trailingNormalArgs);
+        argList.setLeadingPositionalArguments(leadingPositionalArgs);
+        argList.setTrailingPositionalArguments(trailingPositionalArgs);
         argList.setSpecialArguments(specialArgs);
         argList.setOptionArguments(optionArgs);
         argList.setFilterPropertyArguments(filterPropertyArgs);

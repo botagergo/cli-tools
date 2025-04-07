@@ -1,6 +1,7 @@
 package cli_tools.task_manager.cli.command;
 
 import cli_tools.common.cli.command.Command;
+import cli_tools.common.core.util.Print;
 import cli_tools.task_manager.cli.TaskManagerContext;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -16,7 +17,7 @@ public class ClearCommand extends Command {
             ((TaskManagerContext) context).getTaskService().deleteAllTasks();
             context.getLabelService().deleteAllLabels("tag");
         } catch (Exception e) {
-            System.out.println("ERROR: " + e.getMessage());
+            Print.printError(e.getMessage());
             log.error("{}\n{}", e.getMessage(), ExceptionUtils.getStackTrace(e));
         }
     }

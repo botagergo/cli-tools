@@ -1,6 +1,7 @@
 package cli_tools.task_manager.cli.command;
 
 import cli_tools.common.cli.command.Command;
+import cli_tools.common.core.util.Print;
 import cli_tools.task_manager.cli.TaskManagerContext;
 import lombok.Getter;
 import lombok.NonNull;
@@ -49,7 +50,7 @@ public final class DoneTaskCommand extends Command {
                 }
             }
         } catch (Exception e) {
-            System.out.println("ERROR: " + e.getMessage());
+            Print.printError(e.getMessage());
             log.error("{}\n{}", e.getMessage(), ExceptionUtils.getStackTrace(e));
         }
     }

@@ -22,7 +22,7 @@ public class ConfigurationRepositoryImpl implements ConfigurationRepository {
     public ConfigurationRepositoryImpl(@Named("configurationYamlFile") File configFile) throws IOException {
         if (!configFile.exists()) {
             if (!configFile.createNewFile()) {
-                log.warn("Failed to create config file at " + configFile);
+                log.warn("Failed to create config file at {}", configFile);
             }
         }
         try {
@@ -74,9 +74,7 @@ public class ConfigurationRepositoryImpl implements ConfigurationRepository {
         try {
             return gestalt.getConfig(propertyName, type);
         } catch (GestaltException e) {
-            log.debug("property \"" + propertyName + "\" not found, returning default value");
-            log.trace(e.getMessage());
-            log.trace(ExceptionUtils.getStackTrace(e));
+            handleException(e, propertyName);
             return defValue;
         }
     }
@@ -85,11 +83,15 @@ public class ConfigurationRepositoryImpl implements ConfigurationRepository {
         try {
             return gestalt.getConfig(propertyName, typeCapture);
         } catch (GestaltException e) {
-            log.debug("property \"" + propertyName + "\" not found, returning default value");
-            log.trace(e.getMessage());
-            log.trace(ExceptionUtils.getStackTrace(e));
+            handleException(e, propertyName);
             return defValue;
         }
+    }
+
+    private void handleException(GestaltException e, String propertyName) {
+        log.debug("property '{}' not found, returning default value", propertyName);
+        log.trace(e.getMessage());
+        log.trace(ExceptionUtils.getStackTrace(e));
     }
 
     private final Gestalt gestalt;

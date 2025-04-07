@@ -4,8 +4,8 @@ import cli_tools.common.cli.Context;
 import cli_tools.common.cli.command.Command;
 import cli_tools.common.cli.command.CommandExecutor;
 import cli_tools.common.cli.command_parser.CommandParser;
-import cli_tools.common.cli.command_parser.CommandParserException;
 import cli_tools.common.cli.command_parser.CommandParserFactory;
+import cli_tools.common.core.util.Print;
 import jakarta.inject.Inject;
 import lombok.Getter;
 import lombok.Setter;
@@ -26,7 +26,7 @@ public class ExecutorImpl implements Executor {
                 return;
             }
         } catch (MismatchedQuotesException e) {
-            System.out.println("Syntax error: mismatched quotes");
+            Print.printError("mismatched quotes");
             return;
         }
 
@@ -38,13 +38,13 @@ public class ExecutorImpl implements Executor {
         try {
             argList = ArgumentList.from(tokens);
         } catch (ArgumentList.ArgumentListException e) {
-            System.out.println("ERROR: " + e);
+            Print.printError(e.getMessage());
             return;
         }
 
         String commandName = argList.getCommandName();
         if (commandName == null || commandName.isEmpty()) {
-            System.out.println("no command specified");
+            Print.printError("no command specified");
             return;
         }
 
@@ -61,10 +61,8 @@ public class ExecutorImpl implements Executor {
         try {
             Command command = parser.parse(context, argList);
             commandExecutor.execute(context, command);
-        } catch (CommandParserException e) {
-            System.out.println(e.getMessage());
         } catch (Exception e) {
-            System.out.println("ERROR: " + e.getMessage());
+            Print.printError(e.getMessage());
         }
     }
 

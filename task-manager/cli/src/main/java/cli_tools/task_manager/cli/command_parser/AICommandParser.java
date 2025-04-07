@@ -9,6 +9,6 @@ import cli_tools.common.cli.command.Command;
 public class AICommandParser extends CommandParser {
     @Override
     public Command parse(Context context, ArgumentList argList) {
-        return new AICommand(String.join(" ", argList.getTrailingNormalArguments()));
+        return new AICommand(String.join(" ", argList.getTrailingPositionalArguments()));
     }
 }
