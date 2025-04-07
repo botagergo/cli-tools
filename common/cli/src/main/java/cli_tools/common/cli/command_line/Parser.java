@@ -6,11 +6,12 @@ public class Parser extends DefaultParser {
     public Parser() {
         setEofOnEscapedNewLine(true);
         setEofOnUnclosedQuote(true);
+        this.escapeChars(new char[]{});
     }
 
     @Override
     public boolean isDelimiterChar(CharSequence buffer, int pos) {
-        return super.isDelimiterChar(buffer, pos) || buffer.charAt(pos) == '+' || buffer.charAt(pos) == '-';
+        return Character.isWhitespace(buffer.charAt(pos));
     }
 
     @Override

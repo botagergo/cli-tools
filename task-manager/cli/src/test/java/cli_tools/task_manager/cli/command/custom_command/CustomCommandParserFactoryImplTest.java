@@ -8,7 +8,7 @@ import org.testng.annotations.Test;
 public class CustomCommandParserFactoryImplTest {
 
     private final CustomCommandParserFactoryImpl factory = new CustomCommandParserFactoryImpl();
-    BashCommandDefinition bashCommandDefinition = new BashCommandDefinition("echo", "echo Hello");
+    BashCommandDefinition bashCommandDefinition = new BashCommandDefinition("echo", "echo Hello", 1000);
 
     @Test
     public void test_createParser_withBashCommandDefinition_returnsBashCommandParser() {

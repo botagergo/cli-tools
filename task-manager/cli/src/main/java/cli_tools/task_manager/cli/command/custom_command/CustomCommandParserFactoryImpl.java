@@ -11,7 +11,7 @@ public class CustomCommandParserFactoryImpl implements CustomCommandParserFactor
     @Override
     public CustomCommandParser createParser(@NonNull CustomCommandDefinition customCommandDefinition) {
         if (customCommandDefinition instanceof BashCommandDefinition bashCommandDefinition) {
-            return new BashCommandParser(bashCommandDefinition.getBashCommand());
+            return new BashCommandParser(bashCommandDefinition.getBashCommand(), bashCommandDefinition.getTimeoutMillis());
         } else {
             log.error("Unknown custom command definition type: {}", customCommandDefinition.getClass().getName());
             return null;

@@ -24,10 +24,12 @@ public class BashCommandParser extends CustomCommandParser {
         return new BashCommand(
                 ParseUtil.getTempIds(context, argList.getLeadingNormalArguments()),
                 argList.getFilterPropertyArguments(),
-                commandName
+                commandName,
+                timeoutMillis
         );
     }
 
     private final String commandName;
+    private final int timeoutMillis;
 
 }

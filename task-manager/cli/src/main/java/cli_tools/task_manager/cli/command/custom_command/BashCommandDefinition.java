@@ -11,11 +11,14 @@ public class BashCommandDefinition extends CustomCommandDefinition {
     @JsonCreator
     public BashCommandDefinition(
             @JsonProperty(value = "commandName", required = true) String commandName,
-            @JsonProperty(value = "bashCommand", required = true) String bashCommand) {
+            @JsonProperty(value = "bashCommand", required = true) String bashCommand,
+            @JsonProperty(value = "timeoutMillis") int timeoutMillis) {
         super(commandName);
         this.bashCommand = bashCommand;
+        this.timeoutMillis = timeoutMillis;
     }
 
     private final String bashCommand;
+    private final int timeoutMillis;
 
 }

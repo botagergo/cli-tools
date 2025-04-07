@@ -16,7 +16,7 @@ import java.util.List;
 public class BashCommandParserTest {
 
     private final Context context = Mockito.mock(Context.class);
-    private final BashCommandParser parser = new BashCommandParser("echo $TASK_0_NAME");
+    private final BashCommandParser parser = new BashCommandParser("echo $TASK_0_NAME", 1000);
 
     @Test
     public void test_noArguments() throws CommandParserException {
@@ -34,7 +34,7 @@ public class BashCommandParserTest {
         ArgumentList argList = new ArgumentList();
         argList.getTrailingNormalArguments().add("arg1");
 
-        BashCommandParser parser = new BashCommandParser("echo $TASK_0_NAME");
+        BashCommandParser parser = new BashCommandParser("echo $TASK_0_NAME", 1000);
         parser.parse(context, argList);
     }
 
@@ -43,7 +43,7 @@ public class BashCommandParserTest {
         ArgumentList argList = new ArgumentList();
         argList.getOptionArguments().add(new OptionArgument("option", List.of("value")));
 
-        BashCommandParser parser = new BashCommandParser("echo $TASK_0_NAME");
+        BashCommandParser parser = new BashCommandParser("echo $TASK_0_NAME", 1000);
         parser.parse(context, argList);
     }
 
@@ -53,7 +53,7 @@ public class BashCommandParserTest {
         argList.getModifyPropertyArguments().add(
                 new PropertyArgument(Affinity.NEGATIVE, "prop", null, List.of("value")));
 
-        BashCommandParser parser = new BashCommandParser("echo $TASK_0_NAME");
+        BashCommandParser parser = new BashCommandParser("echo $TASK_0_NAME", 1000);
         parser.parse(context, argList);
     }
 
@@ -64,7 +64,7 @@ public class BashCommandParserTest {
         argList.setFilterPropertyArguments(List.of(
                 new PropertyArgument(Affinity.POSITIVE, "prop", null, List.of("value"))));
 
-        BashCommandParser parser = new BashCommandParser("echo $TASK_0_NAME");
+        BashCommandParser parser = new BashCommandParser("echo $TASK_0_NAME", 1000);
         BashCommand command = (BashCommand) parser.parse(context, argList);
 
         Assert.assertEquals(command.getTempIDs(), List.of(1, 2));

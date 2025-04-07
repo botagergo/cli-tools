@@ -153,14 +153,14 @@ public class TaskServiceImpl implements TaskService {
             return taskTree;
         }
 
-        taskTree = new PropertyOwnerTree(getTask(uuid), new ArrayList<>());
+        taskTree = new PropertyOwnerTree(taskRepository.get(uuid), new ArrayList<>());
         taskTreeMap.put(uuid, taskTree);
 
         UUID parentUuid = propertyManager.getProperty(taskTree.getParent(), "parent").getUuid();
         if (parentUuid != null) {
             PropertyOwnerTree parentTaskTree = taskTreeMap.get(parentUuid);
             if (parentTaskTree == null) {
-                parentTaskTree = getTaskTree(taskTrees, taskTreeMap, getTask(parentUuid));
+                parentTaskTree = getTaskTree(taskTrees, taskTreeMap, taskRepository.get(parentUuid));
             }
             if (parentTaskTree.getChildren() == null) {
                 parentTaskTree.setChildren(new ArrayList<>());
@@ -189,9 +189,9 @@ public class TaskServiceImpl implements TaskService {
                     continue;
                 }
                 uuids.add(taskUUID);
-                Task task = getTask(taskUUID);
+                Task task = taskRepository.get(taskUUID);
                 if (task != null) {
-                    tasks.add(getTask(taskUUID));
+                    tasks.add(task);
                 }
             }
         } else {
@@ -234,10 +234,6 @@ public class TaskServiceImpl implements TaskService {
                 sortTaskTrees(taskTree.getChildren(), propertySorter, propertyManager);
             }
         }
-    }
-
-    private Task getTask(UUID uuid) throws IOException {
-        return taskRepository.get(uuid);
     }
 
     @Override

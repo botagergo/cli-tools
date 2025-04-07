@@ -44,7 +44,7 @@ public class ExecutorImpl implements Executor {
 
         String commandName = argList.getCommandName();
         if (commandName == null || commandName.isEmpty()) {
-            System.out.println("ERROR: no command specified");
+            System.out.println("no command specified");
             return;
         }
 

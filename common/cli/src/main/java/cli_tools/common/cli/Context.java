@@ -2,6 +2,7 @@ package cli_tools.common.cli;
 
 import cli_tools.common.cli.command_parser.CommandParserFactory;
 import cli_tools.common.cli.property_to_string_converter.JsonPropertyToStringConverterRepository;
+import cli_tools.common.cli.property_to_string_converter.MainPropertyToStringConverter;
 import cli_tools.common.cli.string_to_property_converter.StringToPropertyConverter;
 import cli_tools.common.core.repository.ConfigurationRepository;
 import cli_tools.common.label.service.LabelService;
@@ -31,6 +32,8 @@ public abstract class Context {
     @Inject private PropertyManager propertyManager;
 
     @Inject private StringToPropertyConverter stringToPropertyConverter;
+
+    @Inject private MainPropertyToStringConverter propertyToStringConverter;
 
     @Inject private TempIDMappingService tempIDMappingService;
 
