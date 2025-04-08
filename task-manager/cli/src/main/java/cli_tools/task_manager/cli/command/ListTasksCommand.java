@@ -1,15 +1,18 @@
 package cli_tools.task_manager.cli.command;
 
 import cli_tools.common.cli.command.Command;
+import cli_tools.common.cli.string_to_property_converter.StringToPropertyConverterException;
 import cli_tools.common.core.data.*;
 import cli_tools.common.core.util.Print;
+import cli_tools.common.filter.FilterCriterionException;
+import cli_tools.common.property_converter.PropertyConverterException;
+import cli_tools.common.property_lib.PropertyException;
 import cli_tools.task_manager.task.Task;
 import cli_tools.task_manager.task.PropertyOwnerTree;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import cli_tools.common.cli.argument.PropertyArgument;
 import cli_tools.common.core.data.property.FilterPropertySpec;
 import cli_tools.task_manager.task.service.TaskServiceException;
@@ -97,11 +100,19 @@ public final class ListTasksCommand extends Command {
             } else {
                 List<Task> tasks = taskManagerContext.getTaskService().getTasks(filterPropertySpecs, sortingInfo, filterCriterionInfo, taskUUIDs);
                 taskManagerContext.getTaskPrinter().printTasks(taskManagerContext, tasks, actualProperties, outputFormat);
-            }
 
-        } catch (Exception e) {
-            Print.printError(e.getMessage());
-            log.error("{}\n{}", e.getMessage(), ExceptionUtils.getStackTrace(e));
+                if (!tempIDs.isEmpty()) {
+                    int hiddenTasks = tempIDs.size() - tasks.size();
+                    if (hiddenTasks < 0) {
+                        throw new RuntimeException();
+                    } else if (hiddenTasks >= 1) {
+                        Print.printWarning("%d task(s) selected by temporary ID are filtered", hiddenTasks);
+                    }
+                }
+            }
+        } catch (StringToPropertyConverterException | TaskServiceException | PropertyException | IOException |
+                 PropertyConverterException | FilterCriterionException e) {
+            Print.printAndLogException(e, log);
         }
     }
 

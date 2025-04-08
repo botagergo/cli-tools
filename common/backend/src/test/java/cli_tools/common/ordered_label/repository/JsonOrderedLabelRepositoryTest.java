@@ -115,6 +115,10 @@ public class JsonOrderedLabelRepositoryTest {
         repository.create("label1");
         repository.create("label2");
         repository.create("label3");
+        assertEquals(repository.getAll(), List.of(
+                new OrderedLabel("label1", 0),
+                new OrderedLabel("label2", 1),
+                new OrderedLabel("label3", 2)));
         assertEquals(Files.readString(tempFile.toPath()).replaceAll("\\s", ""), """
                 ["label1","label2","label3"]
         """.replaceAll("\\s", ""));

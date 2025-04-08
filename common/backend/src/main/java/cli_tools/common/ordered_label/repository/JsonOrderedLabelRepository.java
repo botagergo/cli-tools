@@ -47,7 +47,7 @@ public class JsonOrderedLabelRepository extends JsonRepository<ArrayList<String>
         if (data.isEmpty()) {
             orderedLabel = new OrderedLabel(text, 0);
         } else {
-            orderedLabel = new OrderedLabel(text, data.get(data.size() - 1).value());
+            orderedLabel = new OrderedLabel(text, data.get(data.size() - 1).value() + 1);
         }
         data.add(orderedLabel);
         writeData();

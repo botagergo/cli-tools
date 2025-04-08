@@ -1,35 +1,48 @@
 package cli_tools.task_manager.cli.command;
 
-import lombok.NonNull;
-import lombok.extern.log4j.Log4j2;
 import cli_tools.common.cli.argument.PropertyArgument;
 import cli_tools.common.cli.string_to_property_converter.StringToPropertyConverterException;
 import cli_tools.common.core.data.OutputFormat;
-import cli_tools.task_manager.task.Task;
 import cli_tools.common.core.data.property.FilterPropertySpec;
 import cli_tools.common.property_lib.PropertyException;
 import cli_tools.common.property_lib.PropertyManager;
 import cli_tools.task_manager.cli.TaskManagerContext;
+import cli_tools.task_manager.task.Task;
+import lombok.NonNull;
+import lombok.extern.log4j.Log4j2;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Log4j2
 public class CommandUtil {
     public static List<UUID> getUUIDsFromTempIDs(@NonNull TaskManagerContext context, List<Integer> tempIDs) throws IOException {
-        if (tempIDs != null && !tempIDs.isEmpty()) {
-            List<UUID> uuids = new ArrayList<>();
-            for (int tempID : tempIDs) {
-                UUID uuid = context.getTempIDMappingService().getUUID(tempID);
-                uuids.add(uuid);
-            }
-            return uuids;
-        } else {
+        if (tempIDs == null || tempIDs.isEmpty()) {
             return null;
         }
+
+        List<UUID> uuids = new ArrayList<>();
+        List<Integer> nonexistentTempIds = new ArrayList<>();
+
+        for (int tempID : tempIDs) {
+            UUID uuid = context.getTempIDMappingService().getUUID(tempID);
+            if (uuid == null) {
+                nonexistentTempIds.add(tempID);
+            } else {
+                uuids.add(uuid);
+            }
+        }
+
+        if (!nonexistentTempIds.isEmpty()) {
+            throw new IllegalArgumentException("no task with temporary ID(s): %s".formatted(
+                    nonexistentTempIds.stream().map(Object::toString).collect(Collectors.joining(", "))));
+        }
+
+        return uuids;
     }
 
     public static List<FilterPropertySpec> getFilterPropertySpecs(@NonNull TaskManagerContext context, List<PropertyArgument> filterPropertyArgs) throws StringToPropertyConverterException, PropertyException, IOException {

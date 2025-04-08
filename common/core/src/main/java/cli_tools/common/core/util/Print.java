@@ -21,4 +21,8 @@ public class Print {
     public static void printInfo(String text, Object ...args) {
         System.out.println(Ansi.ansi().fg(Ansi.Color.CYAN).a(text.formatted(args)).reset());
     }
+
+    public static void printWarning(String text, Object ...args) {
+        System.out.println(Ansi.ansi().fg(Ansi.Color.YELLOW).a(text.formatted(args)).reset());
+    }
 }

@@ -4,12 +4,10 @@ public class Util {
     public static int parseTempId(String str) throws IllegalArgumentException {
         try {
             int taskID = Integer.parseInt(str);
-            if (taskID < 1) {
-                throw new IllegalArgumentException("Invalid temporary id: " + str);
+            if (taskID >= 1) {
+                return taskID;
             }
-            return taskID;
-        } catch (NumberFormatException e) {
-            throw new IllegalArgumentException("Invalid temporary id: " + str);
-        }
+        } catch (NumberFormatException ignored) {}
+        throw new IllegalArgumentException("invalid temporary id: " + str);
     }
 }

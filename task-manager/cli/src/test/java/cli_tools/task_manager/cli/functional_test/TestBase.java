@@ -82,4 +82,15 @@ public class TestBase {
         }
     }
 
+    protected void assertStdoutNumberOfTasks(int expectedNumberOfTasks) {
+        String[] lines = stdoutStr.split("\r\n");
+        int numberOfTasks = 0;
+        int ind = 3;
+        while (ind < lines.length && lines[ind].startsWith("|")) {
+            numberOfTasks++;
+            ind += 2;
+        }
+        assertEquals(expectedNumberOfTasks, numberOfTasks);
+    }
+
 }
