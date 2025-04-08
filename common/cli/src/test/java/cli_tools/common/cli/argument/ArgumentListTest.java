@@ -292,7 +292,7 @@ public class ArgumentListTest {
         Assert.assertEquals(argList.getTrailingPositionalArguments().size(), 0);
         Assert.assertEquals(argList.getSpecialArguments().size(), 0);
         Assert.assertEquals(argList.getOptionArguments().size(), 0);
-        Assert.assertEquals(argList.getModifyPropertyArguments(), List.of(new PropertyArgument(Affinity.NEUTRAL, "prop", null, List.of(""))));
+        Assert.assertEquals(argList.getModifyPropertyArguments(), List.of(new PropertyArgument(Affinity.NEUTRAL, "prop", null, List.of())));
         Assert.assertEquals(argList.getFilterPropertyArguments().size(), 0);
     }
 
@@ -482,7 +482,7 @@ public class ArgumentListTest {
         Assert.assertEquals(argList.getSpecialArguments().size(), 0);
         Assert.assertEquals(argList.getOptionArguments().size(), 0);
         Assert.assertEquals(argList.getModifyPropertyArguments().size(), 0);
-        Assert.assertEquals(argList.getFilterPropertyArguments(), List.of(new PropertyArgument(Affinity.NEUTRAL, "prop", null, List.of(""))));
+        Assert.assertEquals(argList.getFilterPropertyArguments(), List.of(new PropertyArgument(Affinity.NEUTRAL, "prop", null, List.of())));
     }
 
     @Test
@@ -557,7 +557,7 @@ public class ArgumentListTest {
         Assert.assertEquals(argList.getCommandName(), "command");
         Assert.assertEquals(argList.getTrailingPositionalArguments().size(), 0);
         Assert.assertEquals(argList.getSpecialArguments().size(), 0);
-        Assert.assertEquals(argList.getOptionArguments(), List.of(new OptionArgument("prop", List.of(""))));
+        Assert.assertEquals(argList.getOptionArguments(), List.of(new OptionArgument("prop", List.of())));
         Assert.assertEquals(argList.getModifyPropertyArguments().size(), 0);
     }
 
@@ -581,7 +581,7 @@ public class ArgumentListTest {
         Assert.assertEquals(argList.getModifyPropertyArguments(), List.of(
                 new PropertyArgument(Affinity.POSITIVE, "", null, null),
                 new PropertyArgument(Affinity.NEGATIVE, "", null, null),
-                new PropertyArgument(Affinity.NEUTRAL, "", null, List.of(""))));
+                new PropertyArgument(Affinity.NEUTRAL, "", null, List.of())));
     }
 
 }

@@ -3,11 +3,13 @@ package cli_tools.task_manager.cli.functional_test;
 import cli_tools.common.cli.Context;
 import cli_tools.common.core.repository.*;
 import cli_tools.common.repository.JsonStateRepository;
+import cli_tools.common.util.RoundRobinUUIDGenerator;
 import cli_tools.task_manager.cli.TaskManagerContext;
 import cli_tools.task_manager.cli.command_parser.*;
 import cli_tools.task_manager.task.repository.TaskRepository;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
+import com.google.inject.Singleton;
 import com.google.inject.name.Names;
 import cli_tools.common.cli.tokenizer.Tokenizer;
 import cli_tools.common.cli.tokenizer.TokenizerImpl;
@@ -34,7 +36,6 @@ import cli_tools.common.cli.command_line.Executor;
 import cli_tools.common.cli.command_line.ExecutorImpl;
 import cli_tools.common.cli.command_parser.CommandParserFactory;
 import cli_tools.common.cli.command_parser.CommandParserFactoryImpl;
-import cli_tools.common.util.RandomUUIDGenerator;
 import cli_tools.common.util.UUIDGenerator;
 
 import java.io.File;
@@ -58,6 +59,12 @@ public class TestModule extends AbstractModule {
         return commandParserFactory;
     }
 
+    @Provides
+    @Singleton
+    UUIDGenerator uuidGenerator() {
+        return new RoundRobinUUIDGenerator(100);
+    }
+
     @Override
     protected void configure() {
         Path tempDir;
@@ -77,7 +84,6 @@ public class TestModule extends AbstractModule {
         bind(PropertyDescriptorRepository.class).to(JsonPropertyDescriptorRepository.class).asEagerSingleton();
         bind(ConfigurationRepository.class).to(MockConfigurationRepository.class).asEagerSingleton();
         bind(StateRepository.class).to(JsonStateRepository.class).asEagerSingleton();
-        bind(UUIDGenerator.class).to(RandomUUIDGenerator.class).asEagerSingleton();
         bind(TaskService.class).to(TaskServiceImpl.class).asEagerSingleton();
         bind(LabelService.class).to(LabelServiceImpl.class).asEagerSingleton();
         bind(OrderedLabelService.class).to(OrderedLabelServiceImpl.class).asEagerSingleton();

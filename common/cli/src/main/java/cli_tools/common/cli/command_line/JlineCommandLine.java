@@ -45,7 +45,8 @@ public class JlineCommandLine implements CommandLine {
         String prompt = "$ ";
         while (true) {
             try {
-                line = reader.readLine(prompt).trim();
+                line = strip(reader.readLine(prompt));
+
                 if (line.isEmpty()) {
                     continue;
                 }
@@ -61,6 +62,16 @@ public class JlineCommandLine implements CommandLine {
 
     private cli_tools.common.cli.command_line.Completer buildCompleter(Context context) {
         return new cli_tools.common.cli.command_line.Completer(context);
+    }
+
+    private String strip(String str) {
+        String strippedStr = str.stripTrailing();
+        char lastChar = strippedStr.charAt(strippedStr.length()-1);
+        if (str.length() > strippedStr.length() &&
+                lastChar == '\\') {
+            strippedStr = strippedStr + str.charAt(strippedStr.length());
+        }
+        return strippedStr.stripLeading();
     }
 
     private final Executor executor;

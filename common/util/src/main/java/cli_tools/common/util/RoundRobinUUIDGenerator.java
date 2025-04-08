@@ -2,12 +2,9 @@ package cli_tools.common.util;
 
 import jakarta.inject.Inject;
 import lombok.AllArgsConstructor;
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
 import java.nio.ByteBuffer;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 @AllArgsConstructor
@@ -15,11 +12,10 @@ import java.util.UUID;
 public class RoundRobinUUIDGenerator implements UUIDGenerator {
 
     public RoundRobinUUIDGenerator(int number) {
-        ArrayList<UUID> uuidList = new ArrayList<>();
+        this.uuids = new UUID[number];
         for (byte i = 0; i < number; i++) {
-            uuidList.add(UUID.nameUUIDFromBytes(ByteBuffer.allocate(4).putInt(i).array()));
+            uuids[i] = UUID.nameUUIDFromBytes(ByteBuffer.allocate(4).putInt(i).array());
         }
-        this.uuidList = uuidList;
     }
 
     @Inject
@@ -29,16 +25,11 @@ public class RoundRobinUUIDGenerator implements UUIDGenerator {
 
     @Override
     public UUID getUUID() {
-        currInd = (currInd+1)%uuidList.size();
-        return uuidList.get(currInd);
+        currInd = (currInd+1)%uuids.length;
+        return uuids[currInd];
     }
 
-    public UUID getUUID(int index) {
-        return uuidList.get(index%uuidList.size());
-    }
-
-    @NonNull
-    private final List<UUID> uuidList;
+    public final UUID[] uuids;
     private int currInd = -1;
 
 }

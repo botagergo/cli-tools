@@ -86,13 +86,13 @@ public final class ListTasksCommand extends Command {
             }
 
             if (actualHierarchical && context.getPropertyManager().getPropertyDescriptor("parent") == null) {
-                log.warn("cannot print tasks hierarchically because the 'parent' property does not exist");
+                Print.printWarning("cannot print tasks hierarchically because the 'parent' property does not exist");
                 actualHierarchical = false;
             }
 
             if (actualHierarchical) {
                 if (outputFormat != OutputFormat.TEXT) {
-                    Print.printError("'outputFormat' can only be text when printing tasks hierarchically");
+                    Print.printError("'outputFormat' is not 'text', hierarchical printing is not possible");
                     return;
                 }
                 List<PropertyOwnerTree> taskHierarchies = taskManagerContext.getTaskService().getTaskTrees(filterPropertySpecs, sortingInfo, filterCriterionInfo, taskUUIDs);

@@ -32,11 +32,11 @@ public class JsonLabelRepositoryTest {
                     "uuid":"%s"
                 }
             ]
-        """, uuidGenerator.getUUID(0), uuidGenerator.getUUID(1)));
+        """, uuidGenerator.uuids[0], uuidGenerator.uuids[1]));
         repository = new JsonLabelRepository(tempFile);
         assertEquals(repository.getAll(), List.of(
-                new Label(uuidGenerator.getUUID(0), "label1"),
-                new Label(uuidGenerator.getUUID(1), "label2")
+                new Label(uuidGenerator.uuids[0], "label1"),
+                new Label(uuidGenerator.uuids[1], "label2")
         ));
     }
 
@@ -44,8 +44,8 @@ public class JsonLabelRepositoryTest {
     public void test_write_successful() throws IOException {
         File tempFile = rc.getTempFile("write_successful.json");
         repository = new JsonLabelRepository(tempFile);
-        repository.create(new Label(uuidGenerator.getUUID(0), "label1"));
-        repository.create(new Label(uuidGenerator.getUUID(1), "label2"));
+        repository.create(new Label(uuidGenerator.uuids[0], "label1"));
+        repository.create(new Label(uuidGenerator.uuids[1], "label2"));
         String content = Files.readString(tempFile.toPath());
         assertEquals(content.replaceAll("\\s", ""), String.format("""
             [
@@ -58,7 +58,7 @@ public class JsonLabelRepositoryTest {
                     "text":"label2"
                 }
             ]
-        """.replaceAll("\\s", ""), uuidGenerator.getUUID(0), uuidGenerator.getUUID(1)).replaceAll("\\s+",""));
+        """.replaceAll("\\s", ""), uuidGenerator.uuids[0], uuidGenerator.uuids[1]).replaceAll("\\s+",""));
     }
 
     @Test
@@ -90,7 +90,7 @@ public class JsonLabelRepositoryTest {
                 "uuid":"%s"
             }
         ]
-        """, uuidGenerator.getUUID(0), uuidGenerator.getUUID(1)));
+        """, uuidGenerator.uuids[0], uuidGenerator.uuids[1]));
         repository = new JsonLabelRepository(tempFile);
         assertThrows(IOException.class, () -> repository.getData());
     }
@@ -109,7 +109,7 @@ public class JsonLabelRepositoryTest {
                     "uuid":"%s"
                 }
             ]
-            """, uuidGenerator.getUUID(0), uuidGenerator.getUUID(1)));
+            """, uuidGenerator.uuids[0], uuidGenerator.uuids[1]));
         
         repository = new JsonLabelRepository(tempFile);
         assertThrows(IOException.class, () -> repository.getData());
@@ -128,7 +128,7 @@ public class JsonLabelRepositoryTest {
                 "uuid":"%s"
             }
         ]
-        """, uuidGenerator.getUUID(1)));
+        """, uuidGenerator.uuids[1]));
         repository = new JsonLabelRepository(tempFile);
         assertThrows(IOException.class, () -> repository.getData());
     }

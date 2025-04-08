@@ -6,7 +6,7 @@ public class Parser extends DefaultParser {
     public Parser() {
         setEofOnEscapedNewLine(true);
         setEofOnUnclosedQuote(true);
-        this.escapeChars(new char[]{});
+        this.escapeChars(new char[]{'\\'});
     }
 
     @Override

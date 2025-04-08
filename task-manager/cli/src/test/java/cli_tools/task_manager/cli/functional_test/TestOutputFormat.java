@@ -6,13 +6,10 @@ import cli_tools.common.core.data.SortingInfo;
 import cli_tools.common.core.data.ViewInfo;
 import cli_tools.task_manager.task.Task;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
 
 import static org.testng.Assert.*;
@@ -60,10 +57,9 @@ public class TestOutputFormat extends TestBase{
     }
 
     private void assertJsonOutput() throws JsonProcessingException {
-        assertTrue(stdoutStr.contains("\"name\":\"buy a new TV\""));
+        assertStdoutContains("\"name\":\"buy a new TV\"");
 
-        TypeReference<List<HashMap<String, Object>>> typeRef = new TypeReference<>() {};
-        List<Task> tasks = objectMapper.readValue(stdoutStr, typeRef).stream().map(Task::fromMap).toList();
+        List<Task> tasks = parseTasksFromJsonStdout();
 
         assertEquals(tasks.size(), 4);
         assertEquals(tasks.get(0).getProperties().get("name"), "buy a new TV");
@@ -73,10 +69,9 @@ public class TestOutputFormat extends TestBase{
     }
 
     private void assertPrettyJsonOutput() throws JsonProcessingException {
-        assertFalse(stdoutStr.contains("\"name\":\"buy a new TV\""));
+        assertStdoutNotContains("\"name\":\"buy a new TV\"");
 
-        TypeReference<List<HashMap<String, Object>>> typeRef = new TypeReference<>() {};
-        List<Task> tasks = objectMapper.readValue(stdoutStr, typeRef).stream().map(Task::fromMap).toList();
+        List<Task> tasks = parseTasksFromJsonStdout();
 
         assertEquals(tasks.size(), 4);
         assertEquals(tasks.get(0).getProperties().get("name"), "buy a new TV");
@@ -84,7 +79,5 @@ public class TestOutputFormat extends TestBase{
         assertEquals(tasks.get(2).getProperties().get("name"), "go to the post office");
         assertEquals(tasks.get(3).getProperties().get("name"), "read a book");
     }
-
-    private final ObjectMapper objectMapper = new ObjectMapper();
 
 }

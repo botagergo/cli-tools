@@ -146,6 +146,10 @@ public class ArgumentList {
 
     private static ArrayList<String> getValues(String valueListStr, char separator) {
         ArrayList<String> values = new ArrayList<>();
+        if (valueListStr.isEmpty()) {
+            return values;
+        }
+
         StringBuilder currentValue = new StringBuilder();
         char currentQuote = 0;
         for (int i = 0; i < valueListStr.length(); i++) {

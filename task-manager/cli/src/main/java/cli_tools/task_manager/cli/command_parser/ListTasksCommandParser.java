@@ -55,6 +55,8 @@ public class ListTasksCommandParser extends CommandParser {
 
 
     private List<SortingCriterion> parseSortingCriteria(List<String> values) throws CommandParserException {
+        values = parseListOptionValue(values);
+
         if (values.isEmpty()) {
             throw new CommandParserException("sorting criterion list is empty");
         }
@@ -89,40 +91,26 @@ public class ListTasksCommandParser extends CommandParser {
             case "text" -> { return OutputFormat.TEXT; }
             case "json" -> { return OutputFormat.JSON; }
             case "prettyJson" -> { return OutputFormat.PRETTY_JSON; }
-            default ->
-                    throw new CommandParserException("invalid output format: " + outputFormat + "\nvalid values: text, json, prettyJson");
+            default -> throw new CommandParserException("invalid output format: " + outputFormat + "\nvalid values: text, json, prettyJson");
         }
     }
 
     private boolean parseHierarchical(List<String> values) throws CommandParserException {
-        if (values.size() != 1) {
-            throw new CommandParserException("value of 'hierarchical' must be true or false");
-        }
-
-        switch (values.get(0)) {
+        String value = parseSingleOptionValue("hierarchical", values);
+        switch (value) {
             case "true" -> { return true; }
             case "false" -> { return false; }
-            default ->
-                    throw new CommandParserException("value of 'hierarchical' must be true or false");
+            default -> throw new CommandParserException("value of 'hierarchical' must be true or false");
         }
     }
 
     private List<String> parseProperties(List<String> values) {
+        values = parseListOptionValue(values);
         if (values.isEmpty()) {
             log.warn("empty list received in option 'properties', ignoring");
             return null;
         }
         return values;
-    }
-
-    private String parseSingleOptionValue(String optionArgumentName, List<String> valueList) throws CommandParserException {
-        if (valueList.isEmpty()) {
-            throw new CommandParserException("option '" + optionArgumentName + "' needs an argument");
-        } else if (valueList.size() != 1) {
-            throw new CommandParserException("option '" + optionArgumentName + "'accepts one argument");
-        }
-
-        return valueList.get(0);
     }
 
 }
