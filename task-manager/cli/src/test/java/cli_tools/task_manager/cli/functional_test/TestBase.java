@@ -56,6 +56,7 @@ public class TestBase {
         commandParserFactory.registerParser("add", AddTaskCommandParser::new);
         commandParserFactory.registerParser("list", ListTasksCommandParser::new);
         commandParserFactory.registerParser("done", DoneTaskCommandParser::new);
+        commandParserFactory.registerParser("undone", DoneTaskCommandParser::new);
         commandParserFactory.registerParser("clear", ClearCommandParser::new);
         commandParserFactory.registerParser("delete", DeleteTaskCommandParser::new);
         commandParserFactory.registerParser("modify", ModifyTaskCommandParser::new);

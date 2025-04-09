@@ -86,6 +86,7 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public List<Task> getTasks(boolean getDone) throws IOException {
         List<Task> tasks = taskRepository.getAll();
+        tasks.forEach(task -> task.setDone(false));
         if (getDone) {
             List<Task> doneTasks = doneTaskRepository.getAll();
             doneTasks.forEach(task -> task.setDone(true));

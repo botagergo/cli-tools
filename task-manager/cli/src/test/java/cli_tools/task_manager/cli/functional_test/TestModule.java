@@ -6,7 +6,6 @@ import cli_tools.common.property_converter.PropertyConverter;
 import cli_tools.common.repository.JsonStateRepository;
 import cli_tools.common.util.RoundRobinUUIDGenerator;
 import cli_tools.task_manager.cli.TaskManagerContext;
-import cli_tools.task_manager.cli.command_parser.*;
 import cli_tools.task_manager.pseudo_property_provider.PseudoPropertyProviderMixIn;
 import cli_tools.task_manager.task.repository.TaskRepository;
 import com.google.inject.AbstractModule;
@@ -49,21 +48,13 @@ public class TestModule extends AbstractModule {
     String basePath;
 
     @Provides
+    @Singleton
     protected CommandParserFactory getCommandParserFactory(ConfigurationRepository configurationRepository) {
-        CommandParserFactory commandParserFactory = new CommandParserFactoryImpl(configurationRepository);
-
-        commandParserFactory.registerParser("add", AddTaskCommandParser::new);
-        commandParserFactory.registerParser("list", ListTasksCommandParser::new);
-        commandParserFactory.registerParser("done", DoneTaskCommandParser::new);
-        commandParserFactory.registerParser("clear", ClearCommandParser::new);
-        commandParserFactory.registerParser("delete", DeleteTaskCommandParser::new);
-        commandParserFactory.registerParser("modify", ModifyTaskCommandParser::new);
-        commandParserFactory.registerParser("ai", AICommandParser::new);
-
-        return commandParserFactory;
+        return new CommandParserFactoryImpl(configurationRepository);
     }
 
     @Provides
+    @Singleton
     TaskService getTaskService(PropertyManager propertyManager,
                                UUIDGenerator uuidGenerator,
                                PropertyConverter propertyConverter,
@@ -78,6 +69,7 @@ public class TestModule extends AbstractModule {
     }
 
     @Provides
+    @Singleton
     PropertyDescriptorRepository getPropertyDescriptorRepository(TempIDMappingService tempIDMappingService) {
         return new JsonPropertyDescriptorRepository(
                 getJsonFile("property_descriptor.json"),

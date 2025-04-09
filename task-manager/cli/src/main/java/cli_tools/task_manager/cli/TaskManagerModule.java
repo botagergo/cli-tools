@@ -16,6 +16,7 @@ import cli_tools.task_manager.pseudo_property_provider.PseudoPropertyProviderMix
 import cli_tools.task_manager.task.repository.TaskRepository;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
+import com.google.inject.Singleton;
 import com.google.inject.name.Names;
 import cli_tools.common.cli.tokenizer.Tokenizer;
 import cli_tools.common.cli.tokenizer.TokenizerImpl;
@@ -51,6 +52,7 @@ public class TaskManagerModule extends AbstractModule {
     String basePath = System.getenv("TASK_MANAGER_BASE_PATH");
 
     @Provides
+    @Singleton
     CustomCommandRepository getCustomCommandRepository() {
         JsonCustomCommandRepository jsonCustomCommandRepository =
                 new JsonCustomCommandRepository(new File(basePath + "custom_command_definition.json"));
@@ -59,6 +61,7 @@ public class TaskManagerModule extends AbstractModule {
     }
 
     @Provides
+    @Singleton
     TaskService getTaskService(PropertyManager propertyManager,
                                UUIDGenerator uuidGenerator,
                                PropertyConverter propertyConverter,
@@ -73,6 +76,7 @@ public class TaskManagerModule extends AbstractModule {
     }
 
     @Provides
+    @Singleton
     PropertyDescriptorRepository getPropertyDescriptorRepository(TempIDMappingService tempIDMappingService) {
         return new JsonPropertyDescriptorRepository(
                 getJsonFile("property_descriptor.json"),

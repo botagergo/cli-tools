@@ -40,6 +40,7 @@ public class TaskManagerCLI {
         commandParserFactory.registerParser("add", AddTaskCommandParser::new);
         commandParserFactory.registerParser("list", ListTasksCommandParser::new);
         commandParserFactory.registerParser("done", DoneTaskCommandParser::new);
+        commandParserFactory.registerParser("undone", UndoneTaskCommandParser::new);
         commandParserFactory.registerParser("clear", ClearCommandParser::new);
         commandParserFactory.registerParser("delete", DeleteTaskCommandParser::new);
         commandParserFactory.registerParser("modify", ModifyTaskCommandParser::new);
