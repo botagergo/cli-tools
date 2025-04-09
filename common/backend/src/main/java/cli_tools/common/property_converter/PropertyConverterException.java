@@ -33,7 +33,7 @@ public class PropertyConverterException extends Exception {
     final String predicate;
 
     public enum Type {
-        NotACollection, EmptyList, LabelNotFound
+        NotACollection, EmptyList, LabelNotFound, IllegalType
     }
 
 }

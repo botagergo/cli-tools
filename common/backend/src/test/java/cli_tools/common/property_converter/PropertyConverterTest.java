@@ -1,5 +1,8 @@
 package cli_tools.common.property_converter;
 
+import cli_tools.common.core.data.OrderedLabel;
+import cli_tools.common.core.repository.OrderedLabelRepository;
+import cli_tools.common.core.repository.OrderedLabelRepositoryFactory;
 import org.mockito.*;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
@@ -46,7 +49,8 @@ public class PropertyConverterTest {
     @Test
     public void test_convertProperty_integer_successful() throws IOException, PropertyConverterException {
         assertEquals(propertyConverter.convertProperty(
-                getPropertyDescriptor(PropertyDescriptor.Type.Integer, PropertyDescriptor.Multiplicity.SINGLE), List.of(123)), List.of(123));
+                getPropertyDescriptor(PropertyDescriptor.Type.Integer, PropertyDescriptor.Multiplicity.SINGLE),
+                List.of(123)), List.of(123));
     }
 
     @Test
@@ -67,6 +71,34 @@ public class PropertyConverterTest {
         assertEquals(propertyConverter.convertProperty(
                         getPropertyDescriptor(PropertyDescriptor.Type.UUID, PropertyDescriptor.Multiplicity.SET), List.of(uuid1.toString(), uuid2.toString(), uuid3.toString())),
                 Utils.newLinkedHashSet(uuid1, uuid2, uuid3));
+    }
+
+    @Test
+    public void test_convertProperty_integer_string_labelFound() throws IOException, PropertyConverterException {
+        Mockito.when(orderedLabelRepositoryFactory.getOrderedLabelRepository("test")).thenReturn(orderedLabelRepository);
+        Mockito.when(orderedLabelRepository.find("label1")).thenReturn(new OrderedLabel("label1", 3));
+
+        assertEquals(propertyConverter.convertProperty(
+                getPropertyDescriptor(PropertyDescriptor.Type.Integer, PropertyDescriptor.Multiplicity.SINGLE),
+                List.of("label1")),
+                List.of(3));
+    }
+
+
+    @Test
+    public void test_convertProperty_integer_string_labelNotFound_throws() throws IOException {
+        Mockito.when(orderedLabelRepositoryFactory.getOrderedLabelRepository("test")).thenReturn(orderedLabelRepository);
+        Mockito.when(orderedLabelRepository.find("label1")).thenReturn(null);
+
+        try {
+            propertyConverter.convertProperty(
+                    getPropertyDescriptor(PropertyDescriptor.Type.Integer, PropertyDescriptor.Multiplicity.SINGLE), List.of("label1"));
+            Assert.fail();
+        } catch (PropertyConverterException e) {
+            assertEquals(e.getExceptionType(), PropertyConverterException.Type.LabelNotFound);
+            assertEquals(e.getPropertyDescriptor(), getPropertyDescriptor(PropertyDescriptor.Type.Integer, PropertyDescriptor.Multiplicity.SINGLE));
+            assertEquals(e.getPropertyValue(), "label1");
+        }
     }
 
     @Test
@@ -99,15 +131,16 @@ public class PropertyConverterTest {
         return new PropertyDescriptor("test", type, null, multiplicity, null, null);
     }
 
-    @Mock private LabelRepositoryFactory labelRepositoryFactory;
     @Mock private PropertyDescriptorService propertyDescriptorService;
     @Mock private LabelRepository labelRepository;
+    @Mock private OrderedLabelRepository orderedLabelRepository;
     @Spy private final UUIDGenerator uuidGenerator = new RoundRobinUUIDGenerator(3);
     private final UUID uuid1 = uuidGenerator.getUUID();
     private final UUID uuid2 = uuidGenerator.getUUID();
     private final UUID uuid3 = uuidGenerator.getUUID();
 
-    @InjectMocks
-    PropertyConverter propertyConverter;
+    @Mock private LabelRepositoryFactory labelRepositoryFactory;
+    @Mock private OrderedLabelRepositoryFactory orderedLabelRepositoryFactory;
+    @InjectMocks private PropertyConverter propertyConverter;
 
 }
