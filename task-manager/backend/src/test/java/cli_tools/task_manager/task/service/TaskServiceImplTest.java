@@ -17,7 +17,7 @@ import cli_tools.common.util.UUIDGenerator;
 import cli_tools.common.util.Utils;
 import cli_tools.task_manager.task.Task;
 import cli_tools.task_manager.task.PropertyOwnerTree;
-import common.task.repository.SimpleTaskRepository;
+import cli_tools.task_manager.task.repository.SimpleTaskRepository;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -40,9 +40,11 @@ public class TaskServiceImplTest {
         MockitoAnnotations.openMocks(this);
 
         simpleTaskRepository = new SimpleTaskRepository();
+        SimpleTaskRepository doneSimpleTaskRepository = new SimpleTaskRepository();
         propertyManager = new PropertyManager();
         taskService = new TaskServiceImpl(
                 simpleTaskRepository,
+                doneSimpleTaskRepository,
                 propertyManager,
                 null,
                 propertyConverter,
@@ -61,12 +63,12 @@ public class TaskServiceImplTest {
     @Test
     public void test_getTasks_all_empty() throws IOException {
         simpleTaskRepository.deleteAll();
-        assertEquals(taskService.getTasks().size(), 0);
+        assertEquals(taskService.getTasks(true).size(), 0);
     }
 
     @Test
     public void test_getTasks_all() throws IOException {
-        List<Task> tasks = taskService.getTasks();
+        List<Task> tasks = taskService.getTasks(true);
 
         assertEquals(tasks.size(), 3);
         assertEquals(tasks.size(), 3);
@@ -84,7 +86,7 @@ public class TaskServiceImplTest {
 
     @Test
     public void test_getTasks_uuids_empty() throws IOException, PropertyException, PropertyConverterException, TaskServiceException {
-        List<Task> tasks = taskService.getTasks(null, null, null, List.of());
+        List<Task> tasks = taskService.getTasks(null, null, null, List.of(), true);
         assertEquals(tasks.size(), 0);
     }
 
@@ -92,7 +94,7 @@ public class TaskServiceImplTest {
     public void test_getTasks_uuids_notExist() throws IOException, PropertyException, PropertyConverterException, TaskServiceException {
         List<Task> tasks = taskService.getTasks(
                 null, null, null,
-                List.of(uuid1, uuid4)
+                List.of(uuid1, uuid4), false
         );
         assertEquals(tasks.size(), 1);
         assertEquals(tasks.get(0).getProperties().get("name"), "test task");
@@ -102,7 +104,7 @@ public class TaskServiceImplTest {
     public void test_getTasks_uuids_duplicate() throws IOException, PropertyException, PropertyConverterException, TaskServiceException {
         List<Task> tasks = taskService.getTasks(
                 null, null, null,
-                List.of(uuid3, uuid1, uuid1, uuid1, uuid3)
+                List.of(uuid3, uuid1, uuid1, uuid1, uuid3), false
         );
         assertEquals(tasks.size(), 2);
         assertEquals(tasks.get(0).getProperties().get("name"), "yet another task");
@@ -113,7 +115,7 @@ public class TaskServiceImplTest {
     public void test_getTasks_uuids() throws IOException, PropertyException, PropertyConverterException, TaskServiceException {
         List<Task> tasks = taskService.getTasks(
                 null, null, null,
-                List.of(uuid3, uuid1)
+                List.of(uuid3, uuid1), false
         );
         assertEquals(tasks.size(), 2);
         assertEquals(tasks.get(0).getProperties().get("name"), "yet another task");
@@ -129,7 +131,7 @@ public class TaskServiceImplTest {
                         "name", null,
                         Predicate.CONTAINS, List.of("other")
                 ),
-                null
+                null, false
         );
         assertEquals(tasks.size(), 2);
         assertEquals(tasks.get(0).getProperties().get("name"), "other task");
@@ -140,7 +142,7 @@ public class TaskServiceImplTest {
                         "test", FilterCriterionInfo.Type.PROPERTY,
                         "uuid", null,
                         Predicate.CONTAINS, List.of(uuid2.toString())
-                ), null
+                ), null, false
         ));
 
         assertThrows(TaskServiceException.class, () -> taskService.getTasks(null, null,
@@ -148,7 +150,7 @@ public class TaskServiceImplTest {
                         "test", FilterCriterionInfo.Type.PROPERTY,
                         "name", null,
                         Predicate.CONTAINS, List.of()
-                ), null
+                ), null, false
         ));
 
         assertThrows(TaskServiceException.class, () -> taskService.getTasks(null, null,
@@ -156,7 +158,7 @@ public class TaskServiceImplTest {
                         "test", FilterCriterionInfo.Type.PROPERTY,
                         "name", null,
                         Predicate.CONTAINS, List.of("str1", "str2")
-                ), null
+                ), null, false
         ));
 
         tasks = taskService.getTasks(null, null,
@@ -164,7 +166,7 @@ public class TaskServiceImplTest {
                         "test", FilterCriterionInfo.Type.PROPERTY,
                         "tags", null,
                         Predicate.CONTAINS, List.of("tag1", "tag2")
-                ), null
+                ), null, false
         );
         assertEquals(tasks.size(), 2);
         assertEquals(tasks.get(0).getProperties().get("name"), "other task");
@@ -178,7 +180,7 @@ public class TaskServiceImplTest {
                         "test", FilterCriterionInfo.Type.PROPERTY,
                         "name", null,
                         Predicate.EQUALS, List.of("other task")
-                ), null
+                ), null, false
         );
         assertEquals(tasks.size(), 1);
         assertEquals(tasks.get(0).getProperties().get("name"), "other task");
@@ -188,7 +190,7 @@ public class TaskServiceImplTest {
                         "test", FilterCriterionInfo.Type.PROPERTY,
                         "tags", null,
                         Predicate.EQUALS, List.of("tag1", "tag3")
-                ), null
+                ), null, false
         );
         assertEquals(tasks.size(), 1);
         assertEquals(tasks.get(0).getProperties().get("name"), "test task");
@@ -198,7 +200,7 @@ public class TaskServiceImplTest {
                         "test", FilterCriterionInfo.Type.PROPERTY,
                         "assignees", null,
                         Predicate.EQUALS, List.of("assignee1", "assignee2")
-                ), null
+                ), null, false
         );
         assertEquals(tasks.size(), 1);
         assertEquals(tasks.get(0).getProperties().get("name"), "test task");
@@ -208,7 +210,7 @@ public class TaskServiceImplTest {
                         "test", FilterCriterionInfo.Type.PROPERTY,
                         "name", null,
                         Predicate.EQUALS, List.of("task2", "task1")
-                ), null
+                ), null, false
         ));
 
         assertThrows(TaskServiceException.class, () -> taskService.getTasks(null, null,
@@ -216,7 +218,7 @@ public class TaskServiceImplTest {
                         "test", FilterCriterionInfo.Type.PROPERTY,
                         "name", null,
                         Predicate.EQUALS, List.of()
-                ), null
+                ), null, false
         ));
     }
 
@@ -227,7 +229,7 @@ public class TaskServiceImplTest {
                         "test", FilterCriterionInfo.Type.PROPERTY,
                         "uuid", null,
                         Predicate.LESS, List.of(uuid2.toString())
-                ), null
+                ), null, false
         ));
 
         assertThrows(TaskServiceException.class, () -> taskService.getTasks(null, null,
@@ -235,7 +237,7 @@ public class TaskServiceImplTest {
                         "test", FilterCriterionInfo.Type.PROPERTY,
                         "name", null,
                         Predicate.LESS, List.of()
-                ), null
+                ), null, false
         ));
 
         assertThrows(TaskServiceException.class, () -> taskService.getTasks(null, null,
@@ -243,7 +245,7 @@ public class TaskServiceImplTest {
                         "test", FilterCriterionInfo.Type.PROPERTY,
                         "name", null,
                         Predicate.LESS, List.of("str1", "str2")
-                ), null
+                ), null, false
         ));
     }
 
@@ -254,7 +256,7 @@ public class TaskServiceImplTest {
                         "test", FilterCriterionInfo.Type.PROPERTY,
                         "name", null,
                         Predicate.LESS, List.of("test task")
-                ), null
+                ), null, false
         );
         assertEquals(tasks.size(), 1);
         assertEquals(tasks.get(0).getProperties().get("name"), "other task");
@@ -267,7 +269,7 @@ public class TaskServiceImplTest {
                         "test", FilterCriterionInfo.Type.PROPERTY,
                         "name", null,
                         Predicate.LESS_EQUAL, List.of("test task")
-                ), null
+                ), null, false
         );
         assertEquals(tasks.size(), 2);
         assertEquals(tasks.get(0).getProperties().get("name"), "test task");
@@ -281,7 +283,7 @@ public class TaskServiceImplTest {
                         "test", FilterCriterionInfo.Type.PROPERTY,
                         "name", null,
                         Predicate.GREATER, List.of("test task")
-                ), null
+                ), null, false
         );
         assertEquals(tasks.size(), 1);
         assertEquals(tasks.get(0).getProperties().get("name"), "yet another task");
@@ -294,7 +296,7 @@ public class TaskServiceImplTest {
                         "test", FilterCriterionInfo.Type.PROPERTY,
                         "name", null,
                         Predicate.GREATER_EQUAL, List.of("test task")
-                ), null
+                ), null, false
         );
         assertEquals(tasks.size(), 2);
         assertEquals(tasks.get(0).getProperties().get("name"), "test task");
@@ -310,7 +312,7 @@ public class TaskServiceImplTest {
                         "name", null,
                         Predicate.IN, List.of("test task", "other task")
                 ),
-                null
+                null, false
         );
         assertEquals(tasks.size(), 2);
         assertEquals(tasks.get(0).getProperties().get("name"), "test task");
@@ -326,7 +328,7 @@ public class TaskServiceImplTest {
                         "assignees", null,
                         Predicate.NULL, null
                 ),
-                null
+                null, false
         );
         assertEquals(tasks.size(), 2);
         assertEquals(tasks.get(0).getProperties().get("name"), "other task");
@@ -342,7 +344,7 @@ public class TaskServiceImplTest {
                         "assignees", null,
                         Predicate.EMPTY, null
                 ),
-                null
+                null, false
         );
         assertEquals(tasks.size(), 2);
         assertEquals(tasks.get(0).getProperties().get("name"), "other task");
@@ -364,7 +366,7 @@ public class TaskServiceImplTest {
                                 "tags", null,
                                 Predicate.CONTAINS, List.of("tag2")
                         )
-                ), null, null), null);
+                ), null, null), null, false);
         assertEquals(tasks.size(), 1);
         assertEquals(tasks.get(0).getProperties().get("name"), "other task");
 
@@ -381,7 +383,7 @@ public class TaskServiceImplTest {
                                 "tags", null,
                                 Predicate.CONTAINS, List.of("tag3")
                         )
-                ), null, null), null);
+                ), null, null), null, false);
         assertEquals(tasks.size(), 2);
         assertEquals(tasks.get(0).getProperties().get("name"), "test task");
         assertEquals(tasks.get(1).getProperties().get("name"), "other task");
@@ -396,7 +398,7 @@ public class TaskServiceImplTest {
                                 null, FilterCriterionInfo.Type.PROPERTY,
                                 "name", null,
                                 Predicate.EQUALS, List.of("yet another task")
-                        )), null, null), null);
+                        )), null, null), null, false);
         assertEquals(tasks.size(), 2);
         assertEquals(tasks.get(0).getProperties().get("name"), "test task");
         assertEquals(tasks.get(1).getProperties().get("name"), "other task");
@@ -407,7 +409,7 @@ public class TaskServiceImplTest {
         List<Task> tasks = taskService.getTasks(
                 List.of(
                         new FilterPropertySpec(propertyManager.getPropertyDescriptorCollection().get("name"), List.of("other"), false, Predicate.CONTAINS)
-                ), null, null, null
+                ), null, null, null, false
         );
         assertEquals(tasks.size(), 2);
         assertEquals(tasks.get(0).getProperties().get("name"), "other task");
@@ -419,7 +421,7 @@ public class TaskServiceImplTest {
         List<Task> tasks = taskService.getTasks(
                 null,
                 new SortingInfo(List.of(new SortingCriterion("name", true))),
-                null, null
+                null, null, false
         );
         assertEquals(tasks.size(), 3);
         assertEquals(tasks.get(0).getProperties().get("name"), "other task");
@@ -447,7 +449,7 @@ public class TaskServiceImplTest {
                         "name", null,
                         Predicate.CONTAINS, List.of("task")
                 ),
-                List.of(uuid1, uuid3, uuid4, uuid2)
+                List.of(uuid1, uuid3, uuid4, uuid2), true
         );
         assertEquals(tasks.size(), 2);
         assertEquals(tasks.get(0), Task.fromMap(Utils.newHashMap("name", "yet another task", "uuid", uuid3, "done", true)));
@@ -584,28 +586,28 @@ public class TaskServiceImplTest {
                 Task.fromMap(Utils.newHashMap("name", "task7", "uuid", uuid7, "parent", uuid6)),
                 Task.fromMap(Utils.newHashMap("name", "task8", "uuid", uuid8, "parent", uuid6))
         ));
-        List<PropertyOwnerTree> taskHierarchies = taskService.getTaskTrees(null, new SortingInfo(List.of(new SortingCriterion("name", false))), null, null);
-        assertEquals(taskHierarchies.size(), 2);
-        assertEquals(taskHierarchies.get(0).getParent(), Task.fromMap(Utils.newHashMap("name", "task5", "uuid", uuid5)));
-        assertEquals(taskHierarchies.get(0).getChildren().size(), 0);
-        assertEquals(taskHierarchies.get(1).getParent(), Task.fromMap(Utils.newHashMap("name", "task4", "uuid", uuid4)));
-        assertEquals(taskHierarchies.get(1).getChildren().size(), 2);
+        List<PropertyOwnerTree> taskTrees = taskService.getTaskTrees(null, new SortingInfo(List.of(new SortingCriterion("name", false))), null, null, true);
+        assertEquals(taskTrees.size(), 2);
+        assertEquals(taskTrees.get(0).getParent(), Task.fromMap(Utils.newHashMap("name", "task5", "uuid", uuid5)));
+        assertEquals(taskTrees.get(0).getChildren().size(), 0);
+        assertEquals(taskTrees.get(1).getParent(), Task.fromMap(Utils.newHashMap("name", "task4", "uuid", uuid4)));
+        assertEquals(taskTrees.get(1).getChildren().size(), 2);
         {
-            assertEquals(taskHierarchies.get(1).getChildren().get(0).getParent(), Task.fromMap(Utils.newHashMap("name", "task6", "uuid", uuid6, "parent", uuid4)));
-            assertEquals(taskHierarchies.get(1).getChildren().get(0).getChildren().size(), 2);
+            assertEquals(taskTrees.get(1).getChildren().get(0).getParent(), Task.fromMap(Utils.newHashMap("name", "task6", "uuid", uuid6, "parent", uuid4)));
+            assertEquals(taskTrees.get(1).getChildren().get(0).getChildren().size(), 2);
             {
-                assertEquals(taskHierarchies.get(1).getChildren().get(0).getChildren().get(0).getParent(), Task.fromMap(Utils.newHashMap("name", "task8", "uuid", uuid8, "parent", uuid6)));
-                assertEquals(taskHierarchies.get(1).getChildren().get(0).getChildren().get(0).getChildren().size(), 0);
-                assertEquals(taskHierarchies.get(1).getChildren().get(0).getChildren().get(1).getParent(), Task.fromMap(Utils.newHashMap("name", "task7", "uuid", uuid7, "parent", uuid6)));
-                assertEquals(taskHierarchies.get(1).getChildren().get(0).getChildren().get(1).getChildren().size(), 0);
+                assertEquals(taskTrees.get(1).getChildren().get(0).getChildren().get(0).getParent(), Task.fromMap(Utils.newHashMap("name", "task8", "uuid", uuid8, "parent", uuid6)));
+                assertEquals(taskTrees.get(1).getChildren().get(0).getChildren().get(0).getChildren().size(), 0);
+                assertEquals(taskTrees.get(1).getChildren().get(0).getChildren().get(1).getParent(), Task.fromMap(Utils.newHashMap("name", "task7", "uuid", uuid7, "parent", uuid6)));
+                assertEquals(taskTrees.get(1).getChildren().get(0).getChildren().get(1).getChildren().size(), 0);
             }
-            assertEquals(taskHierarchies.get(1).getChildren().get(1).getParent(), Task.fromMap(Utils.newHashMap("name", "task1", "uuid", uuid1, "parent", uuid4)));
-            assertEquals(taskHierarchies.get(1).getChildren().get(1).getChildren().size(), 2);
+            assertEquals(taskTrees.get(1).getChildren().get(1).getParent(), Task.fromMap(Utils.newHashMap("name", "task1", "uuid", uuid1, "parent", uuid4)));
+            assertEquals(taskTrees.get(1).getChildren().get(1).getChildren().size(), 2);
             {
-                assertEquals(taskHierarchies.get(1).getChildren().get(1).getChildren().get(0).getParent(), Task.fromMap(Utils.newHashMap("name", "task3", "uuid", uuid3, "parent", uuid1)));
-                assertEquals(taskHierarchies.get(1).getChildren().get(1).getChildren().get(0).getChildren().size(), 0);
-                assertEquals(taskHierarchies.get(1).getChildren().get(1).getChildren().get(1).getParent(), Task.fromMap(Utils.newHashMap("name", "task2", "uuid", uuid2, "parent", uuid1)));
-                assertEquals(taskHierarchies.get(1).getChildren().get(1).getChildren().get(1).getChildren().size(), 0);
+                assertEquals(taskTrees.get(1).getChildren().get(1).getChildren().get(0).getParent(), Task.fromMap(Utils.newHashMap("name", "task3", "uuid", uuid3, "parent", uuid1)));
+                assertEquals(taskTrees.get(1).getChildren().get(1).getChildren().get(0).getChildren().size(), 0);
+                assertEquals(taskTrees.get(1).getChildren().get(1).getChildren().get(1).getParent(), Task.fromMap(Utils.newHashMap("name", "task2", "uuid", uuid2, "parent", uuid1)));
+                assertEquals(taskTrees.get(1).getChildren().get(1).getChildren().get(1).getChildren().size(), 0);
             }
         }
     }

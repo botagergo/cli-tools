@@ -10,7 +10,6 @@ import cli_tools.task_manager.cli.TaskManagerContext;
 import cli_tools.task_manager.cli.command_parser.*;
 import cli_tools.task_manager.cli.init.Initializer;
 import cli_tools.task_manager.task.Task;
-import cli_tools.task_manager.task.repository.TaskRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -31,7 +30,6 @@ import static org.testng.Assert.*;
 public class TestBase {
 
     private Executor executor;
-    protected TaskRepository taskRepository;
 
     private final ByteArrayOutputStream stdout = new ByteArrayOutputStream();
     private final PrintStream originalOut = System.out;
@@ -65,7 +63,6 @@ public class TestBase {
         List<PropertyDescriptor> propertyDescriptors = context.getPropertyDescriptorService().getPropertyDescriptors();
         context.getPropertyManager().setPropertyDescriptorCollection(PropertyDescriptorCollection.fromList(propertyDescriptors));
         executor = injector.getInstance(Executor.class);
-        taskRepository = injector.getInstance(TaskRepository.class);
 
         System.setOut(new PrintStream(stdout));
     }

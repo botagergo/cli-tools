@@ -22,12 +22,13 @@ public class JsonPropertyDescriptorRepository extends SimpleJsonRepository<HashM
     @Inject
     public JsonPropertyDescriptorRepository(
             @Named("propertyDescriptorJsonFile") File jsonFile,
-            TempIDMappingService tempIDMappingService
+            TempIDMappingService tempIDMappingService,
+            Class<?> pseudoPropertyProviderMixIn
     ) {
         super(jsonFile);
         getObjectMapper().addMixIn(PropertyDescriptor.class, PropertyDescriptorMixIn.class);
         getObjectMapper().addMixIn(PropertyDescriptor.Subtype.class, SubtypeMixIn.class);
-        getObjectMapper().addMixIn(PseudoPropertyProvider.class, PseudoPropertyProviderMixIn.class);
+        getObjectMapper().addMixIn(PseudoPropertyProvider.class, pseudoPropertyProviderMixIn);
 
         InjectableValues injectableValues = new InjectableValues.Std()
                 .addValue(TempIDMappingService.class, tempIDMappingService);

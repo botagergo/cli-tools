@@ -9,6 +9,18 @@ import java.util.List;
 public abstract class CommandParser {
     public abstract Command parse(Context context, ArgumentList argList) throws CommandParserException;
 
+    protected boolean parseBoolean(String optionArgumentName, List<String> values) throws CommandParserException {
+        if (values == null || values.isEmpty()) {
+            return true;
+        }
+
+        String value = parseSingleOptionValue(optionArgumentName, values);
+        switch (value) {
+            case "true" -> { return true; }
+            case "false" -> { return false; }
+            default -> throw new CommandParserException("value of '%s' must be true or false".formatted(optionArgumentName));
+        }
+    }
 
     protected String parseSingleOptionValue(String optionArgumentName, List<String> values) throws CommandParserException {
         if (values == null || values.isEmpty()) {

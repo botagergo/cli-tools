@@ -22,61 +22,57 @@ public class TestView extends TestBase {
 
     @BeforeClass
     void setupViews() throws IOException {
-        context.getViewInfoService().addViewInfo("default_view", new ViewInfo(
-                null,
-                new FilterCriterionInfo(
-                        null,
-                        FilterCriterionInfo.Type.PROPERTY,
-                        "name",
-                        null,
-                        Predicate.EQUALS,
-                        List.of("read a book")),
-                null,
-                OutputFormat.JSON,
-                false));
+        context.getViewInfoService().addViewInfo("default_view", ViewInfo.builder()
+                .filterCriterionInfo(FilterCriterionInfo.builder()
+                        .type(FilterCriterionInfo.Type.PROPERTY)
+                        .propertyName("name")
+                        .predicate(Predicate.EQUALS)
+                        .operands(List.of("read a book"))
+                        .build())
+                .outputFormat(OutputFormat.JSON)
+                .build());
 
-        context.getViewInfoService().addViewInfo("view1", new ViewInfo(
-                new SortingInfo(List.of(
+        context.getViewInfoService().addViewInfo("view1", ViewInfo.builder()
+                .sortingInfo(new SortingInfo(List.of(
                         new SortingCriterion("priority", false),
-                        new SortingCriterion("name", true))),
-                new FilterCriterionInfo(
-                        null,
-                        FilterCriterionInfo.Type.PROPERTY,
-                        "effort",
-                        null,
-                        Predicate.LESS,
-                        List.of(3) // Medium
-                ),
-                List.of("id", "name", "priority"),
-                OutputFormat.TEXT,
-                false));
+                        new SortingCriterion("name", true))))
+                .filterCriterionInfo(FilterCriterionInfo.builder()
+                        .type(FilterCriterionInfo.Type.PROPERTY)
+                        .propertyName("effort")
+                        .predicate(Predicate.LESS)
+                        .operands(List.of(3)) // Medium
+                        .build())
+                .propertiesToList(List.of("id", "name", "priority"))
+                .outputFormat(OutputFormat.TEXT)
+                .build());
 
-        context.getViewInfoService().addViewInfo("view2", new ViewInfo(
-                null, null,
-                List.of("id", "name", "priority"),
-                OutputFormat.JSON,
-                false));
+        context.getViewInfoService().addViewInfo("view2", ViewInfo.builder()
+                .propertiesToList(List.of("id", "name", "priority"))
+                .outputFormat(OutputFormat.JSON)
+                .build());
 
-        context.getViewInfoService().addViewInfo("view3", new ViewInfo(
-                null, null,
-                List.of("id", "name", "priority"),
-                OutputFormat.PRETTY_JSON,
-                false));
+        context.getViewInfoService().addViewInfo("view3", ViewInfo.builder()
+                .propertiesToList(List.of("id", "name", "priority"))
+                .outputFormat(OutputFormat.PRETTY_JSON)
+                .build());
 
-        context.getViewInfoService().addViewInfo("view4", new ViewInfo(
-                null, null,
-                List.of("id", "name", "priority"),
-                OutputFormat.TEXT,
-                true));
+        context.getViewInfoService().addViewInfo("view4", ViewInfo.builder()
+                .propertiesToList(List.of("id", "name", "priority"))
+                .outputFormat(OutputFormat.TEXT)
+                .hierarchical(true)
+                .build());
 
-        context.getViewInfoService().addViewInfo("view5", new ViewInfo(
-                null, null, null, null, false));
+        context.getViewInfoService().addViewInfo("view5", ViewInfo.builder().build());
 
-        context.getViewInfoService().addViewInfo("view6", new ViewInfo(
-                null, null, null, OutputFormat.JSON, true));
+        context.getViewInfoService().addViewInfo("view6", ViewInfo.builder()
+                .outputFormat(OutputFormat.JSON)
+                .hierarchical(true)
+                .build());
 
-        context.getViewInfoService().addViewInfo("view7", new ViewInfo(
-                null, null, null, OutputFormat.PRETTY_JSON, true));
+        context.getViewInfoService().addViewInfo("view7", ViewInfo.builder()
+                .outputFormat(OutputFormat.PRETTY_JSON)
+                .hierarchical(true)
+                .build());
 
         configurationRepository.defaultView = "default_view";
     }

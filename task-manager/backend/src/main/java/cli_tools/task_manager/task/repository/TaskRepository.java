@@ -13,7 +13,7 @@ public interface TaskRepository {
     Task get(@NonNull UUID uuid) throws IOException;
     List<Task> getAll() throws IOException;
     Task update(@NonNull UUID taskUuid, @NonNull Task task) throws IOException;
-    boolean delete(@NonNull UUID uuid) throws IOException;
+    Task delete(@NonNull UUID uuid) throws IOException;
     void deleteAll() throws IOException;
 
 }

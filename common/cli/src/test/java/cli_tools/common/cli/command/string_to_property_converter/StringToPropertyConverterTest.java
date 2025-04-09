@@ -407,7 +407,7 @@ public class StringToPropertyConverterTest {
             fail();
         } catch (StringToPropertyConverterException e) {
             assertEquals(e.getExceptionType(), StringToPropertyConverterException.Type.OrderedLabelNotFound);
-            assertEquals(e.getArgument(), "test");
+            assertEquals(e.getArgument(), "labelText");
         }
     }
 

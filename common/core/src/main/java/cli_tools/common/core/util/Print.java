@@ -14,8 +14,13 @@ public class Print {
     }
 
     public static void printAndLogException(Exception e, Logger log) {
-        Print.printError(e.getMessage());
-        log.error("{}\n{}", e.getMessage(), ExceptionUtils.getStackTrace(e));
+        if (e.getMessage() != null) {
+            Print.printError(ExceptionUtils.getStackTrace(e));
+            log.error(ExceptionUtils.getStackTrace(e));
+        } else {
+            Print.printError(e.getMessage());
+            log.error("{}\n{}", e.getMessage(), ExceptionUtils.getStackTrace(e));
+        }
     }
 
     public static void printInfo(String text, Object ...args) {

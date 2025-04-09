@@ -1,6 +1,8 @@
 package cli_tools.task_manager.task;
 
 import cli_tools.common.property_lib.PropertyOwner;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -35,5 +37,8 @@ public class Task extends PropertyOwner {
     }
 
     private final HashMap<String, Object> properties;
+
+    @Getter @Setter
+    private boolean done;
 
 }

@@ -31,7 +31,7 @@ public class PropertySorter <T extends PropertyOwner> {
         this.sortingCriteria = sortingCriteria;
     }
 
-    public void sort(List<T> propertyOwners, PropertyManager propertyManager) throws PropertyException, IOException, PropertyNotComparableException {
+    public List<T> sort(List<T> propertyOwners, PropertyManager propertyManager) throws PropertyException, IOException, PropertyNotComparableException {
         List<Pair<List<Property>, Boolean>> valuesToCompare = new ArrayList<>();
 
         for (SortingCriterion sortingCriterion : sortingCriteria) {
@@ -55,7 +55,7 @@ public class PropertySorter <T extends PropertyOwner> {
 
         if (valuesToCompare.isEmpty()) {
             log.warn("no sorting criteria specified, no sorting performed");
-            return;
+            return propertyOwners;
         }
 
         ListIndexComparator comp = new ListIndexComparator(valuesToCompare);
@@ -63,20 +63,17 @@ public class PropertySorter <T extends PropertyOwner> {
         List<Integer> indices = comp.createIndexArray();
         indices.sort(comp);
 
-        reorder(propertyOwners, indices);
+        return reorder(propertyOwners, indices);
     }
 
-    void reorder(List<T> list, List<Integer> indices)
+    List<T> reorder(List<T> list, List<Integer> indices)
     {
         List<T> reorderedList = new ArrayList<>(Collections.nCopies(list.size(), null));
         for (int i = 0; i < list.size(); i++) {
             int ind = indices.get(i);
             reorderedList.set(i, list.get(ind));
         }
-
-        for (int i = 0; i < list.size(); i++) {
-            list.set(i, reorderedList.get(i));
-        }
+        return reorderedList;
     }
 
     private List<SortingCriterion> sortingCriteria;

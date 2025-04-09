@@ -1,17 +1,18 @@
 package cli_tools.task_manager.cli.init;
 
 import cli_tools.common.core.data.*;
+import cli_tools.common.core.repository.ConfigurationRepository;
 import cli_tools.common.label.service.LabelService;
 import cli_tools.common.ordered_label.service.OrderedLabelService;
 import cli_tools.common.property_descriptor.service.PropertyDescriptorService;
+import cli_tools.common.property_lib.PropertyDescriptor;
 import cli_tools.common.pseudo_property_provider.TempIDPseudoPropertyProvider;
 import cli_tools.common.temp_id_mapping.service.TempIDMappingService;
 import cli_tools.common.view.service.ViewInfoService;
+import cli_tools.task_manager.pseudo_property_provider.DonePseudoPropertyProvider;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import org.yaml.snakeyaml.Yaml;
-import cli_tools.common.core.repository.ConfigurationRepository;
-import cli_tools.common.property_lib.PropertyDescriptor;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -70,8 +71,6 @@ public class Initializer {
         propertyDescriptorService.createPropertyDescriptor(
                 new PropertyDescriptor("uuid", PropertyDescriptor.Type.UUID, null, PropertyDescriptor.Multiplicity.SINGLE, "", null));
         propertyDescriptorService.createPropertyDescriptor(
-                new PropertyDescriptor("done", PropertyDescriptor.Type.Boolean, null, PropertyDescriptor.Multiplicity.SINGLE, false, null));
-        propertyDescriptorService.createPropertyDescriptor(
                 new PropertyDescriptor("tags", PropertyDescriptor.Type.UUID, new PropertyDescriptor.Subtype.LabelSubtype("tag"), PropertyDescriptor.Multiplicity.SET, new LinkedHashSet<>(), null));
         propertyDescriptorService.createPropertyDescriptor(
                 new PropertyDescriptor("status", PropertyDescriptor.Type.UUID, new PropertyDescriptor.Subtype.LabelSubtype("status"), PropertyDescriptor.Multiplicity.SINGLE, null, null));
@@ -91,6 +90,8 @@ public class Initializer {
                 new PropertyDescriptor("dueTime", PropertyDescriptor.Type.String, new PropertyDescriptor.Subtype.TimeSubtype(), PropertyDescriptor.Multiplicity.SINGLE, null, null));
         propertyDescriptorService.createPropertyDescriptor(
                 new PropertyDescriptor("parent", PropertyDescriptor.Type.UUID, new PropertyDescriptor.Subtype.TaskSubtype(), PropertyDescriptor.Multiplicity.SINGLE, null, null));
+        propertyDescriptorService.createPropertyDescriptor(
+                new PropertyDescriptor("done", PropertyDescriptor.Type.Boolean, null, PropertyDescriptor.Multiplicity.SINGLE, null, new DonePseudoPropertyProvider()));
     }
 
     private void initializePriorities() throws IOException {
@@ -110,20 +111,18 @@ public class Initializer {
 
     private void initializeViewInfo() throws IOException {
         viewInfoService.deleteAllViewInfos();
-        viewInfoService.addViewInfo("default", new ViewInfo(
-                new SortingInfo(List.of(new SortingCriterion("name", true))),
-                new FilterCriterionInfo("default", FilterCriterionInfo.Type.PROPERTY, "done", null, Predicate.EQUALS, List.of(false)),
-                List.of("id", "name", "status", "tags", "dueDate"),
-                OutputFormat.TEXT,
-                false
-        ));
-        viewInfoService.addViewInfo("all", new ViewInfo(
-                new SortingInfo(List.of(new SortingCriterion("name", true))),
-                null,
-                List.of("id", "name", "status", "tags", "dueDate"),
-                OutputFormat.TEXT,
-                false
-        ));
+        viewInfoService.addViewInfo("default", ViewInfo.builder()
+                .sortingInfo(new SortingInfo(List.of(new SortingCriterion("name", true))))
+                .propertiesToList(List.of("id", "name", "status", "tags", "dueDate"))
+                .outputFormat(OutputFormat.TEXT)
+                .build());
+
+        viewInfoService.addViewInfo("all", ViewInfo.builder()
+                .sortingInfo(new SortingInfo(List.of(new SortingCriterion("name", true))))
+                .propertiesToList(List.of("id", "name", "status", "tags", "dueDate"))
+                .outputFormat(OutputFormat.TEXT)
+                .listDone(true)
+                .build());
     }
 
     private void initializeConfig() throws IOException {
@@ -147,6 +146,7 @@ public class Initializer {
     private final ViewInfoService viewInfoService;
     private final ConfigurationRepository configurationRepository;
     private final TempIDMappingService tempIDMappingService;
-    @Named("configurationYamlFile") private final File configFile;
+    @Named("configurationYamlFile")
+    private final File configFile;
 
 }

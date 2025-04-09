@@ -43,7 +43,8 @@ public class ListTasksCommandParser extends CommandParser {
                 case "view" -> command.setViewName(parseSingleOptionValue("view", optionArg.values()));
                 case "properties" -> command.setProperties(parseProperties(optionArg.values()));
                 case "outputFormat" -> command.setOutputFormat(parseOutputFormat(optionArg.values()));
-                case "hierarchical" -> command.setHierarchical(parseHierarchical(optionArg.values()));
+                case "hierarchical" -> command.setHierarchical(parseBoolean("hierarchical", optionArg.values()));
+                case "listDone" -> command.setListDone(parseBoolean("listDone", optionArg.values()));
                 default -> throw new InvalidOptionException(optionArg.optionName());
             }
         }
@@ -92,15 +93,6 @@ public class ListTasksCommandParser extends CommandParser {
             case "json" -> { return OutputFormat.JSON; }
             case "prettyJson" -> { return OutputFormat.PRETTY_JSON; }
             default -> throw new CommandParserException("invalid output format: " + outputFormat + "\nvalid values: text, json, prettyJson");
-        }
-    }
-
-    private boolean parseHierarchical(List<String> values) throws CommandParserException {
-        String value = parseSingleOptionValue("hierarchical", values);
-        switch (value) {
-            case "true" -> { return true; }
-            case "false" -> { return false; }
-            default -> throw new CommandParserException("value of 'hierarchical' must be true or false");
         }
     }
 

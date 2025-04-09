@@ -31,7 +31,7 @@ public final class DoneTaskCommand extends Command {
             List<FilterPropertySpec> filterPropertySpecs = CommandUtil.getFilterPropertySpecs(taskManagerContext, filterPropertyArgs);
 
             List<Task> tasks = taskManagerContext.getTaskService().getTasks(
-                    filterPropertySpecs, null, null, taskUUIDs
+                    filterPropertySpecs, null, null, taskUUIDs, true
             );
 
             tasks = CommandUtil.confirmAndGetTasksToChange(taskManagerContext, tasks, tempIDs, filterPropertySpecs, CommandUtil.ChangeType.DONE);
@@ -40,12 +40,9 @@ public final class DoneTaskCommand extends Command {
             }
 
             for (Task task : tasks) {
-                context.getTempIDMappingService().delete(task.getUUID());
-                context.getPropertyManager().setProperty(task, "done", true);
-                Task updatedTask = taskManagerContext.getTaskService().modifyTask(task.getUUID(), task);
-
+                Task doneTask = taskManagerContext.getTaskService().doneTask(task.getUUID());
                 if (tasks.size() == 1) {
-                    int tempID = context.getTempIDMappingService().getOrCreateID(updatedTask.getUUID());
+                    int tempID = context.getTempIDMappingService().getOrCreateID(doneTask.getUUID());
                     context.setPrevTempId(tempID);
                 }
             }

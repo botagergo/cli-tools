@@ -12,10 +12,12 @@ import lombok.Setter;
 import cli_tools.common.cli.argument.ArgumentList;
 import cli_tools.common.cli.tokenizer.MismatchedQuotesException;
 import cli_tools.common.cli.tokenizer.Tokenizer;
+import lombok.extern.log4j.Log4j2;
 
 import java.util.List;
 
 @Getter
+@Log4j2
 public class ExecutorImpl implements Executor {
 
     public void execute(String commandStr) {
@@ -62,7 +64,7 @@ public class ExecutorImpl implements Executor {
             Command command = parser.parse(context, argList);
             commandExecutor.execute(context, command);
         } catch (Exception e) {
-            Print.printError(e.getMessage());
+            Print.printAndLogException(e, log);
         }
     }
 

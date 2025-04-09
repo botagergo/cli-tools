@@ -6,9 +6,9 @@ import cli_tools.common.property_lib.Property;
 
 import java.io.IOException;
 
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME)
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "converter")
 @JsonSubTypes({
-        @JsonSubTypes.Type(value = PatternPropertyToStringConverter.class, name = "PatternPropertyToStringConverter"),
+        @JsonSubTypes.Type(value = PatternPropertyToStringConverter.class, name = "Pattern"),
 })
 public interface PropertyToStringConverter {
 

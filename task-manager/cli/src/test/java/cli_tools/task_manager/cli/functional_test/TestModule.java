@@ -2,10 +2,12 @@ package cli_tools.task_manager.cli.functional_test;
 
 import cli_tools.common.cli.Context;
 import cli_tools.common.core.repository.*;
+import cli_tools.common.property_converter.PropertyConverter;
 import cli_tools.common.repository.JsonStateRepository;
 import cli_tools.common.util.RoundRobinUUIDGenerator;
 import cli_tools.task_manager.cli.TaskManagerContext;
 import cli_tools.task_manager.cli.command_parser.*;
+import cli_tools.task_manager.pseudo_property_provider.PseudoPropertyProviderMixIn;
 import cli_tools.task_manager.task.repository.TaskRepository;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
@@ -44,6 +46,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 public class TestModule extends AbstractModule {
+    String basePath;
+
     @Provides
     protected CommandParserFactory getCommandParserFactory(ConfigurationRepository configurationRepository) {
         CommandParserFactory commandParserFactory = new CommandParserFactoryImpl(configurationRepository);
@@ -57,6 +61,28 @@ public class TestModule extends AbstractModule {
         commandParserFactory.registerParser("ai", AICommandParser::new);
 
         return commandParserFactory;
+    }
+
+    @Provides
+    TaskService getTaskService(PropertyManager propertyManager,
+                               UUIDGenerator uuidGenerator,
+                               PropertyConverter propertyConverter,
+                               TempIDMappingService tempIDMappingService) {
+        return new TaskServiceImpl(
+                new JsonTaskRepository(getJsonFile("task.json")),
+                new JsonTaskRepository(getJsonFile("done_task.json")),
+                propertyManager,
+                uuidGenerator,
+                propertyConverter,
+                tempIDMappingService);
+    }
+
+    @Provides
+    PropertyDescriptorRepository getPropertyDescriptorRepository(TempIDMappingService tempIDMappingService) {
+        return new JsonPropertyDescriptorRepository(
+                getJsonFile("property_descriptor.json"),
+                tempIDMappingService,
+                PseudoPropertyProviderMixIn.class);
     }
 
     @Provides
@@ -74,17 +100,15 @@ public class TestModule extends AbstractModule {
             throw new RuntimeException(e);
         }
 
-        String basePath = tempDir.toString();
+        basePath = tempDir.toString();
 
         bind(Tokenizer.class).to(TokenizerImpl.class);
         bind(TaskRepository.class).to(JsonTaskRepository.class).asEagerSingleton();
         bind(ViewInfoRepository.class).to(JsonViewInfoRepository.class).asEagerSingleton();
         bind(LabelRepositoryFactory.class).to(JsonLabelRepositoryFactory.class).asEagerSingleton();
         bind(OrderedLabelRepositoryFactory.class).to(JsonOrderedLabelRepositoryFactory.class).asEagerSingleton();
-        bind(PropertyDescriptorRepository.class).to(JsonPropertyDescriptorRepository.class).asEagerSingleton();
         bind(ConfigurationRepository.class).to(MockConfigurationRepository.class).asEagerSingleton();
         bind(StateRepository.class).to(JsonStateRepository.class).asEagerSingleton();
-        bind(TaskService.class).to(TaskServiceImpl.class).asEagerSingleton();
         bind(LabelService.class).to(LabelServiceImpl.class).asEagerSingleton();
         bind(OrderedLabelService.class).to(OrderedLabelServiceImpl.class).asEagerSingleton();
         bind(ViewInfoService.class).to(ViewInfoServiceImpl.class).asEagerSingleton();
@@ -104,6 +128,10 @@ public class TestModule extends AbstractModule {
         bind(File.class).annotatedWith(Names.named("propertyToStringConverterJsonFile")).toInstance(new File(basePath + "property_to_string_converter.json"));
         bind(File.class).annotatedWith(Names.named("configurationYamlFile")).toInstance(new File(basePath + "config.yaml"));
         bind(File.class).annotatedWith(Names.named("basePath")).toInstance(new File(basePath));
+    }
+
+    private File getJsonFile(String filename) {
+        return new File(basePath + filename);
     }
 
 }

@@ -19,21 +19,25 @@ public interface TaskService {
 
     Task modifyTask(@NonNull UUID taskUuid, @NonNull Task task) throws IOException, TaskServiceException;
 
+    Task doneTask(@NonNull UUID taskUuid) throws IOException, TaskServiceException;
+
+    Task undoneTask(@NonNull UUID taskUuid) throws IOException, TaskServiceException;
+
     void deleteTask(@NonNull UUID uuid) throws IOException, TaskServiceException;
 
-    List<Task> getTasks() throws IOException;
+    List<Task> getTasks(boolean getDone) throws IOException;
 
     List<Task> getTasks(
             List<FilterPropertySpec> propertySpecs,
             SortingInfo sortingInfo,
             FilterCriterionInfo filterCriterionInfo,
-            List<UUID> taskUUIDs) throws IOException, TaskServiceException, PropertyException, PropertyConverterException, FilterCriterionException;
+            List<UUID> taskUUIDs, boolean getDone) throws IOException, TaskServiceException, PropertyException, PropertyConverterException, FilterCriterionException;
 
     List<PropertyOwnerTree> getTaskTrees(
             List<FilterPropertySpec> propertySpecs,
             SortingInfo sortingInfo,
             FilterCriterionInfo filterCriterionInfo,
-            List<UUID> taskUUIDs) throws IOException, TaskServiceException, PropertyException, PropertyConverterException, FilterCriterionException;
+            List<UUID> taskUUIDs, boolean getDone) throws IOException, TaskServiceException, PropertyException, PropertyConverterException, FilterCriterionException;
 
     void deleteAllTasks() throws IOException;
 }

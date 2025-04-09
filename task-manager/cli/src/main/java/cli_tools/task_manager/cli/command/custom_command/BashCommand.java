@@ -35,7 +35,7 @@ public class BashCommand extends CustomCommand {
             List<UUID> taskUUIDs = CommandUtil.getUUIDsFromTempIDs(taskManagerContext, tempIDs);
             List<FilterPropertySpec> filterPropertySpecs = CommandUtil.getFilterPropertySpecs(taskManagerContext, filterPropertyArgs);
 
-            List<Task> tasks = taskManagerContext.getTaskService().getTasks(filterPropertySpecs, null, null, taskUUIDs);
+            List<Task> tasks = taskManagerContext.getTaskService().getTasks(filterPropertySpecs, null, null, taskUUIDs, true);
 
             final ProcessBuilder p = new ProcessBuilder().command("bash", "-c", bashCommand);
 

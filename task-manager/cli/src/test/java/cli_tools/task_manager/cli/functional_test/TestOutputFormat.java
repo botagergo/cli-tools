@@ -12,15 +12,17 @@ import org.testng.annotations.Test;
 import java.io.IOException;
 import java.util.List;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
 
-public class TestOutputFormat extends TestBase{
+public class TestOutputFormat extends TestBase {
 
     @BeforeClass
     void setup1() throws IOException {
-        context.getViewInfoService().addViewInfo("test_output_format", new ViewInfo(
-                new SortingInfo(List.of(new SortingCriterion("name", true))),
-                null, null, OutputFormat.JSON, false));
+        context.getViewInfoService().addViewInfo("test_output_format", ViewInfo.builder()
+                .sortingInfo(new SortingInfo(List.of(new SortingCriterion("name", true))))
+                .outputFormat(OutputFormat.JSON)
+                .build());
+
         configurationRepository.defaultView = "test_output_format";
         execute("add go to the post office status:NextAction effort:High priority:Low",
                 "add buy a new TV status:NextAction dueDate:tomorrow",

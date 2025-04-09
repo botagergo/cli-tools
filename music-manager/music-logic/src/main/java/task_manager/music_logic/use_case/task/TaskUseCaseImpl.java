@@ -282,6 +282,7 @@ public class TaskUseCaseImpl implements TaskUseCase {
     }
 
     private final TaskRepository taskRepository;
+    private final TaskRepository doneTaskRepository;
     private final PropertyManager propertyManager;
     private final UUIDGenerator uuidGenerator;
     private final PropertyConverter propertyConverter;

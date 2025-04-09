@@ -27,7 +27,7 @@ public class TestTempId extends TestBase {
         assertStdoutContains("invalid temporary id: 0");
 
         execute("2 4 delete");
-        List<Task> tasks = taskRepository.getAll();
+        List<Task> tasks = context.getTaskService().getTasks(false);
         assertEquals(tasks.size(), 2);
         assertEquals(tasks.get(0).getProperties().get("name"), "go to the post office");
         assertEquals(tasks.get(1).getProperties().get("name"), "read a book");

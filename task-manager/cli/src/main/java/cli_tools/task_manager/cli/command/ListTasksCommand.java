@@ -40,6 +40,7 @@ public final class ListTasksCommand extends Command {
             List<String> actualProperties = List.of("name", "status", "tags");
             List<UUID> taskUUIDs = CommandUtil.getUUIDsFromTempIDs(taskManagerContext, tempIDs);
             List<FilterPropertySpec> filterPropertySpecs = CommandUtil.getFilterPropertySpecs(taskManagerContext, filterPropertyArgs);
+            Boolean actualListDone = listDone;
 
             if (actualViewName == null) {
                 actualViewName = context.getConfigurationRepository().defaultView();
@@ -67,6 +68,10 @@ public final class ListTasksCommand extends Command {
                 if (actualHierarchical == null) {
                     actualHierarchical = viewInfo.hierarchical();
                 }
+
+                if (actualListDone == null) {
+                    actualListDone = viewInfo.listDone();
+                }
             }
 
             if (sortingCriteria != null) {
@@ -79,6 +84,10 @@ public final class ListTasksCommand extends Command {
 
             if (actualHierarchical == null) {
                 actualHierarchical = true;
+            }
+
+            if (actualListDone == null) {
+                actualListDone = false;
             }
 
             if (properties != null && !properties.isEmpty()) {
@@ -95,10 +104,10 @@ public final class ListTasksCommand extends Command {
                     Print.printError("'outputFormat' is not 'text', hierarchical printing is not possible");
                     return;
                 }
-                List<PropertyOwnerTree> taskHierarchies = taskManagerContext.getTaskService().getTaskTrees(filterPropertySpecs, sortingInfo, filterCriterionInfo, taskUUIDs);
+                List<PropertyOwnerTree> taskHierarchies = taskManagerContext.getTaskService().getTaskTrees(filterPropertySpecs, sortingInfo, filterCriterionInfo, taskUUIDs, actualListDone);
                 taskManagerContext.getTaskPrinter().printTaskTrees(taskManagerContext, taskHierarchies, actualProperties);
             } else {
-                List<Task> tasks = taskManagerContext.getTaskService().getTasks(filterPropertySpecs, sortingInfo, filterCriterionInfo, taskUUIDs);
+                List<Task> tasks = taskManagerContext.getTaskService().getTasks(filterPropertySpecs, sortingInfo, filterCriterionInfo, taskUUIDs, actualListDone);
                 taskManagerContext.getTaskPrinter().printTasks(taskManagerContext, tasks, actualProperties, outputFormat);
 
                 if (!tempIDs.isEmpty()) {
@@ -131,5 +140,6 @@ public final class ListTasksCommand extends Command {
     private Boolean hierarchical;
     private List<@NonNull Integer> tempIDs;
     private List<String> properties;
+    private Boolean listDone;
 }
 

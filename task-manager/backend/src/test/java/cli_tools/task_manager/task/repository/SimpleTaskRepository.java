@@ -1,11 +1,10 @@
-package common.task.repository;
+package cli_tools.task_manager.task.repository;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import cli_tools.task_manager.task.Task;
-import cli_tools.task_manager.task.repository.TaskRepository;
 
 import java.util.*;
 
@@ -56,15 +55,15 @@ public class SimpleTaskRepository implements TaskRepository {
     }
 
     @Override
-    public boolean delete(@NonNull UUID uuid) {
+    public Task delete(@NonNull UUID uuid) {
         for (Task task : tasks) {
             if (task.getUUID().equals(uuid)) {
                 tasks.remove(task);
-                return true;
+                return task;
             }
         }
 
-        return false;
+        return null;
     }
 
     @Override

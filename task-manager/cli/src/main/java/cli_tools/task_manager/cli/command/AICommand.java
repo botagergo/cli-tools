@@ -129,7 +129,7 @@ public final class AICommand extends Command {
         } else if (functionCall.getName().equals("add_tasks")) {
             addTasks(context, functionCall.getArguments());
         } else if (functionCall.getName().equals("query_tasks")) {
-            List<Task> tasks = context.getTaskService().getTasks();
+            List<Task> tasks = context.getTaskService().getTasks(false);
             ObjectMapper objectMapper = new ObjectMapper();
             return new ChatMessage(
                     ChatMessageRole.FUNCTION.value(),
@@ -149,7 +149,7 @@ public final class AICommand extends Command {
 
             List<Task> tasks = context.getTaskService().getTasks(
                     null, null, null,
-                    taskUuidsList);
+                    taskUuidsList, false);
             context.getTaskPrinter().printTasks(context, tasks, propertiesToList, OutputFormat.TEXT);
         } catch (Exception e) {
             Print.printError(e.getMessage());

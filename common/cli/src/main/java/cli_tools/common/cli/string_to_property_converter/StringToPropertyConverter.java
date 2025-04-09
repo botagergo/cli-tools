@@ -112,11 +112,11 @@ public class StringToPropertyConverter {
             boolean createUuidIfNotExists
     ) throws StringToPropertyConverterException, IOException {
         if (propertyValueList.isEmpty()) {
-            throw new StringToPropertyConverterException(StringToPropertyConverterException.Type.EmptyList, "Property value is empty", propertyDescriptor.name());
+            throw new StringToPropertyConverterException(StringToPropertyConverterException.Type.EmptyList, "property value is empty", propertyDescriptor.name());
         }
 
         if (!propertyDescriptor.isCollection() && propertyValueList.size() != 1) {
-            throw new StringToPropertyConverterException(StringToPropertyConverterException.Type.NotAList, "Property '" + propertyDescriptor.name() + "' is not a list", propertyDescriptor.name());
+            throw new StringToPropertyConverterException(StringToPropertyConverterException.Type.NotAList, "property '" + propertyDescriptor.name() + "' is not a list", propertyDescriptor.name());
         }
 
         if (propertyDescriptor.multiplicity() == PropertyDescriptor.Multiplicity.LIST) {
@@ -240,27 +240,27 @@ public class StringToPropertyConverter {
             if (uuidSubtype instanceof PropertyDescriptor.Subtype.LabelSubtype labelSubtype) {
                 Label label = labelService.findLabel(labelSubtype.labelType(), propertyValueStr);
                 if (label == null && createUuidIfNotExists
-                        && Utils.yesNo("Label '" + propertyValueStr + "' does not exist. Do you want to create it?")) {
+                        && Utils.yesNo("label '" + propertyValueStr + "' does not exist, create it?")) {
                     label = labelService.createLabel(labelSubtype.labelType(), propertyValueStr);
                 }
                 if (label != null) {
                     return label.uuid();
                 } else {
-                    throw new StringToPropertyConverterException(StringToPropertyConverterException.Type.LabelNotFound, "Label not found: " + propertyValueStr, propertyValueStr);
+                    throw new StringToPropertyConverterException(StringToPropertyConverterException.Type.LabelNotFound, "no such label: " + propertyValueStr, propertyValueStr);
                 }
             } else if (tempIDMappingService != null && uuidSubtype instanceof PropertyDescriptor.Subtype.TaskSubtype) {
                 try {
                     int tempId = Integer.parseInt(propertyValueStr);
                     UUID uuid = tempIDMappingService.getUUID(tempId);
                     if (uuid == null) {
-                        throw new StringToPropertyConverterException(StringToPropertyConverterException.Type.TempIdNotFound, "Temporary ID not found: " + propertyValueStr, propertyValueStr);
+                        throw new StringToPropertyConverterException(StringToPropertyConverterException.Type.TempIdNotFound, "temporary ID not found: " + propertyValueStr, propertyValueStr);
                     }
                     return uuid;
                 } catch (NumberFormatException e) {
-                    throw new StringToPropertyConverterException(StringToPropertyConverterException.Type.InvalidTempId, "Invalid temporary ID (must be a natural number): " + propertyValueStr, propertyValueStr);
+                    throw new StringToPropertyConverterException(StringToPropertyConverterException.Type.InvalidTempId, "invalid temporary ID (must be a natural number): " + propertyValueStr, propertyValueStr);
                 }
             } else {
-                throw new StringToPropertyConverterException(StringToPropertyConverterException.Type.InvalidUuid, "Invalid UUID: " + propertyValueStr, propertyValueStr);
+                throw new StringToPropertyConverterException(StringToPropertyConverterException.Type.InvalidUuid, "invalid UUID: " + propertyValueStr, propertyValueStr);
             }
         }
     }
@@ -276,7 +276,7 @@ public class StringToPropertyConverter {
                 return orderedLabel.value();
             } else {
                 throw new StringToPropertyConverterException(StringToPropertyConverterException.Type.OrderedLabelNotFound,
-                        "Ordered label not found: " + orderedLabelSubtype.orderedLabelType(), orderedLabelSubtype.orderedLabelType());
+                        "no such ordered label: " + propertyValueStr, propertyValueStr);
             }
         }
     }
@@ -285,7 +285,7 @@ public class StringToPropertyConverter {
         try {
             return dateTimeParser.parseLocalDate(propertyValueStr).format(java.time.format.DateTimeFormatter.ISO_LOCAL_DATE);
         } catch (DateTimeParseException e) {
-            throw new StringToPropertyConverterException(StringToPropertyConverterException.Type.InvalidDate, "Invalid date: " + propertyValueStr, propertyValueStr);
+            throw new StringToPropertyConverterException(StringToPropertyConverterException.Type.InvalidDate, "invalid date: " + propertyValueStr, propertyValueStr);
         }
     }
 
@@ -293,7 +293,7 @@ public class StringToPropertyConverter {
         try {
             return dateTimeParser.parseLocalTime(propertyValueStr).format(java.time.format.DateTimeFormatter.ISO_LOCAL_TIME);
         } catch (DateTimeParseException e) {
-            throw new StringToPropertyConverterException(StringToPropertyConverterException.Type.InvalidTime, "Invalid time: " + propertyValueStr, propertyValueStr);
+            throw new StringToPropertyConverterException(StringToPropertyConverterException.Type.InvalidTime, "invalid time: " + propertyValueStr, propertyValueStr);
         }
     }
 
@@ -301,7 +301,7 @@ public class StringToPropertyConverter {
         PropertyDescriptor.Subtype.IntegerSubtype integerSubtype = propertyDescriptor.getIntegerSubtypeUnchecked();
         if (!(integerSubtype instanceof PropertyDescriptor.Subtype.OrderedLabelSubtype)) {
             throw new StringToPropertyConverterException(StringToPropertyConverterException.Type.NoAssociatedLabel,
-                    "Property '" + propertyDescriptor.name() + "' is not a label", propertyDescriptor.name());
+                    "property '" + propertyDescriptor.name() + "' is not a label", propertyDescriptor.name());
         }
 
         return (PropertyDescriptor.Subtype.OrderedLabelSubtype) integerSubtype;

@@ -17,7 +17,7 @@ public class TestBasic extends TestBase {
                 "add read a book status:OnHold startDate:+31weeks",
                 "add finish tax return status:Waiting");
 
-        List<Task> tasks = taskRepository.getAll();
+        List<Task> tasks = context.getTaskService().getTasks(true);
         assertEquals(tasks.size(), 4);
         assertEquals(tasks.get(0).getProperties().get("name"), "go to the post office");
         assertEquals(tasks.get(1).getProperties().get("name"), "buy a new TV");

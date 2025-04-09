@@ -83,18 +83,18 @@ public class JsonTaskRepository extends JsonRepository<List<HashMap<String, Obje
     }
 
     @Override
-    public boolean delete(@NonNull UUID uuid) throws IOException {
+    public Task delete(@NonNull UUID uuid) throws IOException {
         List<Task> tasks = getData();
 
         for (Task task : tasks) {
             if (task.getUUID().equals(uuid)) {
                 tasks.remove(task);
                 writeData();
-                return true;
+                return task;
             }
         }
 
-        return false;
+        return null;
     }
 
     @Override

@@ -8,9 +8,11 @@ import cli_tools.common.cli.command_parser.CommandParserFactory;
 import cli_tools.common.cli.command_parser.CommandParserFactoryImpl;
 import cli_tools.common.configuration.ConfigurationRepositoryImpl;
 import cli_tools.common.core.repository.*;
+import cli_tools.common.property_converter.PropertyConverter;
 import cli_tools.common.repository.JsonStateRepository;
 import cli_tools.task_manager.cli.command.custom_command.CustomCommandDefinitionMixIn;
 import cli_tools.task_manager.cli.command.custom_command.CustomCommandParserFactoryImpl;
+import cli_tools.task_manager.pseudo_property_provider.PseudoPropertyProviderMixIn;
 import cli_tools.task_manager.task.repository.TaskRepository;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
@@ -56,6 +58,28 @@ public class TaskManagerModule extends AbstractModule {
         return jsonCustomCommandRepository;
     }
 
+    @Provides
+    TaskService getTaskService(PropertyManager propertyManager,
+                               UUIDGenerator uuidGenerator,
+                               PropertyConverter propertyConverter,
+                               TempIDMappingService tempIDMappingService) {
+        return new TaskServiceImpl(
+                new JsonTaskRepository(getJsonFile("task.json")),
+                new JsonTaskRepository(getJsonFile("done_task.json")),
+                propertyManager,
+                uuidGenerator,
+                propertyConverter,
+                tempIDMappingService);
+    }
+
+    @Provides
+    PropertyDescriptorRepository getPropertyDescriptorRepository(TempIDMappingService tempIDMappingService) {
+        return new JsonPropertyDescriptorRepository(
+                getJsonFile("property_descriptor.json"),
+                tempIDMappingService,
+                PseudoPropertyProviderMixIn.class);
+    }
+
     @Override
     protected void configure() {
         if (basePath == null) {
@@ -69,11 +93,9 @@ public class TaskManagerModule extends AbstractModule {
         bind(ViewInfoRepository.class).to(JsonViewInfoRepository.class).asEagerSingleton();
         bind(LabelRepositoryFactory.class).to(JsonLabelRepositoryFactory.class).asEagerSingleton();
         bind(OrderedLabelRepositoryFactory.class).to(JsonOrderedLabelRepositoryFactory.class).asEagerSingleton();
-        bind(PropertyDescriptorRepository.class).to(JsonPropertyDescriptorRepository.class).asEagerSingleton();
         bind(ConfigurationRepository.class).to(ConfigurationRepositoryImpl.class).asEagerSingleton();
         bind(StateRepository.class).to(JsonStateRepository.class).asEagerSingleton();
         bind(UUIDGenerator.class).to(RandomUUIDGenerator.class).asEagerSingleton();
-        bind(TaskService.class).to(TaskServiceImpl.class).asEagerSingleton();
         bind(LabelService.class).to(LabelServiceImpl.class).asEagerSingleton();
         bind(OrderedLabelService.class).to(OrderedLabelServiceImpl.class).asEagerSingleton();
         bind(ViewInfoService.class).to(ViewInfoServiceImpl.class).asEagerSingleton();
@@ -94,6 +116,10 @@ public class TaskManagerModule extends AbstractModule {
         bind(File.class).annotatedWith(Names.named("propertyToStringConverterJsonFile")).toInstance(new File(basePath + "property_to_string_converter.json"));
         bind(File.class).annotatedWith(Names.named("configurationYamlFile")).toInstance(new File(basePath + "config.yaml"));
         bind(File.class).annotatedWith(Names.named("basePath")).toInstance(new File(basePath));
+    }
+
+    private File getJsonFile(String filename) {
+        return new File(basePath + filename);
     }
 
 }

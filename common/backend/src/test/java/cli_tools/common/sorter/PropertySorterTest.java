@@ -213,9 +213,8 @@ public class PropertySorterTest {
     }
 
     private void assertSorted(ArrayList<PropertyOwnerImpl> propertyOwners, PropertySorter<PropertyOwnerImpl> sorter, List<Integer> order) throws PropertyException, IOException, PropertyNotComparableException {
-        List<PropertyOwnerImpl> origPropertyOwners = new ArrayList<>(propertyOwners);
-        sorter.sort(propertyOwners, propertyManager);
-        assertOrder(origPropertyOwners, propertyOwners, order);
+        List<PropertyOwnerImpl> sortedPropertyOwners = sorter.sort(propertyOwners, propertyManager);
+        assertOrder(propertyOwners, sortedPropertyOwners, order);
     }
 
     private void assertOrder(List<PropertyOwnerImpl> propertyOwners, List<PropertyOwnerImpl> sortedPropertyOwners, List<Integer> order) {
