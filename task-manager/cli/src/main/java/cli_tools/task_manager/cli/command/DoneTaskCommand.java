@@ -42,7 +42,7 @@ public final class DoneTaskCommand extends Command {
             for (Task task : tasks) {
                 Task doneTask = taskManagerContext.getTaskService().doneTask(task.getUUID());
                 if (tasks.size() == 1) {
-                    int tempID = context.getTempIDMappingService().getOrCreateID(doneTask.getUUID());
+                    int tempID = context.getTempIdManager().getOrCreateID(doneTask.getUUID());
                     context.setPrevTempId(tempID);
                 }
             }

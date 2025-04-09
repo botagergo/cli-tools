@@ -11,7 +11,7 @@ import cli_tools.common.property_lib.PropertyDescriptor;
 import cli_tools.common.property_lib.PropertyDescriptorCollection;
 import cli_tools.common.property_lib.PropertyException;
 import cli_tools.common.property_lib.PropertyManager;
-import cli_tools.common.temp_id_mapping.service.TempIDMappingService;
+import cli_tools.common.temp_id_mapping.TempIDManager;
 import cli_tools.common.util.RoundRobinUUIDGenerator;
 import cli_tools.common.util.UUIDGenerator;
 import cli_tools.common.util.Utils;
@@ -48,7 +48,7 @@ public class TaskServiceImplTest {
                 propertyManager,
                 null,
                 propertyConverter,
-                tempIDMappingService
+                tempIdManager
         );
 
         initPropertyDescriptors();
@@ -660,7 +660,7 @@ public class TaskServiceImplTest {
     @InjectMocks
     private PropertyConverter propertyConverter;
     @Mock
-    private TempIDMappingService tempIDMappingService;
+    private TempIDManager tempIdManager;
     private TaskServiceImpl taskService;
     private PropertyManager propertyManager;
     private SimpleTaskRepository simpleTaskRepository;

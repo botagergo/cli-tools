@@ -14,7 +14,7 @@ import cli_tools.common.property_lib.PropertyDescriptor;
 import cli_tools.common.property_lib.PropertyException;
 import cli_tools.common.property_lib.PropertyManager;
 import cli_tools.common.sorter.PropertySorter;
-import cli_tools.common.temp_id_mapping.service.TempIDMappingService;
+import cli_tools.common.temp_id_mapping.TempIDManager;
 import cli_tools.common.util.UUIDGenerator;
 import cli_tools.task_manager.task.Task;
 import cli_tools.task_manager.task.PropertyOwnerTree;
@@ -80,7 +80,7 @@ public class TaskServiceImpl implements TaskService {
         if (taskRepository.delete(uuid) == null) {
             throw new TaskServiceException(String.format(TaskServiceException.taskNotFoundMessage, uuid));
         }
-        tempIDMappingService.delete(uuid);
+        tempIdManager.delete(uuid);
     }
 
     @Override
@@ -273,7 +273,7 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public void deleteAllTasks() throws IOException {
         taskRepository.deleteAll();
-        tempIDMappingService.deleteAll();
+        tempIdManager.deleteAll();
     }
 
     private FilterCriterion getFilterCriterion(FilterPropertySpec filterPropertySpec) throws TaskServiceException {
@@ -387,6 +387,6 @@ public class TaskServiceImpl implements TaskService {
     private PropertyManager propertyManager;
     private UUIDGenerator uuidGenerator;
     private PropertyConverter propertyConverter;
-    private TempIDMappingService tempIDMappingService;
+    private TempIDManager tempIdManager;
 
 }

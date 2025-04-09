@@ -41,7 +41,7 @@ public final class DeleteTaskCommand extends Command {
             List<UUID> uuids = tasksToDelete.stream().map(Task::getUUID).toList();
 
             for (UUID uuid : uuids) {
-                context.getTempIDMappingService().delete(uuid);
+                context.getTempIdManager().delete(uuid);
                 taskManagerContext.getTaskService().deleteTask(uuid);
             }
         } catch (Exception e) {

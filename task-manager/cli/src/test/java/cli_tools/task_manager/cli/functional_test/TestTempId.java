@@ -21,7 +21,7 @@ public class TestTempId extends TestBase {
                 "add finish tax return status:Waiting");
 
         execute("222 333 list");
-        assertStdoutContains("no task with temporary ID(s): 222, 333");
+        assertStdoutContains("no task with temporary ID: 222, 333");
 
         execute("0 list");
         assertStdoutContains("invalid temporary id: 0");

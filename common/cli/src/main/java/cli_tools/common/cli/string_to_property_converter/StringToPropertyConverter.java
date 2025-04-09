@@ -14,7 +14,7 @@ import cli_tools.common.property_descriptor.service.PropertyDescriptorService;
 import cli_tools.common.property_lib.Property;
 import cli_tools.common.property_lib.PropertyDescriptor;
 import cli_tools.common.property_lib.PropertyException;
-import cli_tools.common.temp_id_mapping.service.TempIDMappingService;
+import cli_tools.common.temp_id_mapping.TempIDManager;
 import cli_tools.common.util.Utils;
 import jakarta.inject.Inject;
 import lombok.NonNull;
@@ -33,12 +33,12 @@ public class StringToPropertyConverter {
             LabelService labelService,
             OrderedLabelService orderedLabelService,
             PropertyDescriptorService propertyDescriptorService,
-            TempIDMappingService tempIDMappingService
+            TempIDManager tempIdManager
     ) {
         this.labelService = labelService;
         this.orderedLabelService = orderedLabelService;
         this.propertyDescriptorService = propertyDescriptorService;
-        this.tempIDMappingService = tempIDMappingService;
+        this.tempIdManager = tempIdManager;
         this.dateTimeParser = new DateTimeParser();
     }
 
@@ -248,10 +248,10 @@ public class StringToPropertyConverter {
                 } else {
                     throw new StringToPropertyConverterException(StringToPropertyConverterException.Type.LabelNotFound, "no such label: " + propertyValueStr, propertyValueStr);
                 }
-            } else if (tempIDMappingService != null && uuidSubtype instanceof PropertyDescriptor.Subtype.TaskSubtype) {
+            } else if (tempIdManager != null && uuidSubtype instanceof PropertyDescriptor.Subtype.TaskSubtype) {
                 try {
                     int tempId = Integer.parseInt(propertyValueStr);
-                    UUID uuid = tempIDMappingService.getUUID(tempId);
+                    UUID uuid = tempIdManager.getUUID(tempId);
                     if (uuid == null) {
                         throw new StringToPropertyConverterException(StringToPropertyConverterException.Type.TempIdNotFound, "temporary ID not found: " + propertyValueStr, propertyValueStr);
                     }
@@ -310,7 +310,7 @@ public class StringToPropertyConverter {
     private final PropertyDescriptorService propertyDescriptorService;
     private final LabelService labelService;
     private final OrderedLabelService orderedLabelService;
-    private final TempIDMappingService tempIDMappingService;
+    private final TempIDManager tempIdManager;
     private final DateTimeParser dateTimeParser;
 
 }

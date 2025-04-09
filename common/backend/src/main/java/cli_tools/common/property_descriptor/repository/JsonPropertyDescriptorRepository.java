@@ -1,7 +1,7 @@
 package cli_tools.common.property_descriptor.repository;
 
 import cli_tools.common.repository.SimpleJsonRepository;
-import cli_tools.common.temp_id_mapping.service.TempIDMappingService;
+import cli_tools.common.temp_id_mapping.TempIDManager;
 import com.fasterxml.jackson.databind.InjectableValues;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.type.TypeFactory;
@@ -22,7 +22,7 @@ public class JsonPropertyDescriptorRepository extends SimpleJsonRepository<HashM
     @Inject
     public JsonPropertyDescriptorRepository(
             @Named("propertyDescriptorJsonFile") File jsonFile,
-            TempIDMappingService tempIDMappingService,
+            TempIDManager tempIdManager,
             Class<?> pseudoPropertyProviderMixIn
     ) {
         super(jsonFile);
@@ -31,7 +31,7 @@ public class JsonPropertyDescriptorRepository extends SimpleJsonRepository<HashM
         getObjectMapper().addMixIn(PseudoPropertyProvider.class, pseudoPropertyProviderMixIn);
 
         InjectableValues injectableValues = new InjectableValues.Std()
-                .addValue(TempIDMappingService.class, tempIDMappingService);
+                .addValue(TempIDManager.class, tempIdManager);
         getObjectMapper().setInjectableValues(injectableValues);
     }
 

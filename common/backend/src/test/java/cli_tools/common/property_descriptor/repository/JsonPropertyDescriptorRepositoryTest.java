@@ -1,8 +1,7 @@
 package cli_tools.common.property_descriptor.repository;
 
 import cli_tools.common.service.JsonRepositoryCreator;
-import cli_tools.common.temp_id_mapping.service.TempIDMappingService;
-import org.mockito.Mock;
+import cli_tools.common.temp_id_mapping.TempIDManager;
 import org.testng.annotations.Test;
 import cli_tools.common.property_lib.PropertyDescriptor;
 
@@ -38,7 +37,7 @@ public class JsonPropertyDescriptorRepositoryTest {
             }
         }
         """);
-        repository = new JsonPropertyDescriptorRepository(tempFile, tempIDMappingService, PseudoPropertyProviderMixIn.class);
+        repository = new JsonPropertyDescriptorRepository(tempFile, tempIdManager, PseudoPropertyProviderMixIn.class);
         assertEquals(repository.getAll(), List.of(
                 new PropertyDescriptor("name", PropertyDescriptor.Type.String, null, PropertyDescriptor.Multiplicity.SINGLE, null, null),
                 new PropertyDescriptor("other_name", PropertyDescriptor.Type.UUID, null, PropertyDescriptor.Multiplicity.SET, null, null)
@@ -69,7 +68,7 @@ public class JsonPropertyDescriptorRepositoryTest {
             }
         }
         """);
-        repository = new JsonPropertyDescriptorRepository(tempFile, tempIDMappingService, PseudoPropertyProviderMixIn.class);
+        repository = new JsonPropertyDescriptorRepository(tempFile, tempIdManager, PseudoPropertyProviderMixIn.class);
         assertEquals(repository.find("name"), List.of(
                 new PropertyDescriptor("name", PropertyDescriptor.Type.String, null, PropertyDescriptor.Multiplicity.SINGLE, null, null),
                 new PropertyDescriptor("name1", PropertyDescriptor.Type.UUID, null, PropertyDescriptor.Multiplicity.SET, null, null)
@@ -88,21 +87,21 @@ public class JsonPropertyDescriptorRepositoryTest {
             }
         }
         """);
-        repository = new JsonPropertyDescriptorRepository(tempFile, tempIDMappingService, PseudoPropertyProviderMixIn.class);
+        repository = new JsonPropertyDescriptorRepository(tempFile, tempIdManager, PseudoPropertyProviderMixIn.class);
         assertEquals(repository.find("name3").size(), 0);
     }
 
     @Test
     public void test_find_empty() throws IOException {
         File tempFile = rc.makeTempFile("test_find_empty", "{}");
-        repository = new JsonPropertyDescriptorRepository(tempFile, tempIDMappingService, PseudoPropertyProviderMixIn.class);
+        repository = new JsonPropertyDescriptorRepository(tempFile, tempIdManager, PseudoPropertyProviderMixIn.class);
         assertEquals(repository.find("name3").size(), 0);
     }
 
     @Test
     public void test_find_fileNotExist() throws IOException {
         File tempFile = rc.getTempFile("test_find_fileNotExist");
-        repository = new JsonPropertyDescriptorRepository(tempFile, tempIDMappingService, PseudoPropertyProviderMixIn.class);
+        repository = new JsonPropertyDescriptorRepository(tempFile, tempIdManager, PseudoPropertyProviderMixIn.class);
         assertEquals(repository.find("name3").size(), 0);
     }
 
@@ -124,7 +123,7 @@ public class JsonPropertyDescriptorRepositoryTest {
             }
         }
         """);
-        repository = new JsonPropertyDescriptorRepository(tempFile, tempIDMappingService, PseudoPropertyProviderMixIn.class);
+        repository = new JsonPropertyDescriptorRepository(tempFile, tempIdManager, PseudoPropertyProviderMixIn.class);
         repository.create(new PropertyDescriptor("name", PropertyDescriptor.Type.String, null, PropertyDescriptor.Multiplicity.SINGLE, null, null));
         repository.create(new PropertyDescriptor("other_name", PropertyDescriptor.Type.UUID, null, PropertyDescriptor.Multiplicity.SET, null, null));
 
@@ -150,15 +149,15 @@ public class JsonPropertyDescriptorRepositoryTest {
         File tempFile = rc.getTempFile("bad_format");
 
         Files.writeString(tempFile.toPath(), "[1, 2, 3]");
-        repository = new JsonPropertyDescriptorRepository(tempFile, tempIDMappingService, PseudoPropertyProviderMixIn.class);
+        repository = new JsonPropertyDescriptorRepository(tempFile, tempIdManager, PseudoPropertyProviderMixIn.class);
         assertThrows(IOException.class, () -> repository.get("property"));
 
         Files.writeString(tempFile.toPath(), "\"some string\"");
-        repository = new JsonPropertyDescriptorRepository(tempFile, tempIDMappingService, PseudoPropertyProviderMixIn.class);
+        repository = new JsonPropertyDescriptorRepository(tempFile, tempIdManager, PseudoPropertyProviderMixIn.class);
         assertThrows(IOException.class, () -> repository.get("property"));
 
         Files.writeString(tempFile.toPath(), "{\"name\":123}");
-        repository = new JsonPropertyDescriptorRepository(tempFile, tempIDMappingService, PseudoPropertyProviderMixIn.class);
+        repository = new JsonPropertyDescriptorRepository(tempFile, tempIdManager, PseudoPropertyProviderMixIn.class);
         assertThrows(IOException.class, () -> repository.get("property"));
     }
 
@@ -172,7 +171,7 @@ public class JsonPropertyDescriptorRepositoryTest {
             }
         }
         """);
-        repository = new JsonPropertyDescriptorRepository(tempFile, tempIDMappingService, PseudoPropertyProviderMixIn.class);
+        repository = new JsonPropertyDescriptorRepository(tempFile, tempIdManager, PseudoPropertyProviderMixIn.class);
         assertThrows(IOException.class, () -> repository.get("property"));
     }
 
@@ -189,7 +188,7 @@ public class JsonPropertyDescriptorRepositoryTest {
             }
         }
         """);
-        repository = new JsonPropertyDescriptorRepository(tempFile, tempIDMappingService, PseudoPropertyProviderMixIn.class);
+        repository = new JsonPropertyDescriptorRepository(tempFile, tempIdManager, PseudoPropertyProviderMixIn.class);
         assertThrows(IOException.class, () -> repository.get("property"));
     }
 
@@ -210,7 +209,7 @@ public class JsonPropertyDescriptorRepositoryTest {
         }
         }
         """);
-        repository = new JsonPropertyDescriptorRepository(tempFile, tempIDMappingService, PseudoPropertyProviderMixIn.class);
+        repository = new JsonPropertyDescriptorRepository(tempFile, tempIdManager, PseudoPropertyProviderMixIn.class);
         assertThrows(IOException.class, () -> repository.get("property"));
     }
 
@@ -230,7 +229,7 @@ public class JsonPropertyDescriptorRepositoryTest {
             }
         }
         """);
-        repository = new JsonPropertyDescriptorRepository(tempFile, tempIDMappingService, PseudoPropertyProviderMixIn.class);
+        repository = new JsonPropertyDescriptorRepository(tempFile, tempIdManager, PseudoPropertyProviderMixIn.class);
         assertEquals(repository.get("other_name"), new PropertyDescriptor("other_name", PropertyDescriptor.Type.UUID, new PropertyDescriptor.Subtype.LabelSubtype("label1"), PropertyDescriptor.Multiplicity.SET, null, null));
     }
 
@@ -249,12 +248,12 @@ public class JsonPropertyDescriptorRepositoryTest {
             }
         }
         """);
-        repository = new JsonPropertyDescriptorRepository(tempFile, tempIDMappingService, PseudoPropertyProviderMixIn.class);
+        repository = new JsonPropertyDescriptorRepository(tempFile, tempIdManager, PseudoPropertyProviderMixIn.class);
         assertThrows(IOException.class, () -> repository.get("property"));
     }
 
     private JsonPropertyDescriptorRepository repository;
-    @Mock private TempIDMappingService tempIDMappingService;
+    private final TempIDManager tempIdManager = new TempIDManager();
     private final JsonRepositoryCreator rc;
 
 }

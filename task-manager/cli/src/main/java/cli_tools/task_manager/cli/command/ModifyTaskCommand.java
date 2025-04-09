@@ -50,7 +50,7 @@ public final class ModifyTaskCommand extends Command {
                 }
                 Task modifiedTask = taskManagerContext.getTaskService().modifyTask(taskUuid, task);
                 if (tasks.size() == 1) {
-                    int tempID = context.getTempIDMappingService().getOrCreateID(modifiedTask.getUUID());
+                    int tempID = context.getTempIdManager().getOrCreateID(modifiedTask.getUUID());
                     context.setPrevTempId(tempID);
                 }
             }

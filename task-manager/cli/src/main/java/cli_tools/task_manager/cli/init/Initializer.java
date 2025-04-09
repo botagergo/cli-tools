@@ -7,7 +7,7 @@ import cli_tools.common.ordered_label.service.OrderedLabelService;
 import cli_tools.common.property_descriptor.service.PropertyDescriptorService;
 import cli_tools.common.property_lib.PropertyDescriptor;
 import cli_tools.common.pseudo_property_provider.TempIDPseudoPropertyProvider;
-import cli_tools.common.temp_id_mapping.service.TempIDMappingService;
+import cli_tools.common.temp_id_mapping.TempIDManager;
 import cli_tools.common.view.service.ViewInfoService;
 import cli_tools.task_manager.pseudo_property_provider.DonePseudoPropertyProvider;
 import jakarta.inject.Inject;
@@ -30,7 +30,7 @@ public class Initializer {
             OrderedLabelService orderedLabelService,
             ConfigurationRepository configurationRepository,
             ViewInfoService viewInfoService,
-            TempIDMappingService tempIDMappingService,
+            TempIDManager tempIdManager,
             @Named("configurationYamlFile") File configFile
     ) {
         this.propertyDescriptorService = propertyDescriptorService;
@@ -38,7 +38,7 @@ public class Initializer {
         this.orderedLabelService = orderedLabelService;
         this.viewInfoService = viewInfoService;
         this.configurationRepository = configurationRepository;
-        this.tempIDMappingService = tempIDMappingService;
+        this.tempIdManager = tempIdManager;
         this.configFile = configFile;
     }
 
@@ -79,7 +79,7 @@ public class Initializer {
         propertyDescriptorService.createPropertyDescriptor(
                 new PropertyDescriptor("effort", PropertyDescriptor.Type.Integer, new PropertyDescriptor.Subtype.OrderedLabelSubtype("effort"), PropertyDescriptor.Multiplicity.SINGLE, null, null));
         propertyDescriptorService.createPropertyDescriptor(
-                new PropertyDescriptor("id", PropertyDescriptor.Type.Integer, null, PropertyDescriptor.Multiplicity.SINGLE, null, new TempIDPseudoPropertyProvider(tempIDMappingService)));
+                new PropertyDescriptor("id", PropertyDescriptor.Type.Integer, null, PropertyDescriptor.Multiplicity.SINGLE, null, new TempIDPseudoPropertyProvider(tempIdManager)));
         propertyDescriptorService.createPropertyDescriptor(
                 new PropertyDescriptor("startDate", PropertyDescriptor.Type.String, new PropertyDescriptor.Subtype.DateSubtype(), PropertyDescriptor.Multiplicity.SINGLE, null, null));
         propertyDescriptorService.createPropertyDescriptor(
@@ -145,7 +145,7 @@ public class Initializer {
     private final OrderedLabelService orderedLabelService;
     private final ViewInfoService viewInfoService;
     private final ConfigurationRepository configurationRepository;
-    private final TempIDMappingService tempIDMappingService;
+    private final TempIDManager tempIdManager;
     @Named("configurationYamlFile")
     private final File configFile;
 

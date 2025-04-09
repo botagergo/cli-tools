@@ -42,7 +42,7 @@ public final class UndoneTaskCommand extends Command {
             for (Task task : tasks) {
                 Task undoneTask = taskManagerContext.getTaskService().undoneTask(task.getUUID());
                 if (tasks.size() == 1) {
-                    int tempID = context.getTempIDMappingService().getOrCreateID(undoneTask.getUUID());
+                    int tempID = context.getTempIdManager().getOrCreateID(undoneTask.getUUID());
                     context.setPrevTempId(tempID);
                 }
             }

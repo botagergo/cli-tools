@@ -29,7 +29,7 @@ public class CommandUtil {
         List<Integer> nonexistentTempIds = new ArrayList<>();
 
         for (int tempID : tempIDs) {
-            UUID uuid = context.getTempIDMappingService().getUUID(tempID);
+            UUID uuid = context.getTempIdManager().getUUID(tempID);
             if (uuid == null) {
                 nonexistentTempIds.add(tempID);
             } else {
@@ -38,7 +38,7 @@ public class CommandUtil {
         }
 
         if (!nonexistentTempIds.isEmpty()) {
-            throw new IllegalArgumentException("no task with temporary ID(s): %s".formatted(
+            throw new IllegalArgumentException("no task with temporary ID: %s".formatted(
                     nonexistentTempIds.stream().map(Object::toString).collect(Collectors.joining(", "))));
         }
 

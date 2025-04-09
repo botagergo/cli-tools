@@ -1,4 +1,4 @@
-package cli_tools.common.temp_id_mapping.repository;
+package cli_tools.common.temp_id_mapping;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.AllArgsConstructor;
