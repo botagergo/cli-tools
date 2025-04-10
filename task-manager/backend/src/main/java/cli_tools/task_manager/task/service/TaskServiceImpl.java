@@ -147,7 +147,7 @@ public class TaskServiceImpl implements TaskService {
         return taskTrees;
     }
 
-    private PropertyOwnerTree getTaskTree(List<PropertyOwnerTree> taskTrees, Map<UUID, PropertyOwnerTree> taskTreeMap, Task task) throws IOException, PropertyException {
+    private PropertyOwnerTree getTaskTree(List<PropertyOwnerTree> taskTrees, Map<UUID, PropertyOwnerTree> taskTreeMap, Task task) throws IOException, PropertyException, TaskServiceException {
         PropertyOwnerTree taskTree = taskTreeMap.get(task.getUUID());
         if (taskTree != null) {
             return taskTree;
@@ -174,10 +174,15 @@ public class TaskServiceImpl implements TaskService {
         return taskTree;
     }
 
-    private PropertyOwnerTree getTaskTree(List<PropertyOwnerTree> taskTrees, Map<UUID, PropertyOwnerTree> taskTreeMap, UUID uuid) throws IOException, PropertyException {
+    private PropertyOwnerTree getTaskTree(List<PropertyOwnerTree> taskTrees, Map<UUID, PropertyOwnerTree> taskTreeMap, UUID uuid) throws IOException, PropertyException, TaskServiceException {
         PropertyOwnerTree taskTree = taskTreeMap.get(uuid);
         if (taskTree != null) {
             return taskTree;
+        }
+
+        Task parent = taskRepository.get(uuid);
+        if (parent == null) {
+            throw new TaskServiceException(String.format(TaskServiceException.taskNotFoundMessage, uuid));
         }
 
         taskTree = new PropertyOwnerTree(taskRepository.get(uuid), new ArrayList<>());

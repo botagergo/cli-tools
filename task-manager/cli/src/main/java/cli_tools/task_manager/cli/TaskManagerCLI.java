@@ -35,6 +35,7 @@ public class TaskManagerCLI {
         } catch (IOException e) {
             Print.printError(e.getMessage());
             log.error(ExceptionUtils.getStackTrace(e));
+            return;
         }
 
         commandParserFactory.registerParser("add", AddTaskCommandParser::new);

@@ -15,11 +15,11 @@ public class Print {
 
     public static void printAndLogException(Exception e, Logger log) {
         if (e.getMessage() != null) {
-            Print.printError(ExceptionUtils.getStackTrace(e));
-            log.error(ExceptionUtils.getStackTrace(e));
-        } else {
             Print.printError(e.getMessage());
             log.error("{}\n{}", e.getMessage(), ExceptionUtils.getStackTrace(e));
+        } else {
+            Print.printError(ExceptionUtils.getStackTrace(e));
+            log.error(ExceptionUtils.getStackTrace(e));
         }
     }
 
