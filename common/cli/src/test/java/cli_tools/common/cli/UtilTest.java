@@ -1,7 +1,6 @@
 package cli_tools.common.cli;
 
 import org.testng.annotations.Test;
-import cli_tools.common.cli.command_parser.CommandParserException;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertThrows;
@@ -25,6 +24,16 @@ public class UtilTest {
         assertThrows(IllegalArgumentException.class, () -> Util.parseTempId("-33"));
         assertThrows(IllegalArgumentException.class, () -> Util.parseTempId("1.3"));
         assertThrows(IllegalArgumentException.class, () -> Util.parseTempId("10e+23"));
+    }
+
+    @Test
+    void test_strip() {
+        assertEquals(Util.strip(""), "");
+        assertEquals(Util.strip("   "), "");
+        assertEquals(Util.strip("\r\n\t  "), "");
+        assertEquals(Util.strip("\r\n\t abc def\n\t"), "abc def");
+        assertEquals(Util.strip("\r\n\t abc def \\ \\\t"), "abc def \\ \\\t");
+        assertEquals(Util.strip("\\  abc def\\ "), "\\  abc def\\ ");
     }
 
 }

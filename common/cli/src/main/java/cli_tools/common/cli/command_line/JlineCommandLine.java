@@ -13,6 +13,8 @@ import cli_tools.common.property_lib.PropertyDescriptorCollection;
 import java.io.IOException;
 import java.util.*;
 
+import static cli_tools.common.cli.Util.strip;
+
 @AllArgsConstructor(onConstructor = @__(@Inject))
 public class JlineCommandLine implements CommandLine {
 
@@ -60,18 +62,8 @@ public class JlineCommandLine implements CommandLine {
         }
     }
 
-    private cli_tools.common.cli.command_line.Completer buildCompleter(Context context) {
-        return new cli_tools.common.cli.command_line.Completer(context);
-    }
-
-    private String strip(String str) {
-        String strippedStr = str.stripTrailing();
-        char lastChar = strippedStr.charAt(strippedStr.length()-1);
-        if (str.length() > strippedStr.length() &&
-                lastChar == '\\') {
-            strippedStr = strippedStr + str.charAt(strippedStr.length());
-        }
-        return strippedStr.stripLeading();
+    private Completer buildCompleter(Context context) {
+        return new Completer(context);
     }
 
     private final Executor executor;

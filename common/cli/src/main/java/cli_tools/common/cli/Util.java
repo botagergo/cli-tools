@@ -10,4 +10,18 @@ public class Util {
         } catch (NumberFormatException ignored) {}
         throw new IllegalArgumentException("invalid temporary id: " + str);
     }
+
+    public static String strip(String str) {
+        String strippedStr = str.stripTrailing();
+        if (strippedStr.isEmpty()) {
+            return "";
+        }
+
+        char lastChar = strippedStr.charAt(strippedStr.length()-1);
+        if (str.length() > strippedStr.length() &&
+                lastChar == '\\') {
+            strippedStr = strippedStr + str.charAt(strippedStr.length());
+        }
+        return strippedStr.stripLeading();
+    }
 }
