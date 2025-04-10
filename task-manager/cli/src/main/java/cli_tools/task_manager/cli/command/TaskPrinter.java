@@ -10,7 +10,6 @@ import com.inamik.text.tables.GridTable;
 import com.inamik.text.tables.SimpleTable;
 import com.inamik.text.tables.grid.Border;
 import com.inamik.text.tables.grid.Util;
-import jakarta.inject.Inject;
 import lombok.extern.log4j.Log4j2;
 import org.fusesource.jansi.Ansi;
 import cli_tools.common.cli.DateTimeFormatter;
@@ -29,7 +28,7 @@ import java.util.List;
 @Log4j2
 public class TaskPrinter {
 
-    @Inject public TaskPrinter() {}
+    public TaskPrinter() {}
 
     public void printTasks(TaskManagerContext context, List<Task> tasks,
                            List<String> propertiesToList,

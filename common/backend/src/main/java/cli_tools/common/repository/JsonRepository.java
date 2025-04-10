@@ -4,17 +4,25 @@ import com.fasterxml.jackson.core.exc.StreamReadException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.type.TypeFactory;
-import lombok.Getter;
 
 import java.io.File;
 import java.io.IOException;
 
 public abstract class JsonRepository<T_Json, T_Stored> {
 
+    private static final ObjectMapper objectMapper;
+    private T_Stored data = null;
+    private final File jsonFile;
+    private ObjectWriter objectWriter;
+    private ObjectReader objectReader;
+
     public JsonRepository(File jsonFile) {
         this.jsonFile = jsonFile;
-        this.objectMapper = new ObjectMapper();
-        this.objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
+    }
+
+    static {
+        objectMapper = new ObjectMapper();
+        objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
     }
 
     public T_Stored getData() throws IOException {
@@ -29,7 +37,7 @@ public abstract class JsonRepository<T_Json, T_Stored> {
     }
     protected TypeReference<T_Json> getTypeReference() {
         return null;
-    };
+    }
 
     protected T_Json getEmptyData() {
         return null;
@@ -44,16 +52,8 @@ public abstract class JsonRepository<T_Json, T_Stored> {
                     parent.mkdirs();
                 }
             }
-            TypeReference<T_Json> typeReference = getTypeReference();
-            if (typeReference != null) {
-                objectMapper
-                        .writerFor(typeReference)
-                        .writeValue(jsonFile, storedToJsonData(data));
-            } else {
-                objectMapper
-                        .writeValue(jsonFile, storedToJsonData(data));
-            }
 
+            getObjectWriter().writeValue(jsonFile, storedToJsonData(data));
         } catch (IOException e) {
             throw new IOException("Failed to write JSON file: " + jsonFile, e);
         }
@@ -63,13 +63,7 @@ public abstract class JsonRepository<T_Json, T_Stored> {
         T_Json data;
         try {
             if (jsonFile.exists()) {
-                JavaType javaType = constructType(objectMapper.getTypeFactory());
-                if (javaType != null) {
-                    data = objectMapper.readValue(jsonFile, javaType);
-                } else {
-                    data = objectMapper.readValue(jsonFile, new TypeReference<>() {
-                    });
-                }
+                data = getObjectReader().readValue(jsonFile);
             } else {
                 data = getEmptyData();
             }
@@ -92,9 +86,32 @@ public abstract class JsonRepository<T_Json, T_Stored> {
 
     protected abstract T_Json storedToJsonData(T_Stored data);
 
-    @Getter
-    private final ObjectMapper objectMapper;
-    private T_Stored data = null;
-    private final File jsonFile;
+    protected ObjectMapper getObjectMapper() {
+        return objectMapper;
+    }
+
+    private ObjectReader getObjectReader() {
+        if (objectReader == null) {
+            JavaType javaType = constructType(getObjectMapper().getTypeFactory());
+            if (javaType != null) {
+                objectReader = getObjectMapper().readerFor(javaType);
+            } else {
+                objectReader = getObjectMapper().readerFor(new TypeReference<>() {});
+            }
+        }
+        return objectReader;
+    }
+
+    private ObjectWriter getObjectWriter() {
+        if (objectWriter == null) {
+            TypeReference<T_Json> typeReference = getTypeReference();
+            if (typeReference != null) {
+                objectWriter = getObjectMapper().writerFor(typeReference);
+            } else {
+                objectWriter = getObjectMapper().writer();
+            }
+        }
+        return objectWriter;
+    }
 
 }
