@@ -13,6 +13,14 @@ public class Print {
         System.out.println(Ansi.ansi().fg(Ansi.Color.RED).a(text.formatted(args)).reset());
     }
 
+    public static void logException(Exception e, Logger log) {
+        if (e.getMessage() != null) {
+            log.error("{}\n{}", e.getMessage(), ExceptionUtils.getStackTrace(e));
+        } else {
+            log.error(ExceptionUtils.getStackTrace(e));
+        }
+    }
+
     public static void printAndLogException(Exception e, Logger log) {
         if (e.getMessage() != null) {
             Print.printError(e.getMessage());

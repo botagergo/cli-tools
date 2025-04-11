@@ -10,7 +10,7 @@ import java.io.IOException;
 
 public abstract class JsonRepository<T_Json, T_Stored> {
 
-    private static final ObjectMapper objectMapper;
+    private final ObjectMapper objectMapper;
     private T_Stored data = null;
     private final File jsonFile;
     private ObjectWriter objectWriter;
@@ -18,9 +18,6 @@ public abstract class JsonRepository<T_Json, T_Stored> {
 
     public JsonRepository(File jsonFile) {
         this.jsonFile = jsonFile;
-    }
-
-    static {
         objectMapper = new ObjectMapper();
         objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
     }

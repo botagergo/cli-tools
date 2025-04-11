@@ -4,8 +4,6 @@ import cli_tools.common.repository.JsonRepository;
 import cli_tools.common.repository.MapDeserializer;
 import cli_tools.common.repository.MapSerializer;
 import com.fasterxml.jackson.databind.JavaType;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import jakarta.inject.Inject;
@@ -22,21 +20,14 @@ import java.util.stream.Collectors;
 @Singleton
 public class JsonTaskRepository extends JsonRepository<List<HashMap<String, Object>>, List<Task>> implements TaskRepository {
 
-    private static final ObjectMapper objectMapper = new ObjectMapper();
-
     @Inject
     public JsonTaskRepository(@Named("taskJsonFile") File jsonPath) {
         super(jsonPath);
-    }
-
-    static {
-        objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
 
         SimpleModule simpleModule = new SimpleModule();
         simpleModule.addSerializer(new MapSerializer());
         simpleModule.addDeserializer(HashMap.class, new MapDeserializer());
-
-        objectMapper.registerModule(simpleModule);
+        getObjectMapper().registerModule(simpleModule);
     }
 
     @Override
@@ -126,8 +117,4 @@ public class JsonTaskRepository extends JsonRepository<List<HashMap<String, Obje
         return data.stream().map(Task::getProperties).collect(Collectors.toList());
     }
 
-    @Override
-    protected ObjectMapper getObjectMapper() {
-        return JsonTaskRepository.objectMapper;
-    }
 }

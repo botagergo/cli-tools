@@ -45,9 +45,11 @@ import cli_tools.common.util.RandomUUIDGenerator;
 import cli_tools.common.util.UUIDGenerator;
 
 import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class TaskManagerModule extends AbstractModule {
-    String basePath = System.getenv("TASK_MANAGER_BASE_PATH");
+    Path basePath = Paths.get(System.getenv("TASK_MANAGER_BASE_PATH"));
 
     @Provides
     @Singleton
@@ -82,10 +84,15 @@ public class TaskManagerModule extends AbstractModule {
                 PseudoPropertyProviderMixIn.class);
     }
 
+    @Provides
+    JlineCommandLine jlineCommandLine(Executor executor) {
+        return new JlineCommandLine(executor, basePath);
+    }
+
     @Override
     protected void configure() {
         if (basePath == null) {
-            basePath = System.getProperty("user.home") + "/.config/task-manager/";
+            basePath = Paths.get(System.getProperty("user.home"), ".config/task-manager");
         }
 
         bind(Tokenizer.class).to(TokenizerImpl.class);
@@ -109,18 +116,18 @@ public class TaskManagerModule extends AbstractModule {
         bind(Context.class).to(TaskManagerContext.class);
         bind(CommandLine.class).to(JlineCommandLine.class);
 
-        bind(File.class).annotatedWith(Names.named("taskJsonFile")).toInstance(new File(basePath + "task.json"));
-        bind(File.class).annotatedWith(Names.named("tempIdMappingJsonFile")).toInstance(new File(basePath + "temp_id_mapping.json"));
-        bind(File.class).annotatedWith(Names.named("propertyDescriptorJsonFile")).toInstance(new File(basePath + "property_descriptor.json"));
-        bind(File.class).annotatedWith(Names.named("viewJsonFile")).toInstance(new File(basePath + "view.json"));
-        bind(File.class).annotatedWith(Names.named("stateJsonFile")).toInstance(new File(basePath + "state.json"));
-        bind(File.class).annotatedWith(Names.named("propertyToStringConverterJsonFile")).toInstance(new File(basePath + "property_to_string_converter.json"));
-        bind(File.class).annotatedWith(Names.named("configurationYamlFile")).toInstance(new File(basePath + "config.yaml"));
-        bind(File.class).annotatedWith(Names.named("basePath")).toInstance(new File(basePath));
+        bind(File.class).annotatedWith(Names.named("taskJsonFile")).toInstance(getJsonFile("task.json"));
+        bind(File.class).annotatedWith(Names.named("tempIdMappingJsonFile")).toInstance(getJsonFile("temp_id_mapping.json"));
+        bind(File.class).annotatedWith(Names.named("propertyDescriptorJsonFile")).toInstance(getJsonFile("property_descriptor.json"));
+        bind(File.class).annotatedWith(Names.named("viewJsonFile")).toInstance(getJsonFile("view.json"));
+        bind(File.class).annotatedWith(Names.named("stateJsonFile")).toInstance(getJsonFile("state.json"));
+        bind(File.class).annotatedWith(Names.named("propertyToStringConverterJsonFile")).toInstance(getJsonFile("property_to_string_converter.json"));
+        bind(File.class).annotatedWith(Names.named("configurationYamlFile")).toInstance(getJsonFile( "config.yaml"));
+        bind(File.class).annotatedWith(Names.named("basePath")).toInstance(basePath.toFile());
     }
 
     private File getJsonFile(String filename) {
-        return new File(basePath + filename);
+        return basePath.resolve(filename).toFile();
     }
 
 }

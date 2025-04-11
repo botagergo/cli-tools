@@ -4,13 +4,13 @@ import cli_tools.common.cli.Context;
 import cli_tools.common.core.data.Label;
 import cli_tools.common.core.data.OrderedLabel;
 import cli_tools.common.core.data.Predicate;
+import cli_tools.common.core.util.Print;
 import cli_tools.common.property_lib.PropertyDescriptor;
 import cli_tools.common.property_lib.PropertyException;
 import lombok.extern.log4j.Log4j2;
 import org.jline.reader.Candidate;
 import org.jline.reader.LineReader;
 import org.jline.reader.ParsedLine;
-import shadow.org.codehaus.plexus.util.ExceptionUtils;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -19,6 +19,17 @@ import java.util.Objects;
 
 @Log4j2
 public class Completer implements org.jline.reader.Completer {
+
+    private static class UnorderedCandidate extends Candidate {
+        public UnorderedCandidate(String value, String displ, String group, String descr, String suffix, String key, boolean complete) {
+            super(value, displ, group, descr, suffix, key, complete);
+        }
+
+        @Override
+        public int compareTo(org.jline.reader.Candidate candidate) {
+            return 0;
+        }
+    }
 
     public Completer(Context context) {
         this.context = context;
@@ -87,7 +98,7 @@ public class Completer implements org.jline.reader.Completer {
             } catch (PropertyException e) {
                 return;
             } catch (IOException e) {
-                log.error("Completer.complete - IOException: " + e.getMessage() + "\n" + ExceptionUtils.getStackTrace(e));
+                Print.logException(e, log);
                 return;
             }
 
@@ -102,7 +113,7 @@ public class Completer implements org.jline.reader.Completer {
                     labelStrs = labels.stream().map(OrderedLabel::text).toList();
                 }
             } catch (IOException e) {
-                log.error("Completer.complete - IOException: " + e.getMessage() + "\n" + ExceptionUtils.getStackTrace(e));
+                Print.logException(e, log);
                 return;
             }
 
@@ -167,7 +178,7 @@ public class Completer implements org.jline.reader.Completer {
                     list.add(buildPropertyCandidate(prefix, property));
                 }
             } catch (IOException e) {
-                log.error("Completer.complete - IOException: " + e.getMessage() + "\n" + ExceptionUtils.getStackTrace(e));
+                Print.logException(e, log);
             }
         }
     }
@@ -181,19 +192,19 @@ public class Completer implements org.jline.reader.Completer {
     }
 
     private Candidate buildCommandCandidate(String name) {
-        return new Candidate(name, name, "command", null, null, null, true);
+        return new UnorderedCandidate(name, name, "command", null, null, null, true);
     }
 
     private Candidate buildPropertyCandidate(String prefix, String name) {
-        return new Candidate(prefix + name, name, "property", null, null, null, false);
+        return new UnorderedCandidate(prefix + name, name, "property", null, null, null, false);
     }
 
     private Candidate buildPropertyValueCandidate(String prefix, String name) {
-        return new Candidate(prefix + name, name, "property value", null, null, null, false);
+        return new UnorderedCandidate(prefix + name, name, "property value", null, null, null, false);
     }
 
     private Candidate buildPredicateCandidate(String prefix, String name) {
-        return new Candidate(prefix + name, name, "predicate", null, null, null, false);
+        return new UnorderedCandidate(prefix + name, name, "predicate", null, null, null, false);
     }
 
     private boolean shouldCompleteCommands(ParsedLine parsedLine) {

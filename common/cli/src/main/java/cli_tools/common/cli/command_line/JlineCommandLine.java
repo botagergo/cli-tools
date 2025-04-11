@@ -1,7 +1,6 @@
 package cli_tools.common.cli.command_line;
 
 import cli_tools.common.cli.Context;
-import com.google.inject.Inject;
 import lombok.AllArgsConstructor;
 import org.jline.reader.*;
 import org.jline.reader.LineReader.Option;
@@ -11,11 +10,12 @@ import cli_tools.common.property_lib.PropertyDescriptor;
 import cli_tools.common.property_lib.PropertyDescriptorCollection;
 
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.*;
 
 import static cli_tools.common.cli.Util.strip;
 
-@AllArgsConstructor(onConstructor = @__(@Inject))
+@AllArgsConstructor
 public class JlineCommandLine implements CommandLine {
 
     @Override
@@ -30,7 +30,6 @@ public class JlineCommandLine implements CommandLine {
                 .build();
 
         Parser parser = new cli_tools.common.cli.command_line.Parser();
-
         cli_tools.common.cli.command_line.Completer completer = buildCompleter(context);
         LineReader reader = LineReaderBuilder.builder().terminal(terminal)
                 .completer(completer)
@@ -41,6 +40,7 @@ public class JlineCommandLine implements CommandLine {
                 .option(Option.DISABLE_EVENT_EXPANSION, true)
                 .variable(LineReader.SECONDARY_PROMPT_PATTERN, "> ")
                 .variable(LineReader.INDENTATION, 2)
+                .variable(LineReader.HISTORY_FILE, basePath.resolve("history"))
                 .build();
 
         String line;
@@ -67,5 +67,6 @@ public class JlineCommandLine implements CommandLine {
     }
 
     private final Executor executor;
+    private final Path basePath;
 
 }
