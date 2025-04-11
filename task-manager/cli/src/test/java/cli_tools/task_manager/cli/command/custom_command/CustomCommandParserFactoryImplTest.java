@@ -11,12 +11,12 @@ public class CustomCommandParserFactoryImplTest {
     BashCommandDefinition bashCommandDefinition = new BashCommandDefinition("echo", "echo Hello", 1000);
 
     @Test
-    public void test_createParser_withBashCommandDefinition_returnsBashCommandParser() {
+    void test_createParser_withBashCommandDefinition_returnsBashCommandParser() {
         Assert.assertTrue(factory.createParser(bashCommandDefinition) instanceof BashCommandParser);
     }
 
     @Test
-    public void test_createParser_withUnknownCommandDefinition_returnsNull() {
+    void test_createParser_withUnknownCommandDefinition_returnsNull() {
         var unknownCommandDefinitionMock = Mockito.mock(CustomCommandDefinition.class);
         Assert.assertNull(factory.createParser(unknownCommandDefinitionMock));
     }

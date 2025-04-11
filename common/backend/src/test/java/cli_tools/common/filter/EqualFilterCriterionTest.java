@@ -39,42 +39,42 @@ public class EqualFilterCriterionTest {
     }
 
     @BeforeMethod
-    public void clear() {
+    void clear() {
         Mockito.reset(propertyOwner);
     }
 
     @Test
-    public void test_string_equals() throws PropertyException, IOException {
+    void test_string_equals() throws PropertyException, IOException {
         Mockito.when(propertyOwner.getProperties()).thenReturn(Utils.newHashMap("test_string", "string_value"));
         checkEquals("test_string", "string_value");
     }
 
     @Test
-    public void test_boolean_equals() throws PropertyException, IOException {
+    void test_boolean_equals() throws PropertyException, IOException {
         Mockito.when(propertyOwner.getProperties()).thenReturn(Utils.newHashMap("test_boolean", true));
         Assert.assertTrue(checkEquals("test_boolean", true));
     }
 
     @Test
-    public void test_integer_equals() throws PropertyException, IOException {
+    void test_integer_equals() throws PropertyException, IOException {
         Mockito.when(propertyOwner.getProperties()).thenReturn(Utils.newHashMap("test_integer", 123));
         Assert.assertTrue(checkEquals("test_integer", 123));
     }
 
     @Test
-    public void test_uuid_equals() throws PropertyException, IOException {
+    void test_uuid_equals() throws PropertyException, IOException {
         Mockito.when(propertyOwner.getProperties()).thenReturn(Utils.newHashMap("test_uuid", uuid1));
         Assert.assertTrue(checkEquals("test_uuid", uuid1));
     }
 
     @Test
-    public void test_list_equals() throws PropertyException, IOException {
+    void test_list_equals() throws PropertyException, IOException {
         Mockito.when(propertyOwner.getProperties()).thenReturn(Utils.newHashMap("test_string_list", Utils.newArrayList("string_value1", "string_value2")));
         Assert.assertTrue(checkEquals("test_string_list", Utils.newArrayList("string_value1", "string_value2")));
     }
 
     @Test
-    public void test_string_not_equal() throws PropertyException, IOException {
+    void test_string_not_equal() throws PropertyException, IOException {
         Mockito.when(propertyOwner.getProperties()).thenReturn(Utils.newHashMap("test_string", "string_value"));
         Assert.assertFalse(checkEquals("test_string", "other_string_value"));
 
@@ -86,7 +86,7 @@ public class EqualFilterCriterionTest {
     }
 
     @Test
-    public void test_boolean_not_equal() throws PropertyException, IOException {
+    void test_boolean_not_equal() throws PropertyException, IOException {
         Mockito.when(propertyOwner.getProperties()).thenReturn(Utils.newHashMap("test_boolean", true));
         Assert.assertFalse(checkEquals("test_boolean", false));
 
@@ -98,7 +98,7 @@ public class EqualFilterCriterionTest {
     }
 
     @Test
-    public void test_integer_not_equal() throws PropertyException, IOException {
+    void test_integer_not_equal() throws PropertyException, IOException {
         Mockito.when(propertyOwner.getProperties()).thenReturn(Utils.newHashMap("test_integer", 123));
         Assert.assertFalse(checkEquals("test_integer", 456));
 
@@ -110,7 +110,7 @@ public class EqualFilterCriterionTest {
     }
 
     @Test
-    public void test_uuid_not_equal() throws PropertyException, IOException {
+    void test_uuid_not_equal() throws PropertyException, IOException {
         Mockito.when(propertyOwner.getProperties()).thenReturn(Utils.newHashMap("test_uuid", uuid1));
         Assert.assertFalse(checkEquals("test_uuid", uuid2));
 
@@ -123,7 +123,7 @@ public class EqualFilterCriterionTest {
     }
 
     @Test
-    public void test_list_not_equal() throws PropertyException, IOException {
+    void test_list_not_equal() throws PropertyException, IOException {
         Mockito.when(propertyOwner.getProperties()).thenReturn(Utils.newHashMap("test_string_list", Utils.newArrayList("string_value1", "string_value3")));
         Assert.assertFalse(
                 checkEquals("test_string_list",

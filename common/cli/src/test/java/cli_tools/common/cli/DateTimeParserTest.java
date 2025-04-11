@@ -12,7 +12,7 @@ public class DateTimeParserTest {
             LocalDateTime.of(2020, 11, 3, 19, 45, 22).atZone(ZoneId.of("Europe/Budapest"))), ZoneId.of("Europe/Budapest")));
 
     @Test
-    public void test_parseLocalDate_standard() {
+    void test_parseLocalDate_standard() {
         assertParseLocalDate("08-11-1999", LocalDate.of(1999, 8, 11)); // MM-dd-uuuu
         assertParseLocalDate("20-08-1999", LocalDate.of(1999, 8, 20)); // dd-MM-uuuu
         assertParseLocalDate("2020-04-12", LocalDate.of(2020, 4, 12)); //uuuu-MM-dd
@@ -31,13 +31,13 @@ public class DateTimeParserTest {
     }
 
     @Test
-    public void test_parseLocalDate_standard_invalidDate() {
+    void test_parseLocalDate_standard_invalidDate() {
         assertParseLocalDateThrows("08/11/1999");
         assertParseLocalDateThrows("June 8");
     }
 
     @Test
-    public void test_parseLocalDate_custom_singleNoun() {
+    void test_parseLocalDate_custom_singleNoun() {
         assertParseLocalDate("today", LocalDate.of(2020, 11, 3));
         assertParseLocalDate("yesterday", LocalDate.of(2020, 11, 2));
         assertParseLocalDate("tomorrow", LocalDate.of(2020, 11, 4));
@@ -51,7 +51,7 @@ public class DateTimeParserTest {
     }
 
     @Test
-    public void test_parseLocalDate_custom_withQuantity_singular() {
+    void test_parseLocalDate_custom_withQuantity_singular() {
         assertParseLocalDate("+3day", LocalDate.of(2020, 11, 6));
         assertParseLocalDate("-4day", LocalDate.of(2020, 10, 30));
         assertParseLocalDate("+2week", LocalDate.of(2020, 11, 17));
@@ -77,7 +77,7 @@ public class DateTimeParserTest {
     }
 
     @Test
-    public void test_parseLocalDate_custom_withQuantity_plural() {
+    void test_parseLocalDate_custom_withQuantity_plural() {
         assertParseLocalDate("+3days", LocalDate.of(2020, 11, 6));
         assertParseLocalDate("-4days", LocalDate.of(2020, 10, 30));
         assertParseLocalDate("+2weeks", LocalDate.of(2020, 11, 17));
@@ -103,7 +103,7 @@ public class DateTimeParserTest {
     }
 
     @Test
-    public void test_parseLocalDate_custom_upperCase() {
+    void test_parseLocalDate_custom_upperCase() {
         assertParseLocalDate("TODAY", LocalDate.of(2020, 11, 3));
         assertParseLocalDate("Yesterday", LocalDate.of(2020, 11, 2));
         assertParseLocalDate("ToMoRrOw", LocalDate.of(2020, 11, 4));
@@ -111,14 +111,14 @@ public class DateTimeParserTest {
     }
 
     @Test
-    public void test_parseLocalDate_custom_withWhitespace() {
+    void test_parseLocalDate_custom_withWhitespace() {
         assertParseLocalDate(" today ", LocalDate.of(2020, 11, 3));
         assertParseLocalDate("+ 3 days", LocalDate.of(2020, 11, 6));
         assertParseLocalDate(" - 2    weeks ", LocalDate.of(2020, 10, 20));
     }
 
     @Test
-    public void test_parseLocalDate_custom_singleNoun_invalidNoun() {
+    void test_parseLocalDate_custom_singleNoun_invalidNoun() {
         assertParseLocalDateThrows("  ");
         assertParseLocalDateThrows("");
         assertParseLocalDateThrows("invalid");
@@ -133,7 +133,7 @@ public class DateTimeParserTest {
     }
 
     @Test
-    public void test_parseLocalDate_custom_separatedByWhitespace() {
+    void test_parseLocalDate_custom_separatedByWhitespace() {
         assertParseLocalDateThrows("to day");
         assertParseLocalDateThrows("w ednesday");
         assertParseLocalDateThrows("+3 4days");
@@ -167,7 +167,7 @@ public class DateTimeParserTest {
     }
 
     @Test
-    public void test_parseLocalTime_standard_invalidTime() {
+    void test_parseLocalTime_standard_invalidTime() {
         assertParseLocalTimeThrows("3:34");
         assertParseLocalTimeThrows("14:34 PM");
     }
@@ -179,7 +179,7 @@ public class DateTimeParserTest {
     }
 
     @Test
-    public void test_parseLocalTime_custom_withQuantity_singular() {
+    void test_parseLocalTime_custom_withQuantity_singular() {
         assertParseLocalTime("+2hour", LocalTime.of(21, 45, 22));
         assertParseLocalTime("-4hour", LocalTime.of(15, 45, 22));
         assertParseLocalTime("+10minute", LocalTime.of(19, 55, 22));
@@ -189,7 +189,7 @@ public class DateTimeParserTest {
     }
 
     @Test
-    public void test_parseLocalTime_custom_withQuantity_plural() {
+    void test_parseLocalTime_custom_withQuantity_plural() {
         assertParseLocalTime("+2hours", LocalTime.of(21, 45, 22));
         assertParseLocalTime("-4hours", LocalTime.of(15, 45, 22));
         assertParseLocalTime("+10minutes", LocalTime.of(19, 55, 22));
@@ -199,21 +199,21 @@ public class DateTimeParserTest {
     }
 
     @Test
-    public void test_parseLocalTime_custom_upperCase() {
+    void test_parseLocalTime_custom_upperCase() {
         assertParseLocalTime("+2HOURS", LocalTime.of(21, 45, 22));
         assertParseLocalTime("Now", LocalTime.of(19, 45, 22));
         assertParseLocalTime("+10minuTEs", LocalTime.of(19, 55, 22));
     }
 
     @Test
-    public void test_parseLocalTime_custom_withWhitespace() {
+    void test_parseLocalTime_custom_withWhitespace() {
         assertParseLocalTime("+ 2 hours", LocalTime.of(21, 45, 22));
         assertParseLocalTime("  now ", LocalTime.of(19, 45, 22));
         assertParseLocalTime("+10   minuTEs ", LocalTime.of(19, 55, 22));
     }
 
     @Test
-    public void test_parseLocalTime_custom_singleNoun_invalidNoun() {
+    void test_parseLocalTime_custom_singleNoun_invalidNoun() {
         assertParseLocalTimeThrows("invalid");
         assertParseLocalTimeThrows("");
         assertParseLocalTimeThrows("  ");
@@ -228,13 +228,13 @@ public class DateTimeParserTest {
     }
 
     @Test
-    public void test_parseLocalTime_custom_separatedByWhitespace() {
+    void test_parseLocalTime_custom_separatedByWhitespace() {
         assertParseLocalDateThrows("n ow");
         assertParseLocalDateThrows("+2 3hours");
     }
 
     @Test
-    public void test_parseLocalTime_custom_withQuantity_invalidQuantity() {
+    void test_parseLocalTime_custom_withQuantity_invalidQuantity() {
         assertParseLocalTimeThrows("+0hours");
         assertParseLocalTimeThrows("-0hours");
         assertParseLocalTimeThrows("-1.5hours");

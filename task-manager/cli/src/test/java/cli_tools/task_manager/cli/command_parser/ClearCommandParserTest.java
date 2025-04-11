@@ -13,7 +13,7 @@ public class ClearCommandParserTest {
     private final TaskManagerContext context = new TaskManagerContext();
 
     @Test
-    public void test_parse_noArgs() {
+    void test_parse_noArgs() {
         ClearCommand cmd = (ClearCommand) parser.parse(context, getArgList());
         assertNotNull(cmd);
     }

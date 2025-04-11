@@ -17,30 +17,30 @@ import static org.testng.Assert.*;
 public class ModifySongCommandParserTest {
 
     @Test
-    public void test_parse_noArgs() throws CommandParserException {
+    void test_parse_noArgs() throws CommandParserException {
         ModifySongCommand command = parse(getArgList());
         assertNull(command.tempIDs());
     }
 
     @Test
-    public void test_parse_oneTaskID() throws CommandParserException {
+    void test_parse_oneTaskID() throws CommandParserException {
         ModifySongCommand command = parse(getArgList("1"));
         assertEquals(command.tempIDs(), List.of(1));
     }
 
     @Test
-    public void test_parse_multipleTaskIDs() throws CommandParserException {
+    void test_parse_multipleTaskIDs() throws CommandParserException {
         ModifySongCommand command = parse(getArgList("3", "111", "333"));
         assertEquals(command.tempIDs(), List.of(3, 111, 333));
     }
 
     @Test
-    public void test_parse_invalidTaskID() {
+    void test_parse_invalidTaskID() {
         assertThrows(CommandParserException.class, () ->parse(getArgList("1asdf", "2")));
     }
 
     @Test
-    public void test_parse_propertyArgs() throws CommandParserException {
+    void test_parse_propertyArgs() throws CommandParserException {
         ModifySongCommand command = parse(getArgList(
                 List.of("1"),
                 List.of(
@@ -53,7 +53,7 @@ public class ModifySongCommandParserTest {
     }
 
     @Test
-    public void test_parse_complex() throws CommandParserException {
+    void test_parse_complex() throws CommandParserException {
         ModifySongCommand command = parse(
                 getArgList(
                         List.of(

@@ -17,14 +17,14 @@ import static org.testng.Assert.assertEquals;
 public class AddRecordingCommandParserTest {
 
     @Test
-    public void test_parse_noArgs() throws CommandParserException {
+    void test_parse_noArgs() throws CommandParserException {
         AddSongCommand command = parse(getArgList());
         assertEquals(command.name(), "");
         assertEquals(command.modifyPropertyArgs().size(), 0);
     }
     
     @Test
-    public void test_parse_onePositionalArg() throws CommandParserException {
+    void test_parse_onePositionalArg() throws CommandParserException {
         AddSongCommand command = parse(getArgList("task"));
         assertEquals(command.name(), "task");
         assertEquals(command.modifyPropertyArgs().size(), 0);
@@ -35,49 +35,49 @@ public class AddRecordingCommandParserTest {
     }
 
     @Test
-    public void test_parse_oneEmptyPositionalArg() throws CommandParserException {
+    void test_parse_oneEmptyPositionalArg() throws CommandParserException {
         AddSongCommand command = parse(getArgList(""));
         assertEquals(command.name(), "");
         assertEquals(command.modifyPropertyArgs().size(), 0);
     }
     
     @Test
-    public void test_parse_multiplePositionalArgs() throws CommandParserException {
+    void test_parse_multiplePositionalArgs() throws CommandParserException {
         AddSongCommand command = parse(getArgList("my", "simple", "task"));
         assertEquals(command.name(), "my simple task");
         assertEquals(command.modifyPropertyArgs().size(), 0);
     }
     
     @Test
-    public void test_parse_multiplePositionalArgsWithWhitespace() throws CommandParserException {
+    void test_parse_multiplePositionalArgsWithWhitespace() throws CommandParserException {
         AddSongCommand command = parse(getArgList("my ", "simple", " task"));
         assertEquals(command.name(), "my  simple  task");
         assertEquals(command.modifyPropertyArgs().size(), 0);
     }
 
     @Test
-    public void test_parse_onePropertyArg() throws CommandParserException {
+    void test_parse_onePropertyArg() throws CommandParserException {
         AddSongCommand command = parse(getArgList(List.of("task"), List.of(new PropertyArgument(Affinity.POSITIVE, "prop", "pred", List.of("value")))));
         assertEquals(command.name(), "task");
         assertEquals(command.modifyPropertyArgs(), List.of(new PropertyArgument(Affinity.POSITIVE, "prop", "pred", List.of("value"))));
     }
 
     @Test
-    public void test_parse_onePropertyArgWithoutName() throws CommandParserException {
+    void test_parse_onePropertyArgWithoutName() throws CommandParserException {
         AddSongCommand command = parse(getArgList(List.of(), List.of(new PropertyArgument(Affinity.NEUTRAL, "prop", null, List.of("value")))));
         assertEquals(command.name(), "");
         assertEquals(command.modifyPropertyArgs(), List.of(new PropertyArgument(Affinity.NEUTRAL, "prop", null, List.of("value"))));
     }
     
     @Test
-    public void test_parse_onePropertyArgWithMultipleValues() throws CommandParserException {
+    void test_parse_onePropertyArgWithMultipleValues() throws CommandParserException {
         AddSongCommand command = parse(getArgList(List.of("task"), List.of(new PropertyArgument(Affinity.NEUTRAL, "prop", null, List.of("value1", "value2", "value3")))));
         assertEquals(command.name(), "task");
         assertEquals(command.modifyPropertyArgs(), List.of(new PropertyArgument(Affinity.NEUTRAL, "prop", null, List.of("value1", "value2", "value3"))));
     }
 
     @Test
-    public void test_parse_complex() throws CommandParserException {
+    void test_parse_complex() throws CommandParserException {
         AddSongCommand command = parse(
                 getArgList(
                         List.of(

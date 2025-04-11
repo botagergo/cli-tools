@@ -44,56 +44,56 @@ public class PropertyConverterTest {
     private PropertyConverter propertyConverter;
 
     @BeforeClass
-    public void initMocks() {
+    void initMocks() {
         MockitoAnnotations.openMocks(this);
     }
 
     @BeforeMethod
-    public void clear() {
+    void clear() {
         Mockito.reset(propertyDescriptorService);
     }
 
     @Test
-    public void test_convertProperty_string_successful() throws IOException, PropertyConverterException {
+    void test_convertProperty_string_successful() throws IOException, PropertyConverterException {
         assertEquals(propertyConverter.convertProperty(
                 getPropertyDescriptor(PropertyDescriptor.Type.String, PropertyDescriptor.Multiplicity.SINGLE), List.of("value")), List.of("value"));
     }
 
     @Test
-    public void test_convertProperty_boolean_successful() throws IOException, PropertyConverterException {
+    void test_convertProperty_boolean_successful() throws IOException, PropertyConverterException {
         assertEquals(propertyConverter.convertProperty(
                 getPropertyDescriptor(PropertyDescriptor.Type.Boolean, PropertyDescriptor.Multiplicity.SINGLE), List.of(true)), List.of(true));
     }
 
     @Test
-    public void test_convertProperty_integer_successful() throws IOException, PropertyConverterException {
+    void test_convertProperty_integer_successful() throws IOException, PropertyConverterException {
         assertEquals(propertyConverter.convertProperty(
                 getPropertyDescriptor(PropertyDescriptor.Type.Integer, PropertyDescriptor.Multiplicity.SINGLE),
                 List.of(123)), List.of(123));
     }
 
     @Test
-    public void test_convertProperty_uuid_successful() throws IOException, PropertyConverterException {
+    void test_convertProperty_uuid_successful() throws IOException, PropertyConverterException {
         assertEquals(propertyConverter.convertProperty(
                 getPropertyDescriptor(PropertyDescriptor.Type.Boolean, PropertyDescriptor.Multiplicity.SINGLE), List.of(uuid1)), List.of(uuid1));
     }
 
     @Test
-    public void test_convertProperty_list_successful() throws IOException, PropertyConverterException {
+    void test_convertProperty_list_successful() throws IOException, PropertyConverterException {
         assertEquals(propertyConverter.convertProperty(
                         getPropertyDescriptor(PropertyDescriptor.Type.UUID, PropertyDescriptor.Multiplicity.LIST), List.of(uuid1.toString(), uuid2.toString(), uuid3.toString())),
                 List.of(uuid1, uuid2, uuid3));
     }
 
     @Test
-    public void test_convertProperty_set_successful() throws IOException, PropertyConverterException {
+    void test_convertProperty_set_successful() throws IOException, PropertyConverterException {
         assertEquals(propertyConverter.convertProperty(
                         getPropertyDescriptor(PropertyDescriptor.Type.UUID, PropertyDescriptor.Multiplicity.SET), List.of(uuid1.toString(), uuid2.toString(), uuid3.toString())),
                 Utils.newLinkedHashSet(uuid1, uuid2, uuid3));
     }
 
     @Test
-    public void test_convertProperty_integer_string_labelFound() throws IOException, PropertyConverterException {
+    void test_convertProperty_integer_string_labelFound() throws IOException, PropertyConverterException {
         Mockito.when(orderedLabelRepositoryFactory.getOrderedLabelRepository("test")).thenReturn(orderedLabelRepository);
         Mockito.when(orderedLabelRepository.find("label1")).thenReturn(new OrderedLabel("label1", 3));
 
@@ -104,7 +104,7 @@ public class PropertyConverterTest {
     }
 
     @Test
-    public void test_convertProperty_integer_string_labelNotFound_throws() throws IOException {
+    void test_convertProperty_integer_string_labelNotFound_throws() throws IOException {
         Mockito.when(orderedLabelRepositoryFactory.getOrderedLabelRepository("test")).thenReturn(orderedLabelRepository);
         Mockito.when(orderedLabelRepository.find("label1")).thenReturn(null);
 
@@ -120,7 +120,7 @@ public class PropertyConverterTest {
     }
 
     @Test
-    public void test_convertProperty_uuid_notAnUuid_tagFound() throws IOException, PropertyConverterException {
+    void test_convertProperty_uuid_notAnUuid_tagFound() throws IOException, PropertyConverterException {
         Mockito.when(labelRepositoryFactory.getLabelRepository("test")).thenReturn(labelRepository);
         Mockito.when(labelRepository.find("tag")).thenReturn(new Label(uuid1, "tag"));
 
@@ -129,7 +129,7 @@ public class PropertyConverterTest {
     }
 
     @Test
-    public void test_stringToProperty_uuid_notAnUuid_tagNotFound_throws() throws IOException {
+    void test_stringToProperty_uuid_notAnUuid_tagNotFound_throws() throws IOException {
         Mockito.when(labelRepositoryFactory.getLabelRepository("test")).thenReturn(labelRepository);
         Mockito.when(labelRepository.find("tag")).thenReturn(null);
 

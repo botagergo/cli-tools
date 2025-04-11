@@ -20,7 +20,7 @@ public class PropertyTest {
     private final UUID uuid2 = uuidGenerator.getUUID();
 
     @Test
-    public void test_from_nonNull() throws PropertyException {
+    void test_from_nonNull() throws PropertyException {
         assertFromEquals("string_property", PropertyDescriptor.Type.String, PropertyDescriptor.Multiplicity.SINGLE, "property_value");
         assertFromEquals("boolean_property", PropertyDescriptor.Type.Boolean, PropertyDescriptor.Multiplicity.SINGLE, true);
         assertFromEquals("uuid_property", PropertyDescriptor.Type.UUID, PropertyDescriptor.Multiplicity.SINGLE, uuid1);
@@ -34,7 +34,7 @@ public class PropertyTest {
     }
 
     @Test
-    public void test_from_null() throws PropertyException {
+    void test_from_null() throws PropertyException {
         assertFromEquals("string_property", PropertyDescriptor.Type.String, PropertyDescriptor.Multiplicity.SINGLE, null);
         assertFromEquals("boolean_property", PropertyDescriptor.Type.Boolean, PropertyDescriptor.Multiplicity.SINGLE, null);
         assertFromEquals("uuid_property", PropertyDescriptor.Type.UUID, PropertyDescriptor.Multiplicity.SINGLE, null);
@@ -48,7 +48,7 @@ public class PropertyTest {
     }
 
     @Test
-    public void test_from_typeMismatch_singleValue() {
+    void test_from_typeMismatch_singleValue() {
         assertFromThrowsWrongValueTypePropertyException("string_property", PropertyDescriptor.Type.String, PropertyDescriptor.Multiplicity.SINGLE, 123);
         assertFromThrowsWrongValueTypePropertyException("boolean_property", PropertyDescriptor.Type.Boolean, PropertyDescriptor.Multiplicity.SINGLE, 123);
         assertFromThrowsWrongValueTypePropertyException("integer_property", PropertyDescriptor.Type.Integer, PropertyDescriptor.Multiplicity.SINGLE, true);
@@ -56,7 +56,7 @@ public class PropertyTest {
     }
 
     @Test
-    public void test_from_typeMismatch_multiplicity() {
+    void test_from_typeMismatch_multiplicity() {
         assertFromThrowsWrongValueTypePropertyException("uuid_list_property", PropertyDescriptor.Type.UUID, PropertyDescriptor.Multiplicity.LIST, uuid1);
         assertFromThrowsWrongValueTypePropertyException("uuid_list_property", PropertyDescriptor.Type.UUID, PropertyDescriptor.Multiplicity.LIST, Utils.newLinkedHashSet(uuid1, uuid2));
         assertFromThrowsWrongValueTypePropertyException("string_set_property", PropertyDescriptor.Type.String, PropertyDescriptor.Multiplicity.SET, "value");
@@ -68,7 +68,7 @@ public class PropertyTest {
     }
 
     @Test
-    public void test_from_typeMismatch_collectionItem() {
+    void test_from_typeMismatch_collectionItem() {
         assertFromThrowsWrongValueTypePropertyException("string_list_property", PropertyDescriptor.Type.String, PropertyDescriptor.Multiplicity.LIST, Utils.newArrayList(true, false));
         assertFromThrowsWrongValueTypePropertyException("string_set_property", PropertyDescriptor.Type.String, PropertyDescriptor.Multiplicity.SET, Utils.newLinkedHashSet(true, false));
         assertFromThrowsWrongValueTypePropertyException("boolean_list_property", PropertyDescriptor.Type.Boolean, PropertyDescriptor.Multiplicity.LIST, Utils.newArrayList("value1", "value2"));
@@ -80,195 +80,195 @@ public class PropertyTest {
     }
 
     @Test
-    public void test_getStringValue() throws PropertyException {
+    void test_getStringValue() throws PropertyException {
         assertGetValueWithTypeEquals("string_property", PropertyDescriptor.Type.String, PropertyDescriptor.Multiplicity.SINGLE, "property_value");
         assertGetValueWithTypeEquals("string_property", PropertyDescriptor.Type.String, PropertyDescriptor.Multiplicity.SINGLE, null);
     }
 
     @Test
-    public void test_getStringValue_typeMismatch() throws PropertyException {
+    void test_getStringValue_typeMismatch() throws PropertyException {
         assertGetWithTypeThrowsTypeMismatchPropertyException("integer_property", PropertyDescriptor.Type.Integer, PropertyDescriptor.Multiplicity.SINGLE, PropertyDescriptor.Type.String);
     }
 
     @Test
-    public void test_getStringValue_wrongMultiplicity() {
+    void test_getStringValue_wrongMultiplicity() {
         assertGetWithTypeThrowsWrongMultiplicityPropertyException("string_property", PropertyDescriptor.Type.String, PropertyDescriptor.Multiplicity.SINGLE, PropertyDescriptor.Multiplicity.LIST);
     }
 
     @Test
-    public void test_getUUIDValue() throws PropertyException {
+    void test_getUUIDValue() throws PropertyException {
         assertGetValueWithTypeEquals("uuid_property", PropertyDescriptor.Type.UUID, PropertyDescriptor.Multiplicity.SINGLE, uuid1);
         assertGetValueWithTypeEquals("uuid_property", PropertyDescriptor.Type.UUID, PropertyDescriptor.Multiplicity.SINGLE, null);
     }
 
     @Test
-    public void test_getUUIDValue_typeMismatch() throws PropertyException {
+    void test_getUUIDValue_typeMismatch() throws PropertyException {
         assertGetWithTypeThrowsTypeMismatchPropertyException("integer_property", PropertyDescriptor.Type.Integer, PropertyDescriptor.Multiplicity.SINGLE, PropertyDescriptor.Type.UUID);
     }
 
     @Test
-    public void test_getUUIDValue_wrongMultiplicity() {
+    void test_getUUIDValue_wrongMultiplicity() {
         assertGetWithTypeThrowsWrongMultiplicityPropertyException("uuid_property", PropertyDescriptor.Type.UUID, PropertyDescriptor.Multiplicity.SINGLE, PropertyDescriptor.Multiplicity.SET);
     }
 
     @Test
-    public void test_getBooleanValue() throws PropertyException {
+    void test_getBooleanValue() throws PropertyException {
         assertGetValueWithTypeEquals("boolean_property", PropertyDescriptor.Type.Boolean, PropertyDescriptor.Multiplicity.SINGLE, true);
         assertGetValueWithTypeEquals("boolean_property", PropertyDescriptor.Type.Boolean, PropertyDescriptor.Multiplicity.SINGLE, false);
         assertGetValueWithTypeEquals("boolean_property", PropertyDescriptor.Type.Boolean, PropertyDescriptor.Multiplicity.SINGLE, null);
     }
 
     @Test
-    public void test_getBooleanValue_typeMismatch() throws PropertyException {
+    void test_getBooleanValue_typeMismatch() throws PropertyException {
         assertGetWithTypeThrowsTypeMismatchPropertyException("integer_property", PropertyDescriptor.Type.Integer, PropertyDescriptor.Multiplicity.SINGLE, PropertyDescriptor.Type.Boolean);
     }
 
     @Test
-    public void test_getBooleanValue_wrongMultiplicity() {
+    void test_getBooleanValue_wrongMultiplicity() {
         assertGetWithTypeThrowsWrongMultiplicityPropertyException("boolean_property", PropertyDescriptor.Type.Boolean, PropertyDescriptor.Multiplicity.SINGLE, PropertyDescriptor.Multiplicity.SET);
     }
 
     @Test
-    public void test_getIntegerValue() throws PropertyException {
+    void test_getIntegerValue() throws PropertyException {
         assertGetValueWithTypeEquals("integer_property", PropertyDescriptor.Type.Integer, PropertyDescriptor.Multiplicity.SINGLE, 123);
         assertGetValueWithTypeEquals("integer_property", PropertyDescriptor.Type.Integer, PropertyDescriptor.Multiplicity.SINGLE, null);
     }
 
     @Test
-    public void test_getIntegerValue_typeMismatch() throws PropertyException {
+    void test_getIntegerValue_typeMismatch() throws PropertyException {
         assertGetWithTypeThrowsTypeMismatchPropertyException("string_property", PropertyDescriptor.Type.String, PropertyDescriptor.Multiplicity.SINGLE, PropertyDescriptor.Type.Integer);
     }
 
     @Test
-    public void test_getStringListValue() throws PropertyException {
+    void test_getStringListValue() throws PropertyException {
         assertGetValueWithTypeEquals("string_list_property", PropertyDescriptor.Type.String, PropertyDescriptor.Multiplicity.LIST, Utils.newArrayList("str1", "str2", null));
         assertGetValueWithTypeEquals("string_list_property", PropertyDescriptor.Type.String, PropertyDescriptor.Multiplicity.LIST, null);
     }
 
     @Test
-    public void test_getStringListValue_typeMismatch() throws PropertyException {
+    void test_getStringListValue_typeMismatch() throws PropertyException {
         assertGetWithTypeThrowsTypeMismatchPropertyException("integer_list_property", PropertyDescriptor.Type.Integer, PropertyDescriptor.Multiplicity.LIST, PropertyDescriptor.Type.String);
     }
 
     @Test
-    public void test_getStringListValue_wrongMultiplicity() {
+    void test_getStringListValue_wrongMultiplicity() {
         assertGetWithTypeThrowsWrongMultiplicityPropertyException("string_set_property", PropertyDescriptor.Type.String, PropertyDescriptor.Multiplicity.SET, PropertyDescriptor.Multiplicity.LIST);
         assertGetWithTypeThrowsWrongMultiplicityPropertyException("string_property", PropertyDescriptor.Type.String, PropertyDescriptor.Multiplicity.SINGLE, PropertyDescriptor.Multiplicity.LIST);
     }
 
     @Test
-    public void test_getUUIDListValue() throws PropertyException {
+    void test_getUUIDListValue() throws PropertyException {
         assertGetValueWithTypeEquals("uuid_list_property", PropertyDescriptor.Type.UUID, PropertyDescriptor.Multiplicity.LIST, Utils.newArrayList(uuid1, uuid2, null));
         assertGetValueWithTypeEquals("uuid_list_property", PropertyDescriptor.Type.UUID, PropertyDescriptor.Multiplicity.LIST, null);
     }
 
     @Test
-    public void test_getUUIDListValue_typeMismatch() throws PropertyException {
+    void test_getUUIDListValue_typeMismatch() throws PropertyException {
         assertGetWithTypeThrowsTypeMismatchPropertyException("integer_list_property", PropertyDescriptor.Type.Integer, PropertyDescriptor.Multiplicity.LIST, PropertyDescriptor.Type.UUID);
     }
 
     @Test
-    public void test_getUUIDListValue_wrongMultiplicity() {
+    void test_getUUIDListValue_wrongMultiplicity() {
         assertGetWithTypeThrowsWrongMultiplicityPropertyException("uuid_set_property", PropertyDescriptor.Type.UUID, PropertyDescriptor.Multiplicity.SET, PropertyDescriptor.Multiplicity.LIST);
         assertGetWithTypeThrowsWrongMultiplicityPropertyException("uuid_property", PropertyDescriptor.Type.UUID, PropertyDescriptor.Multiplicity.SINGLE, PropertyDescriptor.Multiplicity.LIST);
     }
 
     @Test
-    public void test_getBooleanListValue() throws PropertyException {
+    void test_getBooleanListValue() throws PropertyException {
         assertGetValueWithTypeEquals("boolean_list_property", PropertyDescriptor.Type.Boolean, PropertyDescriptor.Multiplicity.LIST, Utils.newArrayList(true, false, null));
         assertGetValueWithTypeEquals("boolean_list_property", PropertyDescriptor.Type.Boolean, PropertyDescriptor.Multiplicity.LIST, null);
     }
 
     @Test
-    public void test_getBooleanListValue_typeMismatch() throws PropertyException {
+    void test_getBooleanListValue_typeMismatch() throws PropertyException {
         assertGetWithTypeThrowsTypeMismatchPropertyException("integer_list_property", PropertyDescriptor.Type.Integer, PropertyDescriptor.Multiplicity.LIST, PropertyDescriptor.Type.Boolean);
     }
 
     @Test
-    public void test_getBooleanListValue_wrongMultiplicity() {
+    void test_getBooleanListValue_wrongMultiplicity() {
         assertGetWithTypeThrowsWrongMultiplicityPropertyException("boolean_set_property", PropertyDescriptor.Type.Boolean, PropertyDescriptor.Multiplicity.SET, PropertyDescriptor.Multiplicity.LIST);
         assertGetWithTypeThrowsWrongMultiplicityPropertyException("boolean_property", PropertyDescriptor.Type.Boolean, PropertyDescriptor.Multiplicity.SINGLE, PropertyDescriptor.Multiplicity.LIST);
     }
 
     @Test
-    public void test_getStringSetValue() throws PropertyException {
+    void test_getStringSetValue() throws PropertyException {
         assertGetValueWithTypeEquals("string_set_property", PropertyDescriptor.Type.String, PropertyDescriptor.Multiplicity.SET, Utils.newLinkedHashSet("str1", "str2", null));
         assertGetValueWithTypeEquals("string_set_property", PropertyDescriptor.Type.String, PropertyDescriptor.Multiplicity.SET, null);
     }
 
     @Test
-    public void test_getStringSetValue_typeMismatch() throws PropertyException {
+    void test_getStringSetValue_typeMismatch() throws PropertyException {
         assertGetWithTypeThrowsTypeMismatchPropertyException("integer_set_property", PropertyDescriptor.Type.Integer, PropertyDescriptor.Multiplicity.SET, PropertyDescriptor.Type.String);
     }
 
     @Test
-    public void test_getStringSetValue_wrongMultiplicity() {
+    void test_getStringSetValue_wrongMultiplicity() {
         assertGetWithTypeThrowsWrongMultiplicityPropertyException("string_list_property", PropertyDescriptor.Type.String, PropertyDescriptor.Multiplicity.LIST, PropertyDescriptor.Multiplicity.SET);
         assertGetWithTypeThrowsWrongMultiplicityPropertyException("string_property", PropertyDescriptor.Type.String, PropertyDescriptor.Multiplicity.SINGLE, PropertyDescriptor.Multiplicity.SET);
     }
 
     @Test
-    public void test_getUUIDSetValue() throws PropertyException {
+    void test_getUUIDSetValue() throws PropertyException {
         assertGetValueWithTypeEquals("uuid_set_property", PropertyDescriptor.Type.UUID, PropertyDescriptor.Multiplicity.SET, Utils.newLinkedHashSet(uuid1, uuid2, null));
         assertGetValueWithTypeEquals("uuid_set_property", PropertyDescriptor.Type.UUID, PropertyDescriptor.Multiplicity.SET, null);
     }
 
     @Test
-    public void test_getUUIDSetValue_typeMismatch() throws PropertyException {
+    void test_getUUIDSetValue_typeMismatch() throws PropertyException {
         assertGetWithTypeThrowsTypeMismatchPropertyException("integer_set_property", PropertyDescriptor.Type.Integer, PropertyDescriptor.Multiplicity.SET, PropertyDescriptor.Type.UUID);
     }
 
     @Test
-    public void test_getUUIDSetValue_wrongMultiplicity() {
+    void test_getUUIDSetValue_wrongMultiplicity() {
         assertGetWithTypeThrowsWrongMultiplicityPropertyException("uuid_list_property", PropertyDescriptor.Type.UUID, PropertyDescriptor.Multiplicity.LIST, PropertyDescriptor.Multiplicity.SET);
         assertGetWithTypeThrowsWrongMultiplicityPropertyException("uuid_property", PropertyDescriptor.Type.UUID, PropertyDescriptor.Multiplicity.SINGLE, PropertyDescriptor.Multiplicity.SET);
     }
 
     @Test
-    public void test_getBooleanSetValue() throws PropertyException {
+    void test_getBooleanSetValue() throws PropertyException {
         assertGetValueWithTypeEquals("boolean_set_property", PropertyDescriptor.Type.Boolean, PropertyDescriptor.Multiplicity.SET, Utils.newLinkedHashSet(true, false, null));
         assertGetValueWithTypeEquals("boolean_set_property", PropertyDescriptor.Type.Boolean, PropertyDescriptor.Multiplicity.SET, null);
     }
 
     @Test
-    public void test_getBooleanSetValue_typeMismatch() throws PropertyException {
+    void test_getBooleanSetValue_typeMismatch() throws PropertyException {
         assertGetWithTypeThrowsTypeMismatchPropertyException("integer_set_property", PropertyDescriptor.Type.Integer, PropertyDescriptor.Multiplicity.SET, PropertyDescriptor.Type.Boolean);
     }
 
     @Test
-    public void test_getBooleanSetValue_wrongMultiplicity() {
+    void test_getBooleanSetValue_wrongMultiplicity() {
         assertGetWithTypeThrowsWrongMultiplicityPropertyException("boolean_list_property", PropertyDescriptor.Type.Boolean, PropertyDescriptor.Multiplicity.LIST, PropertyDescriptor.Multiplicity.SET);
         assertGetWithTypeThrowsWrongMultiplicityPropertyException("boolean_property", PropertyDescriptor.Type.Boolean, PropertyDescriptor.Multiplicity.SINGLE, PropertyDescriptor.Multiplicity.SET);
     }
 
     @Test
-    public void test_getCollection() throws PropertyException {
+    void test_getCollection() throws PropertyException {
         assertGetCollectionEquals("string_list_property", PropertyDescriptor.Type.String, PropertyDescriptor.Multiplicity.LIST, Utils.newArrayList("str1", "str2"));
     }
 
     @Test
-    public void test_getCollection_wrongMultiplicity_throws() throws PropertyException {
+    void test_getCollection_wrongMultiplicity_throws() throws PropertyException {
         assertGetCollectionThrowsWrongMultiplicityPropertyException("string_property", PropertyDescriptor.Type.String, PropertyDescriptor.Multiplicity.SINGLE, null);
     }
 
     @Test
-    public void test_getList() throws PropertyException {
+    void test_getList() throws PropertyException {
         assertGetListEquals("string_list_property", PropertyDescriptor.Type.String, Utils.newArrayList("str1", "str2"));
     }
 
     @Test
-    public void test_getList_wrongMultiplicity_throws() throws PropertyException {
+    void test_getList_wrongMultiplicity_throws() throws PropertyException {
         assertGetListThrowsWrongMultiplicityPropertyException("string_property", PropertyDescriptor.Type.String, PropertyDescriptor.Multiplicity.SINGLE);
         assertGetListThrowsWrongMultiplicityPropertyException("string_set_property", PropertyDescriptor.Type.String, PropertyDescriptor.Multiplicity.SET);
     }
 
     @Test
-    public void test_getSet() throws PropertyException {
+    void test_getSet() throws PropertyException {
         assertGetSetEquals("string_set_property", PropertyDescriptor.Type.String, Utils.newLinkedHashSet("str1", "str2"));
     }
 
     @Test
-    public void test_getSet_wrongMultiplicity_throws() throws PropertyException {
+    void test_getSet_wrongMultiplicity_throws() throws PropertyException {
         assertGetSetThrowsWrongMultiplicityPropertyException("string_property", PropertyDescriptor.Type.String, PropertyDescriptor.Multiplicity.SINGLE, null);
         assertGetSetThrowsWrongMultiplicityPropertyException("string_list_property", PropertyDescriptor.Type.String, PropertyDescriptor.Multiplicity.LIST, null);
     }

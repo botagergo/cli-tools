@@ -21,7 +21,7 @@ public class JsonViewInfoRepositoryTest {
     }
 
     @Test
-    public void test_get_existing() throws IOException {
+    void test_get_existing() throws IOException {
         File tempFile = rc.makeTempFile("test_get_existing", """
                 {
                     "view1": {
@@ -121,21 +121,21 @@ public class JsonViewInfoRepositoryTest {
     }
 
     @Test
-    public void test_get_empty() throws IOException {
+    void test_get_empty() throws IOException {
         File tempFile = rc.makeTempFile("test_get_empty", "{}");
         repository = new JsonViewInfoRepository(tempFile);
         assertNull(repository.get("view1"));
     }
 
     @Test
-    public void test_get_notExist() throws IOException {
+    void test_get_notExist() throws IOException {
         File tempFile = rc.getTempFile("test_get_notExist");
         repository = new JsonViewInfoRepository(tempFile);
         assertNull(repository.get("view1"));
     }
 
     @Test
-    public void test_get_filterTypeMissing() throws IOException {
+    void test_get_filterTypeMissing() throws IOException {
         File tempFile = rc.makeTempFile("test_get_existing", """
                 {
                     "view": {
@@ -152,7 +152,7 @@ public class JsonViewInfoRepositoryTest {
     }
 
     @Test
-    public void test_get_filterPropertyMissing() throws IOException {
+    void test_get_filterPropertyMissing() throws IOException {
         File tempFile = rc.makeTempFile("test_get_existing", """
                 {
                     "view": {
@@ -169,7 +169,7 @@ public class JsonViewInfoRepositoryTest {
     }
 
     @Test
-    public void test_get_filterPredicateMissing() throws IOException {
+    void test_get_filterPredicateMissing() throws IOException {
         File tempFile = rc.makeTempFile("test_get_existing", """
                 {
                     "view": {
@@ -186,7 +186,7 @@ public class JsonViewInfoRepositoryTest {
     }
 
     @Test
-    public void test_get_filterPredicateAndPredicateNegated() throws IOException {
+    void test_get_filterPredicateAndPredicateNegated() throws IOException {
         File tempFile = rc.makeTempFile("test_get_existing", """
                 {
                     "view": {
@@ -205,7 +205,7 @@ public class JsonViewInfoRepositoryTest {
     }
 
     @Test
-    public void test_get_filterIllegalField() throws IOException {
+    void test_get_filterIllegalField() throws IOException {
         File tempFile = rc.makeTempFile("test_get_existing", """
                 {
                     "view": {
@@ -223,7 +223,7 @@ public class JsonViewInfoRepositoryTest {
     }
 
     @Test
-    public void test_get_filterIllegalType() throws IOException {
+    void test_get_filterIllegalType() throws IOException {
         File tempFile = rc.makeTempFile("test_get_existing", """
                 {
                     "view": {
@@ -241,7 +241,7 @@ public class JsonViewInfoRepositoryTest {
     }
 
     @Test
-    public void test_get_filterIllegalPredicate() throws IOException {
+    void test_get_filterIllegalPredicate() throws IOException {
         File tempFile = rc.makeTempFile("test_get_existing", """
                 {
                     "view": {
@@ -259,7 +259,7 @@ public class JsonViewInfoRepositoryTest {
     }
 
     @Test
-    public void test_get_operandsMissing() throws IOException {
+    void test_get_operandsMissing() throws IOException {
         File tempFile = rc.makeTempFile("test_get_existing", """
                 {
                     "view": {
@@ -281,7 +281,7 @@ public class JsonViewInfoRepositoryTest {
     }
 
     @Test
-    public void test_create() throws IOException {
+    void test_create() throws IOException {
         File tempFile = rc.getTempFile("test_create");
         repository = new JsonViewInfoRepository(tempFile);
         repository.create("view1", ViewInfo.builder()
@@ -371,7 +371,7 @@ public class JsonViewInfoRepositoryTest {
     }
 
     @Test
-    public void test_get_invalidFormat_throws() throws IOException {
+    void test_get_invalidFormat_throws() throws IOException {
         File tempFile = rc.makeTempFile("test_getAll_invalidFormat_throws", """
                     [{"view1":{}]
                 """);

@@ -22,7 +22,7 @@ public class CommandParserFactoryImplTest {
     CommandParserFactoryImpl commandParserFactory;
 
     @BeforeClass
-    public void initMocks() {
+    void initMocks() {
         MockitoAnnotations.openMocks(this);
         commandParserFactory = new CommandParserFactoryImpl(configurationRepository);
         commandParserFactory.registerParser("add", () -> getTestCommandParser("add"));
@@ -32,14 +32,14 @@ public class CommandParserFactoryImplTest {
     }
 
     @Test
-    public void test_found() {
+    void test_found() {
         Mockito.when(configurationRepository.allowCommandPrefix()).thenReturn(false);
         Mockito.when(configurationRepository.commandAliases()).thenReturn(Map.of());
         assertCommandParserName("add", "add");
     }
 
     @Test
-    public void testUnknown() {
+    void testUnknown() {
         Mockito.when(configurationRepository.allowCommandPrefix()).thenReturn(false);
         Mockito.when(configurationRepository.commandAliases()).thenReturn(Map.of());
         assertNull(commandParserFactory.getParser(getArgList("unknown")));
@@ -47,7 +47,7 @@ public class CommandParserFactoryImplTest {
     }
 
     @Test
-    public void testPrefix() {
+    void testPrefix() {
         Mockito.when(configurationRepository.allowCommandPrefix()).thenReturn(true);
         Mockito.when(configurationRepository.commandAliases()).thenReturn(Map.of());
         assertCommandParserName("lis", "list");
@@ -55,14 +55,14 @@ public class CommandParserFactoryImplTest {
     }
 
     @Test
-    public void testPrefixMultipleMatches() {
+    void testPrefixMultipleMatches() {
         Mockito.when(configurationRepository.allowCommandPrefix()).thenReturn(true);
         Mockito.when(configurationRepository.commandAliases()).thenReturn(Map.of());
         assertNull(commandParserFactory.getParser(getArgList("d")));
     }
 
     @Test
-    public void testAlias() {
+    void testAlias() {
         Mockito.when(configurationRepository.commandAliases()).thenReturn(Map.of("ls", "list", "del", "delete"));
         assertCommandParserName("del", "delete");
         assertCommandParserName("ls", "list");

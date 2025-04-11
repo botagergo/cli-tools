@@ -10,7 +10,7 @@ import static org.testng.Assert.assertThrows;
 public class UtilTest {
 
     @Test
-    public void test_parseTaskID_valid() throws CommandParserException {
+    void test_parseTaskID_valid() throws CommandParserException {
         Assert.assertEquals(Util.parseID("1"), 1);
         Assert.assertEquals(Util.parseID("10"), 10);
         Assert.assertEquals(Util.parseID("33"), 33);
@@ -18,7 +18,7 @@ public class UtilTest {
     }
 
     @Test
-    public void test_parseTaskID_invalid() {
+    void test_parseTaskID_invalid() {
         assertThrows(CommandParserException.class, () -> Util.parseID(""));
         assertThrows(CommandParserException.class, () -> Util.parseID("  "));
         assertThrows(CommandParserException.class, () -> Util.parseID("id"));

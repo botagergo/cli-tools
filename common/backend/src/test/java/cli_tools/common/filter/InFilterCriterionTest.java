@@ -32,12 +32,12 @@ public class InFilterCriterionTest {
     }
 
     @BeforeMethod
-    public void clear() {
+    void clear() {
         Mockito.reset(propertyOwner);
     }
 
     @Test
-    public void test_in() throws PropertyException, IOException {
+    void test_in() throws PropertyException, IOException {
         Mockito.when(propertyOwner.getProperties()).thenReturn(Utils.newHashMap(
                 "test_string", "str1"
         ));
@@ -45,7 +45,7 @@ public class InFilterCriterionTest {
     }
 
     @Test
-    public void test_not_in() throws PropertyException, IOException {
+    void test_not_in() throws PropertyException, IOException {
         Mockito.when(propertyOwner.getProperties()).thenReturn(Utils.newHashMap(
                 "test_string", "str1"
         ));

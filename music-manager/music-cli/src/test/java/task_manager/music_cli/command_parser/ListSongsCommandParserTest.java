@@ -20,27 +20,27 @@ import static org.testng.Assert.*;
 public class ListSongsCommandParserTest {
 
     @Test
-    public void test_parse_noArgs() throws CommandParserException {
+    void test_parse_noArgs() throws CommandParserException {
         ListSongsCommand command = parse(getArgList(List.of(), List.of(), new LinkedHashMap<>(), List.of(), List.of()));
         assertNull(command.viewName());
         assertNull(command.queries());
     }
 
     @Test
-    public void test_parse_onePositionalArg() throws CommandParserException {
+    void test_parse_onePositionalArg() throws CommandParserException {
         ListSongsCommand command = parse(getArgList(List.of(), List.of("viewName"), new LinkedHashMap<>(), List.of(), List.of()));
         assertEquals(command.viewName(), "viewName");
         assertNull(command.queries());
     }
 
     @Test
-    public void test_parse_twoPositionalArgs_throws() {
+    void test_parse_twoPositionalArgs_throws() {
         assertThrows(CommandParserException.class, () ->
                 parse(getArgList(List.of(), List.of("view1", "view2"), new LinkedHashMap<>(), List.of(), List.of())));
     }
 
     @Test
-    public void test_parse_oneQueryArg() throws CommandParserException {
+    void test_parse_oneQueryArg() throws CommandParserException {
         ListSongsCommand command = parse(
                 getArgList(
                         List.of(),
@@ -54,7 +54,7 @@ public class ListSongsCommandParserTest {
     }
 
     @Test
-    public void test_parse_twoQueryArgs() throws CommandParserException {
+    void test_parse_twoQueryArgs() throws CommandParserException {
         ListSongsCommand command = parse(
                 getArgList(
                         List.of(),
@@ -70,7 +70,7 @@ public class ListSongsCommandParserTest {
     }
 
     @Test
-    public void test_parse_invalidOption_throws() {
+    void test_parse_invalidOption_throws() {
         assertThrows(CommandParserException.class, () -> parse(getArgList(
                 List.of(),
                 List.of("my", "task"),
@@ -81,7 +81,7 @@ public class ListSongsCommandParserTest {
     }
 
     @Test
-    public void test_parse_complex() throws CommandParserException {
+    void test_parse_complex() throws CommandParserException {
         ListSongsCommand command = parse(
                 getArgList(
                         List.of("1", "3"),

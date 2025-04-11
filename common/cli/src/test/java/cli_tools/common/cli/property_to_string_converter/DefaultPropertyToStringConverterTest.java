@@ -35,15 +35,15 @@ public class DefaultPropertyToStringConverterTest {
             new DateTimeFormatter());
 
     @BeforeMethod
-    public void setUp() {
+    void setUp() {
     }
 
     @AfterMethod
-    public void tearDown() {
+    void tearDown() {
     }
 
     @Test
-    public void test_PropertyToString_string() throws IOException {
+    void test_PropertyToString_string() throws IOException {
         PropertyDescriptor propertyDescriptor = getPropertyDescriptor(PropertyDescriptor.Type.String, null, SINGLE);
 
         Property property = Property.fromUnchecked(propertyDescriptor, "str");
@@ -57,7 +57,7 @@ public class DefaultPropertyToStringConverterTest {
     }
 
     @Test
-    public void test_PropertyToString_stringList() throws IOException {
+    void test_PropertyToString_stringList() throws IOException {
         PropertyDescriptor propertyDescriptor = getPropertyDescriptor(PropertyDescriptor.Type.String, null, LIST);
 
         Property property = Property.fromUnchecked(propertyDescriptor, Utils.newArrayList());
@@ -77,7 +77,7 @@ public class DefaultPropertyToStringConverterTest {
     }
 
     @Test
-    public void test_PropertyToString_stringSet() throws IOException {
+    void test_PropertyToString_stringSet() throws IOException {
         PropertyDescriptor propertyDescriptor = getPropertyDescriptor(PropertyDescriptor.Type.String, null, SET);
 
         Property property = Property.fromUnchecked(propertyDescriptor, Utils.newLinkedHashSet());
@@ -97,7 +97,7 @@ public class DefaultPropertyToStringConverterTest {
     }
 
     @Test
-    public void test_PropertyToString_integer() throws IOException {
+    void test_PropertyToString_integer() throws IOException {
         PropertyDescriptor propertyDescriptor = getPropertyDescriptor(PropertyDescriptor.Type.Integer, null, SINGLE);
 
         Property property = Property.fromUnchecked(propertyDescriptor, 123);
@@ -114,7 +114,7 @@ public class DefaultPropertyToStringConverterTest {
     }
 
     @Test
-    public void test_PropertyToString_integerList() throws IOException {
+    void test_PropertyToString_integerList() throws IOException {
         PropertyDescriptor propertyDescriptor = getPropertyDescriptor(PropertyDescriptor.Type.Integer, null, LIST);
 
         Property property = Property.fromUnchecked(propertyDescriptor, Utils.newArrayList());
@@ -135,7 +135,7 @@ public class DefaultPropertyToStringConverterTest {
 
     // TODO
     /* @Test
-    public void test_PropertyToString_dateList() throws IOException {
+    void test_PropertyToString_dateList() throws IOException {
         PropertyDescriptor propertyDescriptor = getPropertyDescriptor(PropertyDescriptor.Type.String, new PropertyDescriptor.Subtype.DateSubtype(), LIST);
 
         Property property = Property.fromUnchecked(propertyDescriptor, Utils.newArrayList());
@@ -155,7 +155,7 @@ public class DefaultPropertyToStringConverterTest {
     } */
 
     @Test
-    public void test_PropertyToString_integerSet() throws IOException {
+    void test_PropertyToString_integerSet() throws IOException {
         PropertyDescriptor propertyDescriptor = getPropertyDescriptor(PropertyDescriptor.Type.Integer, null, SET);
 
         Property property = Property.fromUnchecked(propertyDescriptor, Utils.newArrayList());
@@ -175,7 +175,7 @@ public class DefaultPropertyToStringConverterTest {
     }
 
     @Test
-    public void test_PropertyToString_booleanList() throws IOException {
+    void test_PropertyToString_booleanList() throws IOException {
         PropertyDescriptor propertyDescriptor = getPropertyDescriptor(PropertyDescriptor.Type.Boolean, null, LIST);
 
         Property property = Property.fromUnchecked(propertyDescriptor, Utils.newArrayList());
@@ -195,7 +195,7 @@ public class DefaultPropertyToStringConverterTest {
     }
 
     @Test
-    public void test_PropertyToString_booleanSet() throws IOException {
+    void test_PropertyToString_booleanSet() throws IOException {
         PropertyDescriptor propertyDescriptor = getPropertyDescriptor(PropertyDescriptor.Type.Boolean, null, SET);
 
         Property property = Property.fromUnchecked(propertyDescriptor, Utils.newLinkedHashSet());
@@ -215,7 +215,7 @@ public class DefaultPropertyToStringConverterTest {
     }
 
     @Test
-    public void test_PropertyToString_uuid() throws IOException {
+    void test_PropertyToString_uuid() throws IOException {
         PropertyDescriptor propertyDescriptor = getPropertyDescriptor(PropertyDescriptor.Type.UUID, null, SINGLE);
 
         Property property = Property.fromUnchecked(propertyDescriptor, uuid1);
@@ -226,7 +226,7 @@ public class DefaultPropertyToStringConverterTest {
     }
 
     @Test
-    public void test_PropertyToString_uuidList() throws IOException {
+    void test_PropertyToString_uuidList() throws IOException {
         PropertyDescriptor propertyDescriptor = getPropertyDescriptor(PropertyDescriptor.Type.UUID, null, LIST);
 
         Property property = Property.fromUnchecked(propertyDescriptor, Utils.newArrayList());
@@ -246,7 +246,7 @@ public class DefaultPropertyToStringConverterTest {
     }
 
     @Test
-    public void test_PropertyToString_uuidSet() throws IOException {
+    void test_PropertyToString_uuidSet() throws IOException {
         PropertyDescriptor propertyDescriptor = getPropertyDescriptor(PropertyDescriptor.Type.UUID, null, SET);
 
         Property property = Property.fromUnchecked(propertyDescriptor, Utils.newLinkedHashSet());
@@ -266,7 +266,7 @@ public class DefaultPropertyToStringConverterTest {
     }
 
     @Test
-    public void test_PropertyToString_date() throws IOException {
+    void test_PropertyToString_date() throws IOException {
         PropertyDescriptor propertyDescriptor = getPropertyDescriptor(PropertyDescriptor.Type.String, new PropertyDescriptor.Subtype.DateSubtype(), SINGLE);
 
         Property property = Property.fromUnchecked(propertyDescriptor, "2025-03-20");
@@ -277,7 +277,7 @@ public class DefaultPropertyToStringConverterTest {
     }
 
     @Test
-    public void test_PropertyToString_time() throws IOException {
+    void test_PropertyToString_time() throws IOException {
         PropertyDescriptor propertyDescriptor = getPropertyDescriptor(PropertyDescriptor.Type.String, new PropertyDescriptor.Subtype.TimeSubtype(), SINGLE);
 
         Property property = Property.fromUnchecked(propertyDescriptor, "17:33:01");

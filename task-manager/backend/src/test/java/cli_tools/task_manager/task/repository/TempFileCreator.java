@@ -1,26 +1,17 @@
 package cli_tools.task_manager.task.repository;
 
-import cli_tools.common.repository.SimpleJsonRepository;
-import lombok.AllArgsConstructor;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 
-@AllArgsConstructor
-public class JsonRepositoryCreator {
+public class TempFileCreator {
 
-    private Path tempDir;
+    private final Path tempDir;
 
-    public SimpleJsonRepository<ArrayList<Integer>> createRepository(String fileName, String fileContent) throws IOException {
-        return new SimpleJsonRepositoryImpl(makeTempFile(fileName, fileContent));
-    }
-
-    public SimpleJsonRepository<ArrayList<Integer>> createRepository(File file) {
-        return new SimpleJsonRepositoryImpl(file);
+    public TempFileCreator(String tempDirName) throws IOException {
+        tempDir = Files.createTempDirectory(tempDirName);
     }
 
     public File makeTempFile(String name, String content) throws IOException {

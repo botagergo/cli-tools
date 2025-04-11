@@ -32,12 +32,12 @@ public class NullFilterCriterionTest {
     }
 
     @BeforeMethod
-    public void clear() {
+    void clear() {
         Mockito.reset(propertyOwner);
     }
 
     @Test
-    public void test_null() throws PropertyException, IOException {
+    void test_null() throws PropertyException, IOException {
         Mockito.when(propertyOwner.getProperties()).thenReturn(Utils.newHashMap(
                 "test_string", null,
                 "test_string_set", null
@@ -47,7 +47,7 @@ public class NullFilterCriterionTest {
     }
 
     @Test
-    public void test_notNull() throws PropertyException, IOException {
+    void test_notNull() throws PropertyException, IOException {
         Mockito.when(propertyOwner.getProperties()).thenReturn(Utils.newHashMap(
                 "test_string", "str1",
                 "test_string_set", Utils.newLinkedHashSet("abcde"),

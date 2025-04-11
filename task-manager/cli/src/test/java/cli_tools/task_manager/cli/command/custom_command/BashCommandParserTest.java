@@ -19,7 +19,7 @@ public class BashCommandParserTest {
     private final BashCommandParser parser = new BashCommandParser("echo $TASK_0_NAME", 1000);
 
     @Test
-    public void test_noArguments() throws CommandParserException {
+    void test_noArguments() throws CommandParserException {
         Command command = parser.parse(context, new ArgumentList());
 
         Assert.assertTrue(command instanceof BashCommand);
@@ -30,7 +30,7 @@ public class BashCommandParserTest {
     }
 
     @Test(expectedExceptions = CommandParserException.class)
-    public void test_trailingArguments_throws() throws CommandParserException {
+    void test_trailingArguments_throws() throws CommandParserException {
         ArgumentList argList = new ArgumentList();
         argList.getTrailingPositionalArguments().add("arg1");
 
@@ -39,7 +39,7 @@ public class BashCommandParserTest {
     }
 
     @Test(expectedExceptions = CommandParserException.class)
-    public void test_optionArguments_throws() throws CommandParserException {
+    void test_optionArguments_throws() throws CommandParserException {
         ArgumentList argList = new ArgumentList();
         argList.getOptionArguments().add(new OptionArgument("option", List.of("value")));
 
@@ -48,7 +48,7 @@ public class BashCommandParserTest {
     }
 
     @Test(expectedExceptions = CommandParserException.class)
-    public void test_propertyArguments_throws() throws CommandParserException {
+    void test_propertyArguments_throws() throws CommandParserException {
         ArgumentList argList = new ArgumentList();
         argList.getModifyPropertyArguments().add(
                 new PropertyArgument(Affinity.NEGATIVE, "prop", null, List.of("value")));
@@ -58,7 +58,7 @@ public class BashCommandParserTest {
     }
 
     @Test
-    public void testParseValidArguments() throws CommandParserException {
+    void testParseValidArguments() throws CommandParserException {
         ArgumentList argList = new ArgumentList();
         argList.setLeadingPositionalArguments(List.of("1", "2"));
         argList.setFilterPropertyArguments(List.of(

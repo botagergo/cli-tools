@@ -11,7 +11,7 @@ public class TempIDManagerTest {
     private TempIDManager tempIdManager;
 
     @Test
-    public void test_getOrCreateID_getMultiple() {
+    void test_getOrCreateID_getMultiple() {
         tempIdManager = new TempIDManager();
 
         assertEquals(tempIdManager.getOrCreateID(uuidGenerator.getUUID()), 1);
@@ -20,7 +20,7 @@ public class TempIDManagerTest {
     }
 
     @Test
-    public void test_getOrCreateID_afterDeleteLatest() {
+    void test_getOrCreateID_afterDeleteLatest() {
         tempIdManager = new TempIDManager();
 
         tempIdManager.getOrCreateID(uuidGenerator.uuids[0]);
@@ -33,7 +33,7 @@ public class TempIDManagerTest {
     }
 
     @Test
-    public void test_getOrCreateID_afterDeleteMiddle() {
+    void test_getOrCreateID_afterDeleteMiddle() {
         tempIdManager = new TempIDManager();
 
         tempIdManager.getOrCreateID(uuidGenerator.uuids[0]);
@@ -48,7 +48,7 @@ public class TempIDManagerTest {
     }
 
     @Test
-    public void test_getOrCreateID_existing() {
+    void test_getOrCreateID_existing() {
         tempIdManager = new TempIDManager();
 
         tempIdManager.getOrCreateID(uuidGenerator.uuids[0]);
@@ -57,14 +57,14 @@ public class TempIDManagerTest {
     }
 
     @Test
-    public void test_delete_empty() {
+    void test_delete_empty() {
         tempIdManager = new TempIDManager();
 
         assertFalse(tempIdManager.delete(uuidGenerator.uuids[0]));
     }
 
     @Test
-    public void test_delete_nonexistent() {
+    void test_delete_nonexistent() {
         tempIdManager = new TempIDManager();
 
         tempIdManager.getOrCreateID(uuidGenerator.uuids[0]);
@@ -73,14 +73,14 @@ public class TempIDManagerTest {
     }
 
     @Test
-    public void test_getUUID_empty() {
+    void test_getUUID_empty() {
         tempIdManager = new TempIDManager();
 
         assertNull(tempIdManager.getUUID(1));
     }
 
     @Test
-    public void test_getUUID_nonexistent() {
+    void test_getUUID_nonexistent() {
         tempIdManager = new TempIDManager();
 
         tempIdManager.getOrCreateID(uuidGenerator.uuids[0]);
@@ -88,7 +88,7 @@ public class TempIDManagerTest {
     }
 
     @Test
-    public void test_getUUID_existing() {
+    void test_getUUID_existing() {
         tempIdManager = new TempIDManager();
 
         tempIdManager.getOrCreateID(uuidGenerator.uuids[0]);

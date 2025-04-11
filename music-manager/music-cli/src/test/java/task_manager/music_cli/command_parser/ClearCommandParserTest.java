@@ -10,7 +10,7 @@ import static org.testng.Assert.assertNotNull;
 public class ClearCommandParserTest {
 
     @Test
-    public void test_parse_noArgs() {
+    void test_parse_noArgs() {
         ClearCommand cmd = (ClearCommand) parser.parse(context, getArgList());
         assertNotNull(cmd);
     }

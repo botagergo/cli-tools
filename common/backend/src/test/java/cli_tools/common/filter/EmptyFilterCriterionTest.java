@@ -35,12 +35,12 @@ public class EmptyFilterCriterionTest {
     }
 
     @BeforeMethod
-    public void clear() {
+    void clear() {
         Mockito.reset(propertyOwner);
     }
 
     @Test
-    public void test_empty() throws PropertyException, IOException {
+    void test_empty() throws PropertyException, IOException {
         Mockito.when(propertyOwner.getProperties()).thenReturn(Utils.newHashMap(
                 "test_string1", null,
                 "test_string2", ""
@@ -60,7 +60,7 @@ public class EmptyFilterCriterionTest {
     }
 
     @Test
-    public void test_notEmpty() throws PropertyException, IOException {
+    void test_notEmpty() throws PropertyException, IOException {
         Mockito.when(propertyOwner.getProperties()).thenReturn(Utils.newHashMap(
                 "test_string1", "str1",
                 "test_string2", " "

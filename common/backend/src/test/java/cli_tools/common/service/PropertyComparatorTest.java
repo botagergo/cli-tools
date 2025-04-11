@@ -16,53 +16,53 @@ public class PropertyComparatorTest {
     final RoundRobinUUIDGenerator uuidGenerator = new RoundRobinUUIDGenerator();
 
     @Test
-    public void test_compare_string() {
+    void test_compare_string() {
         assertTrue(nullsFirstPropertyComparator.compare(getStringProperty("str1"), getStringProperty("str2")) < 0);
         assertTrue(nullsFirstPropertyComparator.compare(getStringProperty("str1"), getStringProperty("str0")) > 0);
         assertEquals(nullsFirstPropertyComparator.compare(getStringProperty("str1"), getStringProperty("str1")), 0);
     }
 
     @Test
-    public void test_compare_integer() {
+    void test_compare_integer() {
         assertTrue(nullsFirstPropertyComparator.compare(getIntegerProperty(3), getIntegerProperty(5)) < 0);
         assertTrue(nullsFirstPropertyComparator.compare(getIntegerProperty(5), getIntegerProperty(3)) > 0);
         assertEquals(nullsFirstPropertyComparator.compare(getIntegerProperty(4), getIntegerProperty(4)), 0);
     }
 
     @Test
-    public void test_compare_boolean() {
+    void test_compare_boolean() {
         assertTrue(nullsFirstPropertyComparator.compare(getBooleanProperty(false), getBooleanProperty(true)) < 0);
         assertTrue(nullsFirstPropertyComparator.compare(getBooleanProperty(true), getBooleanProperty(false)) > 0);
         assertEquals(nullsFirstPropertyComparator.compare(getBooleanProperty(true), getBooleanProperty(true)), 0);
     }
 
     @Test
-    public void test_compare_two_nulls() {
+    void test_compare_two_nulls() {
         assertEquals(nullsFirstPropertyComparator.compare(getStringProperty(null), getStringProperty(null)), 0);
         assertEquals(nullsLastPropertyComparator.compare(getStringProperty(null), getStringProperty(null)), 0);
     }
 
     @Test
-    public void test_compare_first_null() {
+    void test_compare_first_null() {
         assertTrue(nullsFirstPropertyComparator.compare(getStringProperty(null), getStringProperty("str")) < 0);
         assertTrue(nullsLastPropertyComparator.compare(getStringProperty(null), getStringProperty("str")) > 0);
     }
 
     @Test
-    public void test_compare_second_null() {
+    void test_compare_second_null() {
         assertTrue(nullsFirstPropertyComparator.compare(getStringProperty("str"), getStringProperty(null)) > 0);
         assertTrue(nullsLastPropertyComparator.compare(getStringProperty("str"), getStringProperty(null)) < 0);
     }
 
     @Test
-    public void test_wrongType_throws() {
+    void test_wrongType_throws() {
         assertThrows(RuntimeException.class, () -> nullsFirstPropertyComparator.compare(getStringProperty("str"), getUuidProperty()));
         assertThrows(RuntimeException.class, () -> nullsFirstPropertyComparator.compare(getUuidProperty(), getStringProperty("str")));
         assertThrows(RuntimeException.class, () -> nullsFirstPropertyComparator.compare(getUuidProperty(), getUuidProperty()));
     }
 
     @Test
-    public void test_wrongMultiplicity_throws() {
+    void test_wrongMultiplicity_throws() {
         assertThrows(RuntimeException.class, () -> nullsFirstPropertyComparator.compare(getListProperty(), getStringProperty("str")));
         assertThrows(RuntimeException.class, () -> nullsFirstPropertyComparator.compare(getStringProperty("str"), getListProperty()));
         assertThrows(RuntimeException.class, () -> nullsFirstPropertyComparator.compare(getListProperty(), getListProperty()));

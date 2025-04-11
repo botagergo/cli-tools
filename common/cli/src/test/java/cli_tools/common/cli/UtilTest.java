@@ -8,7 +8,7 @@ import static org.testng.Assert.assertThrows;
 public class UtilTest {
 
     @Test
-    public void test_parseTempId_valid() {
+    void test_parseTempId_valid() {
         assertEquals(Util.parseTempId("1"), 1);
         assertEquals(Util.parseTempId("10"), 10);
         assertEquals(Util.parseTempId("33"), 33);
@@ -16,7 +16,7 @@ public class UtilTest {
     }
 
     @Test
-    public void test_parseTempId_invalid() {
+    void test_parseTempId_invalid() {
         assertThrows(IllegalArgumentException.class, () -> Util.parseTempId(""));
         assertThrows(IllegalArgumentException.class, () -> Util.parseTempId("  "));
         assertThrows(IllegalArgumentException.class, () -> Util.parseTempId("id"));

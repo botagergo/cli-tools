@@ -19,30 +19,30 @@ public class DeleteTaskCommandParserTest {
     private final TaskManagerContext context = new TaskManagerContext();
 
     @Test
-    public void test_parse_noArgs() throws CommandParserException {
+    void test_parse_noArgs() throws CommandParserException {
         DeleteTaskCommand command = parse(getArgList(List.of(), List.of()));
         assertEquals(command.getTempIDs().size(), 0);
     }
 
     @Test
-    public void test_parse_oneTaskID() throws CommandParserException {
+    void test_parse_oneTaskID() throws CommandParserException {
         DeleteTaskCommand command = parse(getArgList(List.of("1"), List.of()));
         assertEquals(command.getTempIDs(), List.of(1));
     }
 
     @Test
-    public void test_parse_multipleTaskIDs() throws CommandParserException {
+    void test_parse_multipleTaskIDs() throws CommandParserException {
         DeleteTaskCommand command = parse(getArgList(List.of("3", "111", "333"), List.of()));
         assertEquals(command.getTempIDs(), List.of(3, 111, 333));
     }
 
     @Test
-    public void test_parse_invalidTaskID() {
+    void test_parse_invalidTaskID() {
         assertThrows(IllegalArgumentException.class, () -> parse(getArgList(List.of("1.0", "1"), List.of())));
     }
 
     @Test
-    public void test_parse_filterPropertyArgs() throws CommandParserException {
+    void test_parse_filterPropertyArgs() throws CommandParserException {
         DeleteTaskCommand command = parse(getArgList(List.of(), List.of(
                 new PropertyArgument(Affinity.NEUTRAL, "prop1", null, List.of("value1"))
         )));
@@ -53,7 +53,7 @@ public class DeleteTaskCommandParserTest {
     }
 
     @Test
-    public void test_parse_complex() throws CommandParserException {
+    void test_parse_complex() throws CommandParserException {
         DeleteTaskCommand command = parse(
                 getArgList(
                         List.of(

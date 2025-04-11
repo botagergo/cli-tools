@@ -18,22 +18,22 @@ public class TaskTest {
     private final UUID uuid = uuidGenerator.getUUID();
 
     @Test
-    public void test_getUUID_successful() {
+    void test_getUUID_successful() {
         assertEquals(Task.fromMap(Utils.newHashMap("uuid", uuid)).getUUID(), uuid);
     }
 
     @Test
-    public void test_getUUID_notDefined_returnsNull() {
+    void test_getUUID_notDefined_returnsNull() {
         assertNull(Task.fromMap(new HashMap<>()).getUUID());
     }
 
     @Test
-    public void test_getUUID_wrongType_returnsNull() {
+    void test_getUUID_wrongType_returnsNull() {
         assertNull(Task.fromMap(new HashMap<>(Map.of("uuid", 123))).getUUID());
     }
 
     @Test
-    public void test_getUUID_badUUID_returnsNull() {
+    void test_getUUID_badUUID_returnsNull() {
         assertNull(Task.fromMap(new HashMap<>(Map.of("uuid", "asdf"))).getUUID());
     }
 }

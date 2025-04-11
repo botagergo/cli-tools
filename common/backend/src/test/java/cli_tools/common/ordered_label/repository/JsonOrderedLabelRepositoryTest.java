@@ -21,14 +21,14 @@ public class JsonOrderedLabelRepositoryTest {
     }
 
     @Test
-    public void test_getAll_notExist() throws IOException {
+    void test_getAll_notExist() throws IOException {
         File tempFile = rc.getTempFile("test_getAll_notExist");
         repository = new JsonOrderedLabelRepository(tempFile);
         assertEquals(repository.getAll(), List.of());
     }
 
     @Test
-    public void test_getAll_empty() throws IOException {
+    void test_getAll_empty() throws IOException {
         File tempFile = rc.makeTempFile("test_getAll_empty", """
                     []
                 """);
@@ -37,7 +37,7 @@ public class JsonOrderedLabelRepositoryTest {
     }
 
     @Test
-    public void test_getAll() throws IOException {
+    void test_getAll() throws IOException {
         File tempFile = rc.makeTempFile("test_getAll", """
                     ["label1", "label2", "label3"]
                 """);
@@ -50,7 +50,7 @@ public class JsonOrderedLabelRepositoryTest {
     }
 
     @Test
-    public void test_get_existing() throws IOException {
+    void test_get_existing() throws IOException {
         File tempFile = rc.makeTempFile("test_get_existing", """
                     ["label1", "label2", "label3"]
                 """);
@@ -60,14 +60,14 @@ public class JsonOrderedLabelRepositoryTest {
     }
 
     @Test
-    public void test_get_empty() throws IOException {
+    void test_get_empty() throws IOException {
         File tempFile = rc.getTempFile("test_get_empty");
         repository = new JsonOrderedLabelRepository(tempFile);
         assertNull(repository.get(0), null);
     }
 
     @Test
-    public void test_get_notExist() throws IOException {
+    void test_get_notExist() throws IOException {
         File tempFile = rc.makeTempFile("test_get_notExist", """
                     ["label1", "label2", "label3"]
                 """);
@@ -77,7 +77,7 @@ public class JsonOrderedLabelRepositoryTest {
     }
 
     @Test
-    public void test_find_existing() throws IOException {
+    void test_find_existing() throws IOException {
         File tempFile = rc.makeTempFile("test_find_existing", """
                     ["label1", "label2", "label3"]
                 """);
@@ -87,14 +87,14 @@ public class JsonOrderedLabelRepositoryTest {
     }
 
     @Test
-    public void test_find_empty() throws IOException {
+    void test_find_empty() throws IOException {
         File tempFile = rc.getTempFile("test_find_empty");
         repository = new JsonOrderedLabelRepository(tempFile);
         assertNull(repository.find("label1"), null);
     }
 
     @Test
-    public void test_find_notExist() throws IOException {
+    void test_find_notExist() throws IOException {
         File tempFile = rc.makeTempFile("test_find_notExist", """
                     ["label1", "label2", "label3"]
                 """);
@@ -103,7 +103,7 @@ public class JsonOrderedLabelRepositoryTest {
     }
 
     @Test
-    public void test_getAll_invalidFormat_throws() throws IOException {
+    void test_getAll_invalidFormat_throws() throws IOException {
         File tempFile = rc.makeTempFile("test_getAll_invalidFormat_throws", """
                     {"labels":["label1", "label2", "label3"]}
                 """);
@@ -112,7 +112,7 @@ public class JsonOrderedLabelRepositoryTest {
     }
 
     @Test
-    public void test_create_successful() throws IOException {
+    void test_create_successful() throws IOException {
         File tempFile = rc.getTempFile("test_create_successful");
         repository = new JsonOrderedLabelRepository(tempFile);
         repository.create("label1");

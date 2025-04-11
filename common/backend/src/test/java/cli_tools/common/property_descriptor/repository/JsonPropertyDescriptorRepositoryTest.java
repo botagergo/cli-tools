@@ -24,7 +24,7 @@ public class JsonPropertyDescriptorRepositoryTest {
     }
 
     @Test
-    public void test_read_successful() throws IOException {
+    void test_read_successful() throws IOException {
         File tempFile = rc.makeTempFile("read_successful", """
                 {
                     "name": {
@@ -49,7 +49,7 @@ public class JsonPropertyDescriptorRepositoryTest {
     }
 
     @Test
-    public void test_find() throws IOException {
+    void test_find() throws IOException {
         File tempFile = rc.makeTempFile("test_find", """
                 {
                     "name": {
@@ -80,7 +80,7 @@ public class JsonPropertyDescriptorRepositoryTest {
     }
 
     @Test
-    public void test_find_notFound() throws IOException {
+    void test_find_notFound() throws IOException {
         File tempFile = rc.makeTempFile("test_find_notFound", """
                 {
                     "name": {
@@ -96,21 +96,21 @@ public class JsonPropertyDescriptorRepositoryTest {
     }
 
     @Test
-    public void test_find_empty() throws IOException {
+    void test_find_empty() throws IOException {
         File tempFile = rc.makeTempFile("test_find_empty", "{}");
         repository = new JsonPropertyDescriptorRepository(tempFile, tempIdManager, PseudoPropertyProviderMixIn.class);
         assertEquals(repository.find("name3").size(), 0);
     }
 
     @Test
-    public void test_find_fileNotExist() throws IOException {
+    void test_find_fileNotExist() throws IOException {
         File tempFile = rc.getTempFile("test_find_fileNotExist");
         repository = new JsonPropertyDescriptorRepository(tempFile, tempIdManager, PseudoPropertyProviderMixIn.class);
         assertEquals(repository.find("name3").size(), 0);
     }
 
     @Test
-    public void test_write_successful() throws IOException {
+    void test_write_successful() throws IOException {
         File tempFile = rc.makeTempFile("write_successful", """
                 {
                     "name": {
@@ -149,7 +149,7 @@ public class JsonPropertyDescriptorRepositoryTest {
     }
 
     @Test
-    public void test_badFormat_throwsException() throws IOException {
+    void test_badFormat_throwsException() throws IOException {
         File tempFile = rc.getTempFile("bad_format");
 
         Files.writeString(tempFile.toPath(), "[1, 2, 3]");
@@ -166,7 +166,7 @@ public class JsonPropertyDescriptorRepositoryTest {
     }
 
     @Test
-    public void test_missingField_throwsException() throws IOException {
+    void test_missingField_throwsException() throws IOException {
         File tempFile = rc.makeTempFile("missing_field", """
                 {
                     "name": {
@@ -180,7 +180,7 @@ public class JsonPropertyDescriptorRepositoryTest {
     }
 
     @Test
-    public void test_extraFields_throwsException() throws IOException {
+    void test_extraFields_throwsException() throws IOException {
         File tempFile = rc.makeTempFile("extra_fields", """
                 {
                     "name": {
@@ -197,7 +197,7 @@ public class JsonPropertyDescriptorRepositoryTest {
     }
 
     @Test
-    public void test_wrongFieldType_throwsException() throws IOException {
+    void test_wrongFieldType_throwsException() throws IOException {
         File tempFile = rc.makeTempFile("wrong_field_type", """
                 {
                 "name": {
@@ -218,7 +218,7 @@ public class JsonPropertyDescriptorRepositoryTest {
     }
 
     @Test
-    public void test_UUIDExtra_successful() throws IOException {
+    void test_UUIDExtra_successful() throws IOException {
         File tempFile = rc.makeTempFile("uuid_extra", """
                 {
                     "other_name": {
@@ -238,7 +238,7 @@ public class JsonPropertyDescriptorRepositoryTest {
     }
 
     @Test
-    public void test_wrongExtraType_throws() throws IOException {
+    void test_wrongExtraType_throws() throws IOException {
         File tempFile = rc.makeTempFile("wrong_field_type", """
                 {
                     "name": {

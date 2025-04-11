@@ -24,7 +24,7 @@ public class ListTasksCommandParserTest {
     private final TaskManagerContext context = new TaskManagerContext();
 
     @Test
-    public void test_parse_noArgs() throws CommandParserException {
+    void test_parse_noArgs() throws CommandParserException {
         ListTasksCommand command = parse(getArgList(List.of(), List.of(), new LinkedHashMap<>(), List.of(), List.of()));
         assertNull(command.getViewName());
         assertNull(command.getHierarchical());
@@ -37,31 +37,31 @@ public class ListTasksCommandParserTest {
     }
 
     @Test
-    public void test_parse_onePositionalArg() throws CommandParserException {
+    void test_parse_onePositionalArg() throws CommandParserException {
         ListTasksCommand command = parse(getArgList(List.of(), List.of("viewName"), new LinkedHashMap<>(), List.of(), List.of()));
         assertEquals(command.getViewName(), "viewName");
     }
 
     @Test
-    public void test_parse_twoPositionalArgs_throws() {
+    void test_parse_twoPositionalArgs_throws() {
         assertThrows(CommandParserException.class, () ->
                 parse(getArgList(List.of(), List.of("view1", "view2"), new LinkedHashMap<>(), List.of(), List.of())));
     }
 
     @Test
-    public void test_parse_oneTempId() throws CommandParserException {
+    void test_parse_oneTempId() throws CommandParserException {
         ListTasksCommand command = parse(getArgList(List.of("1"), List.of(), new LinkedHashMap<>(), List.of(), List.of()));
         assertEquals(command.getTempIDs(), List.of(1));
     }
 
     @Test
-    public void test_parse_multipleTempIds() throws CommandParserException {
+    void test_parse_multipleTempIds() throws CommandParserException {
         ListTasksCommand command = parse(getArgList(List.of("1", "3", "2"), List.of(), new LinkedHashMap<>(), List.of(), List.of()));
         assertEquals(command.getTempIDs(), List.of(1, 3, 2));
     }
 
     @Test
-    public void test_parse_hierarchical() throws CommandParserException {
+    void test_parse_hierarchical() throws CommandParserException {
         ListTasksCommand command = parse(getArgList(List.of(), List.of(), new LinkedHashMap<>(),
                 List.of(new OptionArgument("hierarchical", List.of("true"))),
                 List.of()));
@@ -73,7 +73,7 @@ public class ListTasksCommandParserTest {
     }
 
     @Test
-    public void test_parse_properties() throws CommandParserException {
+    void test_parse_properties() throws CommandParserException {
         ListTasksCommand command = parse(getArgList(List.of(), List.of(), new LinkedHashMap<>(),
                 List.of(new OptionArgument("properties", List.of())),
                 List.of()));
@@ -89,7 +89,7 @@ public class ListTasksCommandParserTest {
     }
 
     @Test
-    public void test_parse_sort() throws CommandParserException {
+    void test_parse_sort() throws CommandParserException {
         assertThrows(CommandParserException.class, () -> parse(getArgList(List.of(), List.of(), new LinkedHashMap<>(),
                 List.of(new OptionArgument("sort", List.of())),
                 List.of())));
@@ -108,7 +108,7 @@ public class ListTasksCommandParserTest {
     }
 
     @Test
-    public void test_parse_filterPropertyArgs() throws CommandParserException {
+    void test_parse_filterPropertyArgs() throws CommandParserException {
         ListTasksCommand command = parse(getArgList(List.of(), List.of(), new LinkedHashMap<>(), List.of(), List.of(
                 new PropertyArgument(Affinity.POSITIVE, "status", null, List.of("backlog")),
                 new PropertyArgument(Affinity.NEGATIVE, "p", "in", List.of()),
@@ -122,7 +122,7 @@ public class ListTasksCommandParserTest {
     }
 
     @Test
-    public void test_parse_outputFormat() throws CommandParserException {
+    void test_parse_outputFormat() throws CommandParserException {
         assertThrows(CommandParserException.class, () -> parse(getArgList(List.of(), List.of(), new LinkedHashMap<>(),
                 List.of(new OptionArgument("outputFormat", List.of("jpg"))),
                 List.of())));
@@ -147,7 +147,7 @@ public class ListTasksCommandParserTest {
     }
 
     @Test
-    public void test_parse_invalidOption_throws() {
+    void test_parse_invalidOption_throws() {
         assertThrows(CommandParserException.class, () -> parse(getArgList(
                 List.of(),
                 List.of("my", "task"),
@@ -158,7 +158,7 @@ public class ListTasksCommandParserTest {
     }
 
     @Test
-    public void test_parse_complex() throws CommandParserException {
+    void test_parse_complex() throws CommandParserException {
         ListTasksCommand command = parse(
                 getArgList(
                         List.of("1", "3"),

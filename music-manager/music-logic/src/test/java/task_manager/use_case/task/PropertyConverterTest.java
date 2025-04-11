@@ -28,44 +28,44 @@ public class PropertyConverterTest {
     }
 
     @BeforeMethod
-    public void clear() {
+    void clear() {
         Mockito.reset(propertyDescriptorUseCase);
     }
 
     @Test
-    public void test_convertProperty_string_successful() throws IOException, PropertyConverterException {
+    void test_convertProperty_string_successful() throws IOException, PropertyConverterException {
         assertEquals(propertyConverter.convertProperty(
                 getPropertyDescriptor(PropertyDescriptor.Type.String, PropertyDescriptor.Multiplicity.SINGLE), List.of("value")), "value");
     }
 
     @Test
-    public void test_convertProperty_boolean_successful() throws IOException, PropertyConverterException {
+    void test_convertProperty_boolean_successful() throws IOException, PropertyConverterException {
         assertEquals(propertyConverter.convertProperty(
                 getPropertyDescriptor(PropertyDescriptor.Type.Boolean, PropertyDescriptor.Multiplicity.SINGLE), List.of(true)), true);
     }
 
     @Test
-    public void test_convertProperty_uuid_successful() throws IOException, PropertyConverterException {
+    void test_convertProperty_uuid_successful() throws IOException, PropertyConverterException {
         assertEquals(propertyConverter.convertProperty(
                 getPropertyDescriptor(PropertyDescriptor.Type.Boolean, PropertyDescriptor.Multiplicity.SINGLE), List.of(uuid1)), uuid1);
     }
 
     @Test
-    public void test_convertProperty_list_successful() throws IOException, PropertyConverterException {
+    void test_convertProperty_list_successful() throws IOException, PropertyConverterException {
         assertEquals(propertyConverter.convertProperty(
                 getPropertyDescriptor(PropertyDescriptor.Type.UUID, PropertyDescriptor.Multiplicity.LIST), List.of(uuid1.toString(), uuid2.toString(), uuid3.toString())),
                 List.of(uuid1, uuid2, uuid3));
     }
 
     @Test
-    public void test_convertProperty_set_successful() throws IOException, PropertyConverterException {
+    void test_convertProperty_set_successful() throws IOException, PropertyConverterException {
         assertEquals(propertyConverter.convertProperty(
                         getPropertyDescriptor(PropertyDescriptor.Type.UUID, PropertyDescriptor.Multiplicity.SET), List.of(uuid1.toString(), uuid2.toString(), uuid3.toString())),
                 Utils.newLinkedHashSet(uuid1, uuid2, uuid3));
     }
 
     @Test
-    public void test_convertProperty_emptyList_throws() throws IOException {
+    void test_convertProperty_emptyList_throws() throws IOException {
         try {
             propertyConverter.convertProperty(
                     getPropertyDescriptor(PropertyDescriptor.Type.Boolean, PropertyDescriptor.Multiplicity.SINGLE), List.of());
@@ -78,7 +78,7 @@ public class PropertyConverterTest {
     }
 
     @Test
-    public void test_convertProperty_notACollection_throws() throws IOException {
+    void test_convertProperty_notACollection_throws() throws IOException {
         try {
             propertyConverter.convertProperty(
                     getPropertyDescriptor(PropertyDescriptor.Type.Boolean, PropertyDescriptor.Multiplicity.SINGLE), List.of("true", "false"));
@@ -91,7 +91,7 @@ public class PropertyConverterTest {
     }
 
     @Test
-    public void test_convertProperty_uuid_notAnUuid_tagFound() throws IOException, PropertyConverterException {
+    void test_convertProperty_uuid_notAnUuid_tagFound() throws IOException, PropertyConverterException {
         Mockito.when(labelRepositoryFactory.getLabelRepository("test")).thenReturn(labelRepository);
         Mockito.when(labelRepository.find("tag")).thenReturn(new Label(uuid1, "tag"));
 
@@ -101,7 +101,7 @@ public class PropertyConverterTest {
 
 
     @Test
-    public void test_stringToProperty_uuid_notAnUuid_tagNotFound_n_throwsPropertyConverterException() throws IOException {
+    void test_stringToProperty_uuid_notAnUuid_tagNotFound_n_throwsPropertyConverterException() throws IOException {
         Mockito.when(labelRepositoryFactory.getLabelRepository("test")).thenReturn(labelRepository);
         Mockito.when(labelRepository.find("tag")).thenReturn(null);
 

@@ -29,12 +29,12 @@ public class NotFilterCriterionTest {
     }
 
     @BeforeMethod
-    public void clear() {
+    void clear() {
         Mockito.reset(propertyOwner);
     }
 
     @Test
-    public void test_equals() throws PropertyException, IOException {
+    void test_equals() throws PropertyException, IOException {
         Mockito.when(propertyOwner.getProperties()).thenReturn(Utils.newHashMap("test_boolean", true));
         assertNotEquals(true, false);
         assertNotEquals(false, true);

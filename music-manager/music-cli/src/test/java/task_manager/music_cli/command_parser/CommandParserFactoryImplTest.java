@@ -9,19 +9,19 @@ import static org.testng.Assert.assertTrue;
 public class CommandParserFactoryImplTest {
 
     @Test
-    public void testAdd() {
+    void testAdd() {
         assertTrue(
                 commandParserFactory.getParser(getArgList("add")) instanceof AddSongCommandParser);
     }
 
     @Test
-    public void testList() {
+    void testList() {
         assertTrue(commandParserFactory
                 .getParser(getArgList("list")) instanceof ListSongsCommandParser);
     }
 
     @Test
-    public void testUnknown() {
+    void testUnknown() {
         assertNull(commandParserFactory.getParser(getArgList("unknown")));
         assertNull(commandParserFactory.getParser(getArgList("")));
     }

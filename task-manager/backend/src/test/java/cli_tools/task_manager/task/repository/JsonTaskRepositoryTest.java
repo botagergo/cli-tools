@@ -14,16 +14,16 @@ import static org.testng.Assert.assertThrows;
 
 public class JsonTaskRepositoryTest {
 
-    private final JsonRepositoryCreator rc;
+    private final TempFileCreator tempFileCreator;
     private JsonTaskRepository repository;
 
     public JsonTaskRepositoryTest() throws IOException {
-        rc = new JsonRepositoryCreator(Files.createTempDirectory("testng"));
+        tempFileCreator = new TempFileCreator("testng");
     }
 
     @Test
-    public void test_read_successful() throws IOException {
-        repository = new JsonTaskRepository(rc.makeTempFile("read_successful", """
+    void test_read_successful() throws IOException {
+        repository = new JsonTaskRepository(tempFileCreator.makeTempFile("read_successful", """
                 [
                     {
                         "name":"s:task1",
@@ -48,8 +48,8 @@ public class JsonTaskRepositoryTest {
     }
 
     @Test
-    public void test_write_successful() throws IOException {
-        File tempFile = rc.getTempFile("write_successful");
+    void test_write_successful() throws IOException {
+        File tempFile = tempFileCreator.getTempFile("write_successful");
         repository = new JsonTaskRepository(tempFile);
         repository.create(Task.fromMap(Utils.newLinkedHashMap("name", "task1",
                 "values", Utils.newArrayList(true, false))));
@@ -75,8 +75,8 @@ public class JsonTaskRepositoryTest {
     }
 
     @Test
-    public void test_badFormat_throwsException() throws IOException {
-        File tempFile = rc.getTempFile("bad_format");
+    void test_badFormat_throwsException() throws IOException {
+        File tempFile = tempFileCreator.getTempFile("bad_format");
 
         Files.writeString(tempFile.toPath(), "[1, 2, 3]");
         repository = new JsonTaskRepository(tempFile);

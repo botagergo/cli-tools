@@ -24,7 +24,7 @@ public class JsonLabelRepositoryTest {
     }
 
     @Test
-    public void test_read_successful() throws IOException {
+    void test_read_successful() throws IOException {
         File tempFile = rc.makeTempFile("read_successful", String.format("""
                     [
                         {
@@ -45,7 +45,7 @@ public class JsonLabelRepositoryTest {
     }
 
     @Test
-    public void test_write_successful() throws IOException {
+    void test_write_successful() throws IOException {
         File tempFile = rc.getTempFile("write_successful.json");
         repository = new JsonLabelRepository(tempFile);
         repository.create(new Label(uuidGenerator.uuids[0], "label1"));
@@ -66,7 +66,7 @@ public class JsonLabelRepositoryTest {
     }
 
     @Test
-    public void test_badFormat_throwsException() throws IOException {
+    void test_badFormat_throwsException() throws IOException {
         File tempFile = rc.getTempFile("bad_format");
 
         Files.writeString(tempFile.toPath(), "[1, 2, 3]");
@@ -83,7 +83,7 @@ public class JsonLabelRepositoryTest {
     }
 
     @Test
-    public void test_missingField_throwsException() throws IOException {
+    void test_missingField_throwsException() throws IOException {
         File tempFile = rc.makeTempFile("missing_field", String.format("""
                 [
                     {
@@ -100,7 +100,7 @@ public class JsonLabelRepositoryTest {
     }
 
     @Test
-    public void test_extraFields_throwsException() throws IOException {
+    void test_extraFields_throwsException() throws IOException {
         File tempFile = rc.makeTempFile("extra_fields", String.format("""
                 [
                     {
@@ -120,7 +120,7 @@ public class JsonLabelRepositoryTest {
     }
 
     @Test
-    public void test_wrongFieldType_throwsException() throws IOException {
+    void test_wrongFieldType_throwsException() throws IOException {
         File tempFile = rc.makeTempFile("wrong_field_type", String.format("""
                 [
                     {

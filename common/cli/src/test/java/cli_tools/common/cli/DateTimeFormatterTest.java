@@ -10,7 +10,7 @@ public class DateTimeFormatterTest {
     private final DateTimeFormatter dateTimeFormatter = new DateTimeFormatter();
 
     @Test
-    public void test_formatLocalDate() {
+    void test_formatLocalDate() {
         assertFormatDate(LocalDate.of(2021, 11, 30), "2021-11-30");
         assertFormatDate(LocalDate.of(2020, 3, 12), "2020-03-12");
         assertFormatDate(LocalDate.of(2040, 2, 29), "2040-02-29");
@@ -20,7 +20,7 @@ public class DateTimeFormatterTest {
     }
 
     @Test
-    public void test_formatLocalTime() {
+    void test_formatLocalTime() {
         assertFormatTime(LocalTime.of(10, 31, 11), "10 AM");
         assertFormatTime(LocalTime.of(12, 31, 11), "12 PM");
         assertFormatTime(LocalTime.of(14, 20, 11), "2 PM");

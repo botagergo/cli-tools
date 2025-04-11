@@ -28,7 +28,7 @@ public class MapSerializerTest {
     private ObjectMapper basicObjectMapper;
 
     @BeforeClass
-    public void setup() {
+    void setup() {
         objectMapper = new ObjectMapper();
         basicObjectMapper = new ObjectMapper();
         SimpleModule module = new SimpleModule();
@@ -38,19 +38,19 @@ public class MapSerializerTest {
     }
 
     @Test
-    public void test_serializer_empty() throws JsonProcessingException {
+    void test_serializer_empty() throws JsonProcessingException {
         assertJsonStrEquals(objectMapper.writeValueAsString(Map.of()), Map.of());
     }
 
     @Test
-    public void test_serializer_singleFields() throws JsonProcessingException {
+    void test_serializer_singleFields() throws JsonProcessingException {
         assertJsonStrEquals(objectMapper.writeValueAsString(
                         new HashMap<>(Map.of("name", "test", "done", false, "uuid", uuid1, "priority", 2))),
                 new HashMap<>(Map.of("name", "s:test", "done", false, "uuid", "u:" + uuid1, "priority", 2)));
     }
 
     @Test
-    public void test_serializer_nullField() throws JsonProcessingException {
+    void test_serializer_nullField() throws JsonProcessingException {
         HashMap<String, Object> mapToSerialize = new HashMap<>(), expectedMap = new HashMap<>();
         mapToSerialize.put("name", null);
         expectedMap.put("name", null);
@@ -58,14 +58,14 @@ public class MapSerializerTest {
     }
 
     @Test
-    public void test_serializer_emptyString() throws JsonProcessingException {
+    void test_serializer_emptyString() throws JsonProcessingException {
         assertJsonStrEquals(objectMapper.writeValueAsString(
                         new HashMap<>(Map.of("name", ""))),
                 new HashMap<>(Map.of("name", "s:")));
     }
 
     @Test
-    public void test_serializer_emptyList() throws JsonProcessingException {
+    void test_serializer_emptyList() throws JsonProcessingException {
         assertJsonStrEquals(objectMapper.writeValueAsString(
                         new HashMap<>(Map.of("string_list", new ArrayList<>(), "tags", new ArrayList<>()))),
                 new HashMap<>(Map.of(
@@ -74,7 +74,7 @@ public class MapSerializerTest {
     }
 
     @Test
-    public void test_serializer_list() throws JsonProcessingException {
+    void test_serializer_list() throws JsonProcessingException {
         assertJsonStrEquals(objectMapper.writeValueAsString(
                         new HashMap<>(Map.of("string_list", Utils.newArrayList("value1", "value2"), "tags", Utils.newArrayList(uuid1, uuid2)))),
                 new HashMap<>(Map.of(
@@ -83,7 +83,7 @@ public class MapSerializerTest {
     }
 
     @Test
-    public void test_serializer_listWithNull() throws JsonProcessingException {
+    void test_serializer_listWithNull() throws JsonProcessingException {
         assertJsonStrEquals(objectMapper.writeValueAsString(
                         new HashMap<>(Map.of("string_list", Utils.newArrayList("value1", null, "value2"), "tags", Utils.newArrayList(uuid1, null, uuid2)))),
                 new HashMap<>(Map.of(
@@ -92,7 +92,7 @@ public class MapSerializerTest {
     }
 
     @Test
-    public void test_serializer_emptySet() throws JsonProcessingException {
+    void test_serializer_emptySet() throws JsonProcessingException {
         HashMap<String, Object> mapToSerialize = new HashMap<>(Map.of("string_set", Sets.newLinkedHashSet(), "tags", Sets.newLinkedHashSet()));
         HashMap<String, Object> expectedMap = new HashMap<>(Map.of(
                 "string_set", Map.of("type", "set", "value", new ArrayList<>()),
@@ -101,7 +101,7 @@ public class MapSerializerTest {
     }
 
     @Test
-    public void test_serializer_set() throws JsonProcessingException {
+    void test_serializer_set() throws JsonProcessingException {
         HashMap<String, Object> mapToSerialize = new HashMap<>(Map.of("string_set", Sets.newLinkedHashSet(Utils.newArrayList("value2", "value1")), "tags", Sets.newLinkedHashSet(Utils.newArrayList(uuid1, uuid2))));
         String jsonStr = objectMapper.writeValueAsString(mapToSerialize);
         HashMap<String, Object> expectedMap = new HashMap<>(Map.of(
@@ -111,7 +111,7 @@ public class MapSerializerTest {
     }
 
     @Test
-    public void test_serializer_setWithNull() throws JsonProcessingException {
+    void test_serializer_setWithNull() throws JsonProcessingException {
         assertJsonStrEquals(objectMapper.writeValueAsString(
                         new HashMap<>(Map.of("string_set", Sets.newLinkedHashSet(Utils.newArrayList("value1", null, "value2")), "tags", Sets.newLinkedHashSet(Utils.newArrayList(uuid1, null, uuid2))))),
                 new HashMap<>(Map.of(

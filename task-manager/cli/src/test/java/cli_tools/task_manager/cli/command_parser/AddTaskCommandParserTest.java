@@ -21,14 +21,14 @@ public class AddTaskCommandParserTest {
     private final TaskManagerContext context = new TaskManagerContext();
 
     @Test
-    public void test_parse_noArgs() throws CommandParserException {
+    void test_parse_noArgs() throws CommandParserException {
         AddTaskCommand command = parse(getArgList());
         assertEquals(command.getName(), "");
         assertEquals(command.getModifyPropertyArgs().size(), 0);
     }
 
     @Test
-    public void test_parse_onePositionalArg() throws CommandParserException {
+    void test_parse_onePositionalArg() throws CommandParserException {
         AddTaskCommand command = parse(getArgList("task"));
         assertEquals(command.getName(), "task");
         assertEquals(command.getModifyPropertyArgs().size(), 0);
@@ -39,49 +39,49 @@ public class AddTaskCommandParserTest {
     }
 
     @Test
-    public void test_parse_oneEmptyPositionalArg() throws CommandParserException {
+    void test_parse_oneEmptyPositionalArg() throws CommandParserException {
         AddTaskCommand command = parse(getArgList(""));
         assertEquals(command.getName(), "");
         assertEquals(command.getModifyPropertyArgs().size(), 0);
     }
 
     @Test
-    public void test_parse_multiplePositionalArgs() throws CommandParserException {
+    void test_parse_multiplePositionalArgs() throws CommandParserException {
         AddTaskCommand command = parse(getArgList("my", "simple", "task"));
         assertEquals(command.getName(), "my simple task");
         assertEquals(command.getModifyPropertyArgs().size(), 0);
     }
 
     @Test
-    public void test_parse_multiplePositionalArgsWithWhitespace() throws CommandParserException {
+    void test_parse_multiplePositionalArgsWithWhitespace() throws CommandParserException {
         AddTaskCommand command = parse(getArgList("my ", "simple", " task"));
         assertEquals(command.getName(), "my  simple  task");
         assertEquals(command.getModifyPropertyArgs().size(), 0);
     }
 
     @Test
-    public void test_parse_onePropertyArg() throws CommandParserException {
+    void test_parse_onePropertyArg() throws CommandParserException {
         AddTaskCommand command = parse(getArgList(List.of("task"), List.of(new PropertyArgument(Affinity.POSITIVE, "prop", "pred", List.of("value")))));
         assertEquals(command.getName(), "task");
         assertEquals(command.getModifyPropertyArgs(), List.of(new PropertyArgument(Affinity.POSITIVE, "prop", "pred", List.of("value"))));
     }
 
     @Test
-    public void test_parse_onePropertyArgWithoutName() throws CommandParserException {
+    void test_parse_onePropertyArgWithoutName() throws CommandParserException {
         AddTaskCommand command = parse(getArgList(List.of(), List.of(new PropertyArgument(Affinity.NEUTRAL, "prop", null, List.of("value")))));
         assertEquals(command.getName(), "");
         assertEquals(command.getModifyPropertyArgs(), List.of(new PropertyArgument(Affinity.NEUTRAL, "prop", null, List.of("value"))));
     }
 
     @Test
-    public void test_parse_onePropertyArgWithMultipleValues() throws CommandParserException {
+    void test_parse_onePropertyArgWithMultipleValues() throws CommandParserException {
         AddTaskCommand command = parse(getArgList(List.of("task"), List.of(new PropertyArgument(Affinity.NEUTRAL, "prop", null, List.of("value1", "value2", "value3")))));
         assertEquals(command.getName(), "task");
         assertEquals(command.getModifyPropertyArgs(), List.of(new PropertyArgument(Affinity.NEUTRAL, "prop", null, List.of("value1", "value2", "value3"))));
     }
 
     @Test
-    public void test_parse_complex() throws CommandParserException {
+    void test_parse_complex() throws CommandParserException {
         AddTaskCommand command = parse(
                 getArgList(
                         List.of(

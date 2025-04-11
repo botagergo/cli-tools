@@ -37,18 +37,18 @@ public class PropertyManagerTest {
     }
 
     @BeforeClass
-    public void initMocks() {
+    void initMocks() {
         MockitoAnnotations.openMocks(this);
     }
 
     @BeforeMethod
-    public void clear() {
+    void clear() {
         Mockito.reset(propertyOwner);
         propertyManager.getPropertyDescriptorCollection().clear();
     }
 
     @Test
-    public void test_getProperty_notFound() throws IOException {
+    void test_getProperty_notFound() throws IOException {
         try {
             propertyManager.getProperty(propertyOwner, "test");
         } catch (PropertyException e) {
@@ -60,7 +60,7 @@ public class PropertyManagerTest {
     }
 
     @Test
-    public void test_getProperty() throws PropertyException, IOException {
+    void test_getProperty() throws PropertyException, IOException {
         initPropertyDescriptorsWithoutDefaults();
 
         HashMap<String, Object> propertyMap = new HashMap<>();
@@ -94,7 +94,7 @@ public class PropertyManagerTest {
     }
 
     @Test
-    public void test_getProperty_defaultExists() throws PropertyException, IOException {
+    void test_getProperty_defaultExists() throws PropertyException, IOException {
         initPropertyDescriptorsWithDefaults();
 
         HashMap<String, Object> propertyMap = new HashMap<>();
@@ -128,7 +128,7 @@ public class PropertyManagerTest {
     }
 
     @Test
-    public void test_setProperty() throws IOException, PropertyException {
+    void test_setProperty() throws IOException, PropertyException {
         initPropertyDescriptorsWithoutDefaults();
 
         PropertyOwner propertyOwner = new PropertyOwnerImpl();
@@ -138,7 +138,7 @@ public class PropertyManagerTest {
     }
 
     @Test
-    public void test_addPropertyValues_list() throws IOException, PropertyException {
+    void test_addPropertyValues_list() throws IOException, PropertyException {
         initPropertyDescriptorsWithoutDefaults();
 
         PropertyOwner propertyOwner = new PropertyOwnerImpl();
@@ -149,7 +149,7 @@ public class PropertyManagerTest {
     }
 
     @Test
-    public void test_addPropertyValues_listWithNulls() throws IOException, PropertyException {
+    void test_addPropertyValues_listWithNulls() throws IOException, PropertyException {
         initPropertyDescriptorsWithoutDefaults();
 
         PropertyOwner propertyOwner = new PropertyOwnerImpl();
@@ -160,7 +160,7 @@ public class PropertyManagerTest {
     }
 
     @Test
-    public void test_addPropertyValues_emptyList() throws IOException, PropertyException {
+    void test_addPropertyValues_emptyList() throws IOException, PropertyException {
         initPropertyDescriptorsWithoutDefaults();
 
         PropertyOwner propertyOwner = new PropertyOwnerImpl();
@@ -171,7 +171,7 @@ public class PropertyManagerTest {
     }
 
     @Test
-    public void test_addPropertyValues_list_toEmpty() throws IOException, PropertyException {
+    void test_addPropertyValues_list_toEmpty() throws IOException, PropertyException {
         initPropertyDescriptorsWithoutDefaults();
 
         PropertyOwner propertyOwner = new PropertyOwnerImpl();
@@ -182,7 +182,7 @@ public class PropertyManagerTest {
     }
 
     @Test
-    public void test_addPropertyValues_nullList() throws IOException, PropertyException {
+    void test_addPropertyValues_nullList() throws IOException, PropertyException {
         initPropertyDescriptorsWithoutDefaults();
 
         PropertyOwner propertyOwner = new PropertyOwnerImpl();
@@ -193,7 +193,7 @@ public class PropertyManagerTest {
     }
 
     @Test
-    public void test_addPropertyValues_list_toNull() throws IOException, PropertyException {
+    void test_addPropertyValues_list_toNull() throws IOException, PropertyException {
         initPropertyDescriptorsWithoutDefaults();
 
         PropertyOwner propertyOwner = new PropertyOwnerImpl();
@@ -204,7 +204,7 @@ public class PropertyManagerTest {
     }
 
     @Test
-    public void test_addPropertyValues_set() throws IOException, PropertyException {
+    void test_addPropertyValues_set() throws IOException, PropertyException {
         initPropertyDescriptorsWithoutDefaults();
 
         PropertyOwner propertyOwner = new PropertyOwnerImpl();
@@ -215,7 +215,7 @@ public class PropertyManagerTest {
     }
 
     @Test
-    public void test_addPropertyValues_setWithNull() throws IOException, PropertyException {
+    void test_addPropertyValues_setWithNull() throws IOException, PropertyException {
         initPropertyDescriptorsWithoutDefaults();
 
         PropertyOwner propertyOwner = new PropertyOwnerImpl();
@@ -226,7 +226,7 @@ public class PropertyManagerTest {
     }
 
     @Test
-    public void test_addPropertyValues_emptySet() throws IOException, PropertyException {
+    void test_addPropertyValues_emptySet() throws IOException, PropertyException {
         initPropertyDescriptorsWithoutDefaults();
 
         PropertyOwner propertyOwner = new PropertyOwnerImpl();
@@ -237,7 +237,7 @@ public class PropertyManagerTest {
     }
 
     @Test
-    public void test_addPropertyValues_set_toEmpty() throws IOException, PropertyException {
+    void test_addPropertyValues_set_toEmpty() throws IOException, PropertyException {
         initPropertyDescriptorsWithoutDefaults();
 
         PropertyOwner propertyOwner = new PropertyOwnerImpl();
@@ -248,7 +248,7 @@ public class PropertyManagerTest {
     }
 
     @Test
-    public void test_addPropertyValues_nullSet() throws IOException, PropertyException {
+    void test_addPropertyValues_nullSet() throws IOException, PropertyException {
         initPropertyDescriptorsWithoutDefaults();
 
         PropertyOwner propertyOwner = new PropertyOwnerImpl();
@@ -259,7 +259,7 @@ public class PropertyManagerTest {
     }
 
     @Test
-    public void test_addPropertyValues_set_toNull() throws IOException, PropertyException {
+    void test_addPropertyValues_set_toNull() throws IOException, PropertyException {
         initPropertyDescriptorsWithoutDefaults();
 
         PropertyOwner propertyOwner = new PropertyOwnerImpl();
@@ -270,7 +270,7 @@ public class PropertyManagerTest {
     }
 
     @Test
-    public void test_addPropertyValues_notACollection() throws IOException {
+    void test_addPropertyValues_notACollection() throws IOException {
         initPropertyDescriptorsWithoutDefaults();
 
         try {
@@ -283,7 +283,7 @@ public class PropertyManagerTest {
     }
 
     @Test
-    public void test_removePropertyValues_list() throws IOException, PropertyException {
+    void test_removePropertyValues_list() throws IOException, PropertyException {
         initPropertyDescriptorsWithoutDefaults();
 
         PropertyOwner propertyOwner = new PropertyOwnerImpl();
@@ -294,7 +294,7 @@ public class PropertyManagerTest {
     }
 
     @Test
-    public void test_removePropertyValues_listWithNull() throws IOException, PropertyException {
+    void test_removePropertyValues_listWithNull() throws IOException, PropertyException {
         initPropertyDescriptorsWithoutDefaults();
 
         PropertyOwner propertyOwner = new PropertyOwnerImpl();
@@ -305,7 +305,7 @@ public class PropertyManagerTest {
     }
 
     @Test
-    public void test_removePropertyValues_list_fromEmpty() throws IOException, PropertyException {
+    void test_removePropertyValues_list_fromEmpty() throws IOException, PropertyException {
         initPropertyDescriptorsWithoutDefaults();
 
         PropertyOwner propertyOwner = new PropertyOwnerImpl();
@@ -316,7 +316,7 @@ public class PropertyManagerTest {
     }
 
     @Test
-    public void test_removePropertyValues_emptyList() throws IOException, PropertyException {
+    void test_removePropertyValues_emptyList() throws IOException, PropertyException {
         initPropertyDescriptorsWithoutDefaults();
 
         PropertyOwner propertyOwner = new PropertyOwnerImpl();
@@ -327,7 +327,7 @@ public class PropertyManagerTest {
     }
 
     @Test
-    public void test_removePropertyValues_list_fromNull() throws IOException, PropertyException {
+    void test_removePropertyValues_list_fromNull() throws IOException, PropertyException {
         initPropertyDescriptorsWithoutDefaults();
 
         PropertyOwner propertyOwner = new PropertyOwnerImpl();
@@ -338,7 +338,7 @@ public class PropertyManagerTest {
     }
 
     @Test
-    public void test_removePropertyValues_nullList() throws IOException, PropertyException {
+    void test_removePropertyValues_nullList() throws IOException, PropertyException {
         initPropertyDescriptorsWithoutDefaults();
 
         PropertyOwner propertyOwner = new PropertyOwnerImpl();
@@ -349,7 +349,7 @@ public class PropertyManagerTest {
     }
 
     @Test
-    public void test_removePropertyValues_list_notExist() throws IOException, PropertyException {
+    void test_removePropertyValues_list_notExist() throws IOException, PropertyException {
         initPropertyDescriptorsWithoutDefaults();
 
         PropertyOwner propertyOwner = new PropertyOwnerImpl();
@@ -360,7 +360,7 @@ public class PropertyManagerTest {
     }
 
     @Test
-    public void test_removePropertyValues_list_oneNotExist() throws IOException, PropertyException {
+    void test_removePropertyValues_list_oneNotExist() throws IOException, PropertyException {
         initPropertyDescriptorsWithoutDefaults();
 
         PropertyOwner propertyOwner = new PropertyOwnerImpl();
@@ -371,7 +371,7 @@ public class PropertyManagerTest {
     }
 
     @Test
-    public void test_removePropertyValues_notACollection() throws IOException {
+    void test_removePropertyValues_notACollection() throws IOException {
         initPropertyDescriptorsWithoutDefaults();
 
         try {
@@ -384,7 +384,7 @@ public class PropertyManagerTest {
     }
 
     @Test
-    public void test_removeProperty_set() throws IOException, PropertyException {
+    void test_removeProperty_set() throws IOException, PropertyException {
         initPropertyDescriptorsWithoutDefaults();
 
         PropertyOwner propertyOwner = new PropertyOwnerImpl();
@@ -395,7 +395,7 @@ public class PropertyManagerTest {
     }
 
     @Test
-    public void test_removeProperty_setWithNull() throws IOException, PropertyException {
+    void test_removeProperty_setWithNull() throws IOException, PropertyException {
         initPropertyDescriptorsWithoutDefaults();
 
         PropertyOwner propertyOwner = new PropertyOwnerImpl();
@@ -406,7 +406,7 @@ public class PropertyManagerTest {
     }
 
     @Test
-    public void test_removeProperty_set_fromEmpty() throws IOException, PropertyException {
+    void test_removeProperty_set_fromEmpty() throws IOException, PropertyException {
         initPropertyDescriptorsWithoutDefaults();
 
         PropertyOwner propertyOwner = new PropertyOwnerImpl();
@@ -417,7 +417,7 @@ public class PropertyManagerTest {
     }
 
     @Test
-    public void test_removeProperty_emptySet() throws IOException, PropertyException {
+    void test_removeProperty_emptySet() throws IOException, PropertyException {
         initPropertyDescriptorsWithoutDefaults();
 
         PropertyOwner propertyOwner = new PropertyOwnerImpl();
@@ -428,7 +428,7 @@ public class PropertyManagerTest {
     }
 
     @Test
-    public void test_removeProperty_set_fromNull() throws IOException, PropertyException {
+    void test_removeProperty_set_fromNull() throws IOException, PropertyException {
         initPropertyDescriptorsWithoutDefaults();
 
         PropertyOwner propertyOwner = new PropertyOwnerImpl();
@@ -439,7 +439,7 @@ public class PropertyManagerTest {
     }
 
     @Test
-    public void test_removeProperty_nullSet() throws IOException, PropertyException {
+    void test_removeProperty_nullSet() throws IOException, PropertyException {
         initPropertyDescriptorsWithoutDefaults();
 
         PropertyOwner propertyOwner = new PropertyOwnerImpl();
@@ -450,7 +450,7 @@ public class PropertyManagerTest {
     }
 
     @Test
-    public void test_removeProperty_set_notExist() throws IOException, PropertyException {
+    void test_removeProperty_set_notExist() throws IOException, PropertyException {
         initPropertyDescriptorsWithoutDefaults();
 
         PropertyOwner propertyOwner = new PropertyOwnerImpl();
@@ -461,7 +461,7 @@ public class PropertyManagerTest {
     }
 
     @Test
-    public void test_removeProperty_set_oneNotExist() throws IOException, PropertyException {
+    void test_removeProperty_set_oneNotExist() throws IOException, PropertyException {
         initPropertyDescriptorsWithoutDefaults();
 
         PropertyOwner propertyOwner = new PropertyOwnerImpl();
