@@ -15,8 +15,8 @@ import cli_tools.common.temp_id_mapping.TempIDManager;
 import cli_tools.common.util.RoundRobinUUIDGenerator;
 import cli_tools.common.util.UUIDGenerator;
 import cli_tools.common.util.Utils;
-import cli_tools.task_manager.task.Task;
 import cli_tools.task_manager.task.PropertyOwnerTree;
+import cli_tools.task_manager.task.Task;
 import cli_tools.task_manager.task.repository.SimpleTaskRepository;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -126,47 +126,61 @@ public class TaskServiceImplTest {
     public void test_getTasks_filterCriterionInfo_contains() throws IOException, PropertyException, PropertyConverterException, TaskServiceException {
         List<Task> tasks = taskService.getTasks(
                 null, null,
-                new FilterCriterionInfo(
-                        "test", FilterCriterionInfo.Type.PROPERTY,
-                        "name", null,
-                        Predicate.CONTAINS, List.of("other")
-                ),
+                FilterCriterionInfo.builder()
+                        .name("test")
+                        .type(FilterCriterionInfo.Type.PROPERTY)
+                        .propertyName("name")
+                        .predicate(Predicate.CONTAINS)
+                        .operands(List.of("other"))
+                        .build(),
                 null, false
         );
         assertEquals(tasks.size(), 2);
         assertEquals(tasks.get(0).getProperties().get("name"), "other task");
         assertEquals(tasks.get(1).getProperties().get("name"), "yet another task");
 
-        assertThrows(TaskServiceException.class, () -> taskService.getTasks(null, null,
-                new FilterCriterionInfo(
-                        "test", FilterCriterionInfo.Type.PROPERTY,
-                        "uuid", null,
-                        Predicate.CONTAINS, List.of(uuid2.toString())
-                ), null, false
+        assertThrows(IllegalArgumentException.class, () -> taskService.getTasks(null, null,
+                FilterCriterionInfo.builder()
+                        .name("test")
+                        .type(FilterCriterionInfo.Type.PROPERTY)
+                        .propertyName("uuid")
+                        .predicate(Predicate.CONTAINS)
+                        .operands(List.of(uuid2.toString()))
+                        .build(),
+                null, false
         ));
 
-        assertThrows(TaskServiceException.class, () -> taskService.getTasks(null, null,
-                new FilterCriterionInfo(
-                        "test", FilterCriterionInfo.Type.PROPERTY,
-                        "name", null,
-                        Predicate.CONTAINS, List.of()
-                ), null, false
+        assertThrows(IllegalArgumentException.class, () -> taskService.getTasks(null, null,
+                FilterCriterionInfo.builder()
+                        .name("test")
+                        .type(FilterCriterionInfo.Type.PROPERTY)
+                        .propertyName("name")
+                        .predicate(Predicate.CONTAINS)
+                        .operands(List.of())
+                        .build(),
+                null, false
         ));
 
-        assertThrows(TaskServiceException.class, () -> taskService.getTasks(null, null,
-                new FilterCriterionInfo(
-                        "test", FilterCriterionInfo.Type.PROPERTY,
-                        "name", null,
-                        Predicate.CONTAINS, List.of("str1", "str2")
-                ), null, false
+        assertThrows(IllegalArgumentException.class, () -> taskService.getTasks(null, null,
+                FilterCriterionInfo.builder()
+                        .name("test")
+                        .type(FilterCriterionInfo.Type.PROPERTY)
+                        .propertyName("name")
+                        .predicate(Predicate.CONTAINS)
+                        .operands(List.of("str1", "str2"))
+                        .build(),
+                null, false
         ));
 
         tasks = taskService.getTasks(null, null,
-                new FilterCriterionInfo(
-                        "test", FilterCriterionInfo.Type.PROPERTY,
-                        "tags", null,
-                        Predicate.CONTAINS, List.of("tag1", "tag2")
-                ), null, false
+                FilterCriterionInfo.builder()
+                        .name("test")
+                        .type(FilterCriterionInfo.Type.PROPERTY)
+                        .propertyName("tags")
+                        .predicate(Predicate.CONTAINS)
+                        .operands(List.of("tag1", "tag2"))
+                        .build(),
+                null, false
         );
         assertEquals(tasks.size(), 2);
         assertEquals(tasks.get(0).getProperties().get("name"), "other task");
@@ -176,87 +190,114 @@ public class TaskServiceImplTest {
     @Test
     public void test_getTasks_filterCriterionInfo_equals() throws IOException, PropertyException, PropertyConverterException, TaskServiceException {
         List<Task> tasks = taskService.getTasks(null, null,
-                new FilterCriterionInfo(
-                        "test", FilterCriterionInfo.Type.PROPERTY,
-                        "name", null,
-                        Predicate.EQUALS, List.of("other task")
-                ), null, false
+                FilterCriterionInfo.builder()
+                        .name("test")
+                        .type(FilterCriterionInfo.Type.PROPERTY)
+                        .propertyName("name")
+                        .predicate(Predicate.EQUALS)
+                        .operands(List.of("other task"))
+                        .build(),
+                null, false
         );
         assertEquals(tasks.size(), 1);
         assertEquals(tasks.get(0).getProperties().get("name"), "other task");
 
         tasks = taskService.getTasks(null, null,
-                new FilterCriterionInfo(
-                        "test", FilterCriterionInfo.Type.PROPERTY,
-                        "tags", null,
-                        Predicate.EQUALS, List.of("tag1", "tag3")
-                ), null, false
+                FilterCriterionInfo.builder()
+                        .name("test")
+                        .type(FilterCriterionInfo.Type.PROPERTY)
+                        .propertyName("tags")
+                        .predicate(Predicate.EQUALS)
+                        .operands(List.of("tag1", "tag3"))
+                        .build(),
+                null, false
         );
         assertEquals(tasks.size(), 1);
         assertEquals(tasks.get(0).getProperties().get("name"), "test task");
 
         tasks = taskService.getTasks(null, null,
-                new FilterCriterionInfo(
-                        "test", FilterCriterionInfo.Type.PROPERTY,
-                        "assignees", null,
-                        Predicate.EQUALS, List.of("assignee1", "assignee2")
-                ), null, false
+                FilterCriterionInfo.builder()
+                        .name("test")
+                        .type(FilterCriterionInfo.Type.PROPERTY)
+                        .propertyName("assignees")
+                        .predicate(Predicate.EQUALS)
+                        .operands(List.of("assignee1", "assignee2"))
+                        .build(),
+                null, false
         );
         assertEquals(tasks.size(), 1);
         assertEquals(tasks.get(0).getProperties().get("name"), "test task");
 
-        assertThrows(TaskServiceException.class, () -> taskService.getTasks(null, null,
-                new FilterCriterionInfo(
-                        "test", FilterCriterionInfo.Type.PROPERTY,
-                        "name", null,
-                        Predicate.EQUALS, List.of("task2", "task1")
-                ), null, false
+        assertThrows(IllegalArgumentException.class, () -> taskService.getTasks(null, null,
+                FilterCriterionInfo.builder()
+                        .name("test")
+                        .type(FilterCriterionInfo.Type.PROPERTY)
+                        .propertyName("name")
+                        .predicate(Predicate.EQUALS)
+                        .operands(List.of("task2", "task1"))
+                        .build(),
+                null, false
         ));
 
-        assertThrows(TaskServiceException.class, () -> taskService.getTasks(null, null,
-                new FilterCriterionInfo(
-                        "test", FilterCriterionInfo.Type.PROPERTY,
-                        "name", null,
-                        Predicate.EQUALS, List.of()
-                ), null, false
+        assertThrows(IllegalArgumentException.class, () -> taskService.getTasks(null, null,
+                FilterCriterionInfo.builder()
+                        .name("test")
+                        .type(FilterCriterionInfo.Type.PROPERTY)
+                        .propertyName("name")
+                        .predicate(Predicate.EQUALS)
+                        .operands(List.of())
+                        .build(),
+                null, false
         ));
     }
 
     @Test
     public void test_getTasks_filterCriterionInfo_compare_invalid() {
-        assertThrows(TaskServiceException.class, () -> taskService.getTasks(null, null,
-                new FilterCriterionInfo(
-                        "test", FilterCriterionInfo.Type.PROPERTY,
-                        "uuid", null,
-                        Predicate.LESS, List.of(uuid2.toString())
-                ), null, false
+        assertThrows(IllegalArgumentException.class, () -> taskService.getTasks(null, null,
+                FilterCriterionInfo.builder()
+                        .name("test")
+                        .type(FilterCriterionInfo.Type.PROPERTY)
+                        .propertyName("uuid")
+                        .predicate(Predicate.LESS)
+                        .operands(List.of(uuid2.toString()))
+                        .build(),
+                null, false
         ));
 
-        assertThrows(TaskServiceException.class, () -> taskService.getTasks(null, null,
-                new FilterCriterionInfo(
-                        "test", FilterCriterionInfo.Type.PROPERTY,
-                        "name", null,
-                        Predicate.LESS, List.of()
-                ), null, false
+        assertThrows(IllegalArgumentException.class, () -> taskService.getTasks(null, null,
+                FilterCriterionInfo.builder()
+                        .name("test")
+                        .type(FilterCriterionInfo.Type.PROPERTY)
+                        .propertyName("name")
+                        .predicate(Predicate.LESS)
+                        .operands(List.of())
+                        .build(),
+                null, false
         ));
 
-        assertThrows(TaskServiceException.class, () -> taskService.getTasks(null, null,
-                new FilterCriterionInfo(
-                        "test", FilterCriterionInfo.Type.PROPERTY,
-                        "name", null,
-                        Predicate.LESS, List.of("str1", "str2")
-                ), null, false
+        assertThrows(IllegalArgumentException.class, () -> taskService.getTasks(null, null,
+                FilterCriterionInfo.builder()
+                        .name("test")
+                        .type(FilterCriterionInfo.Type.PROPERTY)
+                        .propertyName("name")
+                        .predicate(Predicate.LESS)
+                        .operands(List.of("str1", "str2"))
+                        .build(),
+                null, false
         ));
     }
 
     @Test
     public void test_getTasks_filterCriterionInfo_less() throws IOException, PropertyException, PropertyConverterException, TaskServiceException {
         List<Task> tasks = taskService.getTasks(null, null,
-                new FilterCriterionInfo(
-                        "test", FilterCriterionInfo.Type.PROPERTY,
-                        "name", null,
-                        Predicate.LESS, List.of("test task")
-                ), null, false
+                FilterCriterionInfo.builder()
+                        .name("test")
+                        .type(FilterCriterionInfo.Type.PROPERTY)
+                        .propertyName("name")
+                        .predicate(Predicate.LESS)
+                        .operands(List.of("test task"))
+                        .build(),
+                null, false
         );
         assertEquals(tasks.size(), 1);
         assertEquals(tasks.get(0).getProperties().get("name"), "other task");
@@ -265,11 +306,14 @@ public class TaskServiceImplTest {
     @Test
     public void test_getTasks_filterCriterionInfo_lessEqual() throws IOException, PropertyException, PropertyConverterException, TaskServiceException {
         List<Task> tasks = taskService.getTasks(null, null,
-                new FilterCriterionInfo(
-                        "test", FilterCriterionInfo.Type.PROPERTY,
-                        "name", null,
-                        Predicate.LESS_EQUAL, List.of("test task")
-                ), null, false
+                FilterCriterionInfo.builder()
+                        .name("test")
+                        .type(FilterCriterionInfo.Type.PROPERTY)
+                        .propertyName("name")
+                        .predicate(Predicate.LESS_EQUAL)
+                        .operands(List.of("test task"))
+                        .build(),
+                null, false
         );
         assertEquals(tasks.size(), 2);
         assertEquals(tasks.get(0).getProperties().get("name"), "test task");
@@ -279,11 +323,14 @@ public class TaskServiceImplTest {
     @Test
     public void test_getTasks_filterCriterionInfo_greater() throws IOException, PropertyException, PropertyConverterException, TaskServiceException {
         List<Task> tasks = taskService.getTasks(null, null,
-                new FilterCriterionInfo(
-                        "test", FilterCriterionInfo.Type.PROPERTY,
-                        "name", null,
-                        Predicate.GREATER, List.of("test task")
-                ), null, false
+                FilterCriterionInfo.builder()
+                        .name("test")
+                        .type(FilterCriterionInfo.Type.PROPERTY)
+                        .propertyName("name")
+                        .predicate(Predicate.GREATER)
+                        .operands(List.of("test task"))
+                        .build(),
+                null, false
         );
         assertEquals(tasks.size(), 1);
         assertEquals(tasks.get(0).getProperties().get("name"), "yet another task");
@@ -292,11 +339,14 @@ public class TaskServiceImplTest {
     @Test
     public void test_getTasks_filterCriterionInfo_greaterEqual() throws IOException, PropertyException, PropertyConverterException, TaskServiceException {
         List<Task> tasks = taskService.getTasks(null, null,
-                new FilterCriterionInfo(
-                        "test", FilterCriterionInfo.Type.PROPERTY,
-                        "name", null,
-                        Predicate.GREATER_EQUAL, List.of("test task")
-                ), null, false
+                FilterCriterionInfo.builder()
+                        .name("test")
+                        .type(FilterCriterionInfo.Type.PROPERTY)
+                        .propertyName("name")
+                        .predicate(Predicate.GREATER_EQUAL)
+                        .operands(List.of("test task"))
+                        .build(),
+                null, false
         );
         assertEquals(tasks.size(), 2);
         assertEquals(tasks.get(0).getProperties().get("name"), "test task");
@@ -307,11 +357,13 @@ public class TaskServiceImplTest {
     public void test_getTasks_filterCriterionInfo_in() throws IOException, PropertyException, PropertyConverterException, TaskServiceException {
         List<Task> tasks = taskService.getTasks(
                 null, null,
-                new FilterCriterionInfo(
-                        "test", FilterCriterionInfo.Type.PROPERTY,
-                        "name", null,
-                        Predicate.IN, List.of("test task", "other task")
-                ),
+                FilterCriterionInfo.builder()
+                        .name("test")
+                        .type(FilterCriterionInfo.Type.PROPERTY)
+                        .propertyName("name")
+                        .predicate(Predicate.IN)
+                        .operands(List.of("test task", "other task"))
+                        .build(),
                 null, false
         );
         assertEquals(tasks.size(), 2);
@@ -323,11 +375,12 @@ public class TaskServiceImplTest {
     public void test_getTasks_filterCriterionInfo_null() throws IOException, PropertyException, PropertyConverterException, TaskServiceException {
         List<Task> tasks = taskService.getTasks(
                 null, null,
-                new FilterCriterionInfo(
-                        "test", FilterCriterionInfo.Type.PROPERTY,
-                        "assignees", null,
-                        Predicate.NULL, null
-                ),
+                FilterCriterionInfo.builder()
+                        .name("test")
+                        .type(FilterCriterionInfo.Type.PROPERTY)
+                        .propertyName("assignees")
+                        .predicate(Predicate.NULL)
+                        .build(),
                 null, false
         );
         assertEquals(tasks.size(), 2);
@@ -339,11 +392,12 @@ public class TaskServiceImplTest {
     public void test_getTasks_filterCriterionInfo_empty() throws IOException, PropertyException, PropertyConverterException, TaskServiceException {
         List<Task> tasks = taskService.getTasks(
                 null, null,
-                new FilterCriterionInfo(
-                        "test", FilterCriterionInfo.Type.PROPERTY,
-                        "assignees", null,
-                        Predicate.EMPTY, null
-                ),
+                FilterCriterionInfo.builder()
+                        .name("test")
+                        .type(FilterCriterionInfo.Type.PROPERTY)
+                        .propertyName("assignees")
+                        .predicate(Predicate.EMPTY)
+                        .build(),
                 null, false
         );
         assertEquals(tasks.size(), 2);
@@ -355,35 +409,47 @@ public class TaskServiceImplTest {
     public void test_getTasks_filterCriterionInfo_and() throws IOException, PropertyException, PropertyConverterException, TaskServiceException {
         List<Task> tasks = taskService.getTasks(
                 null, null,
-                new FilterCriterionInfo("test", FilterCriterionInfo.Type.AND, null, List.of(
-                        new FilterCriterionInfo(
-                                null, FilterCriterionInfo.Type.PROPERTY,
-                                "name", null,
-                                Predicate.IN, List.of("test task", "other task")
-                        ),
-                        new FilterCriterionInfo(
-                                null, FilterCriterionInfo.Type.PROPERTY,
-                                "tags", null,
-                                Predicate.CONTAINS, List.of("tag2")
-                        )
-                ), null, null), null, false);
+                FilterCriterionInfo.builder()
+                        .name("test")
+                        .type(FilterCriterionInfo.Type.AND)
+                        .children(List.of(
+                                FilterCriterionInfo.builder()
+                                        .name("test")
+                                        .type(FilterCriterionInfo.Type.PROPERTY)
+                                        .propertyName("name")
+                                        .predicate(Predicate.IN)
+                                        .operands(List.of("test task", "other task"))
+                                        .build(),
+                                FilterCriterionInfo.builder()
+                                        .name("test")
+                                        .type(FilterCriterionInfo.Type.PROPERTY)
+                                        .propertyName("tags")
+                                        .predicate(Predicate.CONTAINS)
+                                        .operands(List.of("tag2")).build())).build(),
+                null, false);
         assertEquals(tasks.size(), 1);
         assertEquals(tasks.get(0).getProperties().get("name"), "other task");
 
         tasks = taskService.getTasks(
                 null, null,
-                new FilterCriterionInfo("test", FilterCriterionInfo.Type.OR, null, List.of(
-                        new FilterCriterionInfo(
-                                null, FilterCriterionInfo.Type.PROPERTY,
-                                "name", null,
-                                Predicate.EQUALS, List.of("test task")
-                        ),
-                        new FilterCriterionInfo(
-                                null, FilterCriterionInfo.Type.PROPERTY,
-                                "tags", null,
-                                Predicate.CONTAINS, List.of("tag3")
-                        )
-                ), null, null), null, false);
+                FilterCriterionInfo.builder()
+                        .name("test")
+                        .type(FilterCriterionInfo.Type.OR)
+                        .children(List.of(
+                                FilterCriterionInfo.builder()
+                                        .name("test")
+                                        .type(FilterCriterionInfo.Type.PROPERTY)
+                                        .propertyName("name")
+                                        .predicate(Predicate.EQUALS)
+                                        .operands(List.of("test task"))
+                                        .build(),
+                                FilterCriterionInfo.builder()
+                                        .name("test")
+                                        .type(FilterCriterionInfo.Type.PROPERTY)
+                                        .propertyName("tags")
+                                        .predicate(Predicate.CONTAINS)
+                                        .operands(List.of("tag3")).build())).build(),
+                null, false);
         assertEquals(tasks.size(), 2);
         assertEquals(tasks.get(0).getProperties().get("name"), "test task");
         assertEquals(tasks.get(1).getProperties().get("name"), "other task");
@@ -393,12 +459,15 @@ public class TaskServiceImplTest {
     public void test_getTasks_filterCriterionInfo_not() throws IOException, PropertyException, PropertyConverterException, TaskServiceException {
         List<Task> tasks = taskService.getTasks(
                 null, null,
-                new FilterCriterionInfo("test", FilterCriterionInfo.Type.NOT, null, List.of(
-                        new FilterCriterionInfo(
-                                null, FilterCriterionInfo.Type.PROPERTY,
-                                "name", null,
-                                Predicate.EQUALS, List.of("yet another task")
-                        )), null, null), null, false);
+                FilterCriterionInfo.builder()
+                        .type(FilterCriterionInfo.Type.NOT)
+                        .children(List.of(FilterCriterionInfo.builder()
+                                .type(FilterCriterionInfo.Type.PROPERTY)
+                                .propertyName("name")
+                                .predicate(Predicate.EQUALS)
+                                .operands(List.of("yet another task"))
+                                .build())).build(),
+                null, false);
         assertEquals(tasks.size(), 2);
         assertEquals(tasks.get(0).getProperties().get("name"), "test task");
         assertEquals(tasks.get(1).getProperties().get("name"), "other task");
@@ -444,11 +513,13 @@ public class TaskServiceImplTest {
                         new FilterPropertySpec(propertyManager.getPropertyDescriptorCollection().get("done"), List.of(true), false, Predicate.EQUALS)
                 ),
                 new SortingInfo(List.of(new SortingCriterion("name", false))),
-                new FilterCriterionInfo(
-                        "test", FilterCriterionInfo.Type.PROPERTY,
-                        "name", null,
-                        Predicate.CONTAINS, List.of("task")
-                ),
+                FilterCriterionInfo.builder()
+                        .name("test")
+                        .type(FilterCriterionInfo.Type.PROPERTY)
+                        .propertyName("name")
+                        .predicate(Predicate.CONTAINS)
+                        .operands(List.of("task"))
+                                .build(),
                 List.of(uuid1, uuid3, uuid4, uuid2), true
         );
         assertEquals(tasks.size(), 2);

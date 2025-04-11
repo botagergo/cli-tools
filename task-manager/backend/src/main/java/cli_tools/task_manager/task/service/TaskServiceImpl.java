@@ -1,15 +1,12 @@
 package cli_tools.task_manager.task.service;
 
 import cli_tools.common.core.data.FilterCriterionInfo;
-import cli_tools.common.core.data.Predicate;
 import cli_tools.common.core.data.SortingInfo;
 import cli_tools.common.core.data.property.FilterPropertySpec;
 import cli_tools.common.filter.*;
-import cli_tools.common.property_comparator.PropertyComparator;
 import cli_tools.common.property_comparator.PropertyNotComparableException;
 import cli_tools.common.property_converter.PropertyConverter;
 import cli_tools.common.property_converter.PropertyConverterException;
-import cli_tools.common.property_lib.Property;
 import cli_tools.common.property_lib.PropertyDescriptor;
 import cli_tools.common.property_lib.PropertyException;
 import cli_tools.common.property_lib.PropertyManager;
@@ -25,7 +22,6 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
-import org.apache.commons.lang3.NotImplementedException;
 
 import java.io.IOException;
 import java.util.*;
@@ -237,17 +233,12 @@ public class TaskServiceImpl implements TaskService {
         }
 
         if (filterCriterionInfo != null) {
-            finalFilterCriteria.add(createFilterCriterion(filterCriterionInfo, propertyManager));
+            finalFilterCriteria.add(FilterCriterion.from(filterCriterionInfo, propertyManager, propertyConverter));
         }
 
         if (filterPropertySpecs != null) {
             for (FilterPropertySpec filterPropertySpec : filterPropertySpecs) {
-                FilterCriterion filterCriterion = getFilterCriterion(filterPropertySpec);
-
-                if (filterPropertySpec.negate()) {
-                    filterCriterion = new NotFilterCriterion(filterCriterion);
-                }
-
+                FilterCriterion filterCriterion = FilterCriterion.from(filterPropertySpec);
                 finalFilterCriteria.add(filterCriterion);
             }
         }
@@ -279,112 +270,6 @@ public class TaskServiceImpl implements TaskService {
     public void deleteAllTasks() throws IOException {
         taskRepository.deleteAll();
         tempIdManager.deleteAll();
-    }
-
-    private FilterCriterion getFilterCriterion(FilterPropertySpec filterPropertySpec) throws TaskServiceException {
-        List<Object> operand = filterPropertySpec.operand();
-        return createFilterCriterion(filterPropertySpec.propertyDescriptor(), filterPropertySpec.predicate(), operand);
-    }
-
-    private FilterCriterion createFilterCriterion(
-            PropertyDescriptor propertyDescriptor, Predicate predicate, List<Object> operand
-    ) throws TaskServiceException {
-        String propertyName = propertyDescriptor.name();
-
-        if (predicate == null || predicate.equals(Predicate.EQUALS)) {
-            Object finalOperand;
-            if (propertyDescriptor.isList()) {
-                finalOperand = operand;
-            } else if (propertyDescriptor.isSet()) {
-                finalOperand = Set.copyOf(operand);
-            } else if (operand.size() != 1) {
-                throw new TaskServiceException("one argument expected for predicate 'equals' of property '" + propertyName + "'");
-            } else {
-                finalOperand = operand.get(0);
-            }
-            return new EqualFilterCriterion(propertyName, finalOperand);
-        } else if (predicate == Predicate.LESS || predicate == Predicate.LESS_EQUAL ||
-                predicate == Predicate.GREATER || predicate == Predicate.GREATER_EQUAL) {
-            if (!PropertyComparator.isComparable(propertyDescriptor)) {
-                throw new TaskServiceException("predicate: " + predicate + " is incompatible with property '" + propertyName + "'");
-            } else if (operand.size() != 1) {
-                throw new TaskServiceException("one argument expected for predicate '" + predicate + "' of property '" + propertyName + "'");
-            }
-            Property property = Property.fromUnchecked(propertyDescriptor, operand.get(0));
-            switch (predicate) {
-                case LESS -> {
-                    return new LessFilterCriterion(propertyName, property, new PropertyComparator(true));
-                }
-                case LESS_EQUAL -> {
-                    return new LessEqualFilterCriterion(propertyName, property, new PropertyComparator(true));
-                }
-                case GREATER -> {
-                    return new GreaterFilterCriterion(propertyName, property, new PropertyComparator(false));
-                }
-                case GREATER_EQUAL -> {
-                    return new GreaterEqualFilterCriterion(propertyName, property, new PropertyComparator(false));
-                }
-            }
-        }
-
-        switch (predicate) {
-            case CONTAINS -> {
-                if (propertyDescriptor.isCollection()) {
-                    return new CollectionContainsFilterCriterion(propertyName, operand);
-                } else if (propertyDescriptor.type() == PropertyDescriptor.Type.String) {
-                    if (operand.size() != 1) {
-                        throw new TaskServiceException("one argument expected for predicate 'contains' of property '" + propertyName + "'");
-                    }
-                    return new ContainsCaseInsensitiveFilterCriterion(propertyName, (String) operand.get(0));
-                } else {
-                    throw new TaskServiceException("predicate 'contains' is incompatible with property '" + propertyName + "'");
-                }
-            }
-            case IN -> {
-                return new InFilterCriterion(propertyName, operand);
-            }
-            case NULL -> {
-                return new NullFilterCriterion(propertyName);
-            }
-            case EMPTY -> {
-                return new EmptyFilterCriterion(propertyName);
-            }
-        }
-
-        throw new RuntimeException("predicate '" + predicate + "' not implemented");
-    }
-
-    private FilterCriterion createFilterCriterion(@NonNull FilterCriterionInfo filterCriterionInfo, @NonNull PropertyManager propertyManager) throws PropertyException, IOException, PropertyConverterException, TaskServiceException {
-        switch (filterCriterionInfo.type()) {
-            case PROPERTY -> {
-                PropertyDescriptor propertyDescriptor = propertyManager.getPropertyDescriptor(filterCriterionInfo.propertyName());
-                List<Object> operand = null;
-                if (filterCriterionInfo.operands() != null) {
-                    operand = propertyConverter.convertProperty(propertyDescriptor, filterCriterionInfo.operands());
-                }
-                return createFilterCriterion(propertyDescriptor, filterCriterionInfo.predicate(), operand);
-            }
-            case AND -> {
-                ArrayList<FilterCriterion> filterCriteria = new ArrayList<>();
-                for (FilterCriterionInfo filterCriterionInfo_ : filterCriterionInfo.children()) {
-                    filterCriteria.add(createFilterCriterion(filterCriterionInfo_, propertyManager));
-                }
-                return new AndFilterCriterion(filterCriteria);
-            }
-            case OR -> {
-                ArrayList<FilterCriterion> filterCriteria = new ArrayList<>();
-                for (FilterCriterionInfo filterCriterionInfo_ : filterCriterionInfo.children()) {
-                    filterCriteria.add(createFilterCriterion(filterCriterionInfo_, propertyManager));
-                }
-                return new OrFilterCriterion(filterCriteria);
-            }
-            case NOT -> {
-                return new NotFilterCriterion(createFilterCriterion(
-                        filterCriterionInfo.children().get(0), propertyManager));
-            }
-            default ->
-                    throw new NotImplementedException(filterCriterionInfo.type() + " filter criterion is not yet supported");
-        }
     }
 
     private TaskRepository taskRepository;

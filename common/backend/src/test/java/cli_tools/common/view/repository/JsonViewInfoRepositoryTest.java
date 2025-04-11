@@ -38,7 +38,9 @@ public class JsonViewInfoRepositoryTest {
                                 {"type": "PROPERTY", "property":"priority", "predicate": "GREATER", "operands":["medium"]},
                                 {"type": "PROPERTY", "property":"priority", "predicate": "GREATER_EQUAL", "operands":["medium"]}
                             ]
-                        }
+                        },
+                        "hierarchical": true,
+                        "listDone": true
                     },
                     "view2": {
                         "filter": {
@@ -61,60 +63,58 @@ public class JsonViewInfoRepositoryTest {
                         }
                     },
                     "view4": {
+                    },
+                    "view5": {
+                        "filter": {
+                            "name": null,
+                            "type": "PROPERTY",
+                            "property":"name",
+                            "predicateNegated": "EQUALS",
+                            "operands":["name1", "name2"]
+                        }
                     }
                 }
                 """);
         repository = new JsonViewInfoRepository(tempFile);
-        assertEquals(repository.get("view1"),
-                new ViewInfo(
-                        new SortingInfo(
-                                List.of(
-                                        new SortingCriterion("name", true),
-                                        new SortingCriterion("done", false)
-                                )
-                        ),
-                        new FilterCriterionInfo(
-                                null, FilterCriterionInfo.Type.AND, null,
-                                List.of(
-                                        new FilterCriterionInfo(null, FilterCriterionInfo.Type.PROPERTY, "done", null, Predicate.EQUALS, List.of(false)),
-                                        new FilterCriterionInfo(null, FilterCriterionInfo.Type.PROPERTY, "name", null, Predicate.CONTAINS, List.of("str")),
-                                        new FilterCriterionInfo(null, FilterCriterionInfo.Type.PROPERTY, "priority", null, Predicate.LESS, List.of("medium")),
-                                        new FilterCriterionInfo(null, FilterCriterionInfo.Type.PROPERTY, "priority", null, Predicate.LESS_EQUAL, List.of("medium")),
-                                        new FilterCriterionInfo(null, FilterCriterionInfo.Type.PROPERTY, "priority", null, Predicate.GREATER, List.of("medium")),
-                                        new FilterCriterionInfo(null, FilterCriterionInfo.Type.PROPERTY, "priority", null, Predicate.GREATER_EQUAL, List.of("medium"))
-                                ),
-                                null, null),
-                        null,
-                        null,
-                        false,
-                        false));
+
+        assertEquals(repository.get("view1"), ViewInfo.builder()
+                .sortingInfo(new SortingInfo(List.of(
+                        new SortingCriterion("name", true),
+                        new SortingCriterion("done", false))))
+                .filterCriterionInfo(FilterCriterionInfo.builder()
+                        .type(FilterCriterionInfo.Type.AND)
+                        .children(List.of(
+                                FilterCriterionInfo.builder().type(FilterCriterionInfo.Type.PROPERTY).propertyName("done").predicate(Predicate.EQUALS).operands(List.of(false)).build(),
+                                FilterCriterionInfo.builder().type(FilterCriterionInfo.Type.PROPERTY).propertyName("name").predicate(Predicate.CONTAINS).operands(List.of("str")).build(),
+                                FilterCriterionInfo.builder().type(FilterCriterionInfo.Type.PROPERTY).propertyName("priority").predicate(Predicate.LESS).operands(List.of("medium")).build(),
+                                FilterCriterionInfo.builder().type(FilterCriterionInfo.Type.PROPERTY).propertyName("priority").predicate(Predicate.LESS_EQUAL).operands(List.of("medium")).build(),
+                                FilterCriterionInfo.builder().type(FilterCriterionInfo.Type.PROPERTY).propertyName("priority").predicate(Predicate.GREATER).operands(List.of("medium")).build(),
+                                FilterCriterionInfo.builder().type(FilterCriterionInfo.Type.PROPERTY).propertyName("priority").predicate(Predicate.GREATER_EQUAL).operands(List.of("medium")).build()
+                        )).build())
+                .hierarchical(true)
+                .listDone(true)
+                .build());
         assertEquals(repository.get("view2"),
-                new ViewInfo(
-                        null,
-                        new FilterCriterionInfo(
-                                "filter1",
-                                FilterCriterionInfo.Type.OR,
-                                null,
-                                List.of(
-                                        new FilterCriterionInfo(null, FilterCriterionInfo.Type.PROPERTY, "done", null, Predicate.EQUALS, List.of(false)),
-                                        new FilterCriterionInfo(null, FilterCriterionInfo.Type.NOT, null,
-                                                List.of(
-                                                        new FilterCriterionInfo(null, FilterCriterionInfo.Type.PROPERTY, "name", null, Predicate.CONTAINS, List.of("str"))
-                                                ),
-                                                null, null)),
-                                null, null),
-                        null,
-                        null,
-                        false,
-                        false));
-        assertEquals(repository.get("view3"),
-                new ViewInfo(
-                        new SortingInfo(
-                                List.of(new SortingCriterion("name", true))
-                        ),
-                        null, null, null, false, false
-                ));
-        assertEquals(repository.get("view4"), new ViewInfo(null, null, null, null, false, false));
+                ViewInfo.builder()
+                        .filterCriterionInfo(FilterCriterionInfo.builder()
+                                .name("filter1")
+                                .type(FilterCriterionInfo.Type.OR)
+                                .children(List.of(
+                                        FilterCriterionInfo.builder().type(FilterCriterionInfo.Type.PROPERTY).propertyName("done").predicate(Predicate.EQUALS).operands(List.of(false)).build(),
+                                        FilterCriterionInfo.builder().type(FilterCriterionInfo.Type.NOT).children(List.of(
+                                                FilterCriterionInfo.builder().type(FilterCriterionInfo.Type.PROPERTY).propertyName("name").predicate(Predicate.CONTAINS).operands(List.of("str")).build()
+                                        )).build())).build()).build());
+        assertEquals(repository.get("view3"), ViewInfo.builder()
+                .sortingInfo(new SortingInfo(List.of(
+                        new SortingCriterion("name", true)))).build());
+        assertEquals(repository.get("view4"), ViewInfo.builder().build());
+        assertEquals(repository.get("view5"),
+                ViewInfo.builder()
+                        .filterCriterionInfo(FilterCriterionInfo.builder()
+                                .type(FilterCriterionInfo.Type.PROPERTY)
+                                .propertyName("name")
+                                .predicateNegated(Predicate.EQUALS)
+                                .operands(List.of("name1", "name2")).build()).build());
     }
 
     @Test
@@ -129,6 +129,130 @@ public class JsonViewInfoRepositoryTest {
         File tempFile = rc.getTempFile("test_get_notExist");
         repository = new JsonViewInfoRepository(tempFile);
         assertNull(repository.get("view1"));
+    }
+
+    @Test
+    public void test_get_filterTypeMissing() throws IOException {
+        File tempFile = rc.makeTempFile("test_get_existing", """
+                {
+                    "view": {
+                        "filter": {
+                            "property": "name",
+                            "predicate": "EQUALS",
+                            "operands": ["name1"]
+                        }
+                    }
+                }
+                """);
+        repository = new JsonViewInfoRepository(tempFile);
+        assertThrows(IOException.class, () -> repository.get("view"));
+    }
+
+    @Test
+    public void test_get_filterPropertyMissing() throws IOException {
+        File tempFile = rc.makeTempFile("test_get_existing", """
+                {
+                    "view": {
+                        "filter": {
+                            "type": "PROPERTY",
+                            "predicate": "EQUALS",
+                            "operands": ["name1"]
+                        }
+                    }
+                }
+                """);
+        repository = new JsonViewInfoRepository(tempFile);
+        assertThrows(IOException.class, () -> repository.get("view"));
+    }
+
+    @Test
+    public void test_get_filterPredicateMissing() throws IOException {
+        File tempFile = rc.makeTempFile("test_get_existing", """
+                {
+                    "view": {
+                        "filter": {
+                            "type": "PROPERTY",
+                            "property": "tags",
+                            "operands": ["name1"]
+                        }
+                    }
+                }
+                """);
+        repository = new JsonViewInfoRepository(tempFile);
+        assertThrows(IOException.class, () -> repository.get("view"));
+    }
+
+    @Test
+    public void test_get_filterPredicateAndPredicateNegated() throws IOException {
+        File tempFile = rc.makeTempFile("test_get_existing", """
+                {
+                    "view": {
+                        "filter": {
+                            "type": "PROPERTY",
+                            "property": "tags",
+                            "predicate": "EQUALS",
+                            "predicateNegated": "EQUALS",
+                            "operands": ["name1"]
+                        }
+                    }
+                }
+                """);
+        repository = new JsonViewInfoRepository(tempFile);
+        assertThrows(IOException.class, () -> repository.get("view"));
+    }
+
+    @Test
+    public void test_get_filterIllegalField() throws IOException {
+        File tempFile = rc.makeTempFile("test_get_existing", """
+                {
+                    "view": {
+                        "filter": {
+                            "type": "PROPERTY",
+                            "property": "tags",
+                            "predicate": "EQUALS",
+                            "operand": ["name1"]
+                        }
+                    }
+                }
+                """);
+        repository = new JsonViewInfoRepository(tempFile);
+        assertThrows(IOException.class, () -> repository.get("view"));
+    }
+
+    @Test
+    public void test_get_filterIllegalType() throws IOException {
+        File tempFile = rc.makeTempFile("test_get_existing", """
+                {
+                    "view": {
+                        "filter": {
+                            "type": "PROP",
+                            "property": "tags",
+                            "predicate": "EQUALS",
+                            "operand": ["name1"]
+                        }
+                    }
+                }
+                """);
+        repository = new JsonViewInfoRepository(tempFile);
+        assertThrows(IOException.class, () -> repository.get("view"));
+    }
+
+    @Test
+    public void test_get_filterIllegalPredicate() throws IOException {
+        File tempFile = rc.makeTempFile("test_get_existing", """
+                {
+                    "view": {
+                        "filter": {
+                            "type": "PROP",
+                            "property": "tags",
+                            "predicate": "PREDICATE",
+                            "operand": ["name1"]
+                        }
+                    }
+                }
+                """);
+        repository = new JsonViewInfoRepository(tempFile);
+        assertThrows(IOException.class, () -> repository.get("view"));
     }
 
     @Test
@@ -170,7 +294,7 @@ public class JsonViewInfoRepositoryTest {
                                 FilterCriterionInfo.builder().type(FilterCriterionInfo.Type.PROPERTY).propertyName("priority").predicate(Predicate.LESS_EQUAL).operands(List.of("medium")).build(),
                                 FilterCriterionInfo.builder().type(FilterCriterionInfo.Type.PROPERTY).propertyName("priority").predicate(Predicate.GREATER).operands(List.of("medium")).build(),
                                 FilterCriterionInfo.builder().type(FilterCriterionInfo.Type.PROPERTY).propertyName("priority").predicate(Predicate.GREATER_EQUAL).operands(List.of("medium")).build()
-                                )).build()).build());
+                        )).build()).build());
 
         repository.create("view2", ViewInfo.builder()
                 .filterCriterionInfo(FilterCriterionInfo.builder()

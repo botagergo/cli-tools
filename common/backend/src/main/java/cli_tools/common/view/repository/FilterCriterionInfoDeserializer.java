@@ -28,8 +28,11 @@ public class FilterCriterionInfoDeserializer extends JsonDeserializer<FilterCrit
             if (filterCriterionInfo.propertyName() == null) {
                 throw JsonMappingException.from(ctxt, "'propertyName' is required for property filter criterion");
             }
-            if (filterCriterionInfo.predicate() == null) {
-                throw JsonMappingException.from(ctxt, "'predicate' is required for property filter criterion");
+            if (filterCriterionInfo.predicate() == null && filterCriterionInfo.predicateNegated() == null) {
+                throw JsonMappingException.from(ctxt, "'predicate' or 'predicateNegated' is required for property filter criterion");
+            }
+            if (filterCriterionInfo.predicate() != null && filterCriterionInfo.predicateNegated() != null) {
+                throw JsonMappingException.from(ctxt, "only one of 'predicate' and 'predicateNegated' must be set in property filter criterion");
             }
         }
 

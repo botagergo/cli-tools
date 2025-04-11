@@ -8,7 +8,7 @@ import cli_tools.common.core.data.Predicate;
 
 import java.util.List;
 
-@JsonPropertyOrder({ "name", "type", "property", "children", "predicate", "operands" })
+@JsonPropertyOrder({ "name", "type", "property", "children", "predicate", "predicateNegated", "operands" })
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public record FilterCriterionInfoMixIn(
         String name,
@@ -16,5 +16,6 @@ public record FilterCriterionInfoMixIn(
         @JsonProperty("property") String propertyName,
         List<FilterCriterionInfo> children,
         Predicate predicate,
+        Predicate predicateNegated,
         List<Object> operands
 ) { }

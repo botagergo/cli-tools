@@ -8,6 +8,7 @@ public record FilterCriterionInfo(
         String propertyName,
         List<FilterCriterionInfo> children,
         Predicate predicate,
+        Predicate predicateNegated,
         List<Object> operands
 ) {
 
@@ -24,11 +25,12 @@ public record FilterCriterionInfo(
         private String propertyName;
         private List<FilterCriterionInfo> children;
         private Predicate predicate;
+        private Predicate predicateNegated;
         private List<Object> operands;
 
         public FilterCriterionInfo build() {
             return new FilterCriterionInfo(
-                    name, type, propertyName, children, predicate, operands
+                    name, type, propertyName, children, predicate, predicateNegated, operands
             );
         }
 
@@ -54,6 +56,11 @@ public record FilterCriterionInfo(
 
         public Builder predicate(Predicate predicate) {
             this.predicate = predicate;
+            return this;
+        }
+
+        public Builder predicateNegated(Predicate predicateNegated) {
+            this.predicateNegated = predicateNegated;
             return this;
         }
 
