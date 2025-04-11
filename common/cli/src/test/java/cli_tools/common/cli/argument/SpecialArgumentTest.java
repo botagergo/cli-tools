@@ -1,7 +1,5 @@
 package cli_tools.common.cli.argument;
 
-import cli_tools.common.cli.argument.NotASpecialArgumentException;
-import cli_tools.common.cli.argument.SpecialArgument;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 

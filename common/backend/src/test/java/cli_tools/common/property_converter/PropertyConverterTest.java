@@ -1,21 +1,21 @@
 package cli_tools.common.property_converter;
 
+import cli_tools.common.core.data.Label;
 import cli_tools.common.core.data.OrderedLabel;
+import cli_tools.common.core.repository.LabelRepository;
+import cli_tools.common.core.repository.LabelRepositoryFactory;
 import cli_tools.common.core.repository.OrderedLabelRepository;
 import cli_tools.common.core.repository.OrderedLabelRepositoryFactory;
+import cli_tools.common.property_descriptor.service.PropertyDescriptorService;
+import cli_tools.common.property_lib.PropertyDescriptor;
+import cli_tools.common.util.RoundRobinUUIDGenerator;
+import cli_tools.common.util.UUIDGenerator;
+import cli_tools.common.util.Utils;
 import org.mockito.*;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-import cli_tools.common.core.data.Label;
-import cli_tools.common.core.repository.LabelRepository;
-import cli_tools.common.core.repository.LabelRepositoryFactory;
-import cli_tools.common.util.RoundRobinUUIDGenerator;
-import cli_tools.common.util.UUIDGenerator;
-import cli_tools.common.util.Utils;
-import cli_tools.common.property_descriptor.service.PropertyDescriptorService;
-import cli_tools.common.property_lib.PropertyDescriptor;
 
 import java.io.IOException;
 import java.util.List;
@@ -25,7 +25,26 @@ import static org.testng.Assert.assertEquals;
 
 public class PropertyConverterTest {
 
-    @BeforeClass public void initMocks() {
+    @Spy
+    private final UUIDGenerator uuidGenerator = new RoundRobinUUIDGenerator(3);
+    private final UUID uuid1 = uuidGenerator.getUUID();
+    private final UUID uuid2 = uuidGenerator.getUUID();
+    private final UUID uuid3 = uuidGenerator.getUUID();
+    @Mock
+    private PropertyDescriptorService propertyDescriptorService;
+    @Mock
+    private LabelRepository labelRepository;
+    @Mock
+    private OrderedLabelRepository orderedLabelRepository;
+    @Mock
+    private LabelRepositoryFactory labelRepositoryFactory;
+    @Mock
+    private OrderedLabelRepositoryFactory orderedLabelRepositoryFactory;
+    @InjectMocks
+    private PropertyConverter propertyConverter;
+
+    @BeforeClass
+    public void initMocks() {
         MockitoAnnotations.openMocks(this);
     }
 
@@ -62,7 +81,7 @@ public class PropertyConverterTest {
     @Test
     public void test_convertProperty_list_successful() throws IOException, PropertyConverterException {
         assertEquals(propertyConverter.convertProperty(
-                getPropertyDescriptor(PropertyDescriptor.Type.UUID, PropertyDescriptor.Multiplicity.LIST), List.of(uuid1.toString(), uuid2.toString(), uuid3.toString())),
+                        getPropertyDescriptor(PropertyDescriptor.Type.UUID, PropertyDescriptor.Multiplicity.LIST), List.of(uuid1.toString(), uuid2.toString(), uuid3.toString())),
                 List.of(uuid1, uuid2, uuid3));
     }
 
@@ -79,11 +98,10 @@ public class PropertyConverterTest {
         Mockito.when(orderedLabelRepository.find("label1")).thenReturn(new OrderedLabel("label1", 3));
 
         assertEquals(propertyConverter.convertProperty(
-                getPropertyDescriptor(PropertyDescriptor.Type.Integer, PropertyDescriptor.Multiplicity.SINGLE),
-                List.of("label1")),
+                        getPropertyDescriptor(PropertyDescriptor.Type.Integer, PropertyDescriptor.Multiplicity.SINGLE),
+                        List.of("label1")),
                 List.of(3));
     }
-
 
     @Test
     public void test_convertProperty_integer_string_labelNotFound_throws() throws IOException {
@@ -110,7 +128,6 @@ public class PropertyConverterTest {
                 getPropertyDescriptor(PropertyDescriptor.Type.UUID, PropertyDescriptor.Multiplicity.SINGLE), List.of("tag")), List.of(uuid1));
     }
 
-
     @Test
     public void test_stringToProperty_uuid_notAnUuid_tagNotFound_throws() throws IOException {
         Mockito.when(labelRepositoryFactory.getLabelRepository("test")).thenReturn(labelRepository);
@@ -130,17 +147,5 @@ public class PropertyConverterTest {
     private PropertyDescriptor getPropertyDescriptor(PropertyDescriptor.Type type, PropertyDescriptor.Multiplicity multiplicity) {
         return new PropertyDescriptor("test", type, null, multiplicity, null, null);
     }
-
-    @Mock private PropertyDescriptorService propertyDescriptorService;
-    @Mock private LabelRepository labelRepository;
-    @Mock private OrderedLabelRepository orderedLabelRepository;
-    @Spy private final UUIDGenerator uuidGenerator = new RoundRobinUUIDGenerator(3);
-    private final UUID uuid1 = uuidGenerator.getUUID();
-    private final UUID uuid2 = uuidGenerator.getUUID();
-    private final UUID uuid3 = uuidGenerator.getUUID();
-
-    @Mock private LabelRepositoryFactory labelRepositoryFactory;
-    @Mock private OrderedLabelRepositoryFactory orderedLabelRepositoryFactory;
-    @InjectMocks private PropertyConverter propertyConverter;
 
 }

@@ -1,14 +1,14 @@
 package cli_tools.common.service;
 
 import cli_tools.common.repository.ObjectSerializer;
+import cli_tools.common.util.RoundRobinUUIDGenerator;
+import cli_tools.common.util.Utils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-import cli_tools.common.util.RoundRobinUUIDGenerator;
-import cli_tools.common.util.Utils;
 
 import java.util.UUID;
 
@@ -16,6 +16,11 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertThrows;
 
 public class ObjectSerializerTest {
+
+    final RoundRobinUUIDGenerator uuidGenerator = new RoundRobinUUIDGenerator();
+    private final UUID uuid1 = uuidGenerator.getUUID();
+    private final UUID uuid2 = uuidGenerator.getUUID();
+    private ObjectMapper objectMapper;
 
     @BeforeClass
     public void setup() {
@@ -132,7 +137,6 @@ public class ObjectSerializerTest {
         assertEquals(objectMapper.writeValueAsString(Utils.newLinkedHashSet(1, null)), "{\"type\":\"set\",\"value\":[1,null]}");
     }
 
-
     @Test
     public void test_notSerializable_throws() {
         assertThrows(JsonMappingException.class, () -> objectMapper.writeValueAsString(3.4));
@@ -147,10 +151,5 @@ public class ObjectSerializerTest {
     public void test_notSerializableSetItem_throws() {
         assertThrows(JsonMappingException.class, () -> objectMapper.writeValueAsString(Utils.newLinkedHashSet(1, 1.3)));
     }
-
-    private ObjectMapper objectMapper;
-    final RoundRobinUUIDGenerator uuidGenerator = new RoundRobinUUIDGenerator();
-    private final UUID uuid1 = uuidGenerator.getUUID();
-    private final UUID uuid2 = uuidGenerator.getUUID();
 
 }

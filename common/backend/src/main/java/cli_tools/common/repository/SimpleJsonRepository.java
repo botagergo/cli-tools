@@ -9,12 +9,12 @@ public class SimpleJsonRepository<T> extends JsonRepository<T, T> {
     }
 
     @Override
-    protected T storedToJsonData(T data) {
+    protected T jsonToStoredData(T data) {
         return data;
     }
 
     @Override
-    protected T jsonToStoredData(T data) {
+    protected T storedToJsonData(T data) {
         return data;
     }
 

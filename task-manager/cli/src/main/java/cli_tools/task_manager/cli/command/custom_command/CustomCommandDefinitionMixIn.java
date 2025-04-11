@@ -7,4 +7,5 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 @JsonSubTypes({
         @JsonSubTypes.Type(value = BashCommandDefinition.class, name = "Bash")
 })
-public class CustomCommandDefinitionMixIn { }
+public class CustomCommandDefinitionMixIn {
+}

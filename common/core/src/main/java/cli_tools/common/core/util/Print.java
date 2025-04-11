@@ -5,11 +5,11 @@ import org.apache.logging.log4j.Logger;
 import org.fusesource.jansi.Ansi;
 
 public class Print {
-    public static void print(String text, Object ...args) {
+    public static void print(String text, Object... args) {
         System.out.printf(text + "%n", args);
     }
 
-    public static void printError(String text, Object ...args) {
+    public static void printError(String text, Object... args) {
         System.out.println(Ansi.ansi().fg(Ansi.Color.RED).a(text.formatted(args)).reset());
     }
 
@@ -31,11 +31,11 @@ public class Print {
         }
     }
 
-    public static void printInfo(String text, Object ...args) {
+    public static void printInfo(String text, Object... args) {
         System.out.println(Ansi.ansi().fg(Ansi.Color.CYAN).a(text.formatted(args)).reset());
     }
 
-    public static void printWarning(String text, Object ...args) {
+    public static void printWarning(String text, Object... args) {
         System.out.println(Ansi.ansi().fg(Ansi.Color.YELLOW).a(text.formatted(args)).reset());
     }
 }

@@ -20,6 +20,8 @@ import java.util.stream.Collectors;
 
 @Log4j2
 public class CommandUtil {
+    private static final Scanner scanner = new Scanner(System.in);
+
     public static List<UUID> getUUIDsFromTempIDs(@NonNull TaskManagerContext context, List<Integer> tempIDs) throws IOException {
         if (tempIDs == null || tempIDs.isEmpty()) {
             return null;
@@ -105,7 +107,8 @@ public class CommandUtil {
         } else {
             message = switch (changeType) {
                 case DELETE -> "Deleting " + tasks.size() + " " + taskStr + ". Continue? ([y]es/[n]o/[s]how/[p]ick) ";
-                case DONE -> "Marking " + tasks.size() + " " + taskStr + " as done. Continue? ([y]es/[n]o/[s]how/[p]ick) ";
+                case DONE ->
+                        "Marking " + tasks.size() + " " + taskStr + " as done. Continue? ([y]es/[n]o/[s]how/[p]ick) ";
                 case MODIFY -> "Modifying " + tasks.size() + " " + taskStr + ". Continue? ([y]es/[n]o/[s]how/[p]ick) ";
             };
         }
@@ -152,6 +155,4 @@ public class CommandUtil {
         DONE,
         DELETE
     }
-
-    private static final Scanner scanner = new Scanner(System.in);
 }

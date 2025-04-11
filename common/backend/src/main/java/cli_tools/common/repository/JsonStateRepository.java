@@ -1,10 +1,10 @@
 package cli_tools.common.repository;
 
+import cli_tools.common.core.repository.StateRepository;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
-import cli_tools.common.core.repository.StateRepository;
 
 import java.io.File;
 import java.io.IOException;

@@ -1,41 +1,41 @@
 package cli_tools.task_manager.cli.functional_test;
 
 import cli_tools.common.cli.Context;
-import cli_tools.common.core.repository.*;
-import cli_tools.common.property_converter.PropertyConverter;
-import cli_tools.common.repository.JsonStateRepository;
-import cli_tools.common.temp_id_mapping.TempIDManager;
-import cli_tools.common.util.RoundRobinUUIDGenerator;
-import cli_tools.task_manager.cli.TaskManagerContext;
-import cli_tools.task_manager.pseudo_property_provider.PseudoPropertyProviderMixIn;
-import cli_tools.task_manager.task.repository.TaskRepository;
-import com.google.inject.AbstractModule;
-import com.google.inject.Provides;
-import com.google.inject.Singleton;
-import com.google.inject.name.Names;
-import cli_tools.common.cli.tokenizer.Tokenizer;
-import cli_tools.common.cli.tokenizer.TokenizerImpl;
-import cli_tools.common.label.service.LabelService;
-import cli_tools.common.label.service.LabelServiceImpl;
-import cli_tools.common.ordered_label.service.OrderedLabelService;
-import cli_tools.common.ordered_label.service.OrderedLabelServiceImpl;
-import cli_tools.common.property_descriptor.service.PropertyDescriptorService;
-import cli_tools.common.property_descriptor.service.PropertyDescriptorServiceImpl;
-import cli_tools.task_manager.task.service.TaskService;
-import cli_tools.task_manager.task.service.TaskServiceImpl;
-import cli_tools.common.view.service.ViewInfoService;
-import cli_tools.common.view.service.ViewInfoServiceImpl;
-import cli_tools.common.property_lib.PropertyManager;
-import cli_tools.common.label.repository.JsonLabelRepositoryFactory;
-import cli_tools.common.ordered_label.repository.JsonOrderedLabelRepositoryFactory;
-import cli_tools.common.property_descriptor.repository.JsonPropertyDescriptorRepository;
-import cli_tools.task_manager.task.repository.JsonTaskRepository;
-import cli_tools.common.view.repository.JsonViewInfoRepository;
 import cli_tools.common.cli.command_line.Executor;
 import cli_tools.common.cli.command_line.ExecutorImpl;
 import cli_tools.common.cli.command_parser.CommandParserFactory;
 import cli_tools.common.cli.command_parser.CommandParserFactoryImpl;
+import cli_tools.common.cli.tokenizer.Tokenizer;
+import cli_tools.common.cli.tokenizer.TokenizerImpl;
+import cli_tools.common.core.repository.*;
+import cli_tools.common.label.repository.JsonLabelRepositoryFactory;
+import cli_tools.common.label.service.LabelService;
+import cli_tools.common.label.service.LabelServiceImpl;
+import cli_tools.common.ordered_label.repository.JsonOrderedLabelRepositoryFactory;
+import cli_tools.common.ordered_label.service.OrderedLabelService;
+import cli_tools.common.ordered_label.service.OrderedLabelServiceImpl;
+import cli_tools.common.property_converter.PropertyConverter;
+import cli_tools.common.property_descriptor.repository.JsonPropertyDescriptorRepository;
+import cli_tools.common.property_descriptor.service.PropertyDescriptorService;
+import cli_tools.common.property_descriptor.service.PropertyDescriptorServiceImpl;
+import cli_tools.common.property_lib.PropertyManager;
+import cli_tools.common.repository.JsonStateRepository;
+import cli_tools.common.temp_id_mapping.TempIDManager;
+import cli_tools.common.util.RoundRobinUUIDGenerator;
 import cli_tools.common.util.UUIDGenerator;
+import cli_tools.common.view.repository.JsonViewInfoRepository;
+import cli_tools.common.view.service.ViewInfoService;
+import cli_tools.common.view.service.ViewInfoServiceImpl;
+import cli_tools.task_manager.cli.TaskManagerContext;
+import cli_tools.task_manager.pseudo_property_provider.PseudoPropertyProviderMixIn;
+import cli_tools.task_manager.task.repository.JsonTaskRepository;
+import cli_tools.task_manager.task.repository.TaskRepository;
+import cli_tools.task_manager.task.service.TaskService;
+import cli_tools.task_manager.task.service.TaskServiceImpl;
+import com.google.inject.AbstractModule;
+import com.google.inject.Provides;
+import com.google.inject.Singleton;
+import com.google.inject.name.Names;
 
 import java.io.File;
 import java.io.IOException;
@@ -54,9 +54,9 @@ public class TestModule extends AbstractModule {
     @Provides
     @Singleton
     TaskService taskService(PropertyManager propertyManager,
-                               UUIDGenerator uuidGenerator,
-                               PropertyConverter propertyConverter,
-                               TempIDManager tempIdManager) {
+                            UUIDGenerator uuidGenerator,
+                            PropertyConverter propertyConverter,
+                            TempIDManager tempIdManager) {
         return new TaskServiceImpl(
                 new JsonTaskRepository(getJsonFile("task.json")),
                 new JsonTaskRepository(getJsonFile("done_task.json")),
@@ -111,7 +111,7 @@ public class TestModule extends AbstractModule {
         bind(File.class).annotatedWith(Names.named("viewJsonFile")).toInstance(getJsonFile("view.json"));
         bind(File.class).annotatedWith(Names.named("stateJsonFile")).toInstance(getJsonFile("state.json"));
         bind(File.class).annotatedWith(Names.named("propertyToStringConverterJsonFile")).toInstance(getJsonFile("property_to_string_converter.json"));
-        bind(File.class).annotatedWith(Names.named("configurationYamlFile")).toInstance(getJsonFile( "config.yaml"));
+        bind(File.class).annotatedWith(Names.named("configurationYamlFile")).toInstance(getJsonFile("config.yaml"));
         bind(File.class).annotatedWith(Names.named("basePath")).toInstance(basePath.toFile());
     }
 

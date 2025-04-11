@@ -6,6 +6,8 @@ import java.util.UUID;
 
 public interface ChangeLogRepository {
     void addAdded(UUID uuid, PropertyOwner propertyOwner);
+
     void addModified(UUID uuid, PropertyOwner origPropertyOwner, PropertyOwner newPropertyOwner);
+
     void addDeleted(UUID uuid, PropertyOwner propertyOwner);
 }

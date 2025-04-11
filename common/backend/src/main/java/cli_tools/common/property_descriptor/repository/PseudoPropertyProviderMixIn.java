@@ -10,4 +10,5 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
         @JsonSubTypes.Type(value = TempIDPseudoPropertyProvider.class, name = "TaskIDPseudoPropertyProvider"),
         @JsonSubTypes.Type(value = AliasPseudoPropertyProvider.class, name = "AliasPseudoPropertyProvider"),
 })
-public class PseudoPropertyProviderMixIn { }
+public class PseudoPropertyProviderMixIn {
+}

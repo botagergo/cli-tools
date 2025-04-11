@@ -13,6 +13,10 @@ import java.util.*;
 @EqualsAndHashCode
 public class Property {
 
+    @NonNull
+    private final PropertyDescriptor propertyDescriptor;
+    private final Object value;
+
     public static Property from(PropertyDescriptor propertyDescriptor, Object propertyValue)
             throws PropertyException {
         if (propertyValue != null) {
@@ -29,6 +33,54 @@ public class Property {
 
     public static Property fromUnchecked(PropertyDescriptor propertyDescriptor, Object propertyValue) {
         return new Property(propertyDescriptor, propertyValue);
+    }
+
+    private static void checkPropertyValue(PropertyDescriptor propertyDescriptor, Object propertyValue) throws PropertyException {
+        if (propertyDescriptor.type().equals(PropertyDescriptor.Type.String) &&
+                !(propertyValue instanceof String) ||
+                propertyDescriptor.type().equals(PropertyDescriptor.Type.Boolean) &&
+                        !(propertyValue instanceof Boolean) ||
+                propertyDescriptor.type().equals(PropertyDescriptor.Type.UUID) &&
+                        !(propertyValue instanceof UUID) ||
+                propertyDescriptor.type().equals(PropertyDescriptor.Type.Integer) &&
+                        !(propertyValue instanceof Integer)) {
+
+            throw new PropertyException(PropertyException.Type.WrongValueType,
+                    propertyDescriptor.name(), propertyDescriptor, propertyValue,
+                    propertyDescriptor.type(), null);
+        }
+    }
+
+    private static List<Object> convertPropertyValueList(PropertyDescriptor propertyDescriptor, Object propertyValues) throws PropertyException {
+        if (!(propertyValues instanceof List<?> propertyValuesList)) {
+            throw new PropertyException(PropertyException.Type.WrongValueType,
+                    propertyDescriptor.name(), propertyDescriptor, propertyValues,
+                    propertyDescriptor.type(), null);
+        }
+
+        for (Object propertyValue : propertyValuesList) {
+            if (propertyValue != null) {
+                checkPropertyValue(propertyDescriptor, propertyValue);
+            }
+        }
+
+        return Collections.unmodifiableList(propertyValuesList);
+    }
+
+    private static Set<Object> convertPropertyValueSet(PropertyDescriptor propertyDescriptor, Object propertyValues) throws PropertyException {
+        if (!(propertyValues instanceof Set<?> propertyValuesSet)) {
+            throw new PropertyException(PropertyException.Type.WrongValueType,
+                    propertyDescriptor.name(), propertyDescriptor, propertyValues,
+                    propertyDescriptor.type(), null);
+        }
+
+        for (Object propertyValue : propertyValuesSet) {
+            if (propertyValue != null) {
+                checkPropertyValue(propertyDescriptor, propertyValue);
+            }
+        }
+
+        return Collections.unmodifiableSet(propertyValuesSet);
     }
 
     public Boolean getBoolean() throws PropertyException {
@@ -79,22 +131,6 @@ public class Property {
             return null;
         }
         return (UUID) value;
-    }
-
-    private static void checkPropertyValue(PropertyDescriptor propertyDescriptor, Object propertyValue) throws PropertyException {
-        if (propertyDescriptor.type().equals(PropertyDescriptor.Type.String) &&
-                !(propertyValue instanceof String) ||
-                propertyDescriptor.type().equals(PropertyDescriptor.Type.Boolean) &&
-                        !(propertyValue instanceof Boolean) ||
-                propertyDescriptor.type().equals(PropertyDescriptor.Type.UUID) &&
-                        !(propertyValue instanceof UUID) ||
-                propertyDescriptor.type().equals(PropertyDescriptor.Type.Integer) &&
-                        !(propertyValue instanceof Integer)) {
-
-            throw new PropertyException(PropertyException.Type.WrongValueType,
-                    propertyDescriptor.name(), propertyDescriptor, propertyValue,
-                    propertyDescriptor.type(), null);
-        }
     }
 
     public Integer getInteger() throws PropertyException {
@@ -385,40 +421,5 @@ public class Property {
         }
         return (Set<Boolean>) value;
     }
-
-    private static List<Object> convertPropertyValueList(PropertyDescriptor propertyDescriptor, Object propertyValues) throws PropertyException {
-        if (!(propertyValues instanceof List<?> propertyValuesList)) {
-            throw new PropertyException(PropertyException.Type.WrongValueType,
-                    propertyDescriptor.name(), propertyDescriptor, propertyValues,
-                    propertyDescriptor.type(), null);
-        }
-
-        for (Object propertyValue : propertyValuesList) {
-            if (propertyValue != null) {
-                checkPropertyValue(propertyDescriptor, propertyValue);
-            }
-        }
-
-        return Collections.unmodifiableList(propertyValuesList);
-    }
-
-    private static Set<Object> convertPropertyValueSet(PropertyDescriptor propertyDescriptor, Object propertyValues) throws PropertyException {
-        if (!(propertyValues instanceof Set<?> propertyValuesSet)) {
-            throw new PropertyException(PropertyException.Type.WrongValueType,
-                    propertyDescriptor.name(), propertyDescriptor, propertyValues,
-                    propertyDescriptor.type(), null);
-        }
-
-        for (Object propertyValue : propertyValuesSet) {
-            if (propertyValue != null) {
-                checkPropertyValue(propertyDescriptor, propertyValue);
-            }
-        }
-
-        return Collections.unmodifiableSet(propertyValuesSet);
-    }
-
-    @NonNull private final PropertyDescriptor propertyDescriptor;
-    private final Object value;
 
 }

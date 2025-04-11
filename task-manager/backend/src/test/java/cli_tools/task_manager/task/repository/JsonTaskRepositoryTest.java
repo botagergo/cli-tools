@@ -1,8 +1,8 @@
 package cli_tools.task_manager.task.repository;
 
-import org.testng.annotations.Test;
-import cli_tools.task_manager.task.Task;
 import cli_tools.common.util.Utils;
+import cli_tools.task_manager.task.Task;
+import org.testng.annotations.Test;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,6 +13,9 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertThrows;
 
 public class JsonTaskRepositoryTest {
+
+    private final JsonRepositoryCreator rc;
+    private JsonTaskRepository repository;
 
     public JsonTaskRepositoryTest() throws IOException {
         rc = new JsonRepositoryCreator(Files.createTempDirectory("testng"));
@@ -87,8 +90,5 @@ public class JsonTaskRepositoryTest {
         repository = new JsonTaskRepository(tempFile);
         assertThrows(IOException.class, () -> repository.getData());
     }
-
-    private JsonTaskRepository repository;
-    private final JsonRepositoryCreator rc;
 
 }

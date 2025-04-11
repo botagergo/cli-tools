@@ -60,48 +60,58 @@ public record PropertyDescriptor(
         String, UUID, Boolean, Integer
     }
 
+    public enum Multiplicity {
+        SINGLE,
+        LIST,
+        SET
+    }
+
     public interface Subtype {
         String name();
 
-        interface StringSubtype extends Subtype {}
-        interface UUIDSubtype extends Subtype {}
-        interface IntegerSubtype extends Subtype {}
+        interface StringSubtype extends Subtype {
+        }
+
+        interface UUIDSubtype extends Subtype {
+        }
+
+        interface IntegerSubtype extends Subtype {
+        }
+
         record LabelSubtype(String labelType) implements UUIDSubtype {
             @Override
             public String name() {
                 return "Label";
             }
         }
+
         record OrderedLabelSubtype(String orderedLabelType) implements IntegerSubtype {
             @Override
             public String name() {
                 return "OrderedLabel";
             }
         }
+
         record DateSubtype() implements StringSubtype {
             @Override
             public String name() {
                 return "Date";
             }
         }
+
         record TimeSubtype() implements StringSubtype {
             @Override
             public String name() {
                 return "Time";
             }
         }
+
         record TaskSubtype() implements UUIDSubtype {
             @Override
             public String name() {
                 return "Task";
             }
         }
-    }
-
-    public enum Multiplicity {
-        SINGLE,
-        LIST,
-        SET
     }
 
 }

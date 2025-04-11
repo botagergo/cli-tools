@@ -18,6 +18,11 @@ import java.util.List;
 
 public class InFilterCriterionTest {
 
+    @Mock
+    private PropertyOwner propertyOwner;
+    @InjectMocks
+    private PropertyManager propertyManager;
+
     public InFilterCriterionTest() {
         MockitoAnnotations.openMocks(this);
 
@@ -48,9 +53,4 @@ public class InFilterCriterionTest {
         Assert.assertFalse(new InFilterCriterion("test_string", List.of()).check(propertyOwner, propertyManager));
         Assert.assertFalse(new InFilterCriterion("test_string", null).check(propertyOwner, propertyManager));
     }
-
-    @Mock
-    private PropertyOwner propertyOwner;
-    @InjectMocks
-    private PropertyManager propertyManager;
 }

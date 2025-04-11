@@ -7,6 +7,8 @@ import java.util.function.Supplier;
 
 public interface CommandParserFactory {
     void registerParser(String name, Supplier<CommandParser> commandParserSupplier);
+
     CommandParser getParser(ArgumentList argList);
+
     Collection<String> getCommandNames();
 }

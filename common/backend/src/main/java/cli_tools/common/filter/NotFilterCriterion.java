@@ -8,6 +8,8 @@ import java.io.IOException;
 
 public class NotFilterCriterion extends FilterCriterion {
 
+    private final FilterCriterion filterCriterion;
+
     public NotFilterCriterion(FilterCriterion filterCriterion) {
         this.filterCriterion = filterCriterion;
     }
@@ -16,6 +18,4 @@ public class NotFilterCriterion extends FilterCriterion {
     protected boolean check_(PropertyOwner propertyOwner, PropertyManager propertyManager) throws PropertyException, IOException {
         return !filterCriterion.check_(propertyOwner, propertyManager);
     }
-
-    private final FilterCriterion filterCriterion;
 }

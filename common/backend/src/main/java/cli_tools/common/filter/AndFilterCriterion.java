@@ -1,9 +1,9 @@
 package cli_tools.common.filter;
 
-import lombok.Getter;
 import cli_tools.common.property_lib.PropertyException;
 import cli_tools.common.property_lib.PropertyManager;
 import cli_tools.common.property_lib.PropertyOwner;
+import lombok.Getter;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -11,6 +11,8 @@ import java.util.List;
 
 @Getter
 public class AndFilterCriterion extends FilterCriterion {
+
+    private final Collection<FilterCriterion> criteria;
 
     public AndFilterCriterion(Collection<FilterCriterion> criteria) {
         this.criteria = criteria;
@@ -29,7 +31,5 @@ public class AndFilterCriterion extends FilterCriterion {
         }
         return true;
     }
-
-    private final Collection<FilterCriterion> criteria;
 
 }

@@ -1,5 +1,8 @@
 package cli_tools.common.property_descriptor.repository;
 
+import cli_tools.common.core.repository.PropertyDescriptorRepository;
+import cli_tools.common.property_lib.PropertyDescriptor;
+import cli_tools.common.property_lib.PseudoPropertyProvider;
 import cli_tools.common.repository.SimpleJsonRepository;
 import cli_tools.common.temp_id_mapping.TempIDManager;
 import com.fasterxml.jackson.databind.InjectableValues;
@@ -7,9 +10,6 @@ import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
-import cli_tools.common.core.repository.PropertyDescriptorRepository;
-import cli_tools.common.property_lib.PropertyDescriptor;
-import cli_tools.common.property_lib.PseudoPropertyProvider;
 
 import java.io.File;
 import java.io.IOException;
@@ -36,6 +36,12 @@ public class JsonPropertyDescriptorRepository extends SimpleJsonRepository<HashM
     }
 
     @Override
+    public void create(PropertyDescriptor propertyDescriptor) throws IOException {
+        getData().put(propertyDescriptor.name(), propertyDescriptor);
+        writeData();
+    }
+
+    @Override
     public PropertyDescriptor get(String name) throws IOException {
         return getData().getOrDefault(name, null);
     }
@@ -54,18 +60,12 @@ public class JsonPropertyDescriptorRepository extends SimpleJsonRepository<HashM
     }
 
     @Override
-    public void create(PropertyDescriptor propertyDescriptor) throws IOException {
-        getData().put(propertyDescriptor.name(), propertyDescriptor);
-        writeData();
+    protected JavaType constructType(TypeFactory typeFactory) {
+        return typeFactory.constructMapType(HashMap.class, String.class, PropertyDescriptor.class);
     }
 
     @Override
     public HashMap<String, PropertyDescriptor> getEmptyData() {
         return new HashMap<>();
-    }
-
-    @Override
-    protected JavaType constructType(TypeFactory typeFactory) {
-        return typeFactory.constructMapType(HashMap.class, String.class, PropertyDescriptor.class);
     }
 }

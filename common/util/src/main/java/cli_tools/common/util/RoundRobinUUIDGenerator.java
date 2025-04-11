@@ -11,6 +11,9 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class RoundRobinUUIDGenerator implements UUIDGenerator {
 
+    public final UUID[] uuids;
+    private int currInd = -1;
+
     public RoundRobinUUIDGenerator(int number) {
         this.uuids = new UUID[number];
         for (byte i = 0; i < number; i++) {
@@ -25,11 +28,8 @@ public class RoundRobinUUIDGenerator implements UUIDGenerator {
 
     @Override
     public UUID getUUID() {
-        currInd = (currInd+1)%uuids.length;
+        currInd = (currInd + 1) % uuids.length;
         return uuids[currInd];
     }
-
-    public final UUID[] uuids;
-    private int currInd = -1;
 
 }

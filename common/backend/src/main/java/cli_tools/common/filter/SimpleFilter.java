@@ -10,11 +10,11 @@ import java.util.List;
 
 public class SimpleFilter implements Filter {
 
+    final FilterCriterion filterCriterion;
+
     public SimpleFilter(FilterCriterion filterCriterion) {
         this.filterCriterion = filterCriterion;
     }
-
-    final FilterCriterion filterCriterion;
 
     @Override
     public <T extends PropertyOwner> List<T> doFilter(List<T> propertyOwners, PropertyManager propertyManager)

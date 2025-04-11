@@ -1,6 +1,5 @@
 package cli_tools.common.cli;
 
-import cli_tools.common.cli.DateTimeFormatter;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -8,6 +7,8 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 public class DateTimeFormatterTest {
+    private final DateTimeFormatter dateTimeFormatter = new DateTimeFormatter();
+
     @Test
     public void test_formatLocalDate() {
         assertFormatDate(LocalDate.of(2021, 11, 30), "2021-11-30");
@@ -34,7 +35,5 @@ public class DateTimeFormatterTest {
     private void assertFormatTime(LocalTime localTime, String expected) {
         Assert.assertEquals(dateTimeFormatter.formatLocalTime(localTime), expected);
     }
-
-    private final DateTimeFormatter dateTimeFormatter = new DateTimeFormatter();
 
 }

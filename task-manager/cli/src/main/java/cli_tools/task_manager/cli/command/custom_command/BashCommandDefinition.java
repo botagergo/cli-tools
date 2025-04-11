@@ -8,6 +8,8 @@ import lombok.Getter;
 @Getter
 public class BashCommandDefinition extends CustomCommandDefinition {
 
+    private final String bashCommand;
+    private final int timeoutMillis;
     @JsonCreator
     public BashCommandDefinition(
             @JsonProperty(value = "commandName", required = true) String commandName,
@@ -17,8 +19,5 @@ public class BashCommandDefinition extends CustomCommandDefinition {
         this.bashCommand = bashCommand;
         this.timeoutMillis = timeoutMillis;
     }
-
-    private final String bashCommand;
-    private final int timeoutMillis;
 
 }

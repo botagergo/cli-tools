@@ -28,6 +28,12 @@ import java.util.UUID;
 
 public class StringToPropertyConverter {
 
+    private final PropertyDescriptorService propertyDescriptorService;
+    private final LabelService labelService;
+    private final OrderedLabelService orderedLabelService;
+    private final TempIDManager tempIdManager;
+    private final DateTimeParser dateTimeParser;
+
     @Inject
     public StringToPropertyConverter(
             LabelService labelService,
@@ -40,6 +46,16 @@ public class StringToPropertyConverter {
         this.propertyDescriptorService = propertyDescriptorService;
         this.tempIdManager = tempIdManager;
         this.dateTimeParser = new DateTimeParser();
+    }
+
+    private static PropertyDescriptor.Subtype.OrderedLabelSubtype getOrderedLabelSubtype(PropertyDescriptor propertyDescriptor) throws StringToPropertyConverterException {
+        PropertyDescriptor.Subtype.IntegerSubtype integerSubtype = propertyDescriptor.getIntegerSubtypeUnchecked();
+        if (!(integerSubtype instanceof PropertyDescriptor.Subtype.OrderedLabelSubtype)) {
+            throw new StringToPropertyConverterException(StringToPropertyConverterException.Type.NoAssociatedLabel,
+                    "property '" + propertyDescriptor.name() + "' is not a label", propertyDescriptor.name());
+        }
+
+        return (PropertyDescriptor.Subtype.OrderedLabelSubtype) integerSubtype;
     }
 
     public List<FilterPropertySpec> convertPropertiesForFiltering(
@@ -187,7 +203,7 @@ public class StringToPropertyConverter {
             return Predicate.EQUALS;
         } else if (predicateStr.equals("contains")) {
             return Predicate.CONTAINS;
-        }  else if (predicateStr.equals("in")) {
+        } else if (predicateStr.equals("in")) {
             return Predicate.IN;
         } else if (predicateStr.equals("less")) {
             return Predicate.LESS;
@@ -296,21 +312,5 @@ public class StringToPropertyConverter {
             throw new StringToPropertyConverterException(StringToPropertyConverterException.Type.InvalidTime, "invalid time: " + propertyValueStr, propertyValueStr);
         }
     }
-
-    private static PropertyDescriptor.Subtype.OrderedLabelSubtype getOrderedLabelSubtype(PropertyDescriptor propertyDescriptor) throws StringToPropertyConverterException {
-        PropertyDescriptor.Subtype.IntegerSubtype integerSubtype = propertyDescriptor.getIntegerSubtypeUnchecked();
-        if (!(integerSubtype instanceof PropertyDescriptor.Subtype.OrderedLabelSubtype)) {
-            throw new StringToPropertyConverterException(StringToPropertyConverterException.Type.NoAssociatedLabel,
-                    "property '" + propertyDescriptor.name() + "' is not a label", propertyDescriptor.name());
-        }
-
-        return (PropertyDescriptor.Subtype.OrderedLabelSubtype) integerSubtype;
-    }
-
-    private final PropertyDescriptorService propertyDescriptorService;
-    private final LabelService labelService;
-    private final OrderedLabelService orderedLabelService;
-    private final TempIDManager tempIdManager;
-    private final DateTimeParser dateTimeParser;
 
 }

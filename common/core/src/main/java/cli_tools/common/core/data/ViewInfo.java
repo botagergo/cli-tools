@@ -10,6 +10,10 @@ public record ViewInfo(
         boolean hierarchical,
         boolean listDone
 ) {
+    public static Builder builder() {
+        return new Builder();
+    }
+
     public static class Builder {
         private SortingInfo sortingInfo;
         private FilterCriterionInfo filterCriterionInfo;
@@ -53,9 +57,5 @@ public record ViewInfo(
             this.listDone = listDone;
             return this;
         }
-    }
-
-    public static Builder builder() {
-        return new Builder();
     }
 }

@@ -7,5 +7,6 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public abstract class CustomCommandDefinition {
-    @JsonProperty(required = true) protected final String commandName;
+    @JsonProperty(required = true)
+    protected final String commandName;
 }

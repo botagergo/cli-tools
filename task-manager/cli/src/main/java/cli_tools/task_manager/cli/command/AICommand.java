@@ -1,7 +1,11 @@
 package cli_tools.task_manager.cli.command;
 
 import cli_tools.common.cli.command.Command;
+import cli_tools.common.core.data.OutputFormat;
 import cli_tools.common.core.util.Print;
+import cli_tools.task_manager.cli.TaskManagerContext;
+import cli_tools.task_manager.task.Task;
+import cli_tools.task_manager.task.service.TaskService;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.theokanning.openai.completion.chat.*;
@@ -9,10 +13,6 @@ import com.theokanning.openai.service.OpenAiService;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import cli_tools.common.core.data.OutputFormat;
-import cli_tools.task_manager.task.Task;
-import cli_tools.task_manager.task.service.TaskService;
-import cli_tools.task_manager.cli.TaskManagerContext;
 
 import java.io.IOException;
 import java.util.*;
@@ -21,6 +21,8 @@ import java.util.*;
 @Getter
 @Setter
 public final class AICommand extends Command {
+    private String command;
+
     @Override
     public void execute(cli_tools.common.cli.Context context) {
         try {
@@ -171,7 +173,5 @@ public final class AICommand extends Command {
             Print.printError(e.getMessage());
         }
     }
-
-    private String command;
 
 }

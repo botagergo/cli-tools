@@ -1,5 +1,11 @@
 package cli_tools.common.filter;
 
+import cli_tools.common.property_lib.PropertyDescriptor;
+import cli_tools.common.property_lib.PropertyException;
+import cli_tools.common.property_lib.PropertyManager;
+import cli_tools.common.property_lib.PropertyOwner;
+import cli_tools.common.util.RoundRobinUUIDGenerator;
+import cli_tools.common.util.Utils;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -8,18 +14,22 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.testng.collections.Sets;
-import cli_tools.common.util.RoundRobinUUIDGenerator;
-import cli_tools.common.util.Utils;
-import cli_tools.common.property_lib.PropertyDescriptor;
-import cli_tools.common.property_lib.PropertyException;
-import cli_tools.common.property_lib.PropertyManager;
-import cli_tools.common.property_lib.PropertyOwner;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 
 public class CollectionContainsFilterCriterionTest {
+
+    final RoundRobinUUIDGenerator uuidGenerator = new RoundRobinUUIDGenerator();
+    final UUID uuid1 = uuidGenerator.getUUID();
+    final UUID uuid2 = uuidGenerator.getUUID();
+    final UUID uuid3 = uuidGenerator.getUUID();
+    final UUID uuid4 = uuidGenerator.getUUID();
+    @Mock
+    private PropertyOwner propertyOwner;
+    @InjectMocks
+    private PropertyManager propertyManager;
 
     public CollectionContainsFilterCriterionTest() {
         MockitoAnnotations.openMocks(this);
@@ -126,14 +136,4 @@ public class CollectionContainsFilterCriterionTest {
         propertyManager.getPropertyDescriptorCollection().addPropertyDescriptor(new PropertyDescriptor(name,
                 type, null, multiplicity, null, null));
     }
-
-    @Mock
-    private PropertyOwner propertyOwner;
-    @InjectMocks
-    private PropertyManager propertyManager;
-    final RoundRobinUUIDGenerator uuidGenerator = new RoundRobinUUIDGenerator();
-    final UUID uuid1 = uuidGenerator.getUUID();
-    final UUID uuid2 = uuidGenerator.getUUID();
-    final UUID uuid3 = uuidGenerator.getUUID();
-    final UUID uuid4 = uuidGenerator.getUUID();
 }

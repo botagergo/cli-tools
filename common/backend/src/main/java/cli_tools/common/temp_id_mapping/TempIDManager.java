@@ -1,8 +1,13 @@
 package cli_tools.common.temp_id_mapping;
 
-import java.util.*;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.UUID;
 
 public class TempIDManager {
+
+    protected TempIDMappings tempIDMappings = new TempIDMappings();
 
     public int getOrCreateID(UUID uuid) {
         int id = tempIDMappings.mappings.getOrDefault(uuid, -1);
@@ -43,8 +48,6 @@ public class TempIDManager {
         tempIDMappings.nextID = 1;
         tempIDMappings.freeIDs.clear();
     }
-
-    protected TempIDMappings tempIDMappings = new TempIDMappings();
 
 
 }

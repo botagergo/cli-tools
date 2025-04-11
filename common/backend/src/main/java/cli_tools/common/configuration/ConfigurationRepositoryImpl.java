@@ -1,5 +1,6 @@
 package cli_tools.common.configuration;
 
+import cli_tools.common.core.repository.ConfigurationRepository;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import lombok.extern.log4j.Log4j2;
@@ -9,14 +10,15 @@ import org.github.gestalt.config.exceptions.GestaltException;
 import org.github.gestalt.config.reflect.TypeCapture;
 import org.github.gestalt.config.source.FileConfigSourceBuilder;
 import shadow.org.codehaus.plexus.util.ExceptionUtils;
-import cli_tools.common.core.repository.ConfigurationRepository;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.Map;
 
 @Log4j2
 public class ConfigurationRepositoryImpl implements ConfigurationRepository {
+
+    private final Gestalt gestalt;
 
     @Inject
     public ConfigurationRepositoryImpl(@Named("configurationYamlFile") File configFile) throws IOException {
@@ -47,20 +49,22 @@ public class ConfigurationRepositoryImpl implements ConfigurationRepository {
         return getProperty("allowCommandPrefix", Boolean.class, true);
     }
 
-    public String openAiModel() { return getProperty("openAiModel", String.class, null); }
+    public String openAiModel() {
+        return getProperty("openAiModel", String.class, null);
+    }
 
     public String openAiApiKey() {
         return getProperty("openAiApiKey", String.class, null);
     }
 
     public Map<String, String> commandAliases() {
-        return getPropertyWithGenericType("commandAliases", new TypeCapture<>() {}, Map.of());
+        return getPropertyWithGenericType("commandAliases", new TypeCapture<>() {
+        }, Map.of());
     }
 
     public boolean disableConfirmation() {
         return getProperty("disableConfirmation", Boolean.class, false);
     }
-
 
     public void reload() throws IOException {
         try {
@@ -93,7 +97,5 @@ public class ConfigurationRepositoryImpl implements ConfigurationRepository {
         log.trace(e.getMessage());
         log.trace(ExceptionUtils.getStackTrace(e));
     }
-
-    private final Gestalt gestalt;
 
 }

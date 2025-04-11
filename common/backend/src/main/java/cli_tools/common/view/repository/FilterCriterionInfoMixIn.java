@@ -1,14 +1,14 @@
 package cli_tools.common.view.repository;
 
+import cli_tools.common.core.data.FilterCriterionInfo;
+import cli_tools.common.core.data.Predicate;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import cli_tools.common.core.data.FilterCriterionInfo;
-import cli_tools.common.core.data.Predicate;
 
 import java.util.List;
 
-@JsonPropertyOrder({ "name", "type", "property", "children", "predicate", "predicateNegated", "operands" })
+@JsonPropertyOrder({"name", "type", "property", "children", "predicate", "predicateNegated", "operands"})
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public record FilterCriterionInfoMixIn(
         String name,
@@ -18,4 +18,5 @@ public record FilterCriterionInfoMixIn(
         Predicate predicate,
         Predicate predicateNegated,
         List<Object> operands
-) { }
+) {
+}

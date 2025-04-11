@@ -1,10 +1,10 @@
 package cli_tools.common.view.repository;
 
+import cli_tools.common.core.data.FilterCriterionInfo;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonMappingException;
-import cli_tools.common.core.data.FilterCriterionInfo;
 
 import java.io.IOException;
 
@@ -18,7 +18,7 @@ public class FilterCriterionInfoDeserializer extends JsonDeserializer<FilterCrit
             if (filterCriterionInfo.children() == null) {
                 throw JsonMappingException.from(ctxt, "'children' field is required for AND/OR filter criterion");
             }
-        } else if (filterCriterionInfo.type() == FilterCriterionInfo.Type.NOT ) {
+        } else if (filterCriterionInfo.type() == FilterCriterionInfo.Type.NOT) {
             if (filterCriterionInfo.children() == null) {
                 throw JsonMappingException.from(ctxt, "'children' field is required for NOT filter criterion");
             } else if (filterCriterionInfo.children().size() != 1) {

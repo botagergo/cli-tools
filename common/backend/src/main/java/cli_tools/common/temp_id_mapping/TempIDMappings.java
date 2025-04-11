@@ -10,10 +10,10 @@ import java.util.UUID;
 @JsonSerialize
 @AllArgsConstructor
 public class TempIDMappings {
-    public TempIDMappings() {
-        this(new HashMap<>(), new TreeSet<>(), 1);
-    }
     public HashMap<UUID, Integer> mappings;
     public TreeSet<Integer> freeIDs;
     public int nextID;
+    public TempIDMappings() {
+        this(new HashMap<>(), new TreeSet<>(), 1);
+    }
 }

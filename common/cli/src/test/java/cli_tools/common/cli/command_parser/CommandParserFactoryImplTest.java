@@ -13,9 +13,14 @@ import org.testng.annotations.Test;
 
 import java.util.Map;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNull;
 
 public class CommandParserFactoryImplTest {
+    @Mock
+    ConfigurationRepository configurationRepository;
+    CommandParserFactoryImpl commandParserFactory;
+
     @BeforeClass
     public void initMocks() {
         MockitoAnnotations.openMocks(this);
@@ -77,14 +82,12 @@ public class CommandParserFactoryImplTest {
     private CommandParser getTestCommandParser(String name) {
         return new TestCommandParser(name);
     }
-
-    @Mock
-    ConfigurationRepository configurationRepository;
-    CommandParserFactoryImpl commandParserFactory;
 }
 
 @AllArgsConstructor
 class TestCommandParser extends CommandParser {
+
+    public final String name;
 
     @Override
     public Command parse(Context context, ArgumentList argList) throws CommandParserException {
@@ -95,7 +98,5 @@ class TestCommandParser extends CommandParser {
             }
         };
     }
-
-    public final String name;
 
 }

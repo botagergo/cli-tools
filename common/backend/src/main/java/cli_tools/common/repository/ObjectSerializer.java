@@ -6,7 +6,10 @@ import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 
 import java.io.IOException;
 import java.io.NotSerializableException;
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 
 public class ObjectSerializer extends StdSerializer<Object> {
 

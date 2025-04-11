@@ -1,16 +1,16 @@
 package cli_tools.common.view.repository;
 
+import cli_tools.common.core.data.FilterCriterionInfo;
+import cli_tools.common.core.data.OutputFormat;
+import cli_tools.common.core.data.SortingInfo;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import cli_tools.common.core.data.FilterCriterionInfo;
-import cli_tools.common.core.data.OutputFormat;
-import cli_tools.common.core.data.SortingInfo;
 
 import java.util.List;
 
-@JsonPropertyOrder({ "name", "sort", "filter" })
+@JsonPropertyOrder({"name", "sort", "filter"})
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public record ViewInfoMixIn(
         @JsonProperty("sort")
@@ -26,4 +26,5 @@ public record ViewInfoMixIn(
         boolean hierarchical,
         @JsonProperty(value = "listDone", defaultValue = "false")
         boolean listDone
-) {}
+) {
+}

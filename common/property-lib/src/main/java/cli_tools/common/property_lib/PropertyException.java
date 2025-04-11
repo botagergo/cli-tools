@@ -5,6 +5,12 @@ import lombok.Getter;
 @Getter
 public class PropertyException extends Exception {
 
+    final Type exceptionType;
+    final String propertyName;
+    final PropertyDescriptor propertyDescriptor;
+    final Object propertyValue;
+    final PropertyDescriptor.Type requestedType;
+    final String requestedSubtype;
     public PropertyException(Type exceptionType, String propertyName,
                              PropertyDescriptor propertyDescriptor, Object propertyValue,
                              PropertyDescriptor.Type requestedType, String requestedSubtype) {
@@ -43,13 +49,6 @@ public class PropertyException extends Exception {
             return null;
         }
     }
-
-    final Type exceptionType;
-    final String propertyName;
-    final PropertyDescriptor propertyDescriptor;
-    final Object propertyValue;
-    final PropertyDescriptor.Type requestedType;
-    final String requestedSubtype;
 
     public enum Type {
         NotExist, TypeMismatch, WrongValueType, NotACollection, WrongMultiplicity, MultipleMatches, SubtypeMismatch

@@ -1,15 +1,19 @@
 package cli_tools.common.service;
 
-import org.testng.annotations.Test;
 import cli_tools.common.property_comparator.PropertyComparator;
-import cli_tools.common.util.RoundRobinUUIDGenerator;
 import cli_tools.common.property_lib.Property;
 import cli_tools.common.property_lib.PropertyDescriptor;
+import cli_tools.common.util.RoundRobinUUIDGenerator;
+import org.testng.annotations.Test;
 
 import static org.testng.Assert.*;
 
 @SuppressWarnings("ResultOfMethodCallIgnored")
 public class PropertyComparatorTest {
+
+    final PropertyComparator nullsFirstPropertyComparator = new PropertyComparator(true);
+    final PropertyComparator nullsLastPropertyComparator = new PropertyComparator(false);
+    final RoundRobinUUIDGenerator uuidGenerator = new RoundRobinUUIDGenerator();
 
     @Test
     public void test_compare_string() {
@@ -126,10 +130,5 @@ public class PropertyComparatorTest {
                         null, null),
                 null);
     }
-
-
-    final PropertyComparator nullsFirstPropertyComparator = new PropertyComparator(true);
-    final PropertyComparator nullsLastPropertyComparator = new PropertyComparator(false);
-    final RoundRobinUUIDGenerator uuidGenerator = new RoundRobinUUIDGenerator();
 
 }

@@ -13,8 +13,11 @@ import static org.testng.Assert.*;
 
 public class JsonRepositoryTest {
 
+    private final JsonRepositoryCreator rc;
+    private SimpleJsonRepository<ArrayList<Integer>> repository;
+
     public JsonRepositoryTest() throws IOException {
-         rc = new JsonRepositoryCreator(Files.createTempDirectory("testng"));
+        rc = new JsonRepositoryCreator(Files.createTempDirectory("testng"));
     }
 
     @Test
@@ -64,8 +67,5 @@ public class JsonRepositoryTest {
         repository.writeData();
         assertTrue(jsonFile.exists());
     }
-
-    private SimpleJsonRepository<ArrayList<Integer>> repository;
-    private final JsonRepositoryCreator rc;
 
 }

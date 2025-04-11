@@ -7,6 +7,8 @@ import java.util.Map;
 
 public class PropertyDescriptorCollection {
 
+    private final HashMap<String, PropertyDescriptor> propertyDescriptors;
+
     public PropertyDescriptorCollection() {
         this.propertyDescriptors = new HashMap<>();
     }
@@ -34,7 +36,5 @@ public class PropertyDescriptorCollection {
     public PropertyDescriptor get(String name) {
         return propertyDescriptors.getOrDefault(name, null);
     }
-
-    private final HashMap<String, PropertyDescriptor> propertyDescriptors;
 
 }

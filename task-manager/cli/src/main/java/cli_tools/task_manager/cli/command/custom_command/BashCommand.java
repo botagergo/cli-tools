@@ -27,6 +27,11 @@ import java.util.concurrent.TimeUnit;
 @Log4j2
 public class BashCommand extends CustomCommand {
 
+    private final String bashCommand;
+    private final int timeoutMillis;
+    private List<@NonNull Integer> tempIDs;
+    private List<@NonNull PropertyArgument> filterPropertyArgs;
+
     @Override
     public void execute(Context context) {
         TaskManagerContext taskManagerContext = (TaskManagerContext) context;
@@ -56,14 +61,9 @@ public class BashCommand extends CustomCommand {
                 String propertyName = entry.getKey();
                 PropertyDescriptor propertyDescriptor = context.getPropertyManager().getPropertyDescriptor(propertyName);
                 String propertyValueStr = context.getPropertyToStringConverter().propertyToString(propertyName, Property.from(propertyDescriptor, entry.getValue()));
-                env.put("TASK_" + i + "_" + propertyName.toUpperCase(),  propertyValueStr);
+                env.put("TASK_" + i + "_" + propertyName.toUpperCase(), propertyValueStr);
             }
         }
     }
-
-    private List<@NonNull Integer> tempIDs;
-    private List<@NonNull PropertyArgument> filterPropertyArgs;
-    private final String bashCommand;
-    private final int timeoutMillis;
 
 }

@@ -16,10 +16,6 @@ import java.util.List;
 import java.util.Set;
 
 public abstract class FilterCriterion {
-    public boolean check(PropertyOwner propertyOwner, PropertyManager propertyManager) throws PropertyException, IOException {
-        return check_(propertyOwner, propertyManager);
-    }
-
     public static FilterCriterion from(FilterPropertySpec filterPropertySpec) throws IllegalArgumentException {
         List<Object> operand = filterPropertySpec.operand();
         return create(filterPropertySpec.propertyDescriptor(), filterPropertySpec.predicate(), filterPropertySpec.negate(), operand);
@@ -29,7 +25,7 @@ public abstract class FilterCriterion {
             @NonNull FilterCriterionInfo filterCriterionInfo,
             @NonNull PropertyManager propertyManager,
             @NonNull PropertyConverter propertyConverter
-            ) throws PropertyException, IOException, PropertyConverterException, IllegalArgumentException {
+    ) throws PropertyException, IOException, PropertyConverterException, IllegalArgumentException {
         switch (filterCriterionInfo.type()) {
             case PROPERTY -> {
                 PropertyDescriptor propertyDescriptor = propertyManager.getPropertyDescriptor(filterCriterionInfo.propertyName());
@@ -97,10 +93,14 @@ public abstract class FilterCriterion {
             }
             Property property = Property.fromUnchecked(propertyDescriptor, operand.get(0));
             switch (predicate) {
-                case LESS -> filterCriterion =  new LessFilterCriterion(propertyName, property, new PropertyComparator(true));
-                case LESS_EQUAL -> filterCriterion = new LessEqualFilterCriterion(propertyName, property, new PropertyComparator(true));
-                case GREATER -> filterCriterion = new GreaterFilterCriterion(propertyName, property, new PropertyComparator(false));
-                case GREATER_EQUAL -> filterCriterion = new GreaterEqualFilterCriterion(propertyName, property, new PropertyComparator(false));
+                case LESS ->
+                        filterCriterion = new LessFilterCriterion(propertyName, property, new PropertyComparator(true));
+                case LESS_EQUAL ->
+                        filterCriterion = new LessEqualFilterCriterion(propertyName, property, new PropertyComparator(true));
+                case GREATER ->
+                        filterCriterion = new GreaterFilterCriterion(propertyName, property, new PropertyComparator(false));
+                case GREATER_EQUAL ->
+                        filterCriterion = new GreaterEqualFilterCriterion(propertyName, property, new PropertyComparator(false));
             }
         } else {
             switch (predicate) {
@@ -132,6 +132,9 @@ public abstract class FilterCriterion {
         }
     }
 
+    public boolean check(PropertyOwner propertyOwner, PropertyManager propertyManager) throws PropertyException, IOException {
+        return check_(propertyOwner, propertyManager);
+    }
 
     protected abstract boolean check_(PropertyOwner propertyOwner, PropertyManager propertyManager) throws PropertyException, IOException;
 

@@ -1,15 +1,15 @@
 package cli_tools.common.view.repository;
 
-import cli_tools.common.repository.SimpleJsonRepository;
-import com.fasterxml.jackson.databind.JavaType;
-import com.fasterxml.jackson.databind.type.TypeFactory;
-import jakarta.inject.Inject;
-import jakarta.inject.Named;
 import cli_tools.common.core.data.FilterCriterionInfo;
 import cli_tools.common.core.data.SortingCriterion;
 import cli_tools.common.core.data.SortingInfo;
 import cli_tools.common.core.data.ViewInfo;
 import cli_tools.common.core.repository.ViewInfoRepository;
+import cli_tools.common.repository.SimpleJsonRepository;
+import com.fasterxml.jackson.databind.JavaType;
+import com.fasterxml.jackson.databind.type.TypeFactory;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 
 import java.io.File;
 import java.io.IOException;
@@ -28,7 +28,7 @@ public class JsonViewInfoRepository extends SimpleJsonRepository<HashMap<String,
 
     @Override
     public ViewInfo get(String name) throws IOException {
-          return getData().getOrDefault(name, null);
+        return getData().getOrDefault(name, null);
     }
 
     @Override
@@ -44,12 +44,12 @@ public class JsonViewInfoRepository extends SimpleJsonRepository<HashMap<String,
     }
 
     @Override
-    public HashMap<String, ViewInfo> getEmptyData() {
-        return new HashMap<>();
+    protected JavaType constructType(TypeFactory typeFactory) {
+        return typeFactory.constructMapType(HashMap.class, String.class, ViewInfo.class);
     }
 
     @Override
-    protected JavaType constructType(TypeFactory typeFactory) {
-        return typeFactory.constructMapType(HashMap.class, String.class, ViewInfo.class);
+    public HashMap<String, ViewInfo> getEmptyData() {
+        return new HashMap<>();
     }
 }

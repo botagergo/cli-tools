@@ -1,7 +1,7 @@
 package cli_tools.common.service;
 
-import lombok.AllArgsConstructor;
 import cli_tools.common.repository.SimpleJsonRepository;
+import lombok.AllArgsConstructor;
 
 import java.io.File;
 import java.io.IOException;
@@ -12,6 +12,8 @@ import java.util.ArrayList;
 
 @AllArgsConstructor
 public class JsonRepositoryCreator {
+
+    private Path tempDir;
 
     public SimpleJsonRepository<ArrayList<Integer>> createRepository(String fileName, String fileContent) throws IOException {
         return new SimpleJsonRepositoryImpl(makeTempFile(fileName, fileContent));
@@ -32,7 +34,5 @@ public class JsonRepositoryCreator {
     public File getTempFile(String name) {
         return Paths.get(tempDir.toString(), name + ".json").toFile();
     }
-
-    private Path tempDir;
 
 }

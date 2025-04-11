@@ -1,11 +1,13 @@
 package cli_tools.common.filter;
 
-import lombok.Getter;
 import cli_tools.common.property_lib.Property;
 import cli_tools.common.property_lib.PropertyException;
+import lombok.Getter;
 
 @Getter
 public class ContainsCaseInsensitiveFilterCriterion extends PropertyFilterCriterion {
+
+    private final String operand;
 
     public ContainsCaseInsensitiveFilterCriterion(
             String propertyName,
@@ -22,7 +24,5 @@ public class ContainsCaseInsensitiveFilterCriterion extends PropertyFilterCriter
         String propertyValueStr = property.getString();
         return propertyValueStr.toLowerCase().contains(operand.toLowerCase());
     }
-
-    private final String operand;
 
 }

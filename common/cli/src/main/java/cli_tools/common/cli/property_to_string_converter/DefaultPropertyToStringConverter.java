@@ -1,19 +1,19 @@
 package cli_tools.common.cli.property_to_string_converter;
 
 import cli_tools.common.cli.DateTimeFormatter;
+import cli_tools.common.core.data.Label;
+import cli_tools.common.core.data.OrderedLabel;
+import cli_tools.common.core.repository.LabelRepositoryFactory;
 import cli_tools.common.label.service.LabelService;
 import cli_tools.common.ordered_label.service.OrderedLabelService;
+import cli_tools.common.property_lib.Property;
+import cli_tools.common.property_lib.PropertyDescriptor;
+import cli_tools.common.property_lib.PropertyException;
 import jakarta.inject.Inject;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.NotImplementedException;
-import cli_tools.common.core.data.Label;
-import cli_tools.common.core.data.OrderedLabel;
-import cli_tools.common.core.repository.LabelRepositoryFactory;
-import cli_tools.common.property_lib.Property;
-import cli_tools.common.property_lib.PropertyDescriptor;
-import cli_tools.common.property_lib.PropertyException;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -29,6 +29,14 @@ import java.util.stream.Stream;
 @Setter
 @Log4j2
 public class DefaultPropertyToStringConverter implements PropertyToStringConverter {
+    private String listSeparator = ", ";
+    private String nullString = "";
+    private String nullStringInList = "<null>";
+    private LabelRepositoryFactory labelRepositoryFactory;
+    private LabelService labelService;
+    private OrderedLabelService orderedLabelService;
+    private DateTimeFormatter dateTimeFormatter;
+
     @Inject
     public DefaultPropertyToStringConverter(
             LabelService labelService,
@@ -209,7 +217,7 @@ public class DefaultPropertyToStringConverter implements PropertyToStringConvert
     private String integerStreamToString(Stream<Integer> integers, boolean sort) {
         var stream = integers.map(integer -> integer == null ? nullStringInList : integer.toString());
         if (sort) {
-             stream = stream.sorted();
+            stream = stream.sorted();
         }
         return stream.collect(Collectors.joining(listSeparator));
     }
@@ -293,12 +301,4 @@ public class DefaultPropertyToStringConverter implements PropertyToStringConvert
             return "<INVALID_TIME:" + property.getStringUnchecked() + ">";
         }
     }
-
-    private String listSeparator = ", ";
-    private String nullString = "";
-    private String nullStringInList = "<null>";
-    private LabelRepositoryFactory labelRepositoryFactory;
-    private LabelService labelService;
-    private OrderedLabelService orderedLabelService;
-    private DateTimeFormatter dateTimeFormatter;
 }

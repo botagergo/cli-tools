@@ -1,8 +1,8 @@
 package cli_tools.common.filter;
 
-import lombok.Getter;
 import cli_tools.common.core.data.Predicate;
 import cli_tools.common.property_lib.PropertyDescriptor;
+import lombok.Getter;
 
 @Getter
 public class FilterCriterionException extends Exception {
@@ -11,6 +11,7 @@ public class FilterCriterionException extends Exception {
     final Predicate predicate;
 
     final Type exceptionType;
+
     public FilterCriterionException(Type exceptionType, PropertyDescriptor propertyDescriptor, Predicate predicate) {
         super(getMsg(exceptionType, propertyDescriptor, predicate));
 

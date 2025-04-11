@@ -1,11 +1,11 @@
 package cli_tools.common.ordered_label.repository;
 
+import cli_tools.common.core.repository.OrderedLabelRepository;
+import cli_tools.common.core.repository.OrderedLabelRepositoryFactory;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import jakarta.inject.Singleton;
 import lombok.NonNull;
-import cli_tools.common.core.repository.OrderedLabelRepository;
-import cli_tools.common.core.repository.OrderedLabelRepositoryFactory;
 
 import java.io.File;
 import java.nio.file.Paths;

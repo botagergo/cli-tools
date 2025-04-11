@@ -3,6 +3,7 @@ package cli_tools.task_manager.task.repository;
 import cli_tools.common.repository.JsonRepository;
 import cli_tools.common.repository.MapDeserializer;
 import cli_tools.common.repository.MapSerializer;
+import cli_tools.task_manager.task.Task;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.type.TypeFactory;
@@ -10,7 +11,6 @@ import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import jakarta.inject.Singleton;
 import lombok.NonNull;
-import cli_tools.task_manager.task.Task;
 
 import java.io.File;
 import java.io.IOException;
@@ -59,11 +59,6 @@ public class JsonTaskRepository extends JsonRepository<List<HashMap<String, Obje
     }
 
     @Override
-    protected List<HashMap<String, Object>> getEmptyData() {
-        return new ArrayList<>();
-    }
-
-    @Override
     public Task update(@NonNull UUID taskUuid, @NonNull Task task) throws IOException {
         List<Task> tasks = getData();
 
@@ -105,6 +100,11 @@ public class JsonTaskRepository extends JsonRepository<List<HashMap<String, Obje
     @Override
     protected JavaType constructType(TypeFactory typeFactory) {
         return typeFactory.constructCollectionType(ArrayList.class, HashMap.class);
+    }
+
+    @Override
+    protected List<HashMap<String, Object>> getEmptyData() {
+        return new ArrayList<>();
     }
 
     @Override

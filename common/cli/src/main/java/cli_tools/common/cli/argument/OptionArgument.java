@@ -7,4 +7,5 @@ import java.util.List;
 public record OptionArgument(
         @NonNull String optionName,
         List<String> values
-) { }
+) {
+}

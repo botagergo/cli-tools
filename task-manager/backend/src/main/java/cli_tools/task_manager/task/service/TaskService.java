@@ -1,14 +1,14 @@
 package cli_tools.task_manager.task.service;
 
-import lombok.NonNull;
 import cli_tools.common.core.data.FilterCriterionInfo;
 import cli_tools.common.core.data.SortingInfo;
-import cli_tools.task_manager.task.Task;
-import cli_tools.task_manager.task.PropertyOwnerTree;
 import cli_tools.common.core.data.property.FilterPropertySpec;
 import cli_tools.common.filter.FilterCriterionException;
 import cli_tools.common.property_converter.PropertyConverterException;
 import cli_tools.common.property_lib.PropertyException;
+import cli_tools.task_manager.task.PropertyOwnerTree;
+import cli_tools.task_manager.task.Task;
+import lombok.NonNull;
 
 import java.io.IOException;
 import java.util.List;

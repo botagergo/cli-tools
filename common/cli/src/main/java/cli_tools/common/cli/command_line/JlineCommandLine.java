@@ -1,22 +1,27 @@
 package cli_tools.common.cli.command_line;
 
 import cli_tools.common.cli.Context;
-import lombok.AllArgsConstructor;
-import org.jline.reader.*;
-import org.jline.reader.LineReader.Option;
-import org.jline.terminal.Terminal;
-import org.jline.terminal.TerminalBuilder;
 import cli_tools.common.property_lib.PropertyDescriptor;
 import cli_tools.common.property_lib.PropertyDescriptorCollection;
+import lombok.AllArgsConstructor;
+import org.jline.reader.LineReader;
+import org.jline.reader.LineReader.Option;
+import org.jline.reader.LineReaderBuilder;
+import org.jline.reader.UserInterruptException;
+import org.jline.terminal.Terminal;
+import org.jline.terminal.TerminalBuilder;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.List;
 
 import static cli_tools.common.cli.Util.strip;
 
 @AllArgsConstructor
 public class JlineCommandLine implements CommandLine {
+
+    private final Executor executor;
+    private final Path basePath;
 
     @Override
     public void run() throws IOException {
@@ -65,8 +70,5 @@ public class JlineCommandLine implements CommandLine {
     private Completer buildCompleter(Context context) {
         return new Completer(context);
     }
-
-    private final Executor executor;
-    private final Path basePath;
 
 }

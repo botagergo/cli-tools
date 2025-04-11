@@ -10,12 +10,12 @@ public class Parser extends DefaultParser {
     }
 
     @Override
-    public boolean isDelimiterChar(CharSequence buffer, int pos) {
-        return Character.isWhitespace(buffer.charAt(pos));
+    public boolean validCommandName(String name) {
+        return true;
     }
 
     @Override
-    public boolean validCommandName(String name) {
-        return true;
+    public boolean isDelimiterChar(CharSequence buffer, int pos) {
+        return Character.isWhitespace(buffer.charAt(pos));
     }
 }

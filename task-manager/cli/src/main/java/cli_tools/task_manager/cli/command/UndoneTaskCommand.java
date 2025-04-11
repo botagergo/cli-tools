@@ -20,6 +20,9 @@ import java.util.UUID;
 @Setter
 public final class UndoneTaskCommand extends Command {
 
+    private List<@NonNull Integer> tempIDs;
+    private List<@NonNull PropertyArgument> filterPropertyArgs;
+
     @Override
     public void execute(cli_tools.common.cli.Context context) {
         log.traceEntry();
@@ -51,8 +54,5 @@ public final class UndoneTaskCommand extends Command {
             log.error("{}\n{}", e.getMessage(), ExceptionUtils.getStackTrace(e));
         }
     }
-
-    private List<@NonNull Integer> tempIDs;
-    private List<@NonNull PropertyArgument> filterPropertyArgs;
 
 }

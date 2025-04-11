@@ -25,7 +25,7 @@ public enum Predicate {
             case LESS, LESS_EQUAL, GREATER, GREATER_EQUAL -> {
                 return propertyDescriptor.multiplicity() == PropertyDescriptor.Multiplicity.SINGLE &&
                         (propertyDescriptor.type() == PropertyDescriptor.Type.Integer ||
-                         propertyDescriptor.type() == PropertyDescriptor.Type.String);
+                                propertyDescriptor.type() == PropertyDescriptor.Type.String);
             }
             default -> {
                 return true;

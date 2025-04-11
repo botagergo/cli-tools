@@ -1,17 +1,17 @@
 package cli_tools.task_manager.cli.command_parser;
 
-import cli_tools.common.cli.command_parser.CommandParserException;
-import cli_tools.common.core.data.OutputFormat;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.testng.annotations.Test;
-import cli_tools.common.core.data.SortingCriterion;
-import cli_tools.common.core.data.property.Affinity;
 import cli_tools.common.cli.argument.ArgumentList;
 import cli_tools.common.cli.argument.OptionArgument;
 import cli_tools.common.cli.argument.PropertyArgument;
 import cli_tools.common.cli.argument.SpecialArgument;
+import cli_tools.common.cli.command_parser.CommandParserException;
+import cli_tools.common.core.data.OutputFormat;
+import cli_tools.common.core.data.SortingCriterion;
+import cli_tools.common.core.data.property.Affinity;
 import cli_tools.task_manager.cli.TaskManagerContext;
 import cli_tools.task_manager.cli.command.ListTasksCommand;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.testng.annotations.Test;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -19,6 +19,9 @@ import java.util.List;
 import static org.testng.Assert.*;
 
 public class ListTasksCommandParserTest {
+
+    private final ListTasksCommandParser parser = new ListTasksCommandParser();
+    private final TaskManagerContext context = new TaskManagerContext();
 
     @Test
     public void test_parse_noArgs() throws CommandParserException {
@@ -199,7 +202,4 @@ public class ListTasksCommandParserTest {
         argList.setFilterPropertyArguments(filterPropertyArgs);
         return argList;
     }
-
-    private final ListTasksCommandParser parser = new ListTasksCommandParser();
-    private final TaskManagerContext context = new TaskManagerContext();
 }

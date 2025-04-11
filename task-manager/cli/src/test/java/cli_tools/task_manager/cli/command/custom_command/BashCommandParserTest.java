@@ -69,7 +69,7 @@ public class BashCommandParserTest {
 
         Assert.assertEquals(command.getTempIDs(), List.of(1, 2));
         Assert.assertEquals(command.getFilterPropertyArgs(), List.of(
-                        new PropertyArgument(Affinity.POSITIVE, "prop", null, List.of("value"))));
+                new PropertyArgument(Affinity.POSITIVE, "prop", null, List.of("value"))));
         Assert.assertEquals(command.getBashCommand(), "echo $TASK_0_NAME");
     }
 }

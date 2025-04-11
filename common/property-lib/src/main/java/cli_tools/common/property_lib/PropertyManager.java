@@ -15,6 +15,8 @@ import java.util.stream.Stream;
 @Log4j2
 public class PropertyManager {
 
+    private PropertyDescriptorCollection propertyDescriptorCollection;
+
     public PropertyManager() {
         this.propertyDescriptorCollection = new PropertyDescriptorCollection();
     }
@@ -80,10 +82,11 @@ public class PropertyManager {
             } else {
                 // Disable this inspection as toUnmodifiableSet doesn't work with null values
                 // noinspection FuseStreamOperations
-                newProperty = Collections.unmodifiableSet(Stream.concat(origSet.stream(), propertyValue.stream()).collect(Collectors.toSet()));            }
+                newProperty = Collections.unmodifiableSet(Stream.concat(origSet.stream(), propertyValue.stream()).collect(Collectors.toSet()));
+            }
         } else {
             throw new PropertyException(PropertyException.Type.NotACollection,
-                origProperty.getPropertyDescriptor().name(), origProperty.getPropertyDescriptor(), null, null, null);
+                    origProperty.getPropertyDescriptor().name(), origProperty.getPropertyDescriptor(), null, null, null);
         }
 
         propertyOwner.getProperties().put(propertyName, newProperty);
@@ -136,7 +139,5 @@ public class PropertyManager {
                                     PropertyDescriptor propertyDescriptor) {
         return propertyOwner.getProperties().get(propertyDescriptor.name());
     }
-
-    private PropertyDescriptorCollection propertyDescriptorCollection;
 
 }

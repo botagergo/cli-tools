@@ -1,13 +1,16 @@
 package cli_tools.task_manager.cli.command_parser;
 
-import org.testng.annotations.Test;
 import cli_tools.common.cli.argument.ArgumentList;
 import cli_tools.task_manager.cli.TaskManagerContext;
 import cli_tools.task_manager.cli.command.ClearCommand;
+import org.testng.annotations.Test;
 
 import static org.testng.Assert.assertNotNull;
 
 public class ClearCommandParserTest {
+
+    private final ClearCommandParser parser = new ClearCommandParser();
+    private final TaskManagerContext context = new TaskManagerContext();
 
     @Test
     public void test_parse_noArgs() {
@@ -20,8 +23,5 @@ public class ClearCommandParserTest {
         argList.setCommandName("clear");
         return argList;
     }
-
-    private final ClearCommandParser parser = new ClearCommandParser();
-    private final TaskManagerContext context = new TaskManagerContext();
 
 }

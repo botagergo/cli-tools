@@ -3,7 +3,10 @@ package cli_tools.task_manager.task.service;
 import cli_tools.common.core.data.FilterCriterionInfo;
 import cli_tools.common.core.data.SortingInfo;
 import cli_tools.common.core.data.property.FilterPropertySpec;
-import cli_tools.common.filter.*;
+import cli_tools.common.filter.AndFilterCriterion;
+import cli_tools.common.filter.Filter;
+import cli_tools.common.filter.FilterCriterion;
+import cli_tools.common.filter.SimpleFilter;
 import cli_tools.common.property_comparator.PropertyNotComparableException;
 import cli_tools.common.property_converter.PropertyConverter;
 import cli_tools.common.property_converter.PropertyConverterException;
@@ -13,8 +16,8 @@ import cli_tools.common.property_lib.PropertyManager;
 import cli_tools.common.sorter.PropertySorter;
 import cli_tools.common.temp_id_mapping.TempIDManager;
 import cli_tools.common.util.UUIDGenerator;
-import cli_tools.task_manager.task.Task;
 import cli_tools.task_manager.task.PropertyOwnerTree;
+import cli_tools.task_manager.task.Task;
 import cli_tools.task_manager.task.repository.TaskRepository;
 import jakarta.inject.Inject;
 import lombok.AllArgsConstructor;
@@ -32,6 +35,13 @@ import java.util.stream.Stream;
 @Setter
 @Log4j2
 public class TaskServiceImpl implements TaskService {
+
+    private TaskRepository taskRepository;
+    private TaskRepository doneTaskRepository;
+    private PropertyManager propertyManager;
+    private UUIDGenerator uuidGenerator;
+    private PropertyConverter propertyConverter;
+    private TempIDManager tempIdManager;
 
     @Override
     public @NonNull Task addTask(@NonNull Task task) throws IOException {
@@ -114,7 +124,6 @@ public class TaskServiceImpl implements TaskService {
         return tasks;
     }
 
-
     @Override
     public List<PropertyOwnerTree> getTaskTrees(
             List<FilterPropertySpec> propertySpecs,
@@ -141,6 +150,12 @@ public class TaskServiceImpl implements TaskService {
         }
 
         return taskTrees;
+    }
+
+    @Override
+    public void deleteAllTasks() throws IOException {
+        taskRepository.deleteAll();
+        tempIdManager.deleteAll();
     }
 
     private PropertyOwnerTree getTaskTree(List<PropertyOwnerTree> taskTrees, Map<UUID, PropertyOwnerTree> taskTreeMap, Task task) throws IOException, PropertyException, TaskServiceException {
@@ -255,7 +270,6 @@ public class TaskServiceImpl implements TaskService {
         return tasks;
     }
 
-
     private List<PropertyOwnerTree> sortTaskTrees(List<PropertyOwnerTree> taskTrees, PropertySorter<PropertyOwnerTree> propertySorter, PropertyManager propertyManager) throws PropertyException, PropertyNotComparableException, IOException {
         taskTrees = propertySorter.sort(taskTrees, propertyManager);
         for (PropertyOwnerTree taskTree : taskTrees) {
@@ -265,18 +279,5 @@ public class TaskServiceImpl implements TaskService {
         }
         return taskTrees;
     }
-
-    @Override
-    public void deleteAllTasks() throws IOException {
-        taskRepository.deleteAll();
-        tempIdManager.deleteAll();
-    }
-
-    private TaskRepository taskRepository;
-    private TaskRepository doneTaskRepository;
-    private PropertyManager propertyManager;
-    private UUIDGenerator uuidGenerator;
-    private PropertyConverter propertyConverter;
-    private TempIDManager tempIdManager;
 
 }

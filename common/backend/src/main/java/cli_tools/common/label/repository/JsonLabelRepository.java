@@ -1,14 +1,16 @@
 package cli_tools.common.label.repository;
 
+import cli_tools.common.core.data.Label;
+import cli_tools.common.core.repository.LabelRepository;
 import cli_tools.common.repository.SimpleJsonRepository;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.type.TypeFactory;
-import cli_tools.common.core.data.Label;
-import cli_tools.common.core.repository.LabelRepository;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 public class JsonLabelRepository extends SimpleJsonRepository<ArrayList<Label>> implements LabelRepository {
 
@@ -18,9 +20,10 @@ public class JsonLabelRepository extends SimpleJsonRepository<ArrayList<Label>> 
     }
 
     @Override
-    public Label find(String labelText) throws IOException {
-        return getData().stream().filter(t -> t.text().equals(labelText))
-                .findAny().orElse(null);
+    public Label create(Label label) throws IOException {
+        getData().add(label);
+        writeData();
+        return label;
     }
 
     @Override
@@ -35,10 +38,9 @@ public class JsonLabelRepository extends SimpleJsonRepository<ArrayList<Label>> 
     }
 
     @Override
-    public Label create(Label label) throws IOException {
-        getData().add(label);
-        writeData();
-        return label;
+    public Label find(String labelText) throws IOException {
+        return getData().stream().filter(t -> t.text().equals(labelText))
+                .findAny().orElse(null);
     }
 
     @Override
@@ -48,12 +50,12 @@ public class JsonLabelRepository extends SimpleJsonRepository<ArrayList<Label>> 
     }
 
     @Override
-    public ArrayList<Label> getEmptyData() {
-        return new ArrayList<>();
+    protected JavaType constructType(TypeFactory typeFactory) {
+        return typeFactory.constructCollectionType(ArrayList.class, Label.class);
     }
 
     @Override
-    protected JavaType constructType(TypeFactory typeFactory) {
-        return typeFactory.constructCollectionType(ArrayList.class, Label.class);
+    public ArrayList<Label> getEmptyData() {
+        return new ArrayList<>();
     }
 }

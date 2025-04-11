@@ -1,8 +1,8 @@
 package cli_tools.common.ordered_label.repository;
 
+import cli_tools.common.core.data.OrderedLabel;
 import cli_tools.common.service.JsonRepositoryCreator;
 import org.testng.annotations.Test;
-import cli_tools.common.core.data.OrderedLabel;
 
 import java.io.File;
 import java.io.IOException;
@@ -12,6 +12,9 @@ import java.util.List;
 import static org.testng.Assert.*;
 
 public class JsonOrderedLabelRepositoryTest {
+
+    private final JsonRepositoryCreator rc;
+    private JsonOrderedLabelRepository repository;
 
     public JsonOrderedLabelRepositoryTest() throws IOException {
         rc = new JsonRepositoryCreator(Files.createTempDirectory("testng"));
@@ -27,8 +30,8 @@ public class JsonOrderedLabelRepositoryTest {
     @Test
     public void test_getAll_empty() throws IOException {
         File tempFile = rc.makeTempFile("test_getAll_empty", """
-            []
-        """);
+                    []
+                """);
         repository = new JsonOrderedLabelRepository(tempFile);
         assertEquals(repository.getAll(), List.of());
     }
@@ -36,8 +39,8 @@ public class JsonOrderedLabelRepositoryTest {
     @Test
     public void test_getAll() throws IOException {
         File tempFile = rc.makeTempFile("test_getAll", """
-            ["label1", "label2", "label3"]
-        """);
+                    ["label1", "label2", "label3"]
+                """);
         repository = new JsonOrderedLabelRepository(tempFile);
         assertEquals(repository.getAll(), List.of(
                 new OrderedLabel("label1", 0),
@@ -49,8 +52,8 @@ public class JsonOrderedLabelRepositoryTest {
     @Test
     public void test_get_existing() throws IOException {
         File tempFile = rc.makeTempFile("test_get_existing", """
-            ["label1", "label2", "label3"]
-        """);
+                    ["label1", "label2", "label3"]
+                """);
         repository = new JsonOrderedLabelRepository(tempFile);
         assertEquals(repository.get(0), new OrderedLabel("label1", 0));
         assertEquals(repository.get(2), new OrderedLabel("label3", 2));
@@ -66,8 +69,8 @@ public class JsonOrderedLabelRepositoryTest {
     @Test
     public void test_get_notExist() throws IOException {
         File tempFile = rc.makeTempFile("test_get_notExist", """
-            ["label1", "label2", "label3"]
-        """);
+                    ["label1", "label2", "label3"]
+                """);
         repository = new JsonOrderedLabelRepository(tempFile);
         assertNull(repository.get(-1));
         assertNull(repository.get(3));
@@ -76,8 +79,8 @@ public class JsonOrderedLabelRepositoryTest {
     @Test
     public void test_find_existing() throws IOException {
         File tempFile = rc.makeTempFile("test_find_existing", """
-            ["label1", "label2", "label3"]
-        """);
+                    ["label1", "label2", "label3"]
+                """);
         repository = new JsonOrderedLabelRepository(tempFile);
         assertEquals(repository.find("label2"), new OrderedLabel("label2", 1));
         assertEquals(repository.find("label3"), new OrderedLabel("label3", 2));
@@ -93,8 +96,8 @@ public class JsonOrderedLabelRepositoryTest {
     @Test
     public void test_find_notExist() throws IOException {
         File tempFile = rc.makeTempFile("test_find_notExist", """
-            ["label1", "label2", "label3"]
-        """);
+                    ["label1", "label2", "label3"]
+                """);
         repository = new JsonOrderedLabelRepository(tempFile);
         assertNull(repository.find("label4"));
     }
@@ -102,8 +105,8 @@ public class JsonOrderedLabelRepositoryTest {
     @Test
     public void test_getAll_invalidFormat_throws() throws IOException {
         File tempFile = rc.makeTempFile("test_getAll_invalidFormat_throws", """
-            {"labels":["label1", "label2", "label3"]}
-        """);
+                    {"labels":["label1", "label2", "label3"]}
+                """);
         repository = new JsonOrderedLabelRepository(tempFile);
         assertThrows(IOException.class, () -> repository.getAll());
     }
@@ -120,12 +123,9 @@ public class JsonOrderedLabelRepositoryTest {
                 new OrderedLabel("label2", 1),
                 new OrderedLabel("label3", 2)));
         assertEquals(Files.readString(tempFile.toPath()).replaceAll("\\s", ""), """
-                ["label1","label2","label3"]
-        """.replaceAll("\\s", ""));
+                        ["label1","label2","label3"]
+                """.replaceAll("\\s", ""));
     }
-
-    private JsonOrderedLabelRepository repository;
-    private final JsonRepositoryCreator rc;
 
 
 }

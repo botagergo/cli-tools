@@ -1,14 +1,16 @@
 package cli_tools.common.view.service;
 
-import jakarta.inject.Inject;
-import lombok.AllArgsConstructor;
 import cli_tools.common.core.data.ViewInfo;
 import cli_tools.common.core.repository.ViewInfoRepository;
+import jakarta.inject.Inject;
+import lombok.AllArgsConstructor;
 
 import java.io.IOException;
 
 @AllArgsConstructor(onConstructor = @__(@Inject))
 public class ViewInfoServiceImpl implements ViewInfoService {
+
+    private final ViewInfoRepository viewInfoRepository;
 
     @Override
     public ViewInfo getViewInfo(String name)
@@ -25,7 +27,5 @@ public class ViewInfoServiceImpl implements ViewInfoService {
     public void deleteAllViewInfos() throws IOException {
         viewInfoRepository.deleteAll();
     }
-
-    private final ViewInfoRepository viewInfoRepository;
 
 }

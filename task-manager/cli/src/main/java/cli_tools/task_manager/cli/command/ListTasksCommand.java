@@ -1,22 +1,22 @@
 package cli_tools.task_manager.cli.command;
 
+import cli_tools.common.cli.argument.PropertyArgument;
 import cli_tools.common.cli.command.Command;
 import cli_tools.common.cli.string_to_property_converter.StringToPropertyConverterException;
 import cli_tools.common.core.data.*;
+import cli_tools.common.core.data.property.FilterPropertySpec;
 import cli_tools.common.core.util.Print;
 import cli_tools.common.filter.FilterCriterionException;
 import cli_tools.common.property_converter.PropertyConverterException;
 import cli_tools.common.property_lib.PropertyException;
-import cli_tools.task_manager.task.Task;
+import cli_tools.task_manager.cli.TaskManagerContext;
 import cli_tools.task_manager.task.PropertyOwnerTree;
+import cli_tools.task_manager.task.Task;
+import cli_tools.task_manager.task.service.TaskServiceException;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
-import cli_tools.common.cli.argument.PropertyArgument;
-import cli_tools.common.core.data.property.FilterPropertySpec;
-import cli_tools.task_manager.task.service.TaskServiceException;
-import cli_tools.task_manager.cli.TaskManagerContext;
 
 import java.io.IOException;
 import java.util.List;
@@ -26,6 +26,15 @@ import java.util.UUID;
 @Getter
 @Setter
 public final class ListTasksCommand extends Command {
+    private List<@NonNull SortingCriterion> sortingCriteria;
+    private List<@NonNull PropertyArgument> filterPropertyArgs;
+    private String viewName;
+    private OutputFormat outputFormat;
+    private Boolean hierarchical;
+    private List<@NonNull Integer> tempIDs;
+    private List<String> properties;
+    private Boolean listDone;
+
     @Override
     public void execute(cli_tools.common.cli.Context context) {
         log.traceEntry();
@@ -132,14 +141,5 @@ public final class ListTasksCommand extends Command {
         }
         return viewInfo;
     }
-
-    private List<@NonNull SortingCriterion> sortingCriteria;
-    private List<@NonNull PropertyArgument> filterPropertyArgs;
-    private String viewName;
-    private OutputFormat outputFormat;
-    private Boolean hierarchical;
-    private List<@NonNull Integer> tempIDs;
-    private List<String> properties;
-    private Boolean listDone;
 }
 

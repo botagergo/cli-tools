@@ -4,6 +4,8 @@ import cli_tools.common.property_lib.Property;
 
 public class EqualFilterCriterion extends PropertyFilterCriterion {
 
+    private final Object operand;
+
     public EqualFilterCriterion(
             String propertyName,
             Object operand) {
@@ -19,7 +21,5 @@ public class EqualFilterCriterion extends PropertyFilterCriterion {
             return property.getValue().equals(operand);
         }
     }
-
-    private final Object operand;
 
 }

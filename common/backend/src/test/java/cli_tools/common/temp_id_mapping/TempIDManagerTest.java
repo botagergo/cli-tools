@@ -1,11 +1,14 @@
 package cli_tools.common.temp_id_mapping;
 
-import org.testng.annotations.Test;
 import cli_tools.common.util.RoundRobinUUIDGenerator;
+import org.testng.annotations.Test;
 
 import static org.testng.Assert.*;
 
 public class TempIDManagerTest {
+
+    private final RoundRobinUUIDGenerator uuidGenerator = new RoundRobinUUIDGenerator(6);
+    private TempIDManager tempIdManager;
 
     @Test
     public void test_getOrCreateID_getMultiple() {
@@ -91,7 +94,4 @@ public class TempIDManagerTest {
         tempIdManager.getOrCreateID(uuidGenerator.uuids[0]);
         assertEquals(tempIdManager.getUUID(1), uuidGenerator.uuids[0]);
     }
-
-    private TempIDManager tempIdManager;
-    private final RoundRobinUUIDGenerator uuidGenerator = new RoundRobinUUIDGenerator(6);
 }

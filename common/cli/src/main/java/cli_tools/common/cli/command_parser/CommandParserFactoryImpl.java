@@ -1,9 +1,9 @@
 package cli_tools.common.cli.command_parser;
 
-import cli_tools.common.core.util.Print;
-import jakarta.inject.Inject;
 import cli_tools.common.cli.argument.ArgumentList;
 import cli_tools.common.core.repository.ConfigurationRepository;
+import cli_tools.common.core.util.Print;
+import jakarta.inject.Inject;
 
 import java.util.Collection;
 import java.util.List;
@@ -13,6 +13,9 @@ import java.util.stream.Collectors;
 
 public class CommandParserFactoryImpl implements CommandParserFactory {
 
+    private final ConfigurationRepository configurationRepository;
+    private final Map<String, Supplier<CommandParser>> commandMapping = new java.util.HashMap<>();
+
     @Inject
     public CommandParserFactoryImpl(
             ConfigurationRepository configurationRepository) {
@@ -20,7 +23,7 @@ public class CommandParserFactoryImpl implements CommandParserFactory {
     }
 
     @Override
-    public void registerParser(String name, Supplier<CommandParser> commandParserSupplier ) {
+    public void registerParser(String name, Supplier<CommandParser> commandParserSupplier) {
         this.commandMapping.put(name, commandParserSupplier);
     }
 
@@ -65,7 +68,4 @@ public class CommandParserFactoryImpl implements CommandParserFactory {
     public Collection<String> getCommandNames() {
         return commandMapping.keySet().stream().sorted().toList();
     }
-
-    private final ConfigurationRepository configurationRepository;
-    private final Map<String, Supplier<CommandParser>> commandMapping = new java.util.HashMap<>();
 }

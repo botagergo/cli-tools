@@ -11,6 +11,9 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class BashCommandParser extends CustomCommandParser {
 
+    private final String commandName;
+    private final int timeoutMillis;
+
     @Override
     public Command parse(Context context, ArgumentList argList) throws CommandParserException {
         if (!argList.getTrailingPositionalArguments().isEmpty()) {
@@ -22,14 +25,11 @@ public class BashCommandParser extends CustomCommandParser {
         }
 
         return new BashCommand(
-                ParseUtil.getTempIds(context, argList.getLeadingPositionalArguments()),
-                argList.getFilterPropertyArguments(),
                 commandName,
-                timeoutMillis
+                timeoutMillis,
+                ParseUtil.getTempIds(context, argList.getLeadingPositionalArguments()),
+                argList.getFilterPropertyArguments()
         );
     }
-
-    private final String commandName;
-    private final int timeoutMillis;
 
 }

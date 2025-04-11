@@ -1,21 +1,25 @@
 package cli_tools.common.filter;
 
+import cli_tools.common.property_lib.PropertyDescriptor;
+import cli_tools.common.property_lib.PropertyException;
+import cli_tools.common.property_lib.PropertyManager;
+import cli_tools.common.property_lib.PropertyOwner;
+import cli_tools.common.util.Utils;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-import cli_tools.common.util.Utils;
-import cli_tools.common.property_lib.PropertyDescriptor;
-import cli_tools.common.property_lib.PropertyException;
-import cli_tools.common.property_lib.PropertyManager;
-import cli_tools.common.property_lib.PropertyOwner;
 
 import java.io.IOException;
 
 import static org.testng.Assert.assertEquals;
 
 public class NotFilterCriterionTest {
+
+    private final PropertyManager propertyManager;
+    @Mock
+    private PropertyOwner propertyOwner;
 
     public NotFilterCriterionTest() {
         MockitoAnnotations.openMocks(this);
@@ -46,9 +50,5 @@ public class NotFilterCriterionTest {
         propertyManager.getPropertyDescriptorCollection().addPropertyDescriptor(new PropertyDescriptor(propertyName,
                 propertyType, null, PropertyDescriptor.Multiplicity.SINGLE, null, null));
     }
-
-    @Mock
-    private PropertyOwner propertyOwner;
-    private final PropertyManager propertyManager;
 
 }

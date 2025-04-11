@@ -1,7 +1,7 @@
 package cli_tools.common.cli.argument;
 
-import lombok.NonNull;
 import cli_tools.common.core.data.property.Affinity;
+import lombok.NonNull;
 
 import java.util.List;
 
@@ -10,4 +10,5 @@ public record PropertyArgument(
         @NonNull String propertyName,
         String predicate,
         List<String> values
-) { }
+) {
+}

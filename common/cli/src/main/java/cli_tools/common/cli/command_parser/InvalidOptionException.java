@@ -1,4 +1,3 @@
-
 package cli_tools.common.cli.command_parser;
 
 public class InvalidOptionException extends CommandParserException {

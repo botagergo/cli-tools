@@ -21,27 +21,38 @@ import lombok.ToString;
 @Getter
 public abstract class Context {
 
-    @Inject private LabelService labelService;
+    @Inject
+    private LabelService labelService;
 
-    @Inject private OrderedLabelService orderedLabelService;
+    @Inject
+    private OrderedLabelService orderedLabelService;
 
-    @Inject private PropertyDescriptorService propertyDescriptorService;
+    @Inject
+    private PropertyDescriptorService propertyDescriptorService;
 
-    @Inject private ViewInfoService viewInfoService;
+    @Inject
+    private ViewInfoService viewInfoService;
 
-    @Inject private PropertyManager propertyManager;
+    @Inject
+    private PropertyManager propertyManager;
 
-    @Inject private StringToPropertyConverter stringToPropertyConverter;
+    @Inject
+    private StringToPropertyConverter stringToPropertyConverter;
 
-    @Inject private MainPropertyToStringConverter propertyToStringConverter;
+    @Inject
+    private MainPropertyToStringConverter propertyToStringConverter;
 
-    @Inject private TempIDManager tempIdManager;
+    @Inject
+    private TempIDManager tempIdManager;
 
-    @Inject private JsonPropertyToStringConverterRepository propertyToStringConverterRepository;
+    @Inject
+    private JsonPropertyToStringConverterRepository propertyToStringConverterRepository;
 
-    @Inject private ConfigurationRepository configurationRepository;
+    @Inject
+    private ConfigurationRepository configurationRepository;
 
-    @Inject private CommandParserFactory commandParserFactory;
+    @Inject
+    private CommandParserFactory commandParserFactory;
 
     private Integer prevTempId = null;
 

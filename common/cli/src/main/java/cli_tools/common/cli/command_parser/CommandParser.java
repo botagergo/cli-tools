@@ -16,9 +16,14 @@ public abstract class CommandParser {
 
         String value = parseSingleOptionValue(optionArgumentName, values);
         switch (value) {
-            case "true" -> { return true; }
-            case "false" -> { return false; }
-            default -> throw new CommandParserException("value of '%s' must be true or false".formatted(optionArgumentName));
+            case "true" -> {
+                return true;
+            }
+            case "false" -> {
+                return false;
+            }
+            default ->
+                    throw new CommandParserException("value of '%s' must be true or false".formatted(optionArgumentName));
         }
     }
 

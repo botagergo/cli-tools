@@ -13,12 +13,12 @@ public class SimpleJsonRepositoryImpl extends SimpleJsonRepository<ArrayList<Int
         super(jsonFile);
     }
 
-    public ArrayList<Integer> getEmptyData() {
-        return new ArrayList<>();
-    }
-
     protected JavaType constructType(TypeFactory typeFactory) {
         return typeFactory.constructCollectionType(ArrayList.class, Integer.class);
+    }
+
+    public ArrayList<Integer> getEmptyData() {
+        return new ArrayList<>();
     }
 
 }

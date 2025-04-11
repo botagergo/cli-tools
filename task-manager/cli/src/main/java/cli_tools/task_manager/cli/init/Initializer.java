@@ -23,6 +23,15 @@ import java.util.*;
 
 public class Initializer {
 
+    private final PropertyDescriptorService propertyDescriptorService;
+    private final LabelService labelService;
+    private final OrderedLabelService orderedLabelService;
+    private final ViewInfoService viewInfoService;
+    private final ConfigurationRepository configurationRepository;
+    private final TempIDManager tempIdManager;
+    @Named("configurationYamlFile")
+    private final File configFile;
+
     @Inject
     public Initializer(
             PropertyDescriptorService propertyDescriptorService,
@@ -139,14 +148,5 @@ public class Initializer {
 
         configurationRepository.reload();
     }
-
-    private final PropertyDescriptorService propertyDescriptorService;
-    private final LabelService labelService;
-    private final OrderedLabelService orderedLabelService;
-    private final ViewInfoService viewInfoService;
-    private final ConfigurationRepository configurationRepository;
-    private final TempIDManager tempIdManager;
-    @Named("configurationYamlFile")
-    private final File configFile;
 
 }

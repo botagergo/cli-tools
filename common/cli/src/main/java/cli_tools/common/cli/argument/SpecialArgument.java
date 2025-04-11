@@ -4,14 +4,8 @@ import java.util.Set;
 
 public record SpecialArgument(char type, String value) {
 
-    @Override
-    public boolean equals(Object obj) {
-        if (!(obj instanceof SpecialArgument other)) {
-            return false;
-        }
-
-        return type == other.type && value.equals(other.value);
-    }
+    public static final Set<Character> specialChars =
+            Set.of('!', '@', '/', '?', '#', '+', '*', ':', '<', '>', '&', '=', '%', '.');
 
     public static SpecialArgument from(String arg) throws NotASpecialArgumentException {
         if (!isSpecialArgument(arg)) {
@@ -29,6 +23,12 @@ public record SpecialArgument(char type, String value) {
         return specialChars.contains(ch);
     }
 
-    public static final Set<Character> specialChars =
-            Set.of('!', '@', '/', '?', '#', '+', '*', ':', '<', '>', '&', '=', '%', '.');
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof SpecialArgument other)) {
+            return false;
+        }
+
+        return type == other.type && value.equals(other.value);
+    }
 }

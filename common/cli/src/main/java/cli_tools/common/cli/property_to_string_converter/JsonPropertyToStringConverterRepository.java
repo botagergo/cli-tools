@@ -34,13 +34,14 @@ public class JsonPropertyToStringConverterRepository extends SimpleJsonRepositor
     }
 
     @Override
-    protected TypeReference<HashMap<String, PropertyToStringConverter>> getTypeReference() {
-        return new TypeReference<>() {};
+    protected JavaType constructType(TypeFactory typeFactory) {
+        return typeFactory.constructMapType(HashMap.class, String.class, PropertyToStringConverter.class);
     }
 
     @Override
-    protected JavaType constructType(TypeFactory typeFactory) {
-        return typeFactory.constructMapType(HashMap.class, String.class, PropertyToStringConverter.class);
+    protected TypeReference<HashMap<String, PropertyToStringConverter>> getTypeReference() {
+        return new TypeReference<>() {
+        };
     }
 
     @Override

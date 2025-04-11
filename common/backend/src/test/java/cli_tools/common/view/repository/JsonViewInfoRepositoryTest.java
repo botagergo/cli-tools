@@ -13,6 +13,9 @@ import static org.testng.Assert.*;
 
 public class JsonViewInfoRepositoryTest {
 
+    private final JsonRepositoryCreator rc;
+    private JsonViewInfoRepository repository;
+
     public JsonViewInfoRepositoryTest() throws IOException {
         rc = new JsonRepositoryCreator(Files.createTempDirectory("testng"));
     }
@@ -375,8 +378,5 @@ public class JsonViewInfoRepositoryTest {
         repository = new JsonViewInfoRepository(tempFile);
         assertThrows(IOException.class, () -> repository.get("view1"));
     }
-
-    private JsonViewInfoRepository repository;
-    private final JsonRepositoryCreator rc;
 
 }

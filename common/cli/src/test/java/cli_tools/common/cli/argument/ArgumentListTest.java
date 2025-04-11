@@ -1,8 +1,8 @@
 package cli_tools.common.cli.argument;
 
+import cli_tools.common.core.data.property.Affinity;
 import org.testng.Assert;
 import org.testng.annotations.Test;
-import cli_tools.common.core.data.property.Affinity;
 
 import java.util.List;
 
@@ -104,7 +104,7 @@ public class ArgumentListTest {
                 "'arg'", "arg1'arg2''arg3'", "''",
                 "command",
                 "'arg'", "arg1'arg2''arg3'", "''"
-                ));
+        ));
         Assert.assertEquals(argList.getCommandName(), "command");
         Assert.assertEquals(argList.getLeadingPositionalArguments(), List.of("arg", "arg1arg2arg3", ""));
         Assert.assertEquals(argList.getTrailingPositionalArguments(), List.of("arg", "arg1arg2arg3", ""));
@@ -307,7 +307,7 @@ public class ArgumentListTest {
                 new PropertyArgument(Affinity.POSITIVE, "prop", null, null),
                 new PropertyArgument(Affinity.NEUTRAL, "prop", "predicate", null),
                 new PropertyArgument(Affinity.NEGATIVE, "prop", null, null)
-                ));
+        ));
         Assert.assertEquals(argList.getFilterPropertyArguments().size(), 0);
     }
 

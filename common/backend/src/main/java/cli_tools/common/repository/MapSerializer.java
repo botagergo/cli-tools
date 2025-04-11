@@ -9,6 +9,8 @@ import java.util.HashMap;
 
 public class MapSerializer extends StdSerializer<HashMap<String, Object>> {
 
+    final ObjectSerializer objectSerializer;
+
     public MapSerializer() {
         this(null);
     }
@@ -36,6 +38,4 @@ public class MapSerializer extends StdSerializer<HashMap<String, Object>> {
         }
         jgen.writeEndObject();
     }
-
-    final ObjectSerializer objectSerializer;
 }

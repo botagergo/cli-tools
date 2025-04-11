@@ -12,6 +12,10 @@ public record FilterCriterionInfo(
         List<Object> operands
 ) {
 
+    public static Builder builder() {
+        return new Builder();
+    }
+
     public enum Type {
         PROPERTY,
         AND,
@@ -68,10 +72,6 @@ public record FilterCriterionInfo(
             this.operands = operands;
             return this;
         }
-    }
-
-    public static Builder builder() {
-        return new Builder();
     }
 
 }

@@ -24,7 +24,7 @@ public class TokenizerImpl implements Tokenizer {
                 } else if (currentChar == 'r') {
                     currentChar = '\r';
                     isEscaped = false;
-                } else if (currentChar == '\n' || currentChar == '\r'){
+                } else if (currentChar == '\n' || currentChar == '\r') {
                     isEscaped = false;
                 } else {
                     currentToken.append('\\');

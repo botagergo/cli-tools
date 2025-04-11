@@ -1,6 +1,5 @@
 package cli_tools.common.cli;
 
-import cli_tools.common.cli.DateTimeParser;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -8,6 +7,9 @@ import java.time.*;
 import java.time.format.DateTimeParseException;
 
 public class DateTimeParserTest {
+
+    private final DateTimeParser dateTimeParser = new DateTimeParser(Clock.fixed(Instant.from(
+            LocalDateTime.of(2020, 11, 3, 19, 45, 22).atZone(ZoneId.of("Europe/Budapest"))), ZoneId.of("Europe/Budapest")));
 
     @Test
     public void test_parseLocalDate_standard() {
@@ -137,7 +139,6 @@ public class DateTimeParserTest {
         assertParseLocalDateThrows("+3 4days");
     }
 
-
     @Test
     void test_parseLocalDate_custom_withQuantiy_invalidQuantity() {
         assertParseLocalDateThrows("+0days");
@@ -257,8 +258,5 @@ public class DateTimeParserTest {
     private void assertParseLocalTimeThrows(String time) {
         Assert.assertThrows(DateTimeParseException.class, () -> dateTimeParser.parseLocalTime(time));
     }
-
-    private final DateTimeParser dateTimeParser = new DateTimeParser(Clock.fixed(Instant.from(
-            LocalDateTime.of(2020, 11, 3, 19, 45, 22).atZone(ZoneId.of("Europe/Budapest"))), ZoneId.of("Europe/Budapest")));
 
 }

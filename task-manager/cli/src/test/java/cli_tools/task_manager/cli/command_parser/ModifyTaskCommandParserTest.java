@@ -1,21 +1,25 @@
 package cli_tools.task_manager.cli.command_parser;
 
-import cli_tools.common.cli.command_parser.CommandParserException;
-import org.testng.annotations.Test;
-import cli_tools.common.core.data.property.Affinity;
 import cli_tools.common.cli.argument.ArgumentList;
 import cli_tools.common.cli.argument.PropertyArgument;
+import cli_tools.common.cli.command_parser.CommandParserException;
+import cli_tools.common.core.data.property.Affinity;
 import cli_tools.task_manager.cli.TaskManagerContext;
 import cli_tools.task_manager.cli.command.ModifyTaskCommand;
+import org.testng.annotations.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertThrows;
 
 public class ModifyTaskCommandParserTest {
+
+    private final ModifyTaskCommandParser parser = new ModifyTaskCommandParser();
+    private final TaskManagerContext context = new TaskManagerContext();
 
     @Test
     public void test_parse_noArgs() throws CommandParserException {
@@ -37,7 +41,7 @@ public class ModifyTaskCommandParserTest {
 
     @Test
     public void test_parse_invalidTaskID() {
-        assertThrows(IllegalArgumentException.class, () ->parse(getArgList("1asdf", "2")));
+        assertThrows(IllegalArgumentException.class, () -> parse(getArgList("1asdf", "2")));
     }
 
     @Test
@@ -106,7 +110,4 @@ public class ModifyTaskCommandParserTest {
                 new ArrayList<>()
         );
     }
-
-    private final ModifyTaskCommandParser parser = new ModifyTaskCommandParser();
-    private final TaskManagerContext context = new TaskManagerContext();
 }

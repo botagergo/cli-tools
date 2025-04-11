@@ -1,17 +1,17 @@
 package cli_tools.common.cli.command_line;
 
 import cli_tools.common.cli.Context;
+import cli_tools.common.cli.argument.ArgumentList;
 import cli_tools.common.cli.command.Command;
 import cli_tools.common.cli.command.CommandExecutor;
 import cli_tools.common.cli.command_parser.CommandParser;
 import cli_tools.common.cli.command_parser.CommandParserFactory;
+import cli_tools.common.cli.tokenizer.MismatchedQuotesException;
+import cli_tools.common.cli.tokenizer.Tokenizer;
 import cli_tools.common.core.util.Print;
 import jakarta.inject.Inject;
 import lombok.Getter;
 import lombok.Setter;
-import cli_tools.common.cli.argument.ArgumentList;
-import cli_tools.common.cli.tokenizer.MismatchedQuotesException;
-import cli_tools.common.cli.tokenizer.Tokenizer;
 import lombok.extern.log4j.Log4j2;
 
 import java.util.List;
@@ -19,6 +19,20 @@ import java.util.List;
 @Getter
 @Log4j2
 public class ExecutorImpl implements Executor {
+
+    private boolean _shouldExit = false;
+    @Setter
+    @Inject
+    private Tokenizer tokenizer;
+    @Setter
+    @Inject
+    private CommandParserFactory commandParserFactory;
+    @Setter
+    @Inject
+    private CommandExecutor commandExecutor;
+    @Setter
+    @Inject
+    private Context context;
 
     public void execute(String commandStr) {
         List<String> tokens;
@@ -72,19 +86,5 @@ public class ExecutorImpl implements Executor {
     public boolean shouldExit() {
         return _shouldExit;
     }
-
-    private boolean _shouldExit = false;
-
-    @Setter @Inject
-    private Tokenizer tokenizer;
-
-    @Setter @Inject
-    private CommandParserFactory commandParserFactory;
-
-    @Setter @Inject
-    private CommandExecutor commandExecutor;
-
-    @Setter @Inject
-    private Context context;
 
 }

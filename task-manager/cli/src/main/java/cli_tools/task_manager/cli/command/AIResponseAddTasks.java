@@ -2,7 +2,8 @@ package cli_tools.task_manager.cli.command;
 
 import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 
-import java.util.*;
+import java.util.List;
+import java.util.Map;
 
 public final class AIResponseAddTasks {
     @JsonPropertyDescription("""

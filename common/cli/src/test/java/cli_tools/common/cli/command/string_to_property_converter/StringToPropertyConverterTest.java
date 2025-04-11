@@ -33,6 +33,20 @@ import static org.testng.Assert.*;
 
 public class StringToPropertyConverterTest {
 
+    @Spy
+    private final UUIDGenerator uuidGenerator = new RoundRobinUUIDGenerator(3);
+    private final UUID uuid1 = uuidGenerator.getUUID();
+    private final UUID uuid2 = uuidGenerator.getUUID();
+    private final UUID uuid3 = uuidGenerator.getUUID();
+    @InjectMocks
+    StringToPropertyConverter propertyConverter;
+    @Mock
+    private PropertyDescriptorService propertyDescriptorService;
+    @Mock
+    private LabelService labelService;
+    @Mock
+    private OrderedLabelService orderedLabelService;
+
     @BeforeClass
     public void initMocks() {
         MockitoAnnotations.openMocks(this);
@@ -68,9 +82,6 @@ public class StringToPropertyConverterTest {
         assertEquals(propertyConverter.stringToProperty(
                 getPropertyDescriptor(PropertyDescriptor.Type.Integer, null, PropertyDescriptor.Multiplicity.SINGLE), List.of("112"), true), 112);
     }
-
-    @Spy
-    private final UUIDGenerator uuidGenerator = new RoundRobinUUIDGenerator(3);
 
     @Test
     public void test_stringToProperty_integer_noAssociatedLabel_throws() throws IOException {
@@ -112,9 +123,6 @@ public class StringToPropertyConverterTest {
                 getPropertyDescriptor(PropertyDescriptor.Type.Boolean, null, PropertyDescriptor.Multiplicity.LIST), List.of("true", "false"), true), List.of(true, false));
     }
 
-    @Mock
-    private PropertyDescriptorService propertyDescriptorService;
-
     @Test
     public void test_stringToProperty_uuidList_successful() throws IOException, StringToPropertyConverterException {
         assertEquals(propertyConverter.stringToProperty(
@@ -122,9 +130,6 @@ public class StringToPropertyConverterTest {
                         List.of(uuid1.toString(), uuid2.toString(), uuid3.toString()), true),
                 List.of(uuid1, uuid2, uuid3));
     }
-
-    @Mock
-    private LabelService labelService;
 
     @Test
     public void test_stringToProperty_boolean_invalidBoolean_throws() throws IOException {
@@ -149,9 +154,6 @@ public class StringToPropertyConverterTest {
             assertEquals(e.getArgument(), "tag");
         }
     }
-
-    @Mock
-    private OrderedLabelService orderedLabelService;
 
     @Test
     public void test_stringToProperty_uuid_notAnUuid_tagNotFound_y_tagCreated() throws IOException, StringToPropertyConverterException {
@@ -446,12 +448,5 @@ public class StringToPropertyConverterTest {
         Mockito.when(propertyDescriptorService.findPropertyDescriptor(name)).thenReturn(new PropertyDescriptor(name,
                 type, null, multiplicity, null, null));
     }
-
-    private final UUID uuid1 = uuidGenerator.getUUID();
-    private final UUID uuid2 = uuidGenerator.getUUID();
-    private final UUID uuid3 = uuidGenerator.getUUID();
-
-    @InjectMocks
-    StringToPropertyConverter propertyConverter;
 
 }

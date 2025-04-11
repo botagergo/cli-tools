@@ -1,10 +1,10 @@
 package cli_tools.common.cli;
 
-import com.google.inject.AbstractModule;
 import cli_tools.common.cli.tokenizer.Tokenizer;
 import cli_tools.common.cli.tokenizer.TokenizerImpl;
 import cli_tools.common.util.RoundRobinUUIDGenerator;
 import cli_tools.common.util.UUIDGenerator;
+import com.google.inject.AbstractModule;
 
 public class TestModule extends AbstractModule {
 

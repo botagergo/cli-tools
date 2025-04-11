@@ -20,16 +20,8 @@ import java.util.Objects;
 @Log4j2
 public class Completer implements org.jline.reader.Completer {
 
-    private static class UnorderedCandidate extends Candidate {
-        public UnorderedCandidate(String value, String displ, String group, String descr, String suffix, String key, boolean complete) {
-            super(value, displ, group, descr, suffix, key, complete);
-        }
-
-        @Override
-        public int compareTo(org.jline.reader.Candidate candidate) {
-            return 0;
-        }
-    }
+    private final Context context;
+    private Collection<String> commands;
 
     public Completer(Context context) {
         this.context = context;
@@ -150,7 +142,8 @@ public class Completer implements org.jline.reader.Completer {
                         list.add(buildPredicateCandidate(prefix, predicate.name().toLowerCase()));
                     }
                 }
-            } catch (PropertyException ignored) {}
+            } catch (PropertyException ignored) {
+            }
         } else {
             List<String> properties;
             if (commands == null) {
@@ -216,6 +209,14 @@ public class Completer implements org.jline.reader.Completer {
         return true;
     }
 
-    private final Context context;
-    private Collection<String> commands;
+    private static class UnorderedCandidate extends Candidate {
+        public UnorderedCandidate(String value, String displ, String group, String descr, String suffix, String key, boolean complete) {
+            super(value, displ, group, descr, suffix, key, complete);
+        }
+
+        @Override
+        public int compareTo(org.jline.reader.Candidate candidate) {
+            return 0;
+        }
+    }
 }

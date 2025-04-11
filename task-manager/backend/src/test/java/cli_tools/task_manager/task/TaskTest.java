@@ -1,9 +1,9 @@
 package cli_tools.task_manager.task;
 
-import org.testng.annotations.Test;
 import cli_tools.common.util.RoundRobinUUIDGenerator;
 import cli_tools.common.util.UUIDGenerator;
 import cli_tools.common.util.Utils;
+import org.testng.annotations.Test;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,6 +13,9 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNull;
 
 public class TaskTest {
+
+    private final UUIDGenerator uuidGenerator = new RoundRobinUUIDGenerator(1);
+    private final UUID uuid = uuidGenerator.getUUID();
 
     @Test
     public void test_getUUID_successful() {
@@ -33,8 +36,4 @@ public class TaskTest {
     public void test_getUUID_badUUID_returnsNull() {
         assertNull(Task.fromMap(new HashMap<>(Map.of("uuid", "asdf"))).getUUID());
     }
-
-    private final UUIDGenerator uuidGenerator = new RoundRobinUUIDGenerator(1);
-
-    private final UUID uuid = uuidGenerator.getUUID();
 }

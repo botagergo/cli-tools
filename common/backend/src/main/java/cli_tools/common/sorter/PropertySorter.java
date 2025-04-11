@@ -1,5 +1,6 @@
 package cli_tools.common.sorter;
 
+import cli_tools.common.core.data.SortingCriterion;
 import cli_tools.common.property_comparator.PropertyComparator;
 import cli_tools.common.property_comparator.PropertyNotComparableException;
 import cli_tools.common.property_lib.*;
@@ -12,7 +13,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.tuple.Pair;
-import cli_tools.common.core.data.SortingCriterion;
 
 import java.io.IOException;
 import java.util.*;
@@ -24,7 +24,9 @@ import java.util.*;
 @JsonDeserialize
 @NoArgsConstructor
 @Log4j2
-public class PropertySorter <T extends PropertyOwner> {
+public class PropertySorter<T extends PropertyOwner> {
+
+    private List<SortingCriterion> sortingCriteria;
 
     @JsonCreator
     public PropertySorter(@JsonProperty("sortingCriteria") List<SortingCriterion> sortingCriteria) {
@@ -66,8 +68,7 @@ public class PropertySorter <T extends PropertyOwner> {
         return reorder(propertyOwners, indices);
     }
 
-    List<T> reorder(List<T> list, List<Integer> indices)
-    {
+    List<T> reorder(List<T> list, List<Integer> indices) {
         List<T> reorderedList = new ArrayList<>(Collections.nCopies(list.size(), null));
         for (int i = 0; i < list.size(); i++) {
             int ind = indices.get(i);
@@ -76,9 +77,10 @@ public class PropertySorter <T extends PropertyOwner> {
         return reorderedList;
     }
 
-    private List<SortingCriterion> sortingCriteria;
-
     private static class ListIndexComparator implements Comparator<Integer> {
+
+        private final List<Pair<List<Property>, Boolean>> values;
+        private final Comparator<Property> propertyComparator = new PropertyComparator();
 
         public ListIndexComparator(List<Pair<List<Property>, Boolean>> values) {
             this.values = values;
@@ -98,19 +100,14 @@ public class PropertySorter <T extends PropertyOwner> {
             return 0;
         }
 
-        public List<Integer> createIndexArray()
-        {
+        public List<Integer> createIndexArray() {
             int numOfIndices = values.get(0).getLeft().size();
             List<Integer> indices = new ArrayList<>(values.get(0).getLeft().size());
-            for (int i = 0; i < numOfIndices; i++)
-            {
+            for (int i = 0; i < numOfIndices; i++) {
                 indices.add(i);
             }
             return indices;
         }
-
-        private final List<Pair<List<Property>, Boolean>> values;
-        private final Comparator<Property> propertyComparator = new PropertyComparator();
 
     }
 

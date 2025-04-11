@@ -9,6 +9,11 @@ import java.util.Map;
 
 public class Task extends PropertyOwner {
 
+    private final HashMap<String, Object> properties;
+    @Getter
+    @Setter
+    private boolean done;
+
     public Task() {
         this(new HashMap<>());
     }
@@ -35,10 +40,5 @@ public class Task extends PropertyOwner {
     public String toString() {
         return properties.toString();
     }
-
-    private final HashMap<String, Object> properties;
-
-    @Getter @Setter
-    private boolean done;
 
 }

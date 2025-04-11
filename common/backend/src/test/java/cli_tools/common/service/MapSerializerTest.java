@@ -2,6 +2,8 @@ package cli_tools.common.service;
 
 import cli_tools.common.repository.MapDeserializer;
 import cli_tools.common.repository.MapSerializer;
+import cli_tools.common.util.RoundRobinUUIDGenerator;
+import cli_tools.common.util.Utils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -9,8 +11,6 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import org.testng.collections.Sets;
-import cli_tools.common.util.RoundRobinUUIDGenerator;
-import cli_tools.common.util.Utils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,6 +20,12 @@ import java.util.UUID;
 import static org.testng.Assert.assertEquals;
 
 public class MapSerializerTest {
+
+    final RoundRobinUUIDGenerator uuidGenerator = new RoundRobinUUIDGenerator();
+    private final UUID uuid1 = uuidGenerator.getUUID();
+    private final UUID uuid2 = uuidGenerator.getUUID();
+    private ObjectMapper objectMapper;
+    private ObjectMapper basicObjectMapper;
 
     @BeforeClass
     public void setup() {
@@ -54,14 +60,14 @@ public class MapSerializerTest {
     @Test
     public void test_serializer_emptyString() throws JsonProcessingException {
         assertJsonStrEquals(objectMapper.writeValueAsString(
-                new HashMap<>(Map.of("name", ""))),
+                        new HashMap<>(Map.of("name", ""))),
                 new HashMap<>(Map.of("name", "s:")));
     }
 
     @Test
     public void test_serializer_emptyList() throws JsonProcessingException {
         assertJsonStrEquals(objectMapper.writeValueAsString(
-                new HashMap<>(Map.of("string_list", new ArrayList<>(), "tags", new ArrayList<>()))),
+                        new HashMap<>(Map.of("string_list", new ArrayList<>(), "tags", new ArrayList<>()))),
                 new HashMap<>(Map.of(
                         "string_list", Map.of("type", "list", "value", new ArrayList<>()),
                         "tags", Map.of("type", "list", "value", new ArrayList<>()))));
@@ -70,7 +76,7 @@ public class MapSerializerTest {
     @Test
     public void test_serializer_list() throws JsonProcessingException {
         assertJsonStrEquals(objectMapper.writeValueAsString(
-                new HashMap<>(Map.of("string_list", Utils.newArrayList("value1", "value2"), "tags", Utils.newArrayList(uuid1, uuid2)))),
+                        new HashMap<>(Map.of("string_list", Utils.newArrayList("value1", "value2"), "tags", Utils.newArrayList(uuid1, uuid2)))),
                 new HashMap<>(Map.of(
                         "string_list", Map.of("type", "list", "value", Utils.newArrayList("s:value1", "s:value2")),
                         "tags", Map.of("type", "list", "value", Utils.newArrayList("u:" + uuid1, "u:" + uuid2)))));
@@ -107,21 +113,16 @@ public class MapSerializerTest {
     @Test
     public void test_serializer_setWithNull() throws JsonProcessingException {
         assertJsonStrEquals(objectMapper.writeValueAsString(
-                new HashMap<>(Map.of("string_set", Sets.newLinkedHashSet(Utils.newArrayList("value1", null, "value2")), "tags", Sets.newLinkedHashSet(Utils.newArrayList(uuid1, null, uuid2))))),
+                        new HashMap<>(Map.of("string_set", Sets.newLinkedHashSet(Utils.newArrayList("value1", null, "value2")), "tags", Sets.newLinkedHashSet(Utils.newArrayList(uuid1, null, uuid2))))),
                 new HashMap<>(Map.of(
                         "string_set", Map.of("type", "set", "value", Utils.newArrayList("s:value1", null, "s:value2")),
                         "tags", Map.of("type", "set", "value", Utils.newArrayList("u:" + uuid1, null, "u:" + uuid2)))));
     }
 
     private void assertJsonStrEquals(String jsonStr, Map<String, Object> map) throws JsonProcessingException {
-        Map<String, Object> parsedMap = basicObjectMapper.readValue(jsonStr, new TypeReference<>() {});
+        Map<String, Object> parsedMap = basicObjectMapper.readValue(jsonStr, new TypeReference<>() {
+        });
         assertEquals(parsedMap, map);
     }
-
-    private ObjectMapper objectMapper;
-    private ObjectMapper basicObjectMapper;
-    final RoundRobinUUIDGenerator uuidGenerator = new RoundRobinUUIDGenerator();
-    private final UUID uuid1 = uuidGenerator.getUUID();
-    private final UUID uuid2 = uuidGenerator.getUUID();
 
 }

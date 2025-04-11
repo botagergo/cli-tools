@@ -1,10 +1,18 @@
 package cli_tools.task_manager.cli.command;
 
 import cli_tools.common.cli.Context;
+import cli_tools.common.cli.DateTimeFormatter;
+import cli_tools.common.cli.property_to_string_converter.DefaultPropertyToStringConverter;
+import cli_tools.common.cli.property_to_string_converter.MainPropertyToStringConverter;
+import cli_tools.common.cli.property_to_string_converter.PropertyToStringConverter;
 import cli_tools.common.core.data.OutputFormat;
 import cli_tools.common.core.util.Print;
-import cli_tools.task_manager.task.Task;
+import cli_tools.common.property_lib.Property;
+import cli_tools.common.property_lib.PropertyException;
+import cli_tools.common.property_lib.PropertyOwner;
+import cli_tools.task_manager.cli.TaskManagerContext;
 import cli_tools.task_manager.task.PropertyOwnerTree;
+import cli_tools.task_manager.task.Task;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.inamik.text.tables.GridTable;
 import com.inamik.text.tables.SimpleTable;
@@ -12,14 +20,6 @@ import com.inamik.text.tables.grid.Border;
 import com.inamik.text.tables.grid.Util;
 import lombok.extern.log4j.Log4j2;
 import org.fusesource.jansi.Ansi;
-import cli_tools.common.cli.DateTimeFormatter;
-import cli_tools.common.cli.property_to_string_converter.DefaultPropertyToStringConverter;
-import cli_tools.common.cli.property_to_string_converter.MainPropertyToStringConverter;
-import cli_tools.common.cli.property_to_string_converter.PropertyToStringConverter;
-import cli_tools.common.property_lib.Property;
-import cli_tools.common.property_lib.PropertyException;
-import cli_tools.common.property_lib.PropertyOwner;
-import cli_tools.task_manager.cli.TaskManagerContext;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -28,7 +28,10 @@ import java.util.List;
 @Log4j2
 public class TaskPrinter {
 
-    public TaskPrinter() {}
+    private ObjectMapper objectMapper = null;
+
+    public TaskPrinter() {
+    }
 
     public void printTasks(TaskManagerContext context, List<Task> tasks,
                            List<String> propertiesToList,
@@ -135,7 +138,7 @@ public class TaskPrinter {
 
         if (taskTree.getChildren() != null) {
             for (PropertyOwnerTree child : taskTree.getChildren()) {
-                addTaskTreeToTable(table, context, propertyToStringConverter, child, propertiesToList, depth+1);
+                addTaskTreeToTable(table, context, propertyToStringConverter, child, propertiesToList, depth + 1);
             }
         }
     }
@@ -191,7 +194,5 @@ public class TaskPrinter {
         }
         return objectMapper;
     }
-
-    private ObjectMapper objectMapper = null;
 
 }

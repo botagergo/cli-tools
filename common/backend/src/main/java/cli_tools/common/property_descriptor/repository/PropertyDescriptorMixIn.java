@@ -1,12 +1,14 @@
 package cli_tools.common.property_descriptor.repository;
 
-import cli_tools.common.repository.ObjectDeserializer;
-import cli_tools.common.repository.ObjectSerializer;
-import com.fasterxml.jackson.annotation.*;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import cli_tools.common.property_lib.PropertyDescriptor;
 import cli_tools.common.property_lib.PseudoPropertyProvider;
+import cli_tools.common.repository.ObjectDeserializer;
+import cli_tools.common.repository.ObjectSerializer;
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 @JsonAutoDetect(
         fieldVisibility = JsonAutoDetect.Visibility.NONE,
@@ -25,4 +27,5 @@ public record PropertyDescriptorMixIn(
         Object defaultValue,
 
         @JsonProperty PseudoPropertyProvider pseudoPropertyProvider
-) { }
+) {
+}

@@ -1,18 +1,24 @@
 package cli_tools.common.filter;
 
+import cli_tools.common.property_comparator.PropertyComparator;
 import cli_tools.common.property_lib.*;
+import cli_tools.common.util.Utils;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-import cli_tools.common.property_comparator.PropertyComparator;
-import cli_tools.common.util.Utils;
 
 import java.io.IOException;
 
 public class LessFilterCriterionTest {
+
+    private final PropertyComparator nullsFirstPropertyComparator = new PropertyComparator(true);
+    private final PropertyComparator nullsLastPropertyComparator = new PropertyComparator(false);
+    private final PropertyManager propertyManager;
+    @Mock
+    private PropertyOwner propertyOwner;
 
     public LessFilterCriterionTest() {
         MockitoAnnotations.openMocks(this);
@@ -112,11 +118,5 @@ public class LessFilterCriterionTest {
         propertyManager.getPropertyDescriptorCollection().addPropertyDescriptor(new PropertyDescriptor(propertyName,
                 propertyType, null, PropertyDescriptor.Multiplicity.SINGLE, null, null));
     }
-
-    private final PropertyComparator nullsFirstPropertyComparator = new PropertyComparator(true);
-    private final PropertyComparator nullsLastPropertyComparator = new PropertyComparator(false);
-    @Mock
-    private PropertyOwner propertyOwner;
-    private final PropertyManager propertyManager;
 
 }

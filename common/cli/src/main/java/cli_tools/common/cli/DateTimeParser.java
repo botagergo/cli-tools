@@ -18,6 +18,11 @@ import java.util.regex.Pattern;
 @Log4j2
 public class DateTimeParser {
 
+    private final List<DateTimeFormatterBuilder> dateFormatterBuilders;
+    private final java.time.format.DateTimeFormatter timeFormatter;
+    private final Pattern pattern;
+    private final Clock clock;
+
     public DateTimeParser() {
         this(Clock.systemDefaultZone());
     }
@@ -122,25 +127,35 @@ public class DateTimeParser {
             switch (noun) {
                 case "day" -> {
                     return now.plusDays(number);
-                } case "week" -> {
+                }
+                case "week" -> {
                     return now.plusWeeks(number);
-                } case "month" -> {
+                }
+                case "month" -> {
                     return now.plusMonths(number);
-                } case "year" -> {
+                }
+                case "year" -> {
                     return now.plusYears(number);
-                } case "monday" -> {
+                }
+                case "monday" -> {
                     return now.plusDays(getDaysUntilNext(now, DayOfWeek.MONDAY, number));
-                } case "tuesday" -> {
+                }
+                case "tuesday" -> {
                     return now.plusDays(getDaysUntilNext(now, DayOfWeek.TUESDAY, number));
-                } case "wednesday" -> {
+                }
+                case "wednesday" -> {
                     return now.plusDays(getDaysUntilNext(now, DayOfWeek.WEDNESDAY, number));
-                } case "thursday" -> {
+                }
+                case "thursday" -> {
                     return now.plusDays(getDaysUntilNext(now, DayOfWeek.THURSDAY, number));
-                } case "friday" -> {
+                }
+                case "friday" -> {
                     return now.plusDays(getDaysUntilNext(now, DayOfWeek.FRIDAY, number));
-                } case "saturday" -> {
+                }
+                case "saturday" -> {
                     return now.plusDays(getDaysUntilNext(now, DayOfWeek.SATURDAY, number));
-                } case "sunday" -> {
+                }
+                case "sunday" -> {
                     return now.plusDays(getDaysUntilNext(now, DayOfWeek.SUNDAY, number));
                 }
             }
@@ -182,24 +197,23 @@ public class DateTimeParser {
     }
 
     private int getDaysUntil(LocalDate localDate, DayOfWeek dayOfWeek) {
-        return (dayOfWeek.getValue()+7-localDate.getDayOfWeek().getValue())%7;
+        return (dayOfWeek.getValue() + 7 - localDate.getDayOfWeek().getValue()) % 7;
     }
 
     private int getDaysUntilNext(LocalDate localDate, DayOfWeek dayOfWeek, int next) {
-        int days = (dayOfWeek.getValue()+7-localDate.getDayOfWeek().getValue())%7;
-        int sign = (int)Math.signum(next);
+        int days = (dayOfWeek.getValue() + 7 - localDate.getDayOfWeek().getValue()) % 7;
+        int sign = (int) Math.signum(next);
 
         if (next < 0) {
             days = 7 - days;
         }
 
         if (days == 0) {
-            return 7*next;
+            return 7 * next;
         } else {
-            return sign*days + 7*(next-sign);
+            return sign * days + 7 * (next - sign);
         }
     }
-
 
     private LocalTime parseLocalTimeStandard(String timeStr) {
         return LocalTime.parse(timeStr.toUpperCase(), timeFormatter);
@@ -220,9 +234,11 @@ public class DateTimeParser {
             switch (noun) {
                 case "hour" -> {
                     return now.plusHours(number);
-                } case "minute" -> {
+                }
+                case "minute" -> {
                     return now.plusMinutes(number);
-                } case "second" -> {
+                }
+                case "second" -> {
                     return now.plusSeconds(number);
                 }
             }
@@ -231,10 +247,5 @@ public class DateTimeParser {
         }
         throw new DateTimeParseException("Invalid time: " + timeStr, timeStr, 0);
     }
-
-    private final List<DateTimeFormatterBuilder> dateFormatterBuilders;
-    private final java.time.format.DateTimeFormatter timeFormatter;
-    private final Pattern pattern;
-    private final Clock clock;
 
 }

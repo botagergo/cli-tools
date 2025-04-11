@@ -1,25 +1,38 @@
 package cli_tools.common.cli.property_to_string_converter;
 
+import cli_tools.common.cli.DateTimeFormatter;
 import cli_tools.common.label.service.LabelService;
 import cli_tools.common.ordered_label.service.OrderedLabelService;
-import org.mockito.Mock;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
-import cli_tools.common.cli.DateTimeFormatter;
 import cli_tools.common.property_lib.Property;
 import cli_tools.common.property_lib.PropertyDescriptor;
 import cli_tools.common.util.RoundRobinUUIDGenerator;
 import cli_tools.common.util.UUIDGenerator;
 import cli_tools.common.util.Utils;
+import org.mockito.Mock;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 
 import java.io.IOException;
 import java.util.UUID;
 
 import static cli_tools.common.property_lib.PropertyDescriptor.Multiplicity.*;
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
 
 public class DefaultPropertyToStringConverterTest {
+
+    private final UUIDGenerator uuidGenerator = new RoundRobinUUIDGenerator();
+    private final UUID uuid1 = uuidGenerator.getUUID();
+    private final UUID uuid2 = uuidGenerator.getUUID();
+    private final UUID uuid3 = uuidGenerator.getUUID();
+    @Mock
+    private LabelService labelService;
+    @Mock
+    private OrderedLabelService orderedLabelService;
+    private final DefaultPropertyToStringConverter propertyToStringConverter = new DefaultPropertyToStringConverter(
+            labelService,
+            orderedLabelService,
+            new DateTimeFormatter());
 
     @BeforeMethod
     public void setUp() {
@@ -119,6 +132,27 @@ public class DefaultPropertyToStringConverterTest {
         property = Property.fromUnchecked(propertyDescriptor, null);
         assertPropertyToString(property, "");
     }
+
+    // TODO
+    /* @Test
+    public void test_PropertyToString_dateList() throws IOException {
+        PropertyDescriptor propertyDescriptor = getPropertyDescriptor(PropertyDescriptor.Type.String, new PropertyDescriptor.Subtype.DateSubtype(), LIST);
+
+        Property property = Property.fromUnchecked(propertyDescriptor, Utils.newArrayList());
+        assertPropertyToString(property, "");
+
+        property = Property.fromUnchecked(propertyDescriptor, Utils.newArrayList("2025-03-20"));
+        assertPropertyToString(property, "2025-03-20");
+
+        property = Property.fromUnchecked(propertyDescriptor, Utils.newArrayList("2025-03-20", "1939-01-04", "2300-12-12"));
+        assertPropertyToString(property, "2025-03-20, 1939-01-04, 2300-12-12");
+
+        property = Property.fromUnchecked(propertyDescriptor, Utils.newArrayList("2025-03-20", null, "2300-12-12"));
+        assertPropertyToString(property, "2025-03-20, <null>, 2300-12-12");
+
+        property = Property.fromUnchecked(propertyDescriptor, null);
+        assertPropertyToString(property, "");
+    } */
 
     @Test
     public void test_PropertyToString_integerSet() throws IOException {
@@ -242,27 +276,6 @@ public class DefaultPropertyToStringConverterTest {
         assertPropertyToString(property, "");
     }
 
-    // TODO
-    /* @Test
-    public void test_PropertyToString_dateList() throws IOException {
-        PropertyDescriptor propertyDescriptor = getPropertyDescriptor(PropertyDescriptor.Type.String, new PropertyDescriptor.Subtype.DateSubtype(), LIST);
-
-        Property property = Property.fromUnchecked(propertyDescriptor, Utils.newArrayList());
-        assertPropertyToString(property, "");
-
-        property = Property.fromUnchecked(propertyDescriptor, Utils.newArrayList("2025-03-20"));
-        assertPropertyToString(property, "2025-03-20");
-
-        property = Property.fromUnchecked(propertyDescriptor, Utils.newArrayList("2025-03-20", "1939-01-04", "2300-12-12"));
-        assertPropertyToString(property, "2025-03-20, 1939-01-04, 2300-12-12");
-
-        property = Property.fromUnchecked(propertyDescriptor, Utils.newArrayList("2025-03-20", null, "2300-12-12"));
-        assertPropertyToString(property, "2025-03-20, <null>, 2300-12-12");
-
-        property = Property.fromUnchecked(propertyDescriptor, null);
-        assertPropertyToString(property, "");
-    } */
-
     @Test
     public void test_PropertyToString_time() throws IOException {
         PropertyDescriptor propertyDescriptor = getPropertyDescriptor(PropertyDescriptor.Type.String, new PropertyDescriptor.Subtype.TimeSubtype(), SINGLE);
@@ -284,14 +297,4 @@ public class DefaultPropertyToStringConverterTest {
             PropertyDescriptor.Multiplicity multiplicity) {
         return new PropertyDescriptor("property", type, subtype, multiplicity, null, null);
     }
-    @Mock private LabelService labelService;
-    @Mock private OrderedLabelService orderedLabelService;
-    private final DefaultPropertyToStringConverter propertyToStringConverter = new DefaultPropertyToStringConverter(
-            labelService,
-            orderedLabelService,
-            new DateTimeFormatter());
-    private final UUIDGenerator uuidGenerator = new RoundRobinUUIDGenerator();
-    private final UUID uuid1 = uuidGenerator.getUUID();
-    private final UUID uuid2 = uuidGenerator.getUUID();
-    private final UUID uuid3 = uuidGenerator.getUUID();
 }

@@ -9,6 +9,8 @@ import java.io.IOException;
 
 public abstract class PropertyFilterCriterion extends FilterCriterion {
 
+    public final String propertyName;
+
     public PropertyFilterCriterion(String propertyName) {
         this.propertyName = propertyName;
     }
@@ -20,7 +22,5 @@ public abstract class PropertyFilterCriterion extends FilterCriterion {
     }
 
     public abstract boolean check_(Property propertyValue) throws PropertyException;
-
-    public final String propertyName;
 
 }

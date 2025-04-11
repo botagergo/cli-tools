@@ -1,17 +1,17 @@
 package cli_tools.task_manager.cli.command;
 
+import cli_tools.common.cli.argument.PropertyArgument;
 import cli_tools.common.cli.command.Command;
+import cli_tools.common.cli.property_modifier.PropertyModifier;
+import cli_tools.common.core.data.property.ModifyPropertySpec;
 import cli_tools.common.core.util.Print;
 import cli_tools.task_manager.cli.TaskManagerContext;
+import cli_tools.task_manager.task.Task;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import cli_tools.common.cli.argument.PropertyArgument;
-import cli_tools.common.cli.property_modifier.PropertyModifier;
-import cli_tools.task_manager.task.Task;
-import cli_tools.common.core.data.property.ModifyPropertySpec;
 
 import java.util.List;
 
@@ -19,6 +19,9 @@ import java.util.List;
 @Getter
 @Setter
 public final class AddTaskCommand extends Command {
+
+    private String name;
+    private List<@NonNull PropertyArgument> modifyPropertyArgs;
 
     @Override
     public void execute(cli_tools.common.cli.Context context) {
@@ -42,8 +45,5 @@ public final class AddTaskCommand extends Command {
             log.error("{}\n{}", e.getMessage(), ExceptionUtils.getStackTrace(e));
         }
     }
-
-    private String name;
-    private List<@NonNull PropertyArgument> modifyPropertyArgs;
 
 }

@@ -5,6 +5,9 @@ import java.util.HashMap;
 
 public class PseudoPropertyManager {
 
+    private final HashMap<String, PseudoPropertyProvider> pseudoPropertyProviders;
+    private final PropertyManager propertyManager;
+
     public PseudoPropertyManager(PropertyManager propertyManager) {
         this.pseudoPropertyProviders = new HashMap<>();
         this.propertyManager = propertyManager;
@@ -23,8 +26,5 @@ public class PseudoPropertyManager {
     public void registerPseudoPropertyProvider(String propertyName, PseudoPropertyProvider pseudoPropertyProvider) {
         pseudoPropertyProviders.put(propertyName, pseudoPropertyProvider);
     }
-
-    private final HashMap<String, PseudoPropertyProvider> pseudoPropertyProviders;
-    private final PropertyManager propertyManager;
 
 }

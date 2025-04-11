@@ -6,6 +6,8 @@ import java.util.HashMap;
 
 public class PropertyOwnerImpl extends PropertyOwner {
 
+    private final HashMap<String, Object> properties;
+
     public PropertyOwnerImpl(HashMap<String, Object> properties) {
         this.properties = properties;
     }
@@ -18,7 +20,5 @@ public class PropertyOwnerImpl extends PropertyOwner {
     public HashMap<String, Object> getProperties() {
         return properties;
     }
-
-    private final HashMap<String, Object> properties;
 
 }

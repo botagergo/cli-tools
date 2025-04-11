@@ -11,8 +11,8 @@ import java.io.IOException;
 public abstract class JsonRepository<T_Json, T_Stored> {
 
     private final ObjectMapper objectMapper;
-    private T_Stored data = null;
     private final File jsonFile;
+    private T_Stored data = null;
     private ObjectWriter objectWriter;
     private ObjectReader objectReader;
 
@@ -32,6 +32,7 @@ public abstract class JsonRepository<T_Json, T_Stored> {
     protected JavaType constructType(TypeFactory typeFactory) {
         return null;
     }
+
     protected TypeReference<T_Json> getTypeReference() {
         return null;
     }
@@ -93,7 +94,8 @@ public abstract class JsonRepository<T_Json, T_Stored> {
             if (javaType != null) {
                 objectReader = getObjectMapper().readerFor(javaType);
             } else {
-                objectReader = getObjectMapper().readerFor(new TypeReference<>() {});
+                objectReader = getObjectMapper().readerFor(new TypeReference<>() {
+                });
             }
         }
         return objectReader;

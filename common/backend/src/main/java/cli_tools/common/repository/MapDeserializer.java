@@ -12,6 +12,8 @@ import java.util.Map;
 
 public class MapDeserializer extends StdDeserializer<HashMap<String, Object>> {
 
+    private final ObjectDeserializer objectDeserializer;
+
     public MapDeserializer() {
         this(null);
     }
@@ -38,6 +40,4 @@ public class MapDeserializer extends StdDeserializer<HashMap<String, Object>> {
         }
         return properties;
     }
-
-    private final ObjectDeserializer objectDeserializer;
 }

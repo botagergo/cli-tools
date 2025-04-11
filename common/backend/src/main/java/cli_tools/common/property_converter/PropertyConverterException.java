@@ -1,11 +1,15 @@
 package cli_tools.common.property_converter;
 
-import lombok.Getter;
 import cli_tools.common.property_lib.PropertyDescriptor;
+import lombok.Getter;
 
 @Getter
 public class PropertyConverterException extends Exception {
 
+    final Type exceptionType;
+    final PropertyDescriptor propertyDescriptor;
+    final Object propertyValue;
+    final String predicate;
     public PropertyConverterException(Type exceptionType, PropertyDescriptor propertyDescriptor, Object propertyValue) {
         super(getMsg(exceptionType, propertyDescriptor, propertyValue));
 
@@ -26,11 +30,6 @@ public class PropertyConverterException extends Exception {
             return null;
         }
     }
-
-    final Type exceptionType;
-    final PropertyDescriptor propertyDescriptor;
-    final Object propertyValue;
-    final String predicate;
 
     public enum Type {
         NotACollection, EmptyList, LabelNotFound, IllegalType

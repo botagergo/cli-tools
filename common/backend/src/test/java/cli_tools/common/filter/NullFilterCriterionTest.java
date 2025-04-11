@@ -18,6 +18,10 @@ import static org.testng.AssertJUnit.assertTrue;
 
 public class NullFilterCriterionTest {
 
+    private final PropertyManager propertyManager;
+    @Mock
+    private PropertyOwner propertyOwner;
+
     public NullFilterCriterionTest() {
         MockitoAnnotations.openMocks(this);
 
@@ -68,9 +72,5 @@ public class NullFilterCriterionTest {
         propertyManager.getPropertyDescriptorCollection().addPropertyDescriptor(new PropertyDescriptor(propertyName,
                 PropertyDescriptor.Type.String, null, multiplicity, null, null));
     }
-
-    @Mock
-    private PropertyOwner propertyOwner;
-    private final PropertyManager propertyManager;
 
 }

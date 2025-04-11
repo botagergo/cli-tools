@@ -11,6 +11,9 @@ import java.net.http.HttpResponse;
 
 public class TaskManagerClient {
 
+    private final HttpClient httpClient = HttpClient.newHttpClient();
+    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final String address;
     public TaskManagerClient(String address) {
         this.address = address;
     }
@@ -27,9 +30,5 @@ public class TaskManagerClient {
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
         return objectMapper.readValue(response.body(), contentClass);
     }
-
-    private final HttpClient httpClient = HttpClient.newHttpClient();
-    private final ObjectMapper objectMapper = new ObjectMapper();
-    private final String address;
 
 }

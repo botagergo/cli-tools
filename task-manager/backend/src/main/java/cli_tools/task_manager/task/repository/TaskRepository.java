@@ -10,10 +10,15 @@ import java.util.UUID;
 public interface TaskRepository {
 
     Task create(@NonNull Task task) throws IOException;
+
     Task get(@NonNull UUID uuid) throws IOException;
+
     List<Task> getAll() throws IOException;
+
     Task update(@NonNull UUID taskUuid, @NonNull Task task) throws IOException;
+
     Task delete(@NonNull UUID uuid) throws IOException;
+
     void deleteAll() throws IOException;
 
 }

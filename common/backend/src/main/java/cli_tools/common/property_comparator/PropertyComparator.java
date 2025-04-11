@@ -1,8 +1,8 @@
 package cli_tools.common.property_comparator;
 
-import org.apache.commons.lang3.StringUtils;
 import cli_tools.common.property_lib.Property;
 import cli_tools.common.property_lib.PropertyDescriptor;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.Comparator;
 

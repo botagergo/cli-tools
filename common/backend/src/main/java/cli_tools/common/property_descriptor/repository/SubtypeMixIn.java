@@ -1,8 +1,8 @@
 package cli_tools.common.property_descriptor.repository;
 
+import cli_tools.common.property_lib.PropertyDescriptor;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import cli_tools.common.property_lib.PropertyDescriptor;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "subtype")
 @JsonSubTypes({
@@ -12,4 +12,5 @@ import cli_tools.common.property_lib.PropertyDescriptor;
         @JsonSubTypes.Type(value = PropertyDescriptor.Subtype.TimeSubtype.class, name = "Time"),
         @JsonSubTypes.Type(value = PropertyDescriptor.Subtype.TaskSubtype.class, name = "Task")
 })
-public record SubtypeMixIn() { }
+public record SubtypeMixIn() {
+}

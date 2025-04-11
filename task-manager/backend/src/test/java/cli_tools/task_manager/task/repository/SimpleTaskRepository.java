@@ -1,10 +1,10 @@
 package cli_tools.task_manager.task.repository;
 
+import cli_tools.task_manager.task.Task;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
-import cli_tools.task_manager.task.Task;
 
 import java.util.*;
 
@@ -13,6 +13,8 @@ import java.util.*;
 @Getter
 @AllArgsConstructor
 public class SimpleTaskRepository implements TaskRepository {
+
+    private List<Task> tasks;
 
     public SimpleTaskRepository() {
         tasks = new ArrayList<>();
@@ -70,7 +72,5 @@ public class SimpleTaskRepository implements TaskRepository {
     public void deleteAll() {
         tasks.clear();
     }
-
-    private List<Task> tasks;
 
 }

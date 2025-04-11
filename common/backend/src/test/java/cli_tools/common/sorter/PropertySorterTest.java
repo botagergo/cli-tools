@@ -1,22 +1,24 @@
 package cli_tools.common.sorter;
 
+import cli_tools.common.core.data.SortingCriterion;
+import cli_tools.common.property_comparator.PropertyNotComparableException;
+import cli_tools.common.property_lib.PropertyDescriptor;
+import cli_tools.common.property_lib.PropertyException;
+import cli_tools.common.property_lib.PropertyManager;
+import cli_tools.common.service.PropertyOwnerImpl;
+import cli_tools.common.util.Utils;
 import org.mockito.MockitoAnnotations;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-import cli_tools.common.core.data.SortingCriterion;
-import cli_tools.common.property_comparator.PropertyNotComparableException;
-import cli_tools.common.service.PropertyOwnerImpl;
-import cli_tools.common.util.Utils;
-import cli_tools.common.property_lib.PropertyDescriptor;
-import cli_tools.common.property_lib.PropertyException;
-import cli_tools.common.property_lib.PropertyManager;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class PropertySorterTest {
+
+    private PropertyManager propertyManager;
 
     @BeforeClass
     public void init() {
@@ -227,7 +229,5 @@ public class PropertySorterTest {
         propertyManager.getPropertyDescriptorCollection().addPropertyDescriptor(new PropertyDescriptor(name,
                 type, null, multiplicity, null, null));
     }
-
-    private PropertyManager propertyManager;
 
 }

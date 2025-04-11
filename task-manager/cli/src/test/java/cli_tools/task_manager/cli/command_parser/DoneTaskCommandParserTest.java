@@ -1,19 +1,23 @@
 package cli_tools.task_manager.cli.command_parser;
 
-import cli_tools.common.cli.command_parser.CommandParserException;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.testng.annotations.Test;
-import cli_tools.common.core.data.property.Affinity;
 import cli_tools.common.cli.argument.ArgumentList;
 import cli_tools.common.cli.argument.PropertyArgument;
+import cli_tools.common.cli.command_parser.CommandParserException;
+import cli_tools.common.core.data.property.Affinity;
 import cli_tools.task_manager.cli.TaskManagerContext;
 import cli_tools.task_manager.cli.command.DoneTaskCommand;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.testng.annotations.Test;
 
 import java.util.List;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertThrows;
 
 public class DoneTaskCommandParserTest {
+
+    private final DoneTaskCommandParser parser = new DoneTaskCommandParser();
+    private final TaskManagerContext context = new TaskManagerContext();
 
     @Test
     public void test_parse_noArgs() throws CommandParserException {
@@ -81,7 +85,4 @@ public class DoneTaskCommandParserTest {
         argList.setFilterPropertyArguments(filterPropertyArgs);
         return argList;
     }
-
-    private final DoneTaskCommandParser parser = new DoneTaskCommandParser();
-    private final TaskManagerContext context = new TaskManagerContext();
 }

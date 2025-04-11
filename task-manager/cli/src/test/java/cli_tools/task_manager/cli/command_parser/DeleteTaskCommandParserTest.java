@@ -1,18 +1,22 @@
 package cli_tools.task_manager.cli.command_parser;
 
-import cli_tools.common.cli.command_parser.CommandParserException;
-import org.testng.annotations.Test;
-import cli_tools.common.core.data.property.Affinity;
 import cli_tools.common.cli.argument.ArgumentList;
 import cli_tools.common.cli.argument.PropertyArgument;
+import cli_tools.common.cli.command_parser.CommandParserException;
+import cli_tools.common.core.data.property.Affinity;
 import cli_tools.task_manager.cli.TaskManagerContext;
 import cli_tools.task_manager.cli.command.DeleteTaskCommand;
+import org.testng.annotations.Test;
 
 import java.util.List;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertThrows;
 
 public class DeleteTaskCommandParserTest {
+
+    private final DeleteTaskCommandParser parser = new DeleteTaskCommandParser();
+    private final TaskManagerContext context = new TaskManagerContext();
 
     @Test
     public void test_parse_noArgs() throws CommandParserException {
@@ -80,8 +84,5 @@ public class DeleteTaskCommandParserTest {
         argList.setFilterPropertyArguments(filterPropertyArguments);
         return argList;
     }
-
-    private final DeleteTaskCommandParser parser = new DeleteTaskCommandParser();
-    private final TaskManagerContext context = new TaskManagerContext();
 
 }

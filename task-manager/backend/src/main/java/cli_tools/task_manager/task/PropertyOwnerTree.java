@@ -1,9 +1,9 @@
 package cli_tools.task_manager.task;
 
+import cli_tools.common.property_lib.PropertyOwner;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import cli_tools.common.property_lib.PropertyOwner;
 
 import java.util.HashMap;
 import java.util.List;
@@ -13,11 +13,11 @@ import java.util.List;
 @AllArgsConstructor
 public class PropertyOwnerTree extends PropertyOwner {
 
+    private PropertyOwner parent;
+    private List<PropertyOwnerTree> children;
+
     @Override
     public HashMap<String, Object> getProperties() {
         return parent.getProperties();
     }
-
-    private PropertyOwner parent;
-    private List<PropertyOwnerTree> children;
 }

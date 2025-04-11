@@ -1,13 +1,13 @@
 package cli_tools.common.property_converter;
 
-import cli_tools.common.core.data.OrderedLabel;
-import cli_tools.common.core.repository.OrderedLabelRepository;
-import cli_tools.common.core.repository.OrderedLabelRepositoryFactory;
-import jakarta.inject.Inject;
 import cli_tools.common.core.data.Label;
+import cli_tools.common.core.data.OrderedLabel;
 import cli_tools.common.core.repository.LabelRepository;
 import cli_tools.common.core.repository.LabelRepositoryFactory;
+import cli_tools.common.core.repository.OrderedLabelRepository;
+import cli_tools.common.core.repository.OrderedLabelRepositoryFactory;
 import cli_tools.common.property_lib.PropertyDescriptor;
+import jakarta.inject.Inject;
 import lombok.NonNull;
 
 import java.io.IOException;
@@ -16,6 +16,9 @@ import java.util.List;
 import java.util.UUID;
 
 public class PropertyConverter {
+
+    private final LabelRepositoryFactory labelRepositoryFactory;
+    private final OrderedLabelRepositoryFactory orderedLabelRepositoryFactory;
 
     @Inject
     public PropertyConverter(
@@ -75,8 +78,5 @@ public class PropertyConverter {
             return label.uuid();
         }
     }
-
-    private final LabelRepositoryFactory labelRepositoryFactory;
-    private final OrderedLabelRepositoryFactory orderedLabelRepositoryFactory;
 
 }

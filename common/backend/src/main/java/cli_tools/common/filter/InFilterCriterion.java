@@ -7,6 +7,8 @@ import java.util.Collection;
 
 public class InFilterCriterion extends PropertyFilterCriterion {
 
+    private final Collection<Object> operand;
+
     public InFilterCriterion(String propertyName, Collection<Object> operand) {
         super(propertyName);
         this.operand = operand;
@@ -16,7 +18,5 @@ public class InFilterCriterion extends PropertyFilterCriterion {
     public boolean check_(Property property) throws PropertyException {
         return operand != null && operand.contains(property.getValue());
     }
-
-    private final Collection<Object> operand;
 
 }

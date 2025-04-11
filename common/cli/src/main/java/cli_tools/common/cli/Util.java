@@ -7,7 +7,8 @@ public class Util {
             if (taskID >= 1) {
                 return taskID;
             }
-        } catch (NumberFormatException ignored) {}
+        } catch (NumberFormatException ignored) {
+        }
         throw new IllegalArgumentException("invalid temporary id: " + str);
     }
 
@@ -17,7 +18,7 @@ public class Util {
             return "";
         }
 
-        char lastChar = strippedStr.charAt(strippedStr.length()-1);
+        char lastChar = strippedStr.charAt(strippedStr.length() - 1);
         if (str.length() > strippedStr.length() &&
                 lastChar == '\\') {
             strippedStr = strippedStr + str.charAt(strippedStr.length());

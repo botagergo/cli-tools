@@ -1,9 +1,9 @@
 package cli_tools.common.cli.argument;
 
+import cli_tools.common.core.data.property.Affinity;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
-import cli_tools.common.core.data.property.Affinity;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -17,18 +17,18 @@ public class ArgumentList {
     private static final char DOUBLE_QUOTE = '\"';
 
     private String commandName = null;
-    @NonNull private List<String> leadingPositionalArguments = new ArrayList<>();
-    @NonNull private List<String> trailingPositionalArguments = new ArrayList<>();
-    @NonNull private LinkedHashMap<Character, List<SpecialArgument>> specialArguments = new LinkedHashMap<>();
-    @NonNull private List<PropertyArgument> filterPropertyArguments = new ArrayList<>();
-    @NonNull private List<PropertyArgument> modifyPropertyArguments = new ArrayList<>();
-    @NonNull private List<OptionArgument> optionArguments = new ArrayList<>();
-
-    public static class ArgumentListException extends Exception {
-        public ArgumentListException(String msg) {
-            super(msg);
-        }
-    }
+    @NonNull
+    private List<String> leadingPositionalArguments = new ArrayList<>();
+    @NonNull
+    private List<String> trailingPositionalArguments = new ArrayList<>();
+    @NonNull
+    private LinkedHashMap<Character, List<SpecialArgument>> specialArguments = new LinkedHashMap<>();
+    @NonNull
+    private List<PropertyArgument> filterPropertyArguments = new ArrayList<>();
+    @NonNull
+    private List<PropertyArgument> modifyPropertyArguments = new ArrayList<>();
+    @NonNull
+    private List<OptionArgument> optionArguments = new ArrayList<>();
 
     public ArgumentList(
             String commandName,
@@ -48,7 +48,8 @@ public class ArgumentList {
         this.optionArguments = optionArguments;
     }
 
-    public ArgumentList() {}
+    public ArgumentList() {
+    }
 
     public static ArgumentList from(List<String> tokens) throws ArgumentListException {
         if (tokens.isEmpty()) {
@@ -178,5 +179,11 @@ public class ArgumentList {
         }
         values.add(currentValue.toString());
         return values;
+    }
+
+    public static class ArgumentListException extends Exception {
+        public ArgumentListException(String msg) {
+            super(msg);
+        }
     }
 }

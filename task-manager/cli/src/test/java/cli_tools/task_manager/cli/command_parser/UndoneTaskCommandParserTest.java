@@ -16,6 +16,9 @@ import static org.testng.Assert.assertThrows;
 
 public class UndoneTaskCommandParserTest {
 
+    private final UndoneTaskCommandParser parser = new UndoneTaskCommandParser();
+    private final TaskManagerContext context = new TaskManagerContext();
+
     @Test
     public void test_parse_noArgs() throws CommandParserException {
         UndoneTaskCommand command = parse(getArgList(List.of(), List.of()));
@@ -82,7 +85,4 @@ public class UndoneTaskCommandParserTest {
         argList.setFilterPropertyArguments(filterPropertyArgs);
         return argList;
     }
-
-    private final UndoneTaskCommandParser parser = new UndoneTaskCommandParser();
-    private final TaskManagerContext context = new TaskManagerContext();
 }

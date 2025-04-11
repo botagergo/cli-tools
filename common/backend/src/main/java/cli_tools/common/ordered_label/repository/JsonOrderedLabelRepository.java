@@ -1,10 +1,10 @@
 package cli_tools.common.ordered_label.repository;
 
+import cli_tools.common.core.data.OrderedLabel;
+import cli_tools.common.core.repository.OrderedLabelRepository;
 import cli_tools.common.repository.JsonRepository;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.type.TypeFactory;
-import cli_tools.common.core.data.OrderedLabel;
-import cli_tools.common.core.repository.OrderedLabelRepository;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,9 +21,16 @@ public class JsonOrderedLabelRepository extends JsonRepository<ArrayList<String>
     }
 
     @Override
-    public OrderedLabel find(String text) throws IOException {
-        return getData().stream().filter(t -> t.text().equals(text))
-                .findAny().orElse(null);
+    public void create(String text) throws IOException {
+        ArrayList<OrderedLabel> data = getData();
+        OrderedLabel orderedLabel;
+        if (data.isEmpty()) {
+            orderedLabel = new OrderedLabel(text, 0);
+        } else {
+            orderedLabel = new OrderedLabel(text, data.get(data.size() - 1).value() + 1);
+        }
+        data.add(orderedLabel);
+        writeData();
     }
 
     @Override
@@ -41,16 +48,9 @@ public class JsonOrderedLabelRepository extends JsonRepository<ArrayList<String>
     }
 
     @Override
-    public void create(String text) throws IOException {
-        ArrayList<OrderedLabel> data = getData();
-        OrderedLabel orderedLabel;
-        if (data.isEmpty()) {
-            orderedLabel = new OrderedLabel(text, 0);
-        } else {
-            orderedLabel = new OrderedLabel(text, data.get(data.size() - 1).value() + 1);
-        }
-        data.add(orderedLabel);
-        writeData();
+    public OrderedLabel find(String text) throws IOException {
+        return getData().stream().filter(t -> t.text().equals(text))
+                .findAny().orElse(null);
     }
 
     @Override
@@ -60,13 +60,13 @@ public class JsonOrderedLabelRepository extends JsonRepository<ArrayList<String>
     }
 
     @Override
-    public ArrayList<String> getEmptyData() {
-        return new ArrayList<>();
+    protected JavaType constructType(TypeFactory typeFactory) {
+        return typeFactory.constructCollectionType(ArrayList.class, String.class);
     }
 
     @Override
-    protected JavaType constructType(TypeFactory typeFactory) {
-        return typeFactory.constructCollectionType(ArrayList.class, String.class);
+    public ArrayList<String> getEmptyData() {
+        return new ArrayList<>();
     }
 
     @Override

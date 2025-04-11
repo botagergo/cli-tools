@@ -18,7 +18,6 @@ public class Utils {
     }
 
 
-
     public static <K, V> HashMap<K, V> newHashMap(K key1, V value1, K key2, V value2, K key3, V value3) {
         HashMap<K, V> ret = new HashMap<>();
         ret.put(key1, value1);

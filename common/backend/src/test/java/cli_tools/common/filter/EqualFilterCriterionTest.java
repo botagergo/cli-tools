@@ -1,17 +1,17 @@
 package cli_tools.common.filter;
 
+import cli_tools.common.property_lib.PropertyDescriptor;
+import cli_tools.common.property_lib.PropertyException;
+import cli_tools.common.property_lib.PropertyManager;
+import cli_tools.common.property_lib.PropertyOwner;
+import cli_tools.common.util.RoundRobinUUIDGenerator;
+import cli_tools.common.util.Utils;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-import cli_tools.common.util.RoundRobinUUIDGenerator;
-import cli_tools.common.util.Utils;
-import cli_tools.common.property_lib.PropertyDescriptor;
-import cli_tools.common.property_lib.PropertyException;
-import cli_tools.common.property_lib.PropertyManager;
-import cli_tools.common.property_lib.PropertyOwner;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -19,6 +19,13 @@ import java.util.List;
 import java.util.UUID;
 
 public class EqualFilterCriterionTest {
+
+    private final PropertyManager propertyManager;
+    private final RoundRobinUUIDGenerator uuidGenerator = new RoundRobinUUIDGenerator();
+    private final UUID uuid1 = uuidGenerator.getUUID();
+    private final UUID uuid2 = uuidGenerator.getUUID();
+    @Mock
+    private PropertyOwner propertyOwner;
 
     public EqualFilterCriterionTest() {
         MockitoAnnotations.openMocks(this);
@@ -112,34 +119,34 @@ public class EqualFilterCriterionTest {
 
         Mockito.when(propertyOwner.getProperties()).thenReturn(new HashMap<>());
         Assert.assertFalse(
-            checkEqualsWithDefault("test_uuid", uuid1));
+                checkEqualsWithDefault("test_uuid", uuid1));
     }
 
     @Test
     public void test_list_not_equal() throws PropertyException, IOException {
         Mockito.when(propertyOwner.getProperties()).thenReturn(Utils.newHashMap("test_string_list", Utils.newArrayList("string_value1", "string_value3")));
         Assert.assertFalse(
-            checkEquals("test_string_list",
-                List.of("string_value1", "string_value2")));
+                checkEquals("test_string_list",
+                        List.of("string_value1", "string_value2")));
 
         Mockito.when(propertyOwner.getProperties()).thenReturn(Utils.newHashMap("test_string_list", Utils.newArrayList(null, "string_value3")));
         Assert.assertFalse(
-            checkEquals("test_string_list",
-                Utils.newArrayList(null, "string_value2")));
+                checkEquals("test_string_list",
+                        Utils.newArrayList(null, "string_value2")));
 
         Mockito.when(propertyOwner.getProperties()).thenReturn(Utils.newHashMap("test_string_list", Utils.newArrayList(null, "string_value3")));
         Assert.assertFalse(
-            checkEquals("test_string_list",
-                List.of("string_value1", "string_value2")));
+                checkEquals("test_string_list",
+                        List.of("string_value1", "string_value2")));
 
         Mockito.when(propertyOwner.getProperties()).thenReturn(Utils.newHashMap("test_string_list", Utils.newArrayList("string_value1", "string_value3")));
         Assert.assertFalse(
-            checkEquals("test_string_list", null));
+                checkEquals("test_string_list", null));
 
         Mockito.when(propertyOwner.getProperties()).thenReturn(new HashMap<>());
         Assert.assertFalse(
-            checkEqualsWithDefault("test_string_list",
-                List.of("string_value1", "string_value2")));
+                checkEqualsWithDefault("test_string_list",
+                        List.of("string_value1", "string_value2")));
     }
 
     private boolean checkEquals(String propertyName, Object operand)
@@ -158,12 +165,5 @@ public class EqualFilterCriterionTest {
         propertyManager.getPropertyDescriptorCollection().addPropertyDescriptor(new PropertyDescriptor(propertyName,
                 propertyType, null, multiplicity, null, null));
     }
-
-    @Mock
-    private PropertyOwner propertyOwner;
-    private final PropertyManager propertyManager;
-    private final RoundRobinUUIDGenerator uuidGenerator = new RoundRobinUUIDGenerator();
-    private final UUID uuid1 = uuidGenerator.getUUID();
-    private final UUID uuid2 = uuidGenerator.getUUID();
 
 }

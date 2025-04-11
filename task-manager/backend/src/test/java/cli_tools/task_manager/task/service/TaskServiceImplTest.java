@@ -35,6 +35,23 @@ import static org.testng.Assert.assertThrows;
 
 public class TaskServiceImplTest {
 
+    private final UUIDGenerator uuidGenerator = new RoundRobinUUIDGenerator(10);
+    private final UUID uuid1 = uuidGenerator.getUUID();
+    private final UUID uuid2 = uuidGenerator.getUUID();
+    private final UUID uuid3 = uuidGenerator.getUUID();
+    private final UUID uuid4 = uuidGenerator.getUUID();
+    private final UUID uuid5 = uuidGenerator.getUUID();
+    private final UUID uuid6 = uuidGenerator.getUUID();
+    private final UUID uuid7 = uuidGenerator.getUUID();
+    private final UUID uuid8 = uuidGenerator.getUUID();
+    @InjectMocks
+    private PropertyConverter propertyConverter;
+    @Mock
+    private TempIDManager tempIdManager;
+    private TaskServiceImpl taskService;
+    private PropertyManager propertyManager;
+    private SimpleTaskRepository simpleTaskRepository;
+
     @BeforeClass
     public void init() {
         MockitoAnnotations.openMocks(this);
@@ -519,7 +536,7 @@ public class TaskServiceImplTest {
                         .propertyName("name")
                         .predicate(Predicate.CONTAINS)
                         .operands(List.of("task"))
-                                .build(),
+                        .build(),
                 List.of(uuid1, uuid3, uuid4, uuid2), true
         );
         assertEquals(tasks.size(), 2);
@@ -717,23 +734,5 @@ public class TaskServiceImplTest {
         propertyManager.getPropertyDescriptorCollection().addPropertyDescriptor(new PropertyDescriptor(name,
                 type, null, multiplicity, defaultValue, null));
     }
-
-    private final UUIDGenerator uuidGenerator = new RoundRobinUUIDGenerator(10);
-    private final UUID uuid1 = uuidGenerator.getUUID();
-    private final UUID uuid2 = uuidGenerator.getUUID();
-    private final UUID uuid3 = uuidGenerator.getUUID();
-    private final UUID uuid4 = uuidGenerator.getUUID();
-    private final UUID uuid5 = uuidGenerator.getUUID();
-    private final UUID uuid6 = uuidGenerator.getUUID();
-    private final UUID uuid7 = uuidGenerator.getUUID();
-    private final UUID uuid8 = uuidGenerator.getUUID();
-
-    @InjectMocks
-    private PropertyConverter propertyConverter;
-    @Mock
-    private TempIDManager tempIdManager;
-    private TaskServiceImpl taskService;
-    private PropertyManager propertyManager;
-    private SimpleTaskRepository simpleTaskRepository;
 
 }

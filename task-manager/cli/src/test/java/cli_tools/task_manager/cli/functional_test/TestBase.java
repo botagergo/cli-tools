@@ -29,8 +29,9 @@ import static org.testng.Assert.*;
 
 public class TestBase {
 
-    private Executor executor;
-
+    private static final TypeReference<List<HashMap<String, Object>>> typeRef = new TypeReference<>() {
+    };
+    protected static ObjectMapper objectMapper = new ObjectMapper();
     private final ByteArrayOutputStream stdout = new ByteArrayOutputStream();
     private final PrintStream originalOut = System.out;
     protected String stdoutStr;
@@ -38,8 +39,7 @@ public class TestBase {
     protected TaskManagerContext context;
     protected MockConfigurationRepository configurationRepository;
     protected UUID[] uuids;
-    protected static ObjectMapper objectMapper = new ObjectMapper();
-    private static final TypeReference<List<HashMap<String, Object>>> typeRef = new TypeReference<>() {};
+    private Executor executor;
 
     @BeforeClass
     void setup() throws IOException {

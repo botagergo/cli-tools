@@ -1,14 +1,16 @@
 package cli_tools.common.cli.tokenizer;
 
+import cli_tools.common.cli.TestModule;
 import org.testng.Assert;
 import org.testng.annotations.Guice;
 import org.testng.annotations.Test;
-import cli_tools.common.cli.TestModule;
 
 import java.util.List;
 
 @Guice(modules = TestModule.class)
 public class TokenizerTest {
+
+    private final Tokenizer tokenizer = new TokenizerImpl();
 
     @Test
     public void testEmpty() throws MismatchedQuotesException {
@@ -102,7 +104,5 @@ public class TokenizerTest {
         Assert.assertThrows(MismatchedQuotesException.class, () -> tokenizer.tokenize("hello \"world'"));
         Assert.assertThrows(MismatchedQuotesException.class, () -> tokenizer.tokenize("hello '''world"));
     }
-
-    private final Tokenizer tokenizer = new TokenizerImpl();
 
 }
