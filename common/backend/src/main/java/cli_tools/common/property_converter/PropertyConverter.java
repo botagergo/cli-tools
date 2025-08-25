@@ -1,9 +1,6 @@
 package cli_tools.common.property_converter;
 
-import cli_tools.common.core.data.Label;
 import cli_tools.common.core.data.OrderedLabel;
-import cli_tools.common.core.repository.LabelRepository;
-import cli_tools.common.core.repository.LabelRepositoryFactory;
 import cli_tools.common.core.repository.OrderedLabelRepository;
 import cli_tools.common.core.repository.OrderedLabelRepositoryFactory;
 import cli_tools.common.property_lib.PropertyDescriptor;
@@ -17,14 +14,11 @@ import java.util.UUID;
 
 public class PropertyConverter {
 
-    private final LabelRepositoryFactory labelRepositoryFactory;
     private final OrderedLabelRepositoryFactory orderedLabelRepositoryFactory;
 
     @Inject
     public PropertyConverter(
-            LabelRepositoryFactory labelRepositoryFactory,
             OrderedLabelRepositoryFactory orderedLabelRepositoryFactory) {
-        this.labelRepositoryFactory = labelRepositoryFactory;
         this.orderedLabelRepositoryFactory = orderedLabelRepositoryFactory;
     }
 
@@ -43,7 +37,7 @@ public class PropertyConverter {
         } else if (propertyDescriptor.type() == PropertyDescriptor.Type.Integer) {
             return convertIntegerProperty(propertyDescriptor, propertyValue);
         } else if (propertyDescriptor.type() == PropertyDescriptor.Type.UUID) {
-            return convertUuidProperty(propertyDescriptor, propertyValue);
+            return convertUuidProperty(propertyValue);
         } else {
             throw new RuntimeException();
         }
@@ -64,19 +58,9 @@ public class PropertyConverter {
         }
     }
 
-    private UUID convertUuidProperty(PropertyDescriptor propertyDescriptor, Object propertyValue) throws PropertyConverterException, IOException {
+    private UUID convertUuidProperty(Object propertyValue) {
         String propertyValueStr = (String) propertyValue;
-
-        try {
-            return UUID.fromString(propertyValueStr);
-        } catch (IllegalArgumentException e1) {
-            LabelRepository labelRepository = labelRepositoryFactory.getLabelRepository(propertyDescriptor.name());
-            Label label = labelRepository.find(propertyValueStr);
-            if (label == null) {
-                throw new PropertyConverterException(PropertyConverterException.Type.LabelNotFound, propertyDescriptor, propertyValueStr);
-            }
-            return label.uuid();
-        }
+        return UUID.fromString(propertyValueStr);
     }
 
 }

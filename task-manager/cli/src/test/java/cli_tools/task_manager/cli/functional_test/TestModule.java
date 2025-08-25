@@ -8,6 +8,7 @@ import cli_tools.common.cli.command_parser.CommandParserFactoryImpl;
 import cli_tools.common.cli.tokenizer.Tokenizer;
 import cli_tools.common.cli.tokenizer.TokenizerImpl;
 import cli_tools.common.core.repository.*;
+import cli_tools.common.label.repository.JsonLabelRepository;
 import cli_tools.common.label.repository.JsonLabelRepositoryFactory;
 import cli_tools.common.label.service.LabelService;
 import cli_tools.common.label.service.LabelServiceImpl;
@@ -92,7 +93,7 @@ public class TestModule extends AbstractModule {
         bind(Tokenizer.class).to(TokenizerImpl.class);
         bind(TaskRepository.class).to(JsonTaskRepository.class).asEagerSingleton();
         bind(ViewInfoRepository.class).to(JsonViewInfoRepository.class).asEagerSingleton();
-        bind(LabelRepositoryFactory.class).to(JsonLabelRepositoryFactory.class).asEagerSingleton();
+        bind(LabelRepository.class).to(JsonLabelRepository.class).asEagerSingleton();
         bind(OrderedLabelRepositoryFactory.class).to(JsonOrderedLabelRepositoryFactory.class).asEagerSingleton();
         bind(ConfigurationRepository.class).to(MockConfigurationRepository.class).asEagerSingleton();
         bind(StateRepository.class).to(JsonStateRepository.class).asEagerSingleton();

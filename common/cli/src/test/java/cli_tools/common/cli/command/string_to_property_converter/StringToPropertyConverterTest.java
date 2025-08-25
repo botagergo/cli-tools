@@ -3,7 +3,6 @@ package cli_tools.common.cli.command.string_to_property_converter;
 import cli_tools.common.cli.argument.PropertyArgument;
 import cli_tools.common.cli.string_to_property_converter.StringToPropertyConverter;
 import cli_tools.common.cli.string_to_property_converter.StringToPropertyConverterException;
-import cli_tools.common.core.data.Label;
 import cli_tools.common.core.data.OrderedLabel;
 import cli_tools.common.core.data.Predicate;
 import cli_tools.common.core.data.property.Affinity;

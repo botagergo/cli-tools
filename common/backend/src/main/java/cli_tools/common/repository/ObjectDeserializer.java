@@ -7,6 +7,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class ObjectDeserializer extends StdDeserializer<Object> {
@@ -64,6 +67,10 @@ public class ObjectDeserializer extends StdDeserializer<Object> {
             return str.substring(2);
         } else if (str.startsWith("u:")) {
             return UUID.fromString(str.substring(2));
+        } else if (str.startsWith("d:")) {
+            return LocalDate.parse(str.substring(2), DateTimeFormatter.ISO_LOCAL_DATE);
+        } else if (str.startsWith("t:")) {
+            return LocalTime.parse(str.substring(2), DateTimeFormatter.ISO_LOCAL_TIME);
         } else {
             return str;
         }

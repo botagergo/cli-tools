@@ -1,61 +1,57 @@
 package cli_tools.common.label.repository;
 
-import cli_tools.common.core.data.Label;
 import cli_tools.common.core.repository.LabelRepository;
 import cli_tools.common.repository.SimpleJsonRepository;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.type.TypeFactory;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
-public class JsonLabelRepository extends SimpleJsonRepository<ArrayList<Label>> implements LabelRepository {
+public class JsonLabelRepository extends SimpleJsonRepository<Map<String, List<String>>> implements LabelRepository {
 
-    public JsonLabelRepository(File jsonFile) {
+    @Inject
+    public JsonLabelRepository(@Named("labelJsonFile") File jsonFile) {
         super(jsonFile);
-        getObjectMapper().addMixIn(Label.class, LabelMixIn.class);
     }
 
     @Override
-    public Label create(Label label) throws IOException {
-        getData().add(label);
+    public boolean create(String labelType, String labelText) throws IOException {
+        List<String> labelTexts = getData().computeIfAbsent(labelType, k -> new ArrayList<>());
+        if (!labelTexts.contains(labelText)) {
+            labelTexts.add(labelText);
+            writeData();
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public boolean exists(String labelType, String labelText) throws IOException {
+        List<String> labelTexts = getData().get(labelType);
+        if (labelTexts == null) {
+            return false;
+        }
+        return labelTexts.contains(labelText);
+    }
+
+    @Override
+    public List<String> getAll(String labelType) throws IOException {
+        return getData().getOrDefault(labelType, List.of());
+    }
+
+    @Override
+    public void deleteAll(String labelType) throws IOException {
+        getData().remove(labelType);
         writeData();
-        return label;
     }
 
     @Override
-    public Label get(UUID uuid) throws IOException {
-        return getData().stream().filter(t -> t.uuid().equals(uuid))
-                .findAny().orElse(null);
-    }
-
-    @Override
-    public List<Label> getAll() throws IOException {
-        return getData();
-    }
-
-    @Override
-    public Label find(String labelText) throws IOException {
-        return getData().stream().filter(t -> t.text().equals(labelText))
-                .findAny().orElse(null);
-    }
-
-    @Override
-    public void deleteAll() throws IOException {
-        getData().clear();
-        writeData();
-    }
-
-    @Override
-    protected JavaType constructType(TypeFactory typeFactory) {
-        return typeFactory.constructCollectionType(ArrayList.class, Label.class);
-    }
-
-    @Override
-    public ArrayList<Label> getEmptyData() {
-        return new ArrayList<>();
+    public Map<String, List<String>> getEmptyData() {
+        return new HashMap<>();
     }
 }

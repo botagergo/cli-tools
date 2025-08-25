@@ -1,7 +1,6 @@
 package cli_tools.common.cli.command_line;
 
 import cli_tools.common.cli.Context;
-import cli_tools.common.core.data.Label;
 import cli_tools.common.core.data.OrderedLabel;
 import cli_tools.common.core.data.Predicate;
 import cli_tools.common.core.util.Print;
@@ -98,8 +97,7 @@ public class Completer implements org.jline.reader.Completer {
 
             try {
                 if (propertyDescriptor.subtype() instanceof PropertyDescriptor.Subtype.LabelSubtype labelSubtype) {
-                    List<Label> labels = context.getLabelService().getLabels(labelSubtype.labelType());
-                    labelStrs = labels.stream().map(Label::text).toList();
+                    labelStrs = context.getLabelService().getLabels(labelSubtype.labelType());
                 } else if (propertyDescriptor.subtype() instanceof PropertyDescriptor.Subtype.OrderedLabelSubtype orderedLabelSubtype) {
                     List<OrderedLabel> labels = context.getOrderedLabelService().getOrderedLabels(orderedLabelSubtype.orderedLabelType());
                     labelStrs = labels.stream().map(OrderedLabel::text).toList();

@@ -2,7 +2,6 @@ package cli_tools.common.cli.string_to_property_converter;
 
 import cli_tools.common.cli.DateTimeParser;
 import cli_tools.common.cli.argument.PropertyArgument;
-import cli_tools.common.core.data.Label;
 import cli_tools.common.core.data.OrderedLabel;
 import cli_tools.common.core.data.Predicate;
 import cli_tools.common.core.data.property.Affinity;
@@ -20,6 +19,8 @@ import jakarta.inject.Inject;
 import lombok.NonNull;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
@@ -172,25 +173,36 @@ public class StringToPropertyConverter {
         }
     }
 
-    private Object singleStringToProperty(PropertyDescriptor propertyDescriptor, String propertyValue, boolean createUuidIfNotExists) throws StringToPropertyConverterException, IOException {
+    private Object singleStringToProperty(PropertyDescriptor propertyDescriptor, String propertyValue, boolean createLabelIfNotExist) throws StringToPropertyConverterException, IOException {
         if (propertyDescriptor.type() == PropertyDescriptor.Type.String) {
-            return stringToStringProperty(propertyDescriptor, propertyValue);
+            return stringToStringProperty(propertyDescriptor, propertyValue, createLabelIfNotExist);
         } else if (propertyDescriptor.type() == PropertyDescriptor.Type.Boolean) {
             return stringToBooleanProperty(propertyValue);
         } else if (propertyDescriptor.type() == PropertyDescriptor.Type.UUID) {
-            return stringToUuidProperty(propertyDescriptor, propertyValue, createUuidIfNotExists);
+            return stringToUuidProperty(propertyDescriptor, propertyValue);
         } else if (propertyDescriptor.type() == PropertyDescriptor.Type.Integer) {
             return stringToIntegerProperty(propertyDescriptor, propertyValue);
+        } else if (propertyDescriptor.type() == PropertyDescriptor.Type.Date) {
+            return stringToDateProperty(propertyValue);
+        } else if (propertyDescriptor.type() == PropertyDescriptor.Type.Time) {
+            return stringToTimeProperty(propertyValue);
         } else {
             throw new RuntimeException();
         }
     }
 
-    private String stringToStringProperty(PropertyDescriptor propertyDescriptor, String propertyValue) throws StringToPropertyConverterException {
-        if (propertyDescriptor.subtype() instanceof PropertyDescriptor.Subtype.DateSubtype) {
-            return stringToDateProperty(propertyValue);
-        } else if (propertyDescriptor.subtype() instanceof PropertyDescriptor.Subtype.TimeSubtype) {
-            return stringToTimeProperty(propertyValue);
+    private String stringToStringProperty(PropertyDescriptor propertyDescriptor, String propertyValue, boolean createLabelIfNotExist) throws StringToPropertyConverterException, IOException {
+        if (propertyDescriptor.subtype() instanceof PropertyDescriptor.Subtype.LabelSubtype labelSubtype) {
+            boolean labelExists = labelService.labelExists(labelSubtype.labelType(), propertyValue);
+            if (!labelExists && createLabelIfNotExist
+                    && Utils.yesNo("label '%s' does not exist, create it?".formatted(propertyValue))) {
+                labelExists = labelService.createLabel(labelSubtype.labelType(), propertyValue);
+            }
+            if (labelExists) {
+                return propertyValue;
+            } else {
+                throw new StringToPropertyConverterException(StringToPropertyConverterException.Type.LabelNotFound, "no such label: " + propertyValue, propertyValue);
+            }
         } else {
             return propertyValue;
         }
@@ -248,23 +260,12 @@ public class StringToPropertyConverter {
         throw new RuntimeException();
     }
 
-    private UUID stringToUuidProperty(PropertyDescriptor propertyDescriptor, String propertyValueStr, boolean createUuidIfNotExists) throws StringToPropertyConverterException, IOException {
+    private UUID stringToUuidProperty(PropertyDescriptor propertyDescriptor, String propertyValueStr) throws StringToPropertyConverterException, IOException {
         try {
             return UUID.fromString(propertyValueStr);
         } catch (IllegalArgumentException e1) {
             PropertyDescriptor.Subtype.UUIDSubtype uuidSubtype = propertyDescriptor.getUuidSubtypeUnchecked();
-            if (uuidSubtype instanceof PropertyDescriptor.Subtype.LabelSubtype labelSubtype) {
-                Label label = labelService.findLabel(labelSubtype.labelType(), propertyValueStr);
-                if (label == null && createUuidIfNotExists
-                        && Utils.yesNo("label '" + propertyValueStr + "' does not exist, create it?")) {
-                    label = labelService.createLabel(labelSubtype.labelType(), propertyValueStr);
-                }
-                if (label != null) {
-                    return label.uuid();
-                } else {
-                    throw new StringToPropertyConverterException(StringToPropertyConverterException.Type.LabelNotFound, "no such label: " + propertyValueStr, propertyValueStr);
-                }
-            } else if (tempIdManager != null && uuidSubtype instanceof PropertyDescriptor.Subtype.TaskSubtype) {
+            if (tempIdManager != null && uuidSubtype instanceof PropertyDescriptor.Subtype.TaskSubtype) {
                 try {
                     int tempId = Integer.parseInt(propertyValueStr);
                     UUID uuid = tempIdManager.getUUID(tempId);
@@ -297,17 +298,17 @@ public class StringToPropertyConverter {
         }
     }
 
-    private String stringToDateProperty(String propertyValueStr) throws StringToPropertyConverterException {
+    private LocalDate stringToDateProperty(String propertyValueStr) throws StringToPropertyConverterException {
         try {
-            return dateTimeParser.parseLocalDate(propertyValueStr).format(java.time.format.DateTimeFormatter.ISO_LOCAL_DATE);
+            return dateTimeParser.parseLocalDate(propertyValueStr);
         } catch (DateTimeParseException e) {
             throw new StringToPropertyConverterException(StringToPropertyConverterException.Type.InvalidDate, "invalid date: " + propertyValueStr, propertyValueStr);
         }
     }
 
-    private String stringToTimeProperty(String propertyValueStr) throws StringToPropertyConverterException {
+    private LocalTime stringToTimeProperty(String propertyValueStr) throws StringToPropertyConverterException {
         try {
-            return dateTimeParser.parseLocalTime(propertyValueStr).format(java.time.format.DateTimeFormatter.ISO_LOCAL_TIME);
+            return dateTimeParser.parseLocalTime(propertyValueStr);
         } catch (DateTimeParseException e) {
             throw new StringToPropertyConverterException(StringToPropertyConverterException.Type.InvalidTime, "invalid time: " + propertyValueStr, propertyValueStr);
         }

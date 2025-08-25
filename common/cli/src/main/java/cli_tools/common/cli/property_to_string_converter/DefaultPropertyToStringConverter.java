@@ -1,14 +1,12 @@
 package cli_tools.common.cli.property_to_string_converter;
 
 import cli_tools.common.cli.DateTimeFormatter;
-import cli_tools.common.core.data.Label;
 import cli_tools.common.core.data.OrderedLabel;
 import cli_tools.common.core.repository.LabelRepositoryFactory;
 import cli_tools.common.label.service.LabelService;
 import cli_tools.common.ordered_label.service.OrderedLabelService;
 import cli_tools.common.property_lib.Property;
 import cli_tools.common.property_lib.PropertyDescriptor;
-import cli_tools.common.property_lib.PropertyException;
 import jakarta.inject.Inject;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,10 +16,7 @@ import org.apache.commons.lang3.NotImplementedException;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -65,17 +60,21 @@ public class DefaultPropertyToStringConverter implements PropertyToStringConvert
             case Integer -> {
                 return integerToString(property);
             }
+            case Date -> {
+                return dateToString(property);
+            }
+            case Time -> {
+                return timeToString(property);
+            }
             default -> throw new RuntimeException();
         }
     }
 
-    private String stringToString(Property property) {
+    private String stringToString(Property property) throws IOException {
         PropertyDescriptor propertyDescriptor = property.getPropertyDescriptor();
         if (propertyDescriptor.subtype() != null) {
-            if (propertyDescriptor.subtype() instanceof PropertyDescriptor.Subtype.DateSubtype) {
-                return dateToString(property);
-            } else if (propertyDescriptor.subtype() instanceof PropertyDescriptor.Subtype.TimeSubtype) {
-                return timeToString(property);
+            if (propertyDescriptor.subtype() instanceof PropertyDescriptor.Subtype.LabelSubtype labelSubtype) {
+                return labelStringToString(labelSubtype.labelType(), property);
             } else {
                 throw new RuntimeException();
             }
@@ -102,7 +101,7 @@ public class DefaultPropertyToStringConverter implements PropertyToStringConvert
     private String uuidToString(Property property) throws IOException {
         PropertyDescriptor propertyDescriptor = property.getPropertyDescriptor();
         if (propertyDescriptor.multiplicity() == PropertyDescriptor.Multiplicity.SINGLE) {
-            return uuidToString(property.getUuidUnchecked(), propertyDescriptor);
+            return property.getUuidUnchecked().toString();
         } else if (propertyDescriptor.multiplicity() == PropertyDescriptor.Multiplicity.LIST) {
             return uuidStreamToString(property.getUuidListUnchecked().stream(), propertyDescriptor, false);
         } else if (propertyDescriptor.multiplicity() == PropertyDescriptor.Multiplicity.SET) {
@@ -112,47 +111,7 @@ public class DefaultPropertyToStringConverter implements PropertyToStringConvert
         }
     }
 
-    private String uuidToString(UUID uuid, PropertyDescriptor propertyDescriptor) throws IOException {
-        if (propertyDescriptor.subtype() != null) {
-            if (propertyDescriptor.subtype() instanceof PropertyDescriptor.Subtype.LabelSubtype labelSubtype) {
-                return labelUuidToString(uuid, labelSubtype.labelType());
-            } else {
-                throw new RuntimeException();
-            }
-        } else {
-            return uuid.toString();
-        }
-    }
-
     private String uuidStreamToString(Stream<UUID> uuids, PropertyDescriptor propertyDescriptor, boolean sort) throws IOException {
-        if (propertyDescriptor.subtype() != null) {
-            if (propertyDescriptor.subtype() instanceof PropertyDescriptor.Subtype.LabelSubtype labelSubtype) {
-                return labelUuidStreamToString(uuids, labelSubtype.labelType(), sort);
-            } else {
-                throw new RuntimeException();
-            }
-        } else {
-            return uuidStreamToString(uuids, sort);
-        }
-    }
-
-    private String labelUuidStreamToString(Stream<UUID> uuids, String labelType, boolean sort) throws IOException {
-        List<String> str = new ArrayList<>();
-        for (UUID uuid : uuids.toArray(UUID[]::new)) {
-            if (uuid == null) {
-                str.add(nullStringInList);
-            } else {
-                str.add(labelUuidToString(uuid, labelType));
-            }
-        }
-        var stream = str.stream();
-        if (sort) {
-            stream = stream.sorted();
-        }
-        return stream.collect(Collectors.joining(listSeparator));
-    }
-
-    private String uuidStreamToString(Stream<UUID> uuids, boolean sort) throws IOException {
         List<String> str = new ArrayList<>();
         for (UUID uuid : uuids.toArray(UUID[]::new)) {
             if (uuid == null) {
@@ -168,13 +127,37 @@ public class DefaultPropertyToStringConverter implements PropertyToStringConvert
         return stream.collect(Collectors.joining(listSeparator));
     }
 
-    private String labelUuidToString(UUID uuid, String labelType) throws IOException {
-        Label label = labelService.getLabel(labelType, uuid);
-        if (label == null) {
-            log.warn("Label with UUID '" + uuid + "' does not exist");
-            return "<" + uuid.toString() + ">";
+    private String labelStringStreamToString(Collection<String> labels, String labelType, boolean sort) throws IOException {
+        List<String> labelTexts = new ArrayList<>();
+        for (String label : labels) {
+            labelTexts.add(labelStringToString_(labelType, label));
         }
-        return label.text();
+        var stream = labelTexts.stream();
+        if (sort) {
+            stream = stream.sorted();
+        }
+        return stream.collect(Collectors.joining(listSeparator));
+    }
+
+    private String labelStringToString(String labelType, Property property) throws IOException {
+        if (property.getPropertyDescriptor().multiplicity() == PropertyDescriptor.Multiplicity.SINGLE) {
+            return labelStringToString_(labelType, property.getStringUnchecked());
+        } else if (property.getPropertyDescriptor().multiplicity() == PropertyDescriptor.Multiplicity.LIST) {
+            return labelStringStreamToString(property.getStringListUnchecked(), labelType, false);
+        } else if (property.getPropertyDescriptor().multiplicity() == PropertyDescriptor.Multiplicity.SET) {
+            return labelStringStreamToString(property.getStringSetUnchecked(), labelType, true);
+        } else {
+            throw new RuntimeException();
+        }
+    }
+
+    private String labelStringToString_(String labelType, String labelText) throws IOException {
+        if (labelService.labelExists(labelType, labelText)) {
+            return labelText;
+        } else {
+            log.warn("Label '{}' does not exist", labelText);
+            return "<NO_SUCH_LABEL:" + labelText + ">";
+        }
     }
 
     private String integerToString(Property property) throws IOException {
@@ -276,12 +259,8 @@ public class DefaultPropertyToStringConverter implements PropertyToStringConvert
     }
 
     private String dateToString_(Property property) {
-        try {
-            LocalDate localDate = property.getDate();
-            return localDate != null ? dateTimeFormatter.formatLocalDate(localDate) : nullString;
-        } catch (PropertyException e) {
-            return "<INVALID_DATE:" + property.getStringUnchecked() + ">";
-        }
+        LocalDate localDate = property.getDateUnchecked();
+        return localDate != null ? dateTimeFormatter.formatLocalDate(localDate) : nullString;
     }
 
     private String timeToString(Property property) {
@@ -294,11 +273,7 @@ public class DefaultPropertyToStringConverter implements PropertyToStringConvert
     }
 
     private String timeToString_(Property property) {
-        try {
-            LocalTime localTime = property.getTime();
-            return localTime != null ? dateTimeFormatter.formatLocalTime(localTime) : nullString;
-        } catch (PropertyException e) {
-            return "<INVALID_TIME:" + property.getStringUnchecked() + ">";
-        }
+        LocalTime localTime = property.getTimeUnchecked();
+        return localTime != null ? dateTimeFormatter.formatLocalTime(localTime) : nullString;
     }
 }

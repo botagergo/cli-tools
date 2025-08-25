@@ -25,6 +25,16 @@ public class PropertyException extends Exception {
         this.requestedSubtype = requestedSubtype;
     }
 
+    public PropertyException(String msg) {
+        super(msg);
+        this.exceptionType = null;
+        this.propertyName = null;
+        this.propertyDescriptor = null;
+        this.propertyValue = null;
+        this.requestedType = null;
+        this.requestedSubtype = null;
+    }
+
     private static String getMsg(Type exceptionType, String propertyName,
                                  PropertyDescriptor propertyDescriptor, Object propertyValue,
                                  PropertyDescriptor.Type requestedType, String requestedSubtype) {

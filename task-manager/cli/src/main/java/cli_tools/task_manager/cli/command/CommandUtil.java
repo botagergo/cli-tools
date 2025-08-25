@@ -8,6 +8,7 @@ import cli_tools.common.property_lib.PropertyException;
 import cli_tools.common.property_lib.PropertyManager;
 import cli_tools.task_manager.cli.TaskManagerContext;
 import cli_tools.task_manager.task.Task;
+import cli_tools.task_manager.task.service.TaskServiceException;
 import lombok.NonNull;
 import lombok.extern.log4j.Log4j2;
 
@@ -61,7 +62,7 @@ public class CommandUtil {
             List<Integer> tempIDs,
             List<FilterPropertySpec> filterPropertySpecs,
             @NonNull ChangeType changeType
-    ) throws PropertyException, IOException {
+    ) throws PropertyException, IOException, TaskServiceException {
         if (context.getConfigurationRepository().disableConfirmation() || tempIDs != null && !tempIDs.isEmpty()) {
             return tasks;
         }

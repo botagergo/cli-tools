@@ -68,10 +68,10 @@ public class Initializer {
 
     private void initializeStatuses() throws IOException {
         labelService.deleteAllLabels("status");
-        labelService.createLabel("status", new Label(UUID.nameUUIDFromBytes(ByteBuffer.allocate(4).putInt(690234862).array()), "NextAction"));
-        labelService.createLabel("status", new Label(UUID.nameUUIDFromBytes(ByteBuffer.allocate(4).putInt(495582995).array()), "Waiting"));
-        labelService.createLabel("status", new Label(UUID.nameUUIDFromBytes(ByteBuffer.allocate(4).putInt(199213821).array()), "Planning"));
-        labelService.createLabel("status", new Label(UUID.nameUUIDFromBytes(ByteBuffer.allocate(4).putInt(314566632).array()), "OnHold"));
+        labelService.createLabel("status", "NextAction");
+        labelService.createLabel("status", "Waiting");
+        labelService.createLabel("status", "Planning");
+        labelService.createLabel("status", "OnHold");
     }
 
     private void initializePropertyDescriptors() throws IOException {
@@ -80,9 +80,9 @@ public class Initializer {
         propertyDescriptorService.createPropertyDescriptor(
                 new PropertyDescriptor("uuid", PropertyDescriptor.Type.UUID, null, PropertyDescriptor.Multiplicity.SINGLE, "", null));
         propertyDescriptorService.createPropertyDescriptor(
-                new PropertyDescriptor("tags", PropertyDescriptor.Type.UUID, new PropertyDescriptor.Subtype.LabelSubtype("tag"), PropertyDescriptor.Multiplicity.SET, new LinkedHashSet<>(), null));
+                new PropertyDescriptor("tags", PropertyDescriptor.Type.String, new PropertyDescriptor.Subtype.LabelSubtype("tag"), PropertyDescriptor.Multiplicity.SET, new LinkedHashSet<>(), null));
         propertyDescriptorService.createPropertyDescriptor(
-                new PropertyDescriptor("status", PropertyDescriptor.Type.UUID, new PropertyDescriptor.Subtype.LabelSubtype("status"), PropertyDescriptor.Multiplicity.SINGLE, null, null));
+                new PropertyDescriptor("status", PropertyDescriptor.Type.String, new PropertyDescriptor.Subtype.LabelSubtype("status"), PropertyDescriptor.Multiplicity.SINGLE, null, null));
         propertyDescriptorService.createPropertyDescriptor(
                 new PropertyDescriptor("priority", PropertyDescriptor.Type.Integer, new PropertyDescriptor.Subtype.OrderedLabelSubtype("priority"), PropertyDescriptor.Multiplicity.SINGLE, null, null));
         propertyDescriptorService.createPropertyDescriptor(
@@ -90,13 +90,13 @@ public class Initializer {
         propertyDescriptorService.createPropertyDescriptor(
                 new PropertyDescriptor("id", PropertyDescriptor.Type.Integer, null, PropertyDescriptor.Multiplicity.SINGLE, null, new TempIDPseudoPropertyProvider(tempIdManager)));
         propertyDescriptorService.createPropertyDescriptor(
-                new PropertyDescriptor("startDate", PropertyDescriptor.Type.String, new PropertyDescriptor.Subtype.DateSubtype(), PropertyDescriptor.Multiplicity.SINGLE, null, null));
+                new PropertyDescriptor("startDate", PropertyDescriptor.Type.Date, null, PropertyDescriptor.Multiplicity.SINGLE, null, null));
         propertyDescriptorService.createPropertyDescriptor(
-                new PropertyDescriptor("startTime", PropertyDescriptor.Type.String, new PropertyDescriptor.Subtype.TimeSubtype(), PropertyDescriptor.Multiplicity.SINGLE, null, null));
+                new PropertyDescriptor("startTime", PropertyDescriptor.Type.Time, null, PropertyDescriptor.Multiplicity.SINGLE, null, null));
         propertyDescriptorService.createPropertyDescriptor(
-                new PropertyDescriptor("dueDate", PropertyDescriptor.Type.String, new PropertyDescriptor.Subtype.DateSubtype(), PropertyDescriptor.Multiplicity.SINGLE, null, null));
+                new PropertyDescriptor("dueDate", PropertyDescriptor.Type.Date, null, PropertyDescriptor.Multiplicity.SINGLE, null, null));
         propertyDescriptorService.createPropertyDescriptor(
-                new PropertyDescriptor("dueTime", PropertyDescriptor.Type.String, new PropertyDescriptor.Subtype.TimeSubtype(), PropertyDescriptor.Multiplicity.SINGLE, null, null));
+                new PropertyDescriptor("dueTime", PropertyDescriptor.Type.Time, null, PropertyDescriptor.Multiplicity.SINGLE, null, null));
         propertyDescriptorService.createPropertyDescriptor(
                 new PropertyDescriptor("parent", PropertyDescriptor.Type.UUID, new PropertyDescriptor.Subtype.TaskSubtype(), PropertyDescriptor.Multiplicity.SINGLE, null, null));
         propertyDescriptorService.createPropertyDescriptor(

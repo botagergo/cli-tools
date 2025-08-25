@@ -6,6 +6,9 @@ import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 
 import java.io.IOException;
 import java.io.NotSerializableException;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -34,6 +37,10 @@ public class ObjectSerializer extends StdSerializer<Object> {
             jgen.writeString("s:" + str);
         } else if (value instanceof UUID uuid) {
             jgen.writeString("u:" + uuid);
+        } else if (value instanceof LocalDate localDate) {
+            jgen.writeString("d:" + localDate.format(DateTimeFormatter.ISO_LOCAL_DATE));
+        } else if (value instanceof LocalTime localTime) {
+            jgen.writeString("t:" + localTime.format(DateTimeFormatter.ISO_LOCAL_TIME));
         } else if (value instanceof Boolean b) {
             jgen.writeBoolean(b);
         } else if (value instanceof Integer i) {

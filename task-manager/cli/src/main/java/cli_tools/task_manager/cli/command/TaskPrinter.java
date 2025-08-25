@@ -13,6 +13,7 @@ import cli_tools.common.property_lib.PropertyOwner;
 import cli_tools.task_manager.cli.TaskManagerContext;
 import cli_tools.task_manager.task.PropertyOwnerTree;
 import cli_tools.task_manager.task.Task;
+import cli_tools.task_manager.task.service.TaskServiceException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.inamik.text.tables.GridTable;
 import com.inamik.text.tables.SimpleTable;
@@ -24,6 +25,7 @@ import org.fusesource.jansi.Ansi;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
+import java.util.UUID;
 
 @Log4j2
 public class TaskPrinter {
@@ -35,7 +37,7 @@ public class TaskPrinter {
 
     public void printTasks(TaskManagerContext context, List<Task> tasks,
                            List<String> propertiesToList,
-                           OutputFormat outputFormat) throws PropertyException, IOException {
+                           OutputFormat outputFormat) throws PropertyException, IOException, TaskServiceException {
 
         DefaultPropertyToStringConverter propertyToStringConverter = new DefaultPropertyToStringConverter(
                 context.getLabelService(),
@@ -79,7 +81,7 @@ public class TaskPrinter {
     private void printTasksText(TaskManagerContext context,
                                 PropertyToStringConverter propertyToStringConverter,
                                 List<Task> tasks,
-                                List<String> propertiesToList) throws PropertyException, IOException {
+                                List<String> propertiesToList) throws PropertyException, IOException, TaskServiceException {
         SimpleTable table = SimpleTable.of().nextRow();
 
         for (String propertyName : propertiesToList) {
@@ -148,9 +150,9 @@ public class TaskPrinter {
             TaskManagerContext context,
             PropertyToStringConverter propertyToStringConverter,
             Task task,
-            List<String> propertiesToList) throws IOException, PropertyException {
+            List<String> propertiesToList) throws IOException, PropertyException, TaskServiceException {
         Ansi ansiDone;
-        Boolean done = context.getPropertyManager().getProperty(task, "done").getBoolean();
+        Boolean done = getProperty(context, task, "done").getBoolean();
         if (done != null && done) {
             ansiDone = Ansi.ansi().a("✓ ");
         } else {
@@ -180,8 +182,24 @@ public class TaskPrinter {
         }
     }
 
-    private String getIDStr(cli_tools.common.cli.Context context, PropertyOwner propertyOwner) throws PropertyException, IOException {
+    private String getIDStr(Context context, PropertyOwner propertyOwner) throws PropertyException, IOException {
         return context.getPropertyManager().getProperty(propertyOwner, "id").getInteger().toString();
+    }
+
+    private Property getProperty(Context context, Task task, String propertyName) throws TaskServiceException {
+        try {
+            return context.getPropertyManager().getProperty(task, propertyName);
+        } catch (PropertyException | IOException e) {
+            int id;
+            try {
+                id = context.getPropertyManager().getProperty(task, "id").getInteger();
+            } catch (PropertyException | IOException ex) {
+                throw new TaskServiceException("failed to get property '%s' of task %s: %s"
+                        .formatted(propertyName, task.getUUID(), e.getMessage()));
+            }
+            throw new TaskServiceException("failed to get property '%s' of task %d (%s): %s"
+                    .formatted(propertyName, id, task.getUUID(), e.getMessage()));
+        }
     }
 
     private String[] splitByNewlines(String str) {

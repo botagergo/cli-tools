@@ -27,7 +27,7 @@ public class PropertyManager {
 
         PropertyDescriptor propertyDescriptor = getPropertyDescriptor(propertyName);
         if (propertyDescriptor == null) {
-            throw new PropertyException(PropertyException.Type.NotExist, propertyName, null, null, null, null);
+            throw new PropertyException("property '%s' does not exist".formatted(propertyName));
         }
         return getProperty(propertyOwner, propertyDescriptor);
     }
@@ -49,7 +49,7 @@ public class PropertyManager {
 
         PropertyDescriptor propertyDescriptor = getPropertyDescriptor(propertyName);
         if (propertyDescriptor == null) {
-            throw new PropertyException(PropertyException.Type.NotExist, propertyName, null, null, null, null);
+            throw new PropertyException("property '%s' does not exist".formatted(propertyName));
         }
 
         Property property = Property.from(propertyDescriptor, propertyValue);
@@ -85,8 +85,7 @@ public class PropertyManager {
                 newProperty = Collections.unmodifiableSet(Stream.concat(origSet.stream(), propertyValue.stream()).collect(Collectors.toSet()));
             }
         } else {
-            throw new PropertyException(PropertyException.Type.NotACollection,
-                    origProperty.getPropertyDescriptor().name(), origProperty.getPropertyDescriptor(), null, null, null);
+            throw new PropertyException("property '%s' does not exist".formatted(propertyName));
         }
 
         propertyOwner.getProperties().put(propertyName, newProperty);
@@ -120,8 +119,7 @@ public class PropertyManager {
             Iterables.removeAll(newSet, propertyValue);
             newProperty = Collections.unmodifiableSet(newSet);
         } else {
-            throw new PropertyException(PropertyException.Type.NotACollection,
-                    origProperty.getPropertyDescriptor().name(), origProperty.getPropertyDescriptor(), null, null, null);
+            throw new PropertyException("property '%s' does not exist".formatted(propertyName));
         }
 
         propertyOwner.getProperties().put(propertyName, newProperty);
