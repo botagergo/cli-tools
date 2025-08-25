@@ -19,6 +19,8 @@ public record PropertyDescriptor(
                 throw new IllegalArgumentException("subtype must be StringSubtype for String");
             } else if (type == Type.Integer && !(subtype instanceof Subtype.IntegerSubtype)) {
                 throw new IllegalArgumentException("subtype must be IntegerSubtype for Integer");
+            } else if (type == Type.Boolean) {
+                throw new IllegalArgumentException("no subtype allowed for Boolean");
             }
         }
     }
@@ -57,7 +59,7 @@ public record PropertyDescriptor(
     }
 
     public enum Type {
-        String, UUID, Boolean, Integer
+        String, UUID, Boolean, Integer, Date, Time
     }
 
     public enum Multiplicity {
@@ -69,16 +71,13 @@ public record PropertyDescriptor(
     public interface Subtype {
         String name();
 
-        interface StringSubtype extends Subtype {
-        }
+        interface StringSubtype extends Subtype { }
 
-        interface UUIDSubtype extends Subtype {
-        }
+        interface UUIDSubtype extends Subtype { }
 
-        interface IntegerSubtype extends Subtype {
-        }
+        interface IntegerSubtype extends Subtype { }
 
-        record LabelSubtype(String labelType) implements UUIDSubtype {
+        record LabelSubtype(String labelType) implements StringSubtype {
             @Override
             public String name() {
                 return "Label";
@@ -89,20 +88,6 @@ public record PropertyDescriptor(
             @Override
             public String name() {
                 return "OrderedLabel";
-            }
-        }
-
-        record DateSubtype() implements StringSubtype {
-            @Override
-            public String name() {
-                return "Date";
-            }
-        }
-
-        record TimeSubtype() implements StringSubtype {
-            @Override
-            public String name() {
-                return "Time";
             }
         }
 

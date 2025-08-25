@@ -1,6 +1,5 @@
 package cli_tools.common.property_converter;
 
-import cli_tools.common.core.data.Label;
 import cli_tools.common.core.data.OrderedLabel;
 import cli_tools.common.core.repository.LabelRepository;
 import cli_tools.common.core.repository.LabelRepositoryFactory;
@@ -120,18 +119,18 @@ public class PropertyConverterTest {
     }
 
     @Test
-    void test_convertProperty_uuid_notAnUuid_tagFound() throws IOException, PropertyConverterException {
+    void test_convertProperty_labelExists() throws IOException, PropertyConverterException {
         Mockito.when(labelRepositoryFactory.getLabelRepository("test")).thenReturn(labelRepository);
-        Mockito.when(labelRepository.find("tag")).thenReturn(new Label(uuid1, "tag"));
+        Mockito.when(labelRepository.exists("test", "tag")).thenReturn(true);
 
         assertEquals(propertyConverter.convertProperty(
                 getPropertyDescriptor(PropertyDescriptor.Type.UUID, PropertyDescriptor.Multiplicity.SINGLE), List.of("tag")), List.of(uuid1));
     }
 
     @Test
-    void test_stringToProperty_uuid_notAnUuid_tagNotFound_throws() throws IOException {
+    void test_stringToProperty_labelNotExists() throws IOException {
         Mockito.when(labelRepositoryFactory.getLabelRepository("test")).thenReturn(labelRepository);
-        Mockito.when(labelRepository.find("tag")).thenReturn(null);
+        Mockito.when(labelRepository.exists("test", "tag")).thenReturn(false);
 
         try {
             propertyConverter.convertProperty(

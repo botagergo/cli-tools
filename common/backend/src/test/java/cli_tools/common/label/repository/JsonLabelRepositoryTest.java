@@ -1,6 +1,5 @@
 package cli_tools.common.label.repository;
 
-import cli_tools.common.core.data.Label;
 import cli_tools.common.service.JsonRepositoryCreator;
 import cli_tools.common.util.RoundRobinUUIDGenerator;
 import org.testng.annotations.Test;
@@ -26,42 +25,29 @@ public class JsonLabelRepositoryTest {
     @Test
     void test_read_successful() throws IOException {
         File tempFile = rc.makeTempFile("read_successful", String.format("""
-                    [
-                        {
-                            "text":"label1",
-                            "uuid":"%s"
-                        },
-                        {
-                            "text":"label2",
-                            "uuid":"%s"
-                        }
-                    ]
+                {
+                    "mylabel": [ "label1", "label2" ]
+                }
                 """, uuidGenerator.uuids[0], uuidGenerator.uuids[1]));
         repository = new JsonLabelRepository(tempFile);
-        assertEquals(repository.getAll(), List.of(
-                new Label(uuidGenerator.uuids[0], "label1"),
-                new Label(uuidGenerator.uuids[1], "label2")
-        ));
+        assertEquals(repository.getAll("mylabel"), List.of("label1", "label2"));
     }
 
     @Test
     void test_write_successful() throws IOException {
         File tempFile = rc.getTempFile("write_successful.json");
         repository = new JsonLabelRepository(tempFile);
-        repository.create(new Label(uuidGenerator.uuids[0], "label1"));
-        repository.create(new Label(uuidGenerator.uuids[1], "label2"));
+        repository.create("mylabel1", "label1");
+        repository.create("mylabel1", "label2");
+        repository.create("mylabel2", "label1");
+        repository.create("mylabel2", "label4");
+        repository.create("mylabel2", "");
         String content = Files.readString(tempFile.toPath());
         assertEquals(content.replaceAll("\\s", ""), String.format("""
-                    [
-                        {
-                            "uuid":"%s",
-                            "text":"label1"
-                        },
-                        {
-                            "uuid":"%s",
-                            "text":"label2"
-                        }
-                    ]
+                    {
+                        "mylabel1": [ "label1", "label2" ],
+                        "mylabel2": [ "label1", "label4", "" ],
+                    }
                 """.replaceAll("\\s", ""), uuidGenerator.uuids[0], uuidGenerator.uuids[1]).replaceAll("\\s+", ""));
     }
 
@@ -83,59 +69,14 @@ public class JsonLabelRepositoryTest {
     }
 
     @Test
-    void test_missingField_throwsException() throws IOException {
-        File tempFile = rc.makeTempFile("missing_field", String.format("""
-                [
-                    {
-                        "uuid":"%s"
-                    },
-                    {
-                        "name":"label2",
-                        "uuid":"%s"
-                    }
-                ]
-                """, uuidGenerator.uuids[0], uuidGenerator.uuids[1]));
-        repository = new JsonLabelRepository(tempFile);
-        assertThrows(IOException.class, () -> repository.getData());
-    }
-
-    @Test
-    void test_extraFields_throwsException() throws IOException {
-        File tempFile = rc.makeTempFile("extra_fields", String.format("""
-                [
-                    {
-                        "text":"label1",
-                        "type":"asd",
-                        "uuid":"%s"
-                    },
-                    {
-                        "text":"label2",
-                        "uuid":"%s"
-                    }
-                ]
-                """, uuidGenerator.uuids[0], uuidGenerator.uuids[1]));
-
-        repository = new JsonLabelRepository(tempFile);
-        assertThrows(IOException.class, () -> repository.getData());
-    }
-
-    @Test
     void test_wrongFieldType_throwsException() throws IOException {
         File tempFile = rc.makeTempFile("wrong_field_type", String.format("""
-                [
-                    {
-                        "text":"label1",
-                        "uuid":true
-                    },
-                    {
-                        "text":"label2",
-                        "uuid":"%s"
-                    }
-                ]
+                {
+                    "mylabel":"asdf"
+                }
                 """, uuidGenerator.uuids[1]));
         repository = new JsonLabelRepository(tempFile);
         assertThrows(IOException.class, () -> repository.getData());
     }
-
 
 }

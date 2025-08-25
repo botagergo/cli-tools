@@ -1,49 +1,37 @@
 package cli_tools.common.label.service;
 
-import cli_tools.common.core.data.Label;
-import cli_tools.common.core.repository.LabelRepositoryFactory;
+import cli_tools.common.core.repository.LabelRepository;
 import cli_tools.common.util.UUIDGenerator;
 import jakarta.inject.Inject;
 import lombok.AllArgsConstructor;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.UUID;
+import java.util.Set;
 
 @AllArgsConstructor(onConstructor = @__(@Inject))
 public class LabelServiceImpl implements LabelService {
 
-    private final LabelRepositoryFactory labelRepositoryFactory;
-    private final UUIDGenerator uuidGenerator;
+    private final LabelRepository labelRepository;
 
     @Override
-    public Label getLabel(String labelType, UUID labelUuid) throws IOException {
-        return labelRepositoryFactory.getLabelRepository(labelType).get(labelUuid);
+    public boolean labelExists(String labelType, String labelText) throws IOException {
+        return labelRepository.exists(labelType, labelText);
     }
 
     @Override
-    public List<Label> getLabels(String labelType) throws IOException {
-        return labelRepositoryFactory.getLabelRepository(labelType).getAll();
+    public List<String> getLabels(String labelType) throws IOException {
+        return labelRepository.getAll(labelType);
     }
 
     @Override
-    public Label findLabel(String labelType, String labelText) throws IOException {
-        return labelRepositoryFactory.getLabelRepository(labelType).find(labelText);
-    }
-
-    @Override
-    public Label createLabel(String labelType, String labelText) throws IOException {
-        return createLabel(labelType, new Label(uuidGenerator.getUUID(), labelText));
-    }
-
-    @Override
-    public Label createLabel(String labelType, Label label) throws IOException {
-        return labelRepositoryFactory.getLabelRepository(labelType).create(label);
+    public boolean createLabel(String labelType, String labelText) throws IOException {
+        return labelRepository.create(labelType, labelText);
     }
 
     @Override
     public void deleteAllLabels(String labelType) throws IOException {
-        labelRepositoryFactory.getLabelRepository(labelType).deleteAll();
+        labelRepository.deleteAll(labelType);
     }
 
 }

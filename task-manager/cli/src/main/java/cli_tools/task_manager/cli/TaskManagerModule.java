@@ -14,6 +14,7 @@ import cli_tools.common.cli.tokenizer.Tokenizer;
 import cli_tools.common.cli.tokenizer.TokenizerImpl;
 import cli_tools.common.configuration.ConfigurationRepositoryImpl;
 import cli_tools.common.core.repository.*;
+import cli_tools.common.label.repository.JsonLabelRepository;
 import cli_tools.common.label.repository.JsonLabelRepositoryFactory;
 import cli_tools.common.label.service.LabelService;
 import cli_tools.common.label.service.LabelServiceImpl;
@@ -100,7 +101,7 @@ public class TaskManagerModule extends AbstractModule {
         bind(CustomCommandParserFactory.class).to(CustomCommandParserFactoryImpl.class).asEagerSingleton();
         bind(TaskRepository.class).to(JsonTaskRepository.class).asEagerSingleton();
         bind(ViewInfoRepository.class).to(JsonViewInfoRepository.class).asEagerSingleton();
-        bind(LabelRepositoryFactory.class).to(JsonLabelRepositoryFactory.class).asEagerSingleton();
+        bind(LabelRepository.class).to(JsonLabelRepository.class).asEagerSingleton();
         bind(OrderedLabelRepositoryFactory.class).to(JsonOrderedLabelRepositoryFactory.class).asEagerSingleton();
         bind(ConfigurationRepository.class).to(ConfigurationRepositoryImpl.class).asEagerSingleton();
         bind(StateRepository.class).to(JsonStateRepository.class).asEagerSingleton();
@@ -116,6 +117,7 @@ public class TaskManagerModule extends AbstractModule {
         bind(Context.class).to(TaskManagerContext.class);
         bind(CommandLine.class).to(JlineCommandLine.class);
 
+        bind(File.class).annotatedWith(Names.named("labelJsonFile")).toInstance(getJsonFile("label.json"));
         bind(File.class).annotatedWith(Names.named("taskJsonFile")).toInstance(getJsonFile("task.json"));
         bind(File.class).annotatedWith(Names.named("tempIdMappingJsonFile")).toInstance(getJsonFile("temp_id_mapping.json"));
         bind(File.class).annotatedWith(Names.named("propertyDescriptorJsonFile")).toInstance(getJsonFile("property_descriptor.json"));

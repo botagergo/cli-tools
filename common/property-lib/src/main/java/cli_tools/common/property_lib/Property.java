@@ -153,10 +153,10 @@ public class Property {
     public LocalDate getDate() throws PropertyException {
         String propertyValue = getString();
 
-        if (!(propertyDescriptor.subtype() instanceof PropertyDescriptor.Subtype.DateSubtype)) {
-            throw new PropertyException(PropertyException.Type.SubtypeMismatch,
+        if (propertyDescriptor.type() != PropertyDescriptor.Type.Date) {
+            throw new PropertyException(PropertyException.Type.TypeMismatch,
                     propertyDescriptor.name(), propertyDescriptor, propertyValue,
-                    PropertyDescriptor.Type.String, "Date");
+                    PropertyDescriptor.Type.Date, "Date");
         }
 
         if (propertyValue == null) {
@@ -172,11 +172,25 @@ public class Property {
         }
     }
 
+    public LocalDate getDateUnchecked() {
+        String propertyValue = getStringUnchecked();
+
+        if (propertyValue == null) {
+            return null;
+        }
+
+        try {
+            return LocalDate.parse(propertyValue, DateTimeFormatter.ISO_LOCAL_DATE);
+        } catch (DateTimeParseException e) {
+            return null;
+        }
+    }
+
     public LocalTime getTime() throws PropertyException {
         String propertyValue = getString();
 
-        if (!(propertyDescriptor.subtype() instanceof PropertyDescriptor.Subtype.TimeSubtype)) {
-            throw new PropertyException(PropertyException.Type.SubtypeMismatch,
+        if (propertyDescriptor.type() != PropertyDescriptor.Type.Time) {
+            throw new PropertyException(PropertyException.Type.TypeMismatch,
                     propertyDescriptor.name(), propertyDescriptor, propertyValue,
                     PropertyDescriptor.Type.String, "Time");
         }
@@ -190,7 +204,21 @@ public class Property {
         } catch (DateTimeParseException e) {
             throw new PropertyException(PropertyException.Type.WrongValueType,
                     propertyDescriptor.name(), propertyDescriptor, propertyValue,
-                    propertyDescriptor.type(), "Date");
+                    propertyDescriptor.type(), "Time");
+        }
+    }
+
+    public LocalTime getTimeUnchecked() {
+        String propertyValue = getStringUnchecked();
+
+        if (propertyValue == null) {
+            return null;
+        }
+
+        try {
+            return LocalTime.parse(propertyValue, DateTimeFormatter.ISO_LOCAL_TIME);
+        } catch (DateTimeParseException e) {
+            return null;
         }
     }
 

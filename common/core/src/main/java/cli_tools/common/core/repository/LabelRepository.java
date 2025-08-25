@@ -1,21 +1,17 @@
 package cli_tools.common.core.repository;
 
-import cli_tools.common.core.data.Label;
-
 import java.io.IOException;
 import java.util.List;
-import java.util.UUID;
+import java.util.Set;
 
 public interface LabelRepository {
 
-    Label create(Label label) throws IOException;
+    boolean create(String labelType, String labelText) throws IOException;
 
-    Label get(UUID uuid) throws IOException;
+    boolean exists(String labelType, String labelName) throws IOException;
 
-    List<Label> getAll() throws IOException;
+    List<String> getAll(String labelType) throws IOException;
 
-    Label find(String name) throws IOException;
-
-    void deleteAll() throws IOException;
+    void deleteAll(String labelType) throws IOException;
 
 }
