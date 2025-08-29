@@ -46,6 +46,9 @@ public class TaskManagerCLI {
         commandParserFactory.registerParser("delete", DeleteTaskCommandParser::new);
         commandParserFactory.registerParser("modify", ModifyTaskCommandParser::new);
         commandParserFactory.registerParser("ai", AICommandParser::new);
+        commandParserFactory.registerParser("addLabel", AddLabelCommandParser::new);
+        commandParserFactory.registerParser("listLabel", ListLabelCommandParser::new);
+        commandParserFactory.registerParser("deleteLabel", DeleteLabelCommandParser::new);
 
         try {
             for (CustomCommandDefinition customCommandDefinition : customCommandRepository.getAll()) {

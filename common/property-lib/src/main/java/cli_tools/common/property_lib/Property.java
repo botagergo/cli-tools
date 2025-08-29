@@ -173,17 +173,7 @@ public class Property {
     }
 
     public LocalDate getDateUnchecked() {
-        String propertyValue = getStringUnchecked();
-
-        if (propertyValue == null) {
-            return null;
-        }
-
-        try {
-            return LocalDate.parse(propertyValue, DateTimeFormatter.ISO_LOCAL_DATE);
-        } catch (DateTimeParseException e) {
-            return null;
-        }
+        return (LocalDate) getValue();
     }
 
     public LocalTime getTime() throws PropertyException {
@@ -209,17 +199,7 @@ public class Property {
     }
 
     public LocalTime getTimeUnchecked() {
-        String propertyValue = getStringUnchecked();
-
-        if (propertyValue == null) {
-            return null;
-        }
-
-        try {
-            return LocalTime.parse(propertyValue, DateTimeFormatter.ISO_LOCAL_TIME);
-        } catch (DateTimeParseException e) {
-            return null;
-        }
+        return (LocalTime) getValue();
     }
 
     public List<UUID> getUuidList() throws PropertyException {
@@ -403,7 +383,7 @@ public class Property {
     }
 
     @SuppressWarnings("unchecked")
-    public Set<Object> getSetUnchecked() throws PropertyException {
+    public Set<Object> getSetUnchecked() {
         if (value == null) {
             return null;
         }

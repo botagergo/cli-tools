@@ -155,13 +155,13 @@ public class StringToPropertyConverterTest {
     }
 
     @Test
-    void test_stringToProperty_uuid_notAnUuid_tagNotFound_y_tagCreated() throws IOException, StringToPropertyConverterException {
-        Mockito.when(labelService.findLabel("test", "tag")).thenReturn(null);
-        Mockito.when(labelService.createLabel(any(), (String) any())).thenReturn(new Label(uuid1, "tag"));
+    void test_stringToProperty_label_labelNotFound_y_labelCreated() throws IOException, StringToPropertyConverterException {
+        Mockito.when(labelService.labelExists("test", "tag")).thenReturn(false);
+        Mockito.when(labelService.createLabel(any(), any())).thenReturn(true);
         setStdin("y");
 
         assertEquals(propertyConverter.stringToProperty(
-                getPropertyDescriptor(PropertyDescriptor.Type.UUID, new PropertyDescriptor.Subtype.LabelSubtype("test"), PropertyDescriptor.Multiplicity.SINGLE), List.of("tag2"), true), uuid1);
+                getPropertyDescriptor(PropertyDescriptor.Type.String, new PropertyDescriptor.Subtype.LabelSubtype("test"), PropertyDescriptor.Multiplicity.SINGLE), List.of("tag2"), true), "tag2");
     }
 
     @Test
@@ -413,21 +413,21 @@ public class StringToPropertyConverterTest {
     }
 
     @Test
-    void test_stringToProperty_uuid_notAnUuid_tagFound() throws IOException, StringToPropertyConverterException {
-        Mockito.when(labelService.findLabel("test", "tag")).thenReturn(new Label(uuid1, "tag"));
+    void test_stringToProperty_label_labelFound() throws IOException, StringToPropertyConverterException {
+        Mockito.when(labelService.labelExists("test", "tag")).thenReturn(true);
 
         assertEquals(propertyConverter.stringToProperty(
-                getPropertyDescriptor(PropertyDescriptor.Type.UUID, new PropertyDescriptor.Subtype.LabelSubtype("test"), PropertyDescriptor.Multiplicity.SINGLE), List.of("tag"), true), uuid1);
+                getPropertyDescriptor(PropertyDescriptor.Type.String, new PropertyDescriptor.Subtype.LabelSubtype("test"), PropertyDescriptor.Multiplicity.SINGLE), List.of("tag"), true), "tag");
     }
 
     @Test
-    void test_stringToProperty_uuid_notAnUuid_tagNotFound_n_throws() throws IOException {
-        Mockito.when(labelService.findLabel("test", "tag")).thenReturn(null);
+    void test_stringToProperty_label_labelNotFound_n_throws() throws IOException {
+        Mockito.when(labelService.labelExists("test", "tag")).thenReturn(false);
         setStdin("n");
 
         try {
             propertyConverter.stringToProperty(
-                    getPropertyDescriptor(PropertyDescriptor.Type.UUID, new PropertyDescriptor.Subtype.LabelSubtype("test"), PropertyDescriptor.Multiplicity.SINGLE), List.of("tag"), true);
+                    getPropertyDescriptor(PropertyDescriptor.Type.String, new PropertyDescriptor.Subtype.LabelSubtype("test"), PropertyDescriptor.Multiplicity.SINGLE), List.of("tag"), true);
             fail();
         } catch (StringToPropertyConverterException e) {
             assertEquals(e.getExceptionType(), StringToPropertyConverterException.Type.LabelNotFound);

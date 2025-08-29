@@ -88,14 +88,13 @@ public abstract class JsonRepository<T_Json, T_Stored> {
         return objectMapper;
     }
 
-    private ObjectReader getObjectReader() {
+    protected ObjectReader getObjectReader() {
         if (objectReader == null) {
             JavaType javaType = constructType(getObjectMapper().getTypeFactory());
             if (javaType != null) {
                 objectReader = getObjectMapper().readerFor(javaType);
             } else {
-                objectReader = getObjectMapper().readerFor(new TypeReference<>() {
-                });
+                objectReader = getObjectMapper().readerFor(getTypeReference());
             }
         }
         return objectReader;

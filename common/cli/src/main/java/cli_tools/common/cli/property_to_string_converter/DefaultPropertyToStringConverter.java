@@ -98,20 +98,20 @@ public class DefaultPropertyToStringConverter implements PropertyToStringConvert
         return stream.collect(Collectors.joining(listSeparator));
     }
 
-    private String uuidToString(Property property) throws IOException {
+    private String uuidToString(Property property) {
         PropertyDescriptor propertyDescriptor = property.getPropertyDescriptor();
         if (propertyDescriptor.multiplicity() == PropertyDescriptor.Multiplicity.SINGLE) {
             return property.getUuidUnchecked().toString();
         } else if (propertyDescriptor.multiplicity() == PropertyDescriptor.Multiplicity.LIST) {
-            return uuidStreamToString(property.getUuidListUnchecked().stream(), propertyDescriptor, false);
+            return uuidStreamToString(property.getUuidListUnchecked().stream(), false);
         } else if (propertyDescriptor.multiplicity() == PropertyDescriptor.Multiplicity.SET) {
-            return uuidStreamToString(property.getUuidSetUnchecked().stream(), propertyDescriptor, true);
+            return uuidStreamToString(property.getUuidSetUnchecked().stream(), true);
         } else {
             throw new RuntimeException();
         }
     }
 
-    private String uuidStreamToString(Stream<UUID> uuids, PropertyDescriptor propertyDescriptor, boolean sort) throws IOException {
+    private String uuidStreamToString(Stream<UUID> uuids, boolean sort) {
         List<String> str = new ArrayList<>();
         for (UUID uuid : uuids.toArray(UUID[]::new)) {
             if (uuid == null) {
@@ -225,7 +225,7 @@ public class DefaultPropertyToStringConverter implements PropertyToStringConvert
         OrderedLabel orderedLabel = orderedLabelService.getOrderedLabel(labelType, integer);
         if (orderedLabel == null) {
             log.warn("Label with UUID '" + integer + "' does not exist");
-            return "<" + integer.toString() + ">";
+            return "<" + integer + ">";
         }
         return orderedLabel.text();
     }

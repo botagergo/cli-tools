@@ -60,6 +60,9 @@ public class TestBase {
         commandParserFactory.registerParser("clear", ClearCommandParser::new);
         commandParserFactory.registerParser("delete", DeleteTaskCommandParser::new);
         commandParserFactory.registerParser("modify", ModifyTaskCommandParser::new);
+        commandParserFactory.registerParser("addLabel", AddLabelCommandParser::new);
+        commandParserFactory.registerParser("listLabel", ListLabelCommandParser::new);
+        commandParserFactory.registerParser("deleteLabel", DeleteLabelCommandParser::new);
 
         List<PropertyDescriptor> propertyDescriptors = context.getPropertyDescriptorService().getPropertyDescriptors();
         context.getPropertyManager().setPropertyDescriptorCollection(PropertyDescriptorCollection.fromList(propertyDescriptors));
@@ -86,6 +89,32 @@ public class TestBase {
         for (String string : strings) {
             assertTrue(stdoutStr.contains(string), stdoutStr);
         }
+    }
+
+    protected void assertStdoutNumLines(int lineNum) {
+        assertEquals(stdoutLines.length, lineNum);
+    }
+
+    protected void assertStdoutLineContains(int lineNum, String... strings) {
+        for (String string : strings) {
+            assertTrue(stdoutLines[lineNum].contains(string), stdoutStr);
+        }
+    }
+
+    protected void assertStdoutLinesContain(String... strings) {
+        for (int i = 0; i <= stdoutLines.length - strings.length; i++) {
+            boolean contains = true;
+            for (int j = 0; j < strings.length; j++) {
+                if (!stdoutLines[i + j].contains(strings[j])) {
+                    contains = false;
+                    break;
+                }
+            }
+            if (contains) {
+                return;
+            }
+        }
+        fail();
     }
 
     protected void assertStdoutTaskHeaderContains(String... strings) {

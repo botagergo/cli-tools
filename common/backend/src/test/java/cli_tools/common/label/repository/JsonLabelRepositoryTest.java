@@ -24,13 +24,13 @@ public class JsonLabelRepositoryTest {
 
     @Test
     void test_read_successful() throws IOException {
-        File tempFile = rc.makeTempFile("read_successful", String.format("""
+        File tempFile = rc.makeTempFile("read_successful", """
                 {
                     "mylabel": [ "label1", "label2" ]
                 }
-                """, uuidGenerator.uuids[0], uuidGenerator.uuids[1]));
+                """);
         repository = new JsonLabelRepository(tempFile);
-        assertEquals(repository.getAll("mylabel"), List.of("label1", "label2"));
+        assertEquals(repository.getAllWithType("mylabel"), List.of("label1", "label2"));
     }
 
     @Test
@@ -46,7 +46,7 @@ public class JsonLabelRepositoryTest {
         assertEquals(content.replaceAll("\\s", ""), String.format("""
                     {
                         "mylabel1": [ "label1", "label2" ],
-                        "mylabel2": [ "label1", "label4", "" ],
+                        "mylabel2": [ "label1", "label4", "" ]
                     }
                 """.replaceAll("\\s", ""), uuidGenerator.uuids[0], uuidGenerator.uuids[1]).replaceAll("\\s+", ""));
     }
@@ -70,11 +70,11 @@ public class JsonLabelRepositoryTest {
 
     @Test
     void test_wrongFieldType_throwsException() throws IOException {
-        File tempFile = rc.makeTempFile("wrong_field_type", String.format("""
+        File tempFile = rc.makeTempFile("wrong_field_type", """
                 {
                     "mylabel":"asdf"
                 }
-                """, uuidGenerator.uuids[1]));
+                """);
         repository = new JsonLabelRepository(tempFile);
         assertThrows(IOException.class, () -> repository.getData());
     }

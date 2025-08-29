@@ -124,23 +124,16 @@ public class PropertyConverterTest {
         Mockito.when(labelRepository.exists("test", "tag")).thenReturn(true);
 
         assertEquals(propertyConverter.convertProperty(
-                getPropertyDescriptor(PropertyDescriptor.Type.UUID, PropertyDescriptor.Multiplicity.SINGLE), List.of("tag")), List.of(uuid1));
+                getPropertyDescriptor(PropertyDescriptor.Type.String, PropertyDescriptor.Multiplicity.SINGLE), List.of("tag")), List.of("tag"));
     }
 
     @Test
-    void test_stringToProperty_labelNotExists() throws IOException {
+    void test_stringToProperty_labelNotExists() throws IOException, PropertyConverterException {
         Mockito.when(labelRepositoryFactory.getLabelRepository("test")).thenReturn(labelRepository);
         Mockito.when(labelRepository.exists("test", "tag")).thenReturn(false);
 
-        try {
-            propertyConverter.convertProperty(
-                    getPropertyDescriptor(PropertyDescriptor.Type.UUID, PropertyDescriptor.Multiplicity.SINGLE), List.of("tag"));
-            Assert.fail();
-        } catch (PropertyConverterException e) {
-            assertEquals(e.getExceptionType(), PropertyConverterException.Type.LabelNotFound);
-            assertEquals(e.getPropertyDescriptor(), getPropertyDescriptor(PropertyDescriptor.Type.UUID, PropertyDescriptor.Multiplicity.SINGLE));
-            assertEquals(e.getPropertyValue(), "tag");
-        }
+        assertEquals(propertyConverter.convertProperty(
+                getPropertyDescriptor(PropertyDescriptor.Type.String, PropertyDescriptor.Multiplicity.SINGLE), List.of("tag1")), List.of("tag1"));
     }
 
     private PropertyDescriptor getPropertyDescriptor(PropertyDescriptor.Type type, PropertyDescriptor.Multiplicity multiplicity) {

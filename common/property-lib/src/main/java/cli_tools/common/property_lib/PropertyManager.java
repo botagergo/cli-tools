@@ -85,7 +85,7 @@ public class PropertyManager {
                 newProperty = Collections.unmodifiableSet(Stream.concat(origSet.stream(), propertyValue.stream()).collect(Collectors.toSet()));
             }
         } else {
-            throw new PropertyException("property '%s' does not exist".formatted(propertyName));
+            throw new PropertyException("property '%s' is not a collection".formatted(propertyName));
         }
 
         propertyOwner.getProperties().put(propertyName, newProperty);

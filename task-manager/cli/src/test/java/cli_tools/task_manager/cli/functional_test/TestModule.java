@@ -9,7 +9,6 @@ import cli_tools.common.cli.tokenizer.Tokenizer;
 import cli_tools.common.cli.tokenizer.TokenizerImpl;
 import cli_tools.common.core.repository.*;
 import cli_tools.common.label.repository.JsonLabelRepository;
-import cli_tools.common.label.repository.JsonLabelRepositoryFactory;
 import cli_tools.common.label.service.LabelService;
 import cli_tools.common.label.service.LabelServiceImpl;
 import cli_tools.common.ordered_label.repository.JsonOrderedLabelRepositoryFactory;
@@ -107,6 +106,7 @@ public class TestModule extends AbstractModule {
         bind(Context.class).to(TaskManagerContext.class);
 
         bind(File.class).annotatedWith(Names.named("taskJsonFile")).toInstance(getJsonFile("task.json"));
+        bind(File.class).annotatedWith(Names.named("labelJsonFile")).toInstance(getJsonFile("label.json"));
         bind(File.class).annotatedWith(Names.named("tempIdMappingJsonFile")).toInstance(getJsonFile("temp_id_mapping.json"));
         bind(File.class).annotatedWith(Names.named("propertyDescriptorJsonFile")).toInstance(getJsonFile("property_descriptor.json"));
         bind(File.class).annotatedWith(Names.named("viewJsonFile")).toInstance(getJsonFile("view.json"));

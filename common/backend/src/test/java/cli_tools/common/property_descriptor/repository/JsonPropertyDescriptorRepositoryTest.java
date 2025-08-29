@@ -219,22 +219,21 @@ public class JsonPropertyDescriptorRepositoryTest {
 
     @Test
     void test_UUIDExtra_successful() throws IOException {
-        File tempFile = rc.makeTempFile("uuid_extra", """
+        File tempFile = rc.makeTempFile("uuid_subtype", """
                 {
                     "other_name": {
                         "name":"other_name",
                         "type":"UUID",
                         "multiplicity":"SET",
                         "subtype": {
-                            "subtype":"Label",
-                            "labelType":"label1"
+                            "subtype":"Task"
                         },
                         "defaultValue":null
                     }
                 }
                 """);
         repository = new JsonPropertyDescriptorRepository(tempFile, tempIdManager, PseudoPropertyProviderMixIn.class);
-        assertEquals(repository.get("other_name"), new PropertyDescriptor("other_name", PropertyDescriptor.Type.UUID, new PropertyDescriptor.Subtype.LabelSubtype("label1"), PropertyDescriptor.Multiplicity.SET, null, null));
+        assertEquals(repository.get("other_name"), new PropertyDescriptor("other_name", PropertyDescriptor.Type.UUID, new PropertyDescriptor.Subtype.TaskSubtype(), PropertyDescriptor.Multiplicity.SET, null, null));
     }
 
     @Test

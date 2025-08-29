@@ -9,6 +9,10 @@ public class Print {
         System.out.printf(text + "%n", args);
     }
 
+    public static void print() {
+        System.out.println();
+    }
+
     public static void printError(String text, Object... args) {
         System.out.println(Ansi.ansi().fg(Ansi.Color.RED).a(text.formatted(args)).reset());
     }

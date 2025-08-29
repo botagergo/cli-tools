@@ -17,8 +17,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.UUID;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNull;
+import static org.testng.Assert.*;
 
 @Guice(modules = TestModule.class)
 public class PropertyManagerTest {
@@ -48,15 +47,8 @@ public class PropertyManagerTest {
     }
 
     @Test
-    void test_getProperty_notFound() throws IOException {
-        try {
-            propertyManager.getProperty(propertyOwner, "test");
-        } catch (PropertyException e) {
-            assertEquals(e.getExceptionType(), PropertyException.Type.NotExist);
-            assertEquals(e.getPropertyName(), "test");
-            assertNull(e.getPropertyDescriptor());
-            assertNull(e.getRequestedType());
-        }
+    void test_getProperty_notFound() {
+        assertThrows(PropertyException.class, () -> propertyManager.getProperty(propertyOwner, "test"));
     }
 
     @Test
@@ -270,16 +262,9 @@ public class PropertyManagerTest {
     }
 
     @Test
-    void test_addPropertyValues_notACollection() throws IOException {
+    void test_addPropertyValues_notACollection() {
         initPropertyDescriptorsWithoutDefaults();
-
-        try {
-            propertyManager.addPropertyValues(propertyOwner, "test_string", Utils.newArrayList("default_value1"));
-        } catch (PropertyException e) {
-            assertEquals(e.getExceptionType(), PropertyException.Type.NotACollection);
-            assertEquals(e.getPropertyDescriptor(), new PropertyDescriptor("test_string", PropertyDescriptor.Type.String, null, PropertyDescriptor.Multiplicity.SINGLE, null, null));
-            assertEquals(e.getPropertyName(), "test_string");
-        }
+        assertThrows(PropertyException.class, () -> propertyManager.addPropertyValues(propertyOwner, "test_string", Utils.newArrayList("default_value1")));
     }
 
     @Test
@@ -371,16 +356,10 @@ public class PropertyManagerTest {
     }
 
     @Test
-    void test_removePropertyValues_notACollection() throws IOException {
+    void test_removePropertyValues_notACollection() {
         initPropertyDescriptorsWithoutDefaults();
 
-        try {
-            propertyManager.removePropertyValues(propertyOwner, "test_string", Utils.newArrayList("default_value1"));
-        } catch (PropertyException e) {
-            assertEquals(e.getExceptionType(), PropertyException.Type.NotACollection);
-            assertEquals(e.getPropertyDescriptor(), new PropertyDescriptor("test_string", PropertyDescriptor.Type.String, null, PropertyDescriptor.Multiplicity.SINGLE, null, null));
-            assertEquals(e.getPropertyName(), "test_string");
-        }
+        assertThrows(PropertyException.class, () -> propertyManager.removePropertyValues(propertyOwner, "test_string", Utils.newArrayList("default_value1")));
     }
 
     @Test

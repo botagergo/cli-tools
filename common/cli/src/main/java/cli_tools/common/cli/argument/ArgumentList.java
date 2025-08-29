@@ -103,7 +103,7 @@ public class ArgumentList {
                 return;
             }
         }
-        if (argList.commandName == null && token.matches("^[a-z]+$")) {
+        if (argList.commandName == null && token.matches("^[a-zA-Z]+$")) {
             argList.commandName = token;
         } else {
             (argList.commandName == null ? argList.leadingPositionalArguments : argList.trailingPositionalArguments).add(currentToken.toString());

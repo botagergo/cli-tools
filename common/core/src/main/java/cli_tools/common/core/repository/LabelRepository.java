@@ -2,7 +2,7 @@ package cli_tools.common.core.repository;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 
 public interface LabelRepository {
 
@@ -10,7 +10,11 @@ public interface LabelRepository {
 
     boolean exists(String labelType, String labelName) throws IOException;
 
-    List<String> getAll(String labelType) throws IOException;
+    List<String> getAllWithType(String labelType) throws IOException;
+
+    Map<String, List<String>> getAll() throws IOException;
+
+    boolean delete(String labelType, String labelText) throws IOException;
 
     void deleteAll(String labelType) throws IOException;
 
