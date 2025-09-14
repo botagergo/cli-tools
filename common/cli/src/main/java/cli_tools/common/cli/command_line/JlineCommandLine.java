@@ -11,6 +11,7 @@ import org.jline.reader.UserInterruptException;
 import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
@@ -21,7 +22,7 @@ import static cli_tools.common.cli.Util.strip;
 public class JlineCommandLine implements CommandLine {
 
     private final Executor executor;
-    private final Path basePath;
+    private final File historyFile;
 
     @Override
     public void run() throws IOException {
@@ -45,7 +46,7 @@ public class JlineCommandLine implements CommandLine {
                 .option(Option.DISABLE_EVENT_EXPANSION, true)
                 .variable(LineReader.SECONDARY_PROMPT_PATTERN, "> ")
                 .variable(LineReader.INDENTATION, 2)
-                .variable(LineReader.HISTORY_FILE, basePath.resolve("history"))
+                .variable(LineReader.HISTORY_FILE, historyFile)
                 .build();
 
         String line;

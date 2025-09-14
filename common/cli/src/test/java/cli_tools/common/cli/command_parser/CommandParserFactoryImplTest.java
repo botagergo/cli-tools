@@ -47,21 +47,6 @@ public class CommandParserFactoryImplTest {
     }
 
     @Test
-    void testPrefix() {
-        Mockito.when(configurationRepository.allowCommandPrefix()).thenReturn(true);
-        Mockito.when(configurationRepository.commandAliases()).thenReturn(Map.of());
-        assertCommandParserName("lis", "list");
-        assertCommandParserName("a", "add");
-    }
-
-    @Test
-    void testPrefixMultipleMatches() {
-        Mockito.when(configurationRepository.allowCommandPrefix()).thenReturn(true);
-        Mockito.when(configurationRepository.commandAliases()).thenReturn(Map.of());
-        assertNull(commandParserFactory.getParser(getArgList("d")));
-    }
-
-    @Test
     void testAlias() {
         Mockito.when(configurationRepository.commandAliases()).thenReturn(Map.of("ls", "list", "del", "delete"));
         assertCommandParserName("del", "delete");

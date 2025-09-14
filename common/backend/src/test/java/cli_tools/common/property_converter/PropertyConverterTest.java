@@ -4,7 +4,6 @@ import cli_tools.common.core.data.OrderedLabel;
 import cli_tools.common.core.repository.LabelRepository;
 import cli_tools.common.core.repository.LabelRepositoryFactory;
 import cli_tools.common.core.repository.OrderedLabelRepository;
-import cli_tools.common.core.repository.OrderedLabelRepositoryFactory;
 import cli_tools.common.property_descriptor.service.PropertyDescriptorService;
 import cli_tools.common.property_lib.PropertyDescriptor;
 import cli_tools.common.util.RoundRobinUUIDGenerator;
@@ -37,8 +36,6 @@ public class PropertyConverterTest {
     private OrderedLabelRepository orderedLabelRepository;
     @Mock
     private LabelRepositoryFactory labelRepositoryFactory;
-    @Mock
-    private OrderedLabelRepositoryFactory orderedLabelRepositoryFactory;
     @InjectMocks
     private PropertyConverter propertyConverter;
 

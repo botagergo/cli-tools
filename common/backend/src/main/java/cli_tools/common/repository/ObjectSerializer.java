@@ -33,26 +33,17 @@ public class ObjectSerializer extends StdSerializer<Object> {
     public void serialize(
             Object value, JsonGenerator jgen, SerializerProvider provider)
             throws IOException {
-        if (value instanceof String str) {
-            jgen.writeString("s:" + str);
-        } else if (value instanceof UUID uuid) {
-            jgen.writeString("u:" + uuid);
-        } else if (value instanceof LocalDate localDate) {
-            jgen.writeString("d:" + localDate.format(DateTimeFormatter.ISO_LOCAL_DATE));
-        } else if (value instanceof LocalTime localTime) {
-            jgen.writeString("t:" + localTime.format(DateTimeFormatter.ISO_LOCAL_TIME));
-        } else if (value instanceof Boolean b) {
-            jgen.writeBoolean(b);
-        } else if (value instanceof Integer i) {
-            jgen.writeNumber(i);
-        } else if (value instanceof List<?> list) {
-            writeObject(jgen, "list", list);
-        } else if (value instanceof Set<?> set) {
-            writeObject(jgen, "set", set);
-        } else if (value == null) {
-            jgen.writeNull();
-        } else {
-            throw new NotSerializableException("Type '" + value.getClass() + " is not serializable");
+        switch (value) {
+            case String str -> jgen.writeString("s:" + str);
+            case UUID uuid -> jgen.writeString("u:" + uuid);
+            case LocalDate localDate -> jgen.writeString("d:" + localDate.format(DateTimeFormatter.ISO_LOCAL_DATE));
+            case LocalTime localTime -> jgen.writeString("t:" + localTime.format(DateTimeFormatter.ISO_LOCAL_TIME));
+            case Boolean b -> jgen.writeBoolean(b);
+            case Integer i -> jgen.writeNumber(i);
+            case List<?> list -> writeObject(jgen, "list", list);
+            case Set<?> set -> writeObject(jgen, "set", set);
+            case null -> jgen.writeNull();
+            default -> throw new NotSerializableException("Type '" + value.getClass() + " is not serializable");
         }
     }
 
@@ -62,18 +53,13 @@ public class ObjectSerializer extends StdSerializer<Object> {
         jgen.writeFieldName("value");
         jgen.writeStartArray();
         for (Object item : collection) {
-            if (item instanceof String str) {
-                jgen.writeString("s:" + str);
-            } else if (item instanceof UUID uuid) {
-                jgen.writeString("u:" + uuid);
-            } else if (item instanceof Boolean b) {
-                jgen.writeBoolean(b);
-            } else if (item instanceof Integer i) {
-                jgen.writeNumber(i);
-            } else if (item == null) {
-                jgen.writeNull();
-            } else {
-                throw new NotSerializableException("Type '" + item.getClass() + " is not serializable");
+            switch (item) {
+                case String str -> jgen.writeString("s:" + str);
+                case UUID uuid -> jgen.writeString("u:" + uuid);
+                case Boolean b -> jgen.writeBoolean(b);
+                case Integer i -> jgen.writeNumber(i);
+                case null -> jgen.writeNull();
+                default -> throw new NotSerializableException("Type '" + item.getClass() + " is not serializable");
             }
         }
         jgen.writeEndArray();

@@ -25,10 +25,10 @@ public record SpecialArgument(char type, String value) {
 
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof SpecialArgument other)) {
+        if (!(obj instanceof SpecialArgument(var otherType, var otherValue))) {
             return false;
         }
 
-        return type == other.type && value.equals(other.value);
+        return type == otherType && value.equals(otherValue);
     }
 }

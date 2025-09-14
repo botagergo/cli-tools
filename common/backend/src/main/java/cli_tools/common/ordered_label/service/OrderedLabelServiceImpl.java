@@ -1,41 +1,43 @@
 package cli_tools.common.ordered_label.service;
 
 import cli_tools.common.core.data.OrderedLabel;
-import cli_tools.common.core.repository.OrderedLabelRepositoryFactory;
+import cli_tools.common.core.repository.OrderedLabelRepository;
 import jakarta.inject.Inject;
 import lombok.AllArgsConstructor;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.IntStream;
 
 @AllArgsConstructor(onConstructor = @__(@Inject))
 public class OrderedLabelServiceImpl implements OrderedLabelService {
 
-    private final OrderedLabelRepositoryFactory orderedLabelRepositoryFactory;
+    private final OrderedLabelRepository orderedLabelRepository;
 
     @Override
     public OrderedLabel getOrderedLabel(String labelType, int labelValue) throws IOException {
-        return orderedLabelRepositoryFactory.getOrderedLabelRepository(labelType).get(labelValue);
+        return new OrderedLabel(orderedLabelRepository.get(labelType, labelValue), labelValue);
     }
 
     @Override
     public OrderedLabel findOrderedLabel(String labelType, String labelText) throws IOException {
-        return orderedLabelRepositoryFactory.getOrderedLabelRepository(labelType).find(labelText);
+        return new OrderedLabel(labelText, orderedLabelRepository.find(labelType, labelText));
     }
 
     @Override
     public void createOrderedLabel(String labelType, String labelText) throws IOException {
-        orderedLabelRepositoryFactory.getOrderedLabelRepository(labelType).create(labelText);
+        orderedLabelRepository.create(labelType, labelText);
     }
 
     @Override
     public List<OrderedLabel> getOrderedLabels(String labelType) throws IOException {
-        return orderedLabelRepositoryFactory.getOrderedLabelRepository(labelType).getAll();
+        var labels = orderedLabelRepository.getAll(labelType);
+        return IntStream.range(0, labels.size()).mapToObj(i -> new OrderedLabel(labels.get(i), i)).toList();
     }
 
     @Override
     public void deleteAllOrderedLabels(String labelType) throws IOException {
-        orderedLabelRepositoryFactory.getOrderedLabelRepository(labelType).deleteAll();
+        orderedLabelRepository.deleteAll(labelType);
     }
 
 }

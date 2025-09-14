@@ -7,14 +7,14 @@ import java.util.List;
 
 public interface OrderedLabelRepository {
 
-    void create(String text) throws IOException;
+    void create(String type, String text) throws IOException;
 
-    OrderedLabel get(int value) throws IOException;
+    String get(String type, int value) throws IOException;
 
-    List<OrderedLabel> getAll() throws IOException;
+    List<String> getAll(String type) throws IOException;
 
-    OrderedLabel find(String text) throws IOException;
+    Integer find(String type, String text) throws IOException;
 
-    void deleteAll() throws IOException;
+    void deleteAll(String type) throws IOException;
 
 }

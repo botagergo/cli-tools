@@ -13,14 +13,25 @@ public record PropertyDescriptor(
 
     public PropertyDescriptor {
         if (subtype != null) {
-            if (type == Type.UUID && !(subtype instanceof Subtype.UUIDSubtype)) {
-                throw new IllegalArgumentException("subtype must be UUIDSubtype for UUID");
-            } else if (type == Type.String && !(subtype instanceof Subtype.StringSubtype)) {
-                throw new IllegalArgumentException("subtype must be StringSubtype for String");
-            } else if (type == Type.Integer && !(subtype instanceof Subtype.IntegerSubtype)) {
-                throw new IllegalArgumentException("subtype must be IntegerSubtype for Integer");
-            } else if (type == Type.Boolean) {
-                throw new IllegalArgumentException("no subtype allowed for Boolean");
+            switch (type) {
+                case String -> {
+                    if (!(subtype instanceof Subtype.StringSubtype)) {
+                        throw new IllegalArgumentException("subtype must be StringSubtype for String");
+                    }
+                }
+                case UUID -> {
+                    if (!(subtype instanceof Subtype.UUIDSubtype)) {
+                        throw new IllegalArgumentException("subtype must be UUIDSubtype for UUID");
+                    }
+                }
+                case Integer -> {
+                    if (!(subtype instanceof Subtype.IntegerSubtype)) {
+                        throw new IllegalArgumentException("subtype must be IntegerSubtype for Integer");
+                    }
+                }
+                case Boolean -> throw new IllegalArgumentException("no subtype allowed for Boolean");
+                case Date -> throw new IllegalArgumentException("no subtype allowed for Date");
+                case Time -> throw new IllegalArgumentException("no subtype allowed for Time");
             }
         }
     }
@@ -68,14 +79,14 @@ public record PropertyDescriptor(
         SET
     }
 
-    public interface Subtype {
+    public sealed interface Subtype {
         String name();
 
-        interface StringSubtype extends Subtype { }
+        sealed interface StringSubtype extends Subtype { }
 
-        interface UUIDSubtype extends Subtype { }
+        sealed interface UUIDSubtype extends Subtype { }
 
-        interface IntegerSubtype extends Subtype { }
+        sealed interface IntegerSubtype extends Subtype { }
 
         record LabelSubtype(String labelType) implements StringSubtype {
             @Override

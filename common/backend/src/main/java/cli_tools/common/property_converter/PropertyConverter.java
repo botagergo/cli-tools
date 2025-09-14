@@ -1,8 +1,7 @@
 package cli_tools.common.property_converter;
 
 import cli_tools.common.core.data.OrderedLabel;
-import cli_tools.common.core.repository.OrderedLabelRepository;
-import cli_tools.common.core.repository.OrderedLabelRepositoryFactory;
+import cli_tools.common.ordered_label.service.OrderedLabelService;
 import cli_tools.common.property_lib.PropertyDescriptor;
 import jakarta.inject.Inject;
 import lombok.NonNull;
@@ -14,12 +13,12 @@ import java.util.UUID;
 
 public class PropertyConverter {
 
-    private final OrderedLabelRepositoryFactory orderedLabelRepositoryFactory;
+    private final OrderedLabelService orderedLabelService;
 
     @Inject
     public PropertyConverter(
-            OrderedLabelRepositoryFactory orderedLabelRepositoryFactory) {
-        this.orderedLabelRepositoryFactory = orderedLabelRepositoryFactory;
+            OrderedLabelService orderedLabelService) {
+        this.orderedLabelService = orderedLabelService;
     }
 
     public List<Object> convertProperty(@NonNull PropertyDescriptor propertyDescriptor, @NonNull List<Object> propertyValueList) throws PropertyConverterException, IOException {
@@ -46,9 +45,9 @@ public class PropertyConverter {
     private Integer convertIntegerProperty(PropertyDescriptor propertyDescriptor, Object propertyValue) throws PropertyConverterException, IOException {
         if (propertyValue instanceof Integer integerPropertyValue) {
             return integerPropertyValue;
-        } else if (propertyValue instanceof String stringPropertyValue) {
-            OrderedLabelRepository orderedLabelRepository = orderedLabelRepositoryFactory.getOrderedLabelRepository(propertyDescriptor.name());
-            OrderedLabel orderedLabel = orderedLabelRepository.find(stringPropertyValue);
+        } else if (propertyValue instanceof String stringPropertyValue
+                && propertyDescriptor.subtype() instanceof PropertyDescriptor.Subtype.OrderedLabelSubtype subtype) {
+            OrderedLabel orderedLabel = orderedLabelService.findOrderedLabel(subtype.orderedLabelType(), stringPropertyValue);
             if (orderedLabel == null) {
                 throw new PropertyConverterException(PropertyConverterException.Type.LabelNotFound, propertyDescriptor, stringPropertyValue);
             }

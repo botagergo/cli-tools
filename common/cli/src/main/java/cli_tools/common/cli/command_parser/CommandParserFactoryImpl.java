@@ -36,29 +36,10 @@ public class CommandParserFactoryImpl implements CommandParserFactory {
             commandName = resolvedAlias;
         }
 
-        if (resolvedAlias != null || !configurationRepository.allowCommandPrefix()) {
-            Supplier<CommandParser> supplier = commandMapping.get(commandName);
-            if (supplier != null) {
-                return supplier.get();
-            }
-        } else {
-            List<Map.Entry<String, Supplier<CommandParser>>> matchingCommands = commandMapping.entrySet().stream()
-                    .filter(entry -> entry.getKey().startsWith(argList.getCommandName())).toList();
-            if (matchingCommands.size() == 1) {
-                CommandParser commandParser = matchingCommands.get(0).getValue().get();
-                if (commandParser == null) {
-                    Print.printError("failed to create parser for command '" + argList.getCommandName() + "'");
-                    return null;
-                }
-                return commandParser;
-            } else if (matchingCommands.size() > 1) {
-                String commandNames = matchingCommands.stream()
-                        .map(Map.Entry::getKey).sorted().collect(Collectors.joining(", "));
-                Print.printError("multiple commands match '" + argList.getCommandName() + "': " + commandNames);
-                return null;
-            }
+        Supplier<CommandParser> supplier = commandMapping.get(commandName);
+        if (supplier != null) {
+            return supplier.get();
         }
-
 
         Print.printError("no such command: '" + argList.getCommandName() + "'");
         return null;

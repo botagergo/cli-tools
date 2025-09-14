@@ -14,13 +14,18 @@ import lombok.NonNull;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.Objects;
 
 @Log4j2
 public class TaskManagerCLI {
 
     public static void main(String @NonNull [] args) {
-        Injector injector = Guice.createInjector(new TaskManagerModule());
+        String profile = Objects.requireNonNullElse(System.getenv("TASK_MANAGER_PROFILE"), "default");
+        Injector injector = Guice.createInjector(new TaskManagerModule(profile));
 
         Initializer initializer = injector.getInstance(Initializer.class);
         CommandParserFactory commandParserFactory = injector.getInstance(CommandParserFactory.class);
@@ -28,14 +33,17 @@ public class TaskManagerCLI {
         CustomCommandParserFactory customCommandParserFactory = injector.getInstance(CustomCommandParserFactory.class);
         CommandLine commandLine = injector.getInstance(CommandLine.class);
 
-        try {
-            if (initializer.needsInitialization()) {
+        File initializedFile = Paths.get(OsDirs.getDataDir(profile).toString(), ".initialized").toFile();
+        if (!initializedFile.isFile()) {
+            try {
                 initializer.initialize();
+                //noinspection ResultOfMethodCallIgnored
+                initializedFile.createNewFile();
+            } catch (IOException e) {
+                Print.printError(e.getMessage());
+                log.error(ExceptionUtils.getStackTrace(e));
+                return;
             }
-        } catch (IOException e) {
-            Print.printError(e.getMessage());
-            log.error(ExceptionUtils.getStackTrace(e));
-            return;
         }
 
         commandParserFactory.registerParser("add", AddTaskCommandParser::new);

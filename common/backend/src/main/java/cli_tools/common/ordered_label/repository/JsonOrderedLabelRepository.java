@@ -3,60 +3,66 @@ package cli_tools.common.ordered_label.repository;
 import cli_tools.common.core.data.OrderedLabel;
 import cli_tools.common.core.repository.OrderedLabelRepository;
 import cli_tools.common.repository.JsonRepository;
+import cli_tools.common.repository.SimpleJsonRepository;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.type.TypeFactory;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-public class JsonOrderedLabelRepository extends JsonRepository<ArrayList<String>, ArrayList<OrderedLabel>> implements OrderedLabelRepository {
+public class JsonOrderedLabelRepository
+        extends SimpleJsonRepository<LinkedHashMap<String, List<String>>> implements OrderedLabelRepository {
 
-    public JsonOrderedLabelRepository(File jsonFile) {
+    @Inject
+    public JsonOrderedLabelRepository(@Named("orderedLabelJsonFile") File jsonFile) {
         super(jsonFile);
         getObjectMapper().addMixIn(OrderedLabelMixIn.class, OrderedLabelMixIn.class);
     }
 
     @Override
-    public void create(String text) throws IOException {
-        ArrayList<OrderedLabel> data = getData();
-        OrderedLabel orderedLabel;
-        if (data.isEmpty()) {
-            orderedLabel = new OrderedLabel(text, 0);
-        } else {
-            orderedLabel = new OrderedLabel(text, data.get(data.size() - 1).value() + 1);
-        }
-        data.add(orderedLabel);
+    public void create(String type, String text) throws IOException {
+        getData().computeIfAbsent(type, (_type) -> new ArrayList<>()).add(text);
         writeData();
     }
 
     @Override
-    public OrderedLabel get(int value) throws IOException {
-        ArrayList<OrderedLabel> orderedLabels = getData();
-        if (value < 0 || value >= orderedLabels.size()) {
+    public String get(String type, int value) throws IOException {
+        var data = getData().get(type);
+        if (data == null || value < 0 || value >= data.size()) {
             return null;
         }
-        return orderedLabels.get(value);
+        return data.get(value);
     }
 
     @Override
-    public List<OrderedLabel> getAll() throws IOException {
-        return getData();
+    public List<String> getAll(String type) throws IOException {
+        return getData().getOrDefault(type, List.of());
     }
 
     @Override
-    public OrderedLabel find(String text) throws IOException {
-        return getData().stream().filter(t -> t.text().equals(text))
-                .findAny().orElse(null);
+    public Integer find(String type, String text) throws IOException {
+        var labels = getData().get(type);
+        if (labels == null) {
+            return null;
+        }
+        return labels.indexOf(text);
     }
 
     @Override
-    public void deleteAll() throws IOException {
-        getData().clear();
-        writeData();
+    public void deleteAll(String type) throws IOException {
+        var labels = getData().get(type);
+        if (labels != null) {
+            labels.clear();
+            writeData();
+        }
     }
 
     @Override
@@ -65,18 +71,8 @@ public class JsonOrderedLabelRepository extends JsonRepository<ArrayList<String>
     }
 
     @Override
-    public ArrayList<String> getEmptyData() {
-        return new ArrayList<>();
+    public LinkedHashMap<String, List<String>> getEmptyData() {
+        return new LinkedHashMap<>();
     }
 
-    @Override
-    protected ArrayList<OrderedLabel> jsonToStoredData(ArrayList<String> data) {
-        return IntStream.range(0, data.size())
-                .mapToObj(i -> new OrderedLabel(data.get(i), i)).collect(Collectors.toCollection(ArrayList::new));
-    }
-
-    @Override
-    protected ArrayList<String> storedToJsonData(ArrayList<OrderedLabel> data) {
-        return data.stream().map(OrderedLabel::text).collect(Collectors.toCollection(ArrayList::new));
-    }
 }

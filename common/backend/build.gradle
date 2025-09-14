@@ -9,10 +9,10 @@ dependencies {
     testImplementation 'com.google.inject:guice:7.0.0'
     implementation 'jakarta.inject:jakarta.inject-api:2.0.1'
     testImplementation 'org.mockito:mockito-core:5.3.1'
-    compileOnly 'org.projectlombok:lombok:1.18.26'
-    annotationProcessor 'org.projectlombok:lombok:1.18.26'
-    testCompileOnly 'org.projectlombok:lombok:1.18.26'
-    testAnnotationProcessor 'org.projectlombok:lombok:1.18.26'
+    compileOnly 'org.projectlombok:lombok:1.18.34'
+    annotationProcessor 'org.projectlombok:lombok:1.18.34'
+    testCompileOnly 'org.projectlombok:lombok:1.18.34'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.34'
     testImplementation 'org.testng:testng:7.7.0'
 
     // https://mvnrepository.com/artifact/com.github.gestalt-config/gestalt-core

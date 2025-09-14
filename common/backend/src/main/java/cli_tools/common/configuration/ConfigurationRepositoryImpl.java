@@ -4,12 +4,12 @@ import cli_tools.common.core.repository.ConfigurationRepository;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import lombok.extern.log4j.Log4j2;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.github.gestalt.config.Gestalt;
 import org.github.gestalt.config.builder.GestaltBuilder;
 import org.github.gestalt.config.exceptions.GestaltException;
 import org.github.gestalt.config.reflect.TypeCapture;
 import org.github.gestalt.config.source.FileConfigSourceBuilder;
-import shadow.org.codehaus.plexus.util.ExceptionUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -23,6 +23,11 @@ public class ConfigurationRepositoryImpl implements ConfigurationRepository {
     @Inject
     public ConfigurationRepositoryImpl(@Named("configurationYamlFile") File configFile) throws IOException {
         if (!configFile.exists()) {
+            File parentFile = configFile.getParentFile();
+            if (parentFile != null && !parentFile.isDirectory()) {
+                //noinspection ResultOfMethodCallIgnored
+                parentFile.mkdirs();
+            }
             if (!configFile.createNewFile()) {
                 log.warn("Failed to create config file at {}", configFile);
             }

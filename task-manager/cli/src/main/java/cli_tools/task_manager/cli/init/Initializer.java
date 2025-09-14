@@ -9,6 +9,7 @@ import cli_tools.common.property_lib.PropertyDescriptor;
 import cli_tools.common.pseudo_property_provider.TempIDPseudoPropertyProvider;
 import cli_tools.common.temp_id_mapping.TempIDManager;
 import cli_tools.common.view.service.ViewInfoService;
+import cli_tools.task_manager.cli.OsDirs;
 import cli_tools.task_manager.pseudo_property_provider.DonePseudoPropertyProvider;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
@@ -18,7 +19,6 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.ByteBuffer;
 import java.util.*;
 
 public class Initializer {
@@ -49,11 +49,6 @@ public class Initializer {
         this.configurationRepository = configurationRepository;
         this.tempIdManager = tempIdManager;
         this.configFile = configFile;
-    }
-
-    public boolean needsInitialization() throws IOException {
-        List<PropertyDescriptor> propertyDescriptorCollection = propertyDescriptorService.getPropertyDescriptors();
-        return propertyDescriptorCollection.isEmpty();
     }
 
     public void initialize() throws IOException {
@@ -141,7 +136,11 @@ public class Initializer {
         data.put("defaultView", "default");
         data.put("allowPropertyPrefix", true);
         data.put("allowCommandPrefix", true);
-        data.put("commandAliases", Map.of("ls", "list"));
+        data.put("commandAliases", Map.of(
+                "ls", "list",
+                "del", "delete",
+                "mod", "modify"
+        ));
 
         Yaml yaml = new Yaml();
         yaml.dump(data, writer);
