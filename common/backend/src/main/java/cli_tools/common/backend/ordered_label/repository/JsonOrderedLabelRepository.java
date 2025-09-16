@@ -19,7 +19,6 @@ public class JsonOrderedLabelRepository
     @Inject
     public JsonOrderedLabelRepository(@Named("orderedLabelJsonFile") File jsonFile) {
         super(jsonFile);
-        getObjectMapper().addMixIn(OrderedLabelMixIn.class, OrderedLabelMixIn.class);
     }
 
     @Override

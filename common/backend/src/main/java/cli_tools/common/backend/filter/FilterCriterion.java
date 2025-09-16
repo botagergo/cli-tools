@@ -59,7 +59,7 @@ public abstract class FilterCriterion {
             }
             case NOT -> {
                 return new NotFilterCriterion(from(
-                        filterCriterionInfo.children().get(0), propertyManager, propertyConverter));
+                        filterCriterionInfo.children().getFirst(), propertyManager, propertyConverter));
             }
             default ->
                     throw new NotImplementedException(filterCriterionInfo.type() + " filter criterion is not yet supported");
@@ -81,7 +81,7 @@ public abstract class FilterCriterion {
             } else if (operand.size() != 1) {
                 throw new IllegalArgumentException("one argument expected for predicate 'equals' of property '" + propertyName + "'");
             } else {
-                finalOperand = operand.get(0);
+                finalOperand = operand.getFirst();
             }
             filterCriterion = new EqualFilterCriterion(propertyName, finalOperand);
         } else if (predicate == Predicate.LESS || predicate == Predicate.LESS_EQUAL ||
@@ -91,7 +91,7 @@ public abstract class FilterCriterion {
             } else if (operand.size() != 1) {
                 throw new IllegalArgumentException("one argument expected for predicate '" + predicate + "' of property '" + propertyName + "'");
             }
-            Property property = Property.fromUnchecked(propertyDescriptor, operand.get(0));
+            Property property = Property.fromUnchecked(propertyDescriptor, operand.getFirst());
             switch (predicate) {
                 case LESS ->
                         filterCriterion = new LessFilterCriterion(propertyName, property, new PropertyComparator(true));
@@ -111,7 +111,7 @@ public abstract class FilterCriterion {
                         if (operand.size() != 1) {
                             throw new IllegalArgumentException("one argument expected for predicate 'contains' of property '" + propertyName + "'");
                         }
-                        filterCriterion = new ContainsCaseInsensitiveFilterCriterion(propertyName, (String) operand.get(0));
+                        filterCriterion = new ContainsCaseInsensitiveFilterCriterion(propertyName, (String) operand.getFirst());
                     } else {
                         throw new IllegalArgumentException("predicate 'contains' is incompatible with property '" + propertyName + "'");
                     }

@@ -93,7 +93,7 @@ public class TaskManagerModule extends AbstractModule {
     }
 
     @Provides
-    JlineCommandLine jlineCommandLine(Executor executor) throws IOException {
+    CommandLine jlineCommandLine(Executor executor) throws IOException {
         return new JlineCommandLine(executor, OsDirs.getFile(OsDirs.DirType.CACHE, profileName, "history"));
     }
 
@@ -118,7 +118,6 @@ public class TaskManagerModule extends AbstractModule {
         bind(Executor.class).to(ExecutorImpl.class);
         bind(LabelService.class).to(LabelServiceImpl.class).asEagerSingleton();
         bind(Context.class).to(TaskManagerContext.class);
-        bind(CommandLine.class).to(JlineCommandLine.class);
 
         bind(File.class).annotatedWith(Names.named("propertyDescriptorJsonFile")).toInstance(OsDirs.getFile(OsDirs.DirType.DATA, profileName,"property_descriptor.json"));
         bind(File.class).annotatedWith(Names.named("labelJsonFile")).toInstance(OsDirs.getFile(OsDirs.DirType.DATA, profileName,"label.json"));

@@ -141,7 +141,7 @@ public class StringToPropertyConverter {
         } else if (propertyDescriptor.multiplicity() == PropertyDescriptor.Multiplicity.SET) {
             return stringSetToProperty(propertyDescriptor, propertyValueList, createUuidIfNotExists);
         } else {
-            return singleStringToProperty(propertyDescriptor, propertyValueList.get(0), createUuidIfNotExists);
+            return singleStringToProperty(propertyDescriptor, propertyValueList.getFirst(), createUuidIfNotExists);
         }
     }
 
@@ -260,7 +260,7 @@ public class StringToPropertyConverter {
         throw new RuntimeException();
     }
 
-    private UUID stringToUuidProperty(PropertyDescriptor propertyDescriptor, String propertyValueStr) throws StringToPropertyConverterException, IOException {
+    private UUID stringToUuidProperty(PropertyDescriptor propertyDescriptor, String propertyValueStr) throws StringToPropertyConverterException {
         try {
             return UUID.fromString(propertyValueStr);
         } catch (IllegalArgumentException e1) {

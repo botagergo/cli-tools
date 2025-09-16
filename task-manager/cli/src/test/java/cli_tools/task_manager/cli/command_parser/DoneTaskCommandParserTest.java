@@ -6,6 +6,7 @@ import cli_tools.common.cli.command_parser.CommandParserException;
 import cli_tools.common.core.data.property.Affinity;
 import cli_tools.task_manager.cli.TaskManagerContext;
 import cli_tools.task_manager.cli.command.DoneTaskCommand;
+import lombok.extern.log4j.Log4j2;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.testng.annotations.Test;
 
@@ -14,6 +15,7 @@ import java.util.List;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertThrows;
 
+@Log4j2
 public class DoneTaskCommandParserTest {
 
     private final DoneTaskCommandParser parser = new DoneTaskCommandParser();
@@ -23,6 +25,7 @@ public class DoneTaskCommandParserTest {
     void test_parse_noArgs() throws CommandParserException {
         DoneTaskCommand command = parse(getArgList(List.of(), List.of()));
         assertEquals(command.getTempIDs().size(), 0);
+        log.warn("sdf");
     }
 
     @Test

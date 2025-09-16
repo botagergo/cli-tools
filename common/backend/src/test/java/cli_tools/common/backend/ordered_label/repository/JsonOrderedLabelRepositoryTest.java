@@ -1,6 +1,5 @@
 package cli_tools.common.backend.ordered_label.repository;
 
-import cli_tools.common.core.data.OrderedLabel;
 import cli_tools.common.backend.service.JsonRepositoryCreator;
 import org.testng.annotations.Test;
 

@@ -101,8 +101,8 @@ public class PropertySorter<T extends PropertyOwner> {
         }
 
         public List<Integer> createIndexArray() {
-            int numOfIndices = values.get(0).getLeft().size();
-            List<Integer> indices = new ArrayList<>(values.get(0).getLeft().size());
+            int numOfIndices = values.getFirst().getLeft().size();
+            List<Integer> indices = new ArrayList<>(values.getFirst().getLeft().size());
             for (int i = 0; i < numOfIndices; i++) {
                 indices.add(i);
             }
