@@ -3,8 +3,8 @@ package cli_tools.common.cli.property_to_string_converter;
 import cli_tools.common.cli.DateTimeFormatter;
 import cli_tools.common.core.data.OrderedLabel;
 import cli_tools.common.core.repository.LabelRepositoryFactory;
-import cli_tools.common.label.service.LabelService;
-import cli_tools.common.ordered_label.service.OrderedLabelService;
+import cli_tools.common.backend.label.service.LabelService;
+import cli_tools.common.backend.ordered_label.service.OrderedLabelService;
 import cli_tools.common.property_lib.Property;
 import cli_tools.common.property_lib.PropertyDescriptor;
 import jakarta.inject.Inject;
@@ -73,8 +73,8 @@ public class DefaultPropertyToStringConverter implements PropertyToStringConvert
     private String stringToString(Property property) throws IOException {
         PropertyDescriptor propertyDescriptor = property.getPropertyDescriptor();
         if (propertyDescriptor.subtype() != null) {
-            if (propertyDescriptor.subtype() instanceof PropertyDescriptor.Subtype.LabelSubtype labelSubtype) {
-                return labelStringToString(labelSubtype.labelType(), property);
+            if (propertyDescriptor.subtype() instanceof PropertyDescriptor.Subtype.LabelSubtype(String labelType)) {
+                return labelStringToString(labelType, property);
             } else {
                 throw new RuntimeException();
             }
@@ -175,8 +175,10 @@ public class DefaultPropertyToStringConverter implements PropertyToStringConvert
 
     private String integerToString(Integer integer, PropertyDescriptor propertyDescriptor) throws IOException {
         if (propertyDescriptor.subtype() != null) {
-            if (propertyDescriptor.subtype() instanceof PropertyDescriptor.Subtype.OrderedLabelSubtype orderedLabelSubtype) {
-                return orderedLabelIntegerToString(integer, orderedLabelSubtype.orderedLabelType());
+            if (propertyDescriptor.subtype() instanceof PropertyDescriptor.Subtype.OrderedLabelSubtype(
+                    String orderedLabelType
+            )) {
+                return orderedLabelIntegerToString(integer, orderedLabelType);
             } else {
                 throw new RuntimeException();
             }
@@ -187,8 +189,10 @@ public class DefaultPropertyToStringConverter implements PropertyToStringConvert
 
     private String integerStreamToString(Stream<Integer> integers, PropertyDescriptor propertyDescriptor, boolean sort) throws IOException {
         if (propertyDescriptor.subtype() != null) {
-            if (propertyDescriptor.subtype() instanceof PropertyDescriptor.Subtype.OrderedLabelSubtype orderedLabelSubtype) {
-                return orderedLabelIntegerStreamToString(integers, orderedLabelSubtype.orderedLabelType(), sort);
+            if (propertyDescriptor.subtype() instanceof PropertyDescriptor.Subtype.OrderedLabelSubtype(
+                    String orderedLabelType
+            )) {
+                return orderedLabelIntegerStreamToString(integers, orderedLabelType, sort);
             } else {
                 throw new RuntimeException();
             }

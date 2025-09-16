@@ -9,7 +9,7 @@ import cli_tools.common.util.UUIDGenerator;
 import cli_tools.task_manager.cli.TaskManagerContext;
 import cli_tools.task_manager.cli.command_parser.*;
 import cli_tools.task_manager.cli.init.Initializer;
-import cli_tools.task_manager.task.Task;
+import cli_tools.task_manager.backend.task.Task;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -49,7 +49,7 @@ public class TestBase {
         CommandParserFactory commandParserFactory = injector.getInstance(CommandParserFactory.class);
         context = injector.getInstance(TaskManagerContext.class);
         configurationRepository = (MockConfigurationRepository) context.getConfigurationRepository();
-        uuids = ((RoundRobinUUIDGenerator) injector.getInstance(UUIDGenerator.class)).uuids;
+        uuids = ((RoundRobinUUIDGenerator) injector.getInstance(UUIDGenerator.class)).getUuids();
 
         initializer.initialize();
 

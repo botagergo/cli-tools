@@ -1,8 +1,8 @@
 package cli_tools.common.cli.property_to_string_converter;
 
 import cli_tools.common.cli.DateTimeFormatter;
-import cli_tools.common.label.service.LabelService;
-import cli_tools.common.ordered_label.service.OrderedLabelService;
+import cli_tools.common.backend.label.service.LabelService;
+import cli_tools.common.backend.ordered_label.service.OrderedLabelService;
 import cli_tools.common.property_lib.Property;
 import cli_tools.common.property_lib.PropertyDescriptor;
 import cli_tools.common.util.RoundRobinUUIDGenerator;

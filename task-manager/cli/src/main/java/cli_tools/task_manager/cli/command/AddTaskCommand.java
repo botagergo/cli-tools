@@ -6,7 +6,7 @@ import cli_tools.common.cli.property_modifier.PropertyModifier;
 import cli_tools.common.core.data.property.ModifyPropertySpec;
 import cli_tools.common.core.util.Print;
 import cli_tools.task_manager.cli.TaskManagerContext;
-import cli_tools.task_manager.task.Task;
+import cli_tools.task_manager.backend.task.Task;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;

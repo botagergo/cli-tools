@@ -4,7 +4,7 @@ import cli_tools.common.core.data.OutputFormat;
 import cli_tools.common.core.data.SortingCriterion;
 import cli_tools.common.core.data.SortingInfo;
 import cli_tools.common.core.data.ViewInfo;
-import cli_tools.task_manager.task.Task;
+import cli_tools.task_manager.backend.task.Task;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;

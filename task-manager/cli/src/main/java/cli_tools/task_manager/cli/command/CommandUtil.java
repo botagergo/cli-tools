@@ -7,8 +7,8 @@ import cli_tools.common.core.data.property.FilterPropertySpec;
 import cli_tools.common.property_lib.PropertyException;
 import cli_tools.common.property_lib.PropertyManager;
 import cli_tools.task_manager.cli.TaskManagerContext;
-import cli_tools.task_manager.task.Task;
-import cli_tools.task_manager.task.service.TaskServiceException;
+import cli_tools.task_manager.backend.task.Task;
+import cli_tools.task_manager.backend.task.service.TaskServiceException;
 import lombok.NonNull;
 import lombok.extern.log4j.Log4j2;
 

@@ -5,12 +5,12 @@ import cli_tools.common.cli.property_to_string_converter.JsonPropertyToStringCon
 import cli_tools.common.cli.property_to_string_converter.MainPropertyToStringConverter;
 import cli_tools.common.cli.string_to_property_converter.StringToPropertyConverter;
 import cli_tools.common.core.repository.ConfigurationRepository;
-import cli_tools.common.label.service.LabelService;
-import cli_tools.common.ordered_label.service.OrderedLabelService;
-import cli_tools.common.property_descriptor.service.PropertyDescriptorService;
+import cli_tools.common.backend.label.service.LabelService;
+import cli_tools.common.backend.ordered_label.service.OrderedLabelService;
+import cli_tools.common.backend.property_descriptor.service.PropertyDescriptorService;
 import cli_tools.common.property_lib.PropertyManager;
-import cli_tools.common.temp_id_mapping.TempIDManager;
-import cli_tools.common.view.service.ViewInfoService;
+import cli_tools.common.backend.temp_id_mapping.TempIDManager;
+import cli_tools.common.backend.view.service.ViewInfoService;
 import jakarta.inject.Inject;
 import lombok.Getter;
 import lombok.Setter;

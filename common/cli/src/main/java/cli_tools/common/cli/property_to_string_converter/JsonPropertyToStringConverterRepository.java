@@ -1,6 +1,6 @@
 package cli_tools.common.cli.property_to_string_converter;
 
-import cli_tools.common.repository.SimpleJsonRepository;
+import cli_tools.common.backend.repository.SimpleJsonRepository;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.InjectableValues;
 import com.fasterxml.jackson.databind.JavaType;

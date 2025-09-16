@@ -3,19 +3,11 @@ plugins {
 }
 
 subprojects {
-    plugins.withType(JavaPlugin) {
-        // At this point, the JavaPluginExtension definitely exists
-        java {
-            toolchain {
-                languageVersion = JavaLanguageVersion.of(21)
-            }
-        }
-    }
-}
-
-
-subprojects {
     apply plugin: 'java'
+
+    repositories {
+        mavenCentral()
+    }
 
     gradle.projectsEvaluated {
         tasks.withType(JavaCompile).tap {
@@ -23,11 +15,6 @@ subprojects {
                 options.compilerArgs << "-Werror"
             }
         }
-    }
-
-    repositories {
-        mavenCentral()
-        gradlePluginPortal()
     }
 
     dependencies {
@@ -47,9 +34,4 @@ subprojects {
         jvmArgs '--add-opens=java.base/java.lang=ALL-UNNAMED'
     }
 
-    configurations {
-        configureEach {
-            exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
-        }
-    }
 }

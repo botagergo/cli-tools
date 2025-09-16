@@ -2,6 +2,7 @@ package cli_tools.common.util;
 
 import jakarta.inject.Inject;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import java.nio.ByteBuffer;
@@ -11,7 +12,8 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class RoundRobinUUIDGenerator implements UUIDGenerator {
 
-    public final UUID[] uuids;
+    @Getter
+    private final UUID[] uuids;
     private int currInd = -1;
 
     public RoundRobinUUIDGenerator(int number) {

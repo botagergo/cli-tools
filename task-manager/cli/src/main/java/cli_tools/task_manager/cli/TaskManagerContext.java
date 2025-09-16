@@ -1,7 +1,7 @@
 package cli_tools.task_manager.cli;
 
 import cli_tools.task_manager.cli.command.TaskPrinter;
-import cli_tools.task_manager.task.service.TaskService;
+import cli_tools.task_manager.backend.task.service.TaskService;
 import com.theokanning.openai.completion.chat.ChatMessage;
 import com.theokanning.openai.service.FunctionExecutor;
 import com.theokanning.openai.service.OpenAiService;

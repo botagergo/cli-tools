@@ -5,7 +5,7 @@ import cli_tools.common.cli.command.Command;
 import cli_tools.common.core.data.property.FilterPropertySpec;
 import cli_tools.common.core.util.Print;
 import cli_tools.task_manager.cli.TaskManagerContext;
-import cli_tools.task_manager.task.Task;
+import cli_tools.task_manager.backend.task.Task;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;

@@ -1,6 +1,6 @@
 package cli_tools.task_manager.cli.functional_test;
 
-import cli_tools.task_manager.task.Task;
+import cli_tools.task_manager.backend.task.Task;
 import org.testng.annotations.Test;
 
 import java.io.IOException;

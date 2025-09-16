@@ -1,7 +1,7 @@
 package cli_tools.common.cli.command.custom_command.repository;
 
 import cli_tools.common.cli.command.custom_command.CustomCommandDefinition;
-import cli_tools.common.repository.SimpleJsonRepository;
+import cli_tools.common.backend.repository.SimpleJsonRepository;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import jakarta.inject.Inject;

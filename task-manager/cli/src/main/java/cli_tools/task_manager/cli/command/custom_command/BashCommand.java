@@ -10,7 +10,7 @@ import cli_tools.common.property_lib.PropertyDescriptor;
 import cli_tools.common.property_lib.PropertyException;
 import cli_tools.task_manager.cli.TaskManagerContext;
 import cli_tools.task_manager.cli.command.CommandUtil;
-import cli_tools.task_manager.task.Task;
+import cli_tools.task_manager.backend.task.Task;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NonNull;

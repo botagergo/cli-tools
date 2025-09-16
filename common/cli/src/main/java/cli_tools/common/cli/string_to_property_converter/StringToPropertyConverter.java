@@ -7,13 +7,13 @@ import cli_tools.common.core.data.Predicate;
 import cli_tools.common.core.data.property.Affinity;
 import cli_tools.common.core.data.property.FilterPropertySpec;
 import cli_tools.common.core.data.property.ModifyPropertySpec;
-import cli_tools.common.label.service.LabelService;
-import cli_tools.common.ordered_label.service.OrderedLabelService;
-import cli_tools.common.property_descriptor.service.PropertyDescriptorService;
+import cli_tools.common.backend.label.service.LabelService;
+import cli_tools.common.backend.ordered_label.service.OrderedLabelService;
+import cli_tools.common.backend.property_descriptor.service.PropertyDescriptorService;
 import cli_tools.common.property_lib.Property;
 import cli_tools.common.property_lib.PropertyDescriptor;
 import cli_tools.common.property_lib.PropertyException;
-import cli_tools.common.temp_id_mapping.TempIDManager;
+import cli_tools.common.backend.temp_id_mapping.TempIDManager;
 import cli_tools.common.util.Utils;
 import jakarta.inject.Inject;
 import lombok.NonNull;
@@ -192,11 +192,11 @@ public class StringToPropertyConverter {
     }
 
     private String stringToStringProperty(PropertyDescriptor propertyDescriptor, String propertyValue, boolean createLabelIfNotExist) throws StringToPropertyConverterException, IOException {
-        if (propertyDescriptor.subtype() instanceof PropertyDescriptor.Subtype.LabelSubtype labelSubtype) {
-            boolean labelExists = labelService.labelExists(labelSubtype.labelType(), propertyValue);
+        if (propertyDescriptor.subtype() instanceof PropertyDescriptor.Subtype.LabelSubtype(String labelType)) {
+            boolean labelExists = labelService.labelExists(labelType, propertyValue);
             if (!labelExists && createLabelIfNotExist
                     && Utils.yesNo("label '%s' does not exist, create it?".formatted(propertyValue))) {
-                labelExists = labelService.createLabel(labelSubtype.labelType(), propertyValue);
+                labelExists = labelService.createLabel(labelType, propertyValue);
             }
             if (labelExists) {
                 return propertyValue;

@@ -1,0 +1,31 @@
+package cli_tools.common.backend.property_descriptor.repository;
+
+import cli_tools.common.property_lib.PropertyDescriptor;
+import cli_tools.common.property_lib.PseudoPropertyProvider;
+import cli_tools.common.backend.repository.ObjectDeserializer;
+import cli_tools.common.backend.repository.ObjectSerializer;
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
+@JsonAutoDetect(
+        fieldVisibility = JsonAutoDetect.Visibility.NONE,
+        setterVisibility = JsonAutoDetect.Visibility.NONE,
+        getterVisibility = JsonAutoDetect.Visibility.NONE,
+        isGetterVisibility = JsonAutoDetect.Visibility.NONE)
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public record PropertyDescriptorMixIn(
+        @JsonProperty(required = true) String name,
+        @JsonProperty(required = true) PropertyDescriptor.Type type,
+        @JsonProperty PropertyDescriptor.Subtype subtype,
+        @JsonProperty(required = true) PropertyDescriptor.Multiplicity multiplicity,
+        @JsonSerialize(using = ObjectSerializer.class)
+        @JsonDeserialize(using = ObjectDeserializer.class)
+        @JsonProperty
+        Object defaultValue,
+
+        @JsonProperty PseudoPropertyProvider pseudoPropertyProvider
+) {
+}
