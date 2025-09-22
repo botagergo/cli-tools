@@ -1,6 +1,7 @@
 package cli_tools.common.core.util;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.fusesource.jansi.Ansi;
 
@@ -25,13 +26,25 @@ public class Print {
         }
     }
 
-    public static void printAndLogException(Exception e, Logger log) {
+    public static void printAndLogException(Exception e, Logger log, Level level) {
         if (e.getMessage() != null) {
             Print.printError(e.getMessage());
-            log.error("{}\n{}", e.getMessage(), ExceptionUtils.getStackTrace(e));
+            log.log(level, "{}\n{}", e.getMessage(), ExceptionUtils.getStackTrace(e));
         } else {
             Print.printError(ExceptionUtils.getStackTrace(e));
-            log.error(ExceptionUtils.getStackTrace(e));
+            log.log(level, ExceptionUtils.getStackTrace(e));
+        }
+    }
+
+    public static void printAndLogException(Exception e, Logger log) {
+        printAndLogException(e, log, Level.ERROR);
+    }
+
+    public static void logException(Exception e, Logger log, Level level) {
+        if (e.getMessage() != null) {
+            log.log(level, "{}\n{}", e.getMessage(), ExceptionUtils.getStackTrace(e));
+        } else {
+            log.log(level, ExceptionUtils.getStackTrace(e));
         }
     }
 

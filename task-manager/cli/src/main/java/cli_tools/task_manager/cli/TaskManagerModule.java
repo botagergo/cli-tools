@@ -4,12 +4,11 @@ import cli_tools.common.cli.Context;
 import cli_tools.common.cli.command.custom_command.CustomCommandParserFactory;
 import cli_tools.common.cli.command.custom_command.repository.CustomCommandRepository;
 import cli_tools.common.cli.command.custom_command.repository.JsonCustomCommandRepository;
-import cli_tools.common.cli.command_line.CommandLine;
-import cli_tools.common.cli.command_line.Executor;
-import cli_tools.common.cli.command_line.ExecutorImpl;
-import cli_tools.common.cli.command_line.JlineCommandLine;
+import cli_tools.common.cli.command_line.*;
 import cli_tools.common.cli.command_parser.CommandParserFactory;
 import cli_tools.common.cli.command_parser.CommandParserFactoryImpl;
+import cli_tools.common.cli.executor.Executor;
+import cli_tools.common.cli.executor.LocalExecutor;
 import cli_tools.common.cli.tokenizer.Tokenizer;
 import cli_tools.common.cli.tokenizer.TokenizerImpl;
 import cli_tools.common.backend.configuration.ConfigurationRepositoryImpl;
@@ -93,8 +92,17 @@ public class TaskManagerModule extends AbstractModule {
     }
 
     @Provides
-    CommandLine jlineCommandLine(Executor executor) throws IOException {
-        return new JlineCommandLine(executor, OsDirs.getFile(OsDirs.DirType.CACHE, profileName, "history"));
+    CommandLine jlineCommandLine(Context context, Executor executor) throws IOException {
+        return new JlineCommandLine(
+                executor,
+                completer(context),
+                OsDirs.getFile(OsDirs.DirType.CACHE, profileName, "history")
+        );
+    }
+
+    @Provides
+    Completer completer(Context context) {
+        return new cli_tools.common.cli.command_line.Completer(context);
     }
 
     @SneakyThrows
@@ -115,7 +123,7 @@ public class TaskManagerModule extends AbstractModule {
         bind(PropertyDescriptorService.class).to(PropertyDescriptorServiceImpl.class).asEagerSingleton();
         bind(PropertyManager.class).asEagerSingleton();
         bind(TempIDManager.class).asEagerSingleton();
-        bind(Executor.class).to(ExecutorImpl.class);
+        bind(Executor.class).to(LocalExecutor.class);
         bind(LabelService.class).to(LabelServiceImpl.class).asEagerSingleton();
         bind(Context.class).to(TaskManagerContext.class);
 

@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package common.cli.protos;
+option java_package = "hu.botagergo.cli_tools.common.cli.protos";
+
+message Command {
+    string command = 1;
+}
+
+message CommandOutput {
+    string output = 1;
+}
+
+service Cli {
+    rpc ExecuteCommand (Command) returns (CommandOutput);
+}

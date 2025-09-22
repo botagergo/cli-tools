@@ -1,6 +1,6 @@
 package cli_tools.task_manager.cli.functional_test;
 
-import cli_tools.common.cli.command_line.Executor;
+import cli_tools.common.cli.executor.Executor;
 import cli_tools.common.cli.command_parser.CommandParserFactory;
 import cli_tools.common.property_lib.PropertyDescriptor;
 import cli_tools.common.property_lib.PropertyDescriptorCollection;

@@ -1,16 +1,42 @@
 plugins {
     id 'java-library'
+    alias(libs.plugins.protobuf)
 }
 
 dependencies {
-    implementation          libs.jackson.databind
-    implementation          libs.guice
-    implementation          libs.jakarta.inject.api
-    implementation          libs.jline
-
     implementation          project(':common:util')
     implementation          project(':common:property-lib')
     testImplementation      project(':common:property-lib')
     implementation          project(':common:backend')
     implementation          project(':common:core')
+
+    implementation          libs.jackson.databind
+    api                     libs.grpc.netty
+    api                     libs.grpc.protobuf
+    api                     libs.grpc.services
+    api                     libs.grpc.stub
+    implementation          libs.guice
+    implementation          libs.jakarta.inject.api
+    implementation          libs.jline
+    implementation          libs.protobuf.java
+}
+
+protobuf {
+    protoc {
+        artifact = libs.protoc.get().toString()
+    }
+
+    plugins {
+        grpc {
+            artifact = 'io.grpc:protoc-gen-grpc-java:1.75.0'
+        }
+    }
+
+    generateProtoTasks {
+        ofSourceSet('main').configureEach {
+            plugins {
+                grpc {}
+            }
+        }
+    }
 }

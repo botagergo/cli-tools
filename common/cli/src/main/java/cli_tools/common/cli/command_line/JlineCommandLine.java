@@ -1,8 +1,6 @@
 package cli_tools.common.cli.command_line;
 
-import cli_tools.common.cli.Context;
-import cli_tools.common.property_lib.PropertyDescriptor;
-import cli_tools.common.property_lib.PropertyDescriptorCollection;
+import cli_tools.common.cli.executor.Executor;
 import lombok.AllArgsConstructor;
 import org.jline.reader.LineReader;
 import org.jline.reader.LineReader.Option;
@@ -13,8 +11,6 @@ import org.jline.terminal.TerminalBuilder;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
-import java.util.List;
 
 import static cli_tools.common.cli.Util.strip;
 
@@ -22,21 +18,17 @@ import static cli_tools.common.cli.Util.strip;
 public class JlineCommandLine implements CommandLine {
 
     private final Executor executor;
+    private final Completer completer;
     private final File historyFile;
 
     @Override
     public void run() throws IOException {
-        Context context = ((ExecutorImpl) executor).getContext();
-        List<PropertyDescriptor> propertyDescriptors = context.getPropertyDescriptorService().getPropertyDescriptors();
-        context.getPropertyManager().setPropertyDescriptorCollection(PropertyDescriptorCollection.fromList(propertyDescriptors));
-
         Terminal terminal = TerminalBuilder.builder()
                 .nativeSignals(true)
                 .signalHandler(Terminal.SignalHandler.SIG_IGN)
                 .build();
 
         Parser parser = new cli_tools.common.cli.command_line.Parser();
-        cli_tools.common.cli.command_line.Completer completer = buildCompleter(context);
         LineReader reader = LineReaderBuilder.builder().terminal(terminal)
                 .completer(completer)
                 .parser(parser)
@@ -66,10 +58,6 @@ public class JlineCommandLine implements CommandLine {
 
             }
         }
-    }
-
-    private Completer buildCompleter(Context context) {
-        return new Completer(context);
     }
 
 }

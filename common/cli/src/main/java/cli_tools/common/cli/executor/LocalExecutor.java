@@ -1,4 +1,4 @@
-package cli_tools.common.cli.command_line;
+package cli_tools.common.cli.executor;
 
 import cli_tools.common.cli.Context;
 import cli_tools.common.cli.argument.ArgumentList;
@@ -18,7 +18,7 @@ import java.util.List;
 
 @Getter
 @Log4j2
-public class ExecutorImpl implements Executor {
+public class LocalExecutor implements Executor {
 
     private boolean _shouldExit = false;
     @Setter
@@ -49,7 +49,7 @@ public class ExecutorImpl implements Executor {
         execute(tokens);
     }
 
-    public void execute(List<String> tokens) {
+    private void execute(List<String> tokens) {
         ArgumentList argList;
         try {
             argList = ArgumentList.from(tokens);

@@ -1,3 +1,5 @@
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+
 plugins {
     id 'application'
     id 'com.gradleup.shadow' version '9.1.0'
@@ -5,10 +7,6 @@ plugins {
 
 group = "hu.botagergo"
 version = "1.0-SNAPSHOT"
-
-tasks.withType(Jar).configureEach {
-    archiveBaseName = "task-manager-cli"
-}
 
 configurations {
     extraLibs
@@ -34,17 +32,26 @@ dependencies {
     runtimeOnly             libs.log4j.jul
     implementation          libs.openai.gpt3
     implementation          libs.snakeyaml
+
+    // https://mvnrepository.com/artifact/commons-cli/commons-cli
+    implementation("commons-cli:commons-cli:1.10.0")
 }
 
 application {
     mainClass = 'cli_tools.task_manager.cli.TaskManagerCLI'
 }
 
-jar {
-    duplicatesStrategy(DuplicatesStrategy.EXCLUDE)
-
+tasks.withType(Jar).configureEach {
+    archiveBaseName = "task-manager-cli"
+    duplicatesStrategy(DuplicatesStrategy.INCLUDE)
     manifest {
-        attributes "Main-Class": "common.cli.TaskManagerCLI"
         attributes "Multi-Release": true
+    }
+}
+
+tasks.withType(ShadowJar).configureEach {
+    mergeServiceFiles()
+    manifest {
+        attributes "Main-Class": "cli_tools.task_manager.cli.TaskManagerCLI"
     }
 }

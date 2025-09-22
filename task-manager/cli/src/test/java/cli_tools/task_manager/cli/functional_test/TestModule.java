@@ -6,8 +6,8 @@ import cli_tools.common.cli.command.custom_command.CustomCommandParserFactory;
 import cli_tools.common.cli.command.custom_command.repository.CustomCommandRepository;
 import cli_tools.common.cli.command.custom_command.repository.JsonCustomCommandRepository;
 import cli_tools.common.cli.command_line.CommandLine;
-import cli_tools.common.cli.command_line.Executor;
-import cli_tools.common.cli.command_line.ExecutorImpl;
+import cli_tools.common.cli.executor.Executor;
+import cli_tools.common.cli.executor.LocalExecutor;
 import cli_tools.common.cli.command_line.JlineCommandLine;
 import cli_tools.common.cli.command_parser.CommandParserFactory;
 import cli_tools.common.cli.command_parser.CommandParserFactoryImpl;
@@ -25,7 +25,6 @@ import cli_tools.common.backend.property_descriptor.service.PropertyDescriptorSe
 import cli_tools.common.backend.property_descriptor.service.PropertyDescriptorServiceImpl;
 import cli_tools.common.property_lib.PropertyManager;
 import cli_tools.common.backend.temp_id_mapping.TempIDManager;
-import cli_tools.common.util.RandomUUIDGenerator;
 import cli_tools.common.util.RoundRobinUUIDGenerator;
 import cli_tools.common.util.UUIDGenerator;
 import cli_tools.common.backend.view.repository.JsonViewInfoRepository;
@@ -91,7 +90,7 @@ public class TestModule extends AbstractModule {
 
     @Provides
     JlineCommandLine jlineCommandLine(Executor executor) throws IOException {
-        return new JlineCommandLine(executor, OsDirs.getFile(OsDirs.DirType.TEST, null, "history"));
+        return new JlineCommandLine(executor, null, new File("history"));
     }
 
     @SneakyThrows
@@ -112,7 +111,7 @@ public class TestModule extends AbstractModule {
         bind(PropertyDescriptorService.class).to(PropertyDescriptorServiceImpl.class).asEagerSingleton();
         bind(PropertyManager.class).asEagerSingleton();
         bind(TempIDManager.class).asEagerSingleton();
-        bind(Executor.class).to(ExecutorImpl.class);
+        bind(Executor.class).to(LocalExecutor.class);
         bind(LabelService.class).to(LabelServiceImpl.class).asEagerSingleton();
         bind(Context.class).to(TaskManagerContext.class);
         bind(CommandLine.class).to(JlineCommandLine.class);

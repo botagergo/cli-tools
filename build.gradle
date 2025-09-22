@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id 'com.gradleup.shadow' version '9.1.0'
 }
 
 java {
@@ -35,7 +36,6 @@ subprojects {
         testAnnotationProcessor libs.lombok
         testImplementation      libs.mockito.core
         testImplementation      libs.testng
-
     }
 
     tasks.withType(Test).configureEach {
