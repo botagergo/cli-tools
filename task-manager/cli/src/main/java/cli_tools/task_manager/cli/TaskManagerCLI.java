@@ -199,7 +199,7 @@ public class TaskManagerCLI {
         commandLine.run();
     }
 
-    private static void runDaemon(Injector injector, Integer daemonPort) throws IOException {
+    private static void runDaemon(Injector injector, Integer daemonPort) {
         if (daemonPort == null) {
             daemonPort = defaultDaemonPort;
         }
@@ -220,7 +220,7 @@ public class TaskManagerCLI {
         }
     }
 
-    private static void runStandalone(Injector injector) throws IOException {
+    private static void runStandalone(Injector injector) {
         CommandLine commandLine = injector.getInstance(CommandLine.class);
         try {
             commandLine.run();

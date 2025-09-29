@@ -35,17 +35,14 @@ public class GrpcServer {
         server.start();
         healthStatusManager.setStatus("", HealthCheckResponse.ServingStatus.SERVING);
 
-        Runtime.getRuntime().addShutdownHook(new Thread() {
-            @Override
-            public void run() {
-                try {
-                    healthStatusManager.setStatus("", HealthCheckResponse.ServingStatus.NOT_SERVING);
-                    GrpcServer.this.stop();
-                } catch (InterruptedException e) {
-                    Print.logException(e, log);
-                }
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            try {
+                healthStatusManager.setStatus("", HealthCheckResponse.ServingStatus.NOT_SERVING);
+                GrpcServer.this.stop();
+            } catch (InterruptedException e) {
+                Print.logException(e, log);
             }
-        });
+        }));
     }
 
     public void stop() throws InterruptedException {
