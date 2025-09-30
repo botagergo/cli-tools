@@ -35,7 +35,7 @@ public class GrpcExecutor implements Executor {
     }
 
     public void close() {
-        this.channel.shutdown();
+        channel.shutdown();
     }
 
     @Override

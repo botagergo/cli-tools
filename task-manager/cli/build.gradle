@@ -1,8 +1,11 @@
+import com.bmuschko.gradle.docker.tasks.container.*
+import com.bmuschko.gradle.docker.tasks.image.*
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 
 plugins {
     id 'application'
     id 'com.gradleup.shadow' version '9.1.0'
+    id 'com.bmuschko.docker-java-application' version '9.4.0'
 }
 
 group = "hu.botagergo"
@@ -20,6 +23,7 @@ dependencies {
     implementation          project(':common:backend')
     implementation          project(':task-manager:backend')
 
+    implementation          libs.commons.cli
     implementation          libs.guice
     implementation          libs.jackson.databind
     testImplementation      libs.jackson.databind
@@ -32,9 +36,6 @@ dependencies {
     runtimeOnly             libs.log4j.jul
     implementation          libs.openai.gpt3
     implementation          libs.snakeyaml
-
-    // https://mvnrepository.com/artifact/commons-cli/commons-cli
-    implementation("commons-cli:commons-cli:1.10.0")
 }
 
 application {
@@ -55,3 +56,36 @@ tasks.withType(ShadowJar).configureEach {
         attributes "Main-Class": "cli_tools.task_manager.cli.TaskManagerCLI"
     }
 }
+
+docker {
+    registryCredentials {
+        url = 'npipe:////.pipe/docker_engine'
+    }
+}
+
+tasks.register("createDockerfile", Dockerfile) {
+    dependsOn shadowJar
+    def jarName = shadowJar.archiveFileName.get()
+    from "eclipse-temurin:21-jre-alpine"
+    copyFile("build/libs/$jarName", "/app/")
+    entryPoint("java", "-jar", "/app/$jarName", "--daemon")
+}
+
+tasks.register("buildDockerImage", DockerBuildImage) {
+    dependsOn createDockerfile
+    inputDir = project.projectDir
+    setDockerFile(new File("build/docker/Dockerfile"))
+    images.add("task-manager-daemon:latest")
+}
+
+tasks.register("createDockerContainer", DockerCreateContainer) {
+    dependsOn buildDockerImage
+    imageId = "task-manager-daemon:latest"
+    hostConfig.portBindings = ['8224:8224']
+}
+
+tasks.register("startDockerContainer", DockerStartContainer) {
+    dependsOn createDockerContainer
+    containerId = createDockerContainer.getContainerId()
+}
+

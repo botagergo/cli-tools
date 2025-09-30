@@ -12,6 +12,7 @@ import lombok.extern.log4j.Log4j2;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 @Log4j2
@@ -28,17 +29,18 @@ public class GrpcServer {
 
     public void start() throws IOException {
         HealthStatusManager healthStatusManager = new HealthStatusManager();
-        server = io.grpc.ServerBuilder.forPort(port)
+        server = io.grpc.ServerBuilder
+                .forPort(port)
                 .addService(healthStatusManager.getHealthService())
                 .addService(new CliServiceImpl())
+                .executor(Executors.newSingleThreadExecutor())
                 .build();
         server.start();
         healthStatusManager.setStatus("", HealthCheckResponse.ServingStatus.SERVING);
-
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            healthStatusManager.enterTerminalState();
             try {
-                healthStatusManager.setStatus("", HealthCheckResponse.ServingStatus.NOT_SERVING);
-                GrpcServer.this.stop();
+                stop();
             } catch (InterruptedException e) {
                 Print.logException(e, log);
             }
@@ -47,6 +49,7 @@ public class GrpcServer {
 
     public void stop() throws InterruptedException {
         if (server != null) {
+            log.info("GrpcServer shutting down");
             server.shutdown().awaitTermination(30, TimeUnit.SECONDS);
         }
     }
@@ -61,6 +64,7 @@ public class GrpcServer {
         @Override
         public void executeCommand(CliOuterClass.Command request,
                                    StreamObserver<CliOuterClass.CommandOutput> responseObserver) {
+            Print.print("Executing command: %s", request.getCommand());
             ByteArrayOutputStream out = new ByteArrayOutputStream();
             System.setOut(new PrintStream(out));
             executor.execute(request.getCommand());

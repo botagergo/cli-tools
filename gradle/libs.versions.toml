@@ -1,6 +1,7 @@
 [versions]
 annotation-api          = "1.3.2"
 apache-commons          = "3.18.0"
+commons-cli             = "1.10.0"
 gestalt                 = "0.35.5"
 grpc                    = "1.75.0"
 guice                   = "7.0.0"
@@ -21,6 +22,7 @@ testng                  = "7.11.0"
 [libraries]
 annotation-api          = { module = "javax.annotation:javax.annotation-api", version.ref = "annotation-api" }
 apache-commons          = { module = "org.apache.commons:commons-lang3", version.ref = "apache-commons" }
+commons-cli             = { module = "commons-cli:commons-cli", version.ref = "commons-cli" }
 gestalt-core            = { module = "com.github.gestalt-config:gestalt-core", version.ref = "gestalt" }
 gestalt-yaml            = { module = "com.github.gestalt-config:gestalt-yaml", version.ref = "gestalt" }
 grpc-netty              = { module = "io.grpc:grpc-netty", version.ref = "grpc" }

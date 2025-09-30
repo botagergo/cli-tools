@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package common.cli.protos;
+package cli;
 option java_package = "hu.botagergo.cli_tools.common.cli.protos";
 
 message Command {
