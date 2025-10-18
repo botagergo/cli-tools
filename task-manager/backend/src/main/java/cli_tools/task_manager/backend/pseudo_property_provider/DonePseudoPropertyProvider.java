@@ -14,4 +14,9 @@ public class DonePseudoPropertyProvider implements PseudoPropertyProvider {
             return null;
         }
     }
+
+    @Override
+    public String toString() {
+        return "DonePseudoPropertyProvider()";
+    }
 }

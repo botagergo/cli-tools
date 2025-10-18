@@ -1,6 +1,7 @@
 package cli_tools.common.cli.property_to_string_converter;
 
 import cli_tools.common.backend.repository.SimpleJsonRepository;
+import cli_tools.common.core.repository.DataAccessException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.InjectableValues;
 import com.fasterxml.jackson.databind.JavaType;
@@ -9,7 +10,6 @@ import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.HashMap;
 
 public class JsonPropertyToStringConverterRepository extends SimpleJsonRepository<HashMap<String, PropertyToStringConverter>> {
@@ -24,12 +24,12 @@ public class JsonPropertyToStringConverterRepository extends SimpleJsonRepositor
         getObjectMapper().setInjectableValues(injectableValues);
     }
 
-    public void add(String propertyName, PropertyToStringConverter propertyToStringConverter) throws IOException {
+    public void add(String propertyName, PropertyToStringConverter propertyToStringConverter) throws DataAccessException {
         getData().put(propertyName, propertyToStringConverter);
         writeData();
     }
 
-    public PropertyToStringConverter get(String propertyName) throws IOException {
+    public PropertyToStringConverter get(String propertyName) throws DataAccessException {
         return getData().get(propertyName);
     }
 

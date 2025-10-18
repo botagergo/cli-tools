@@ -1,16 +1,71 @@
+import nu.studer.gradle.jooq.JooqEdition
+buildscript {
+    dependencies {
+        classpath("org.postgresql:postgresql:42.7.8")
+        classpath("org.flywaydb:flyway-database-postgresql:11.14.1")
+    }
+}
 plugins {
     id 'java-library'
+    id "org.flywaydb.flyway" version "11.13.2"
+    id 'nu.studer.jooq' version '10.1.1'
+}
+
+repositories {
+    maven {
+        url "https://repo1.maven.org/maven2/org/jooq"
+    }
 }
 
 dependencies {
     implementation          project(':common:util')
     implementation          project(':common:property-lib')
     implementation          project(':common:core')
+    implementation          project(':common:db-schema')
+    testImplementation      project(':common:test-utils')
 
-    implementation          libs.jackson.databind
-    testImplementation      libs.jackson.databind
-    implementation          libs.guice
-    implementation          libs.jakarta.inject.api
+    implementation          libs.flyway.core
+    implementation          libs.flyway.db.pg
     implementation          libs.gestalt.core
     implementation          libs.gestalt.yaml
+    implementation          libs.guice
+    implementation          libs.jackson.databind
+    testImplementation      libs.jackson.databind
+    implementation          libs.jakarta.inject.api
+    implementation          libs.jakarta.xml.bind.api
+    implementation          libs.jooq
+    jooqGenerator           libs.jooq.codegen
+    jooqGenerator           libs.jooq.meta
+    jooqGenerator           libs.jooq.meta.extensions
+}
+
+flyway {
+    url = 'jdbc:postgresql://localhost:45432/task_manager_db'
+    user = 'postgres'
+    password = '12345'
+    cleanDisabled = false
+}
+
+jooq {
+    configurations {
+        main {
+            generationTool {
+                logging = org.jooq.meta.jaxb.Logging.WARN
+                generator {
+                    database {
+                        name = 'org.jooq.meta.extensions.ddl.DDLDatabase'
+                        properties {
+                            property {
+                                key = "scripts"
+                                value = "src/main/resources/db/migration/"
+                            }
+                        }
+                    }
+                    target {
+                        packageName = 'cli_tools.common.backend'
+                    }
+                }
+            }
+        }
+    }
 }

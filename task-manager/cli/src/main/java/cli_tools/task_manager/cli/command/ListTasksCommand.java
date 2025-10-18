@@ -1,24 +1,19 @@
 package cli_tools.task_manager.cli.command;
 
+import cli_tools.common.backend.service.ServiceException;
 import cli_tools.common.cli.argument.PropertyArgument;
 import cli_tools.common.cli.command.Command;
-import cli_tools.common.cli.string_to_property_converter.StringToPropertyConverterException;
 import cli_tools.common.core.data.*;
 import cli_tools.common.core.data.property.FilterPropertySpec;
 import cli_tools.common.core.util.Print;
-import cli_tools.common.backend.filter.FilterCriterionException;
-import cli_tools.common.backend.property_converter.PropertyConverterException;
-import cli_tools.common.property_lib.PropertyException;
 import cli_tools.task_manager.cli.TaskManagerContext;
 import cli_tools.task_manager.backend.task.PropertyOwnerTree;
 import cli_tools.task_manager.backend.task.Task;
-import cli_tools.task_manager.backend.task.service.TaskServiceException;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 
@@ -57,6 +52,10 @@ public final class ListTasksCommand extends Command {
 
             if (actualViewName != null) {
                 ViewInfo viewInfo = getView(taskManagerContext, actualViewName);
+                if (viewInfo == null) {
+                    Print.printError("No such view: %s".formatted(actualViewName));
+                    return;
+                }
 
                 if (viewInfo.sortingInfo() != null) {
                     sortingInfo = viewInfo.sortingInfo();
@@ -104,7 +103,7 @@ public final class ListTasksCommand extends Command {
             }
 
             if (actualHierarchical && context.getPropertyManager().getPropertyDescriptor("parent") == null) {
-                Print.printWarning("cannot print tasks hierarchically because the 'parent' property does not exist");
+                Print.printWarning("Cannot print tasks hierarchically because the 'parent' property does not exist");
                 actualHierarchical = false;
             }
 
@@ -128,18 +127,13 @@ public final class ListTasksCommand extends Command {
                     }
                 }
             }
-        } catch (StringToPropertyConverterException | TaskServiceException | PropertyException | IOException |
-                 PropertyConverterException | FilterCriterionException e) {
+        } catch (Exception e) {
             Print.printAndLogException(e, log);
         }
     }
 
-    private @NonNull ViewInfo getView(TaskManagerContext context, String viewName) throws TaskServiceException, IOException {
-        ViewInfo viewInfo = context.getViewInfoService().getViewInfo(viewName);
-        if (viewInfo == null) {
-            throw new TaskServiceException("no such view: '" + viewName + "'");
-        }
-        return viewInfo;
+    private ViewInfo getView(TaskManagerContext context, String viewName) throws ServiceException {
+        return context.getViewInfoService().getViewInfo(viewName);
     }
 }
 

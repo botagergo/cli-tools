@@ -1,22 +1,21 @@
 package cli_tools.common.backend.filter;
 
+import cli_tools.common.backend.service.ServiceException;
 import cli_tools.common.core.data.FilterCriterionInfo;
 import cli_tools.common.core.data.Predicate;
 import cli_tools.common.core.data.property.FilterPropertySpec;
 import cli_tools.common.backend.property_comparator.PropertyComparator;
 import cli_tools.common.backend.property_converter.PropertyConverter;
-import cli_tools.common.backend.property_converter.PropertyConverterException;
 import cli_tools.common.property_lib.*;
 import lombok.NonNull;
 import org.apache.commons.lang3.NotImplementedException;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
 public abstract class FilterCriterion {
-    public static FilterCriterion from(FilterPropertySpec filterPropertySpec) throws IllegalArgumentException {
+    public static FilterCriterion from(FilterPropertySpec filterPropertySpec) throws ServiceException {
         List<Object> operand = filterPropertySpec.operand();
         return create(filterPropertySpec.propertyDescriptor(), filterPropertySpec.predicate(), filterPropertySpec.negate(), operand);
     }
@@ -25,7 +24,7 @@ public abstract class FilterCriterion {
             @NonNull FilterCriterionInfo filterCriterionInfo,
             @NonNull PropertyManager propertyManager,
             @NonNull PropertyConverter propertyConverter
-    ) throws PropertyException, IOException, PropertyConverterException, IllegalArgumentException {
+    ) throws ServiceException {
         switch (filterCriterionInfo.type()) {
             case PROPERTY -> {
                 PropertyDescriptor propertyDescriptor = propertyManager.getPropertyDescriptor(filterCriterionInfo.propertyName());
@@ -68,7 +67,7 @@ public abstract class FilterCriterion {
 
     private static FilterCriterion create(
             PropertyDescriptor propertyDescriptor, Predicate predicate, boolean negate, List<Object> operand
-    ) throws IllegalArgumentException {
+    ) throws ServiceException {
         String propertyName = propertyDescriptor.name();
         FilterCriterion filterCriterion = null;
 
@@ -79,7 +78,7 @@ public abstract class FilterCriterion {
             } else if (propertyDescriptor.isSet()) {
                 finalOperand = Set.copyOf(operand);
             } else if (operand.size() != 1) {
-                throw new IllegalArgumentException("one argument expected for predicate 'equals' of property '" + propertyName + "'");
+                throw new ServiceException("One argument expected for predicate 'equals' of property '" + propertyName + "'", null);
             } else {
                 finalOperand = operand.getFirst();
             }
@@ -87,9 +86,9 @@ public abstract class FilterCriterion {
         } else if (predicate == Predicate.LESS || predicate == Predicate.LESS_EQUAL ||
                 predicate == Predicate.GREATER || predicate == Predicate.GREATER_EQUAL) {
             if (!PropertyComparator.isComparable(propertyDescriptor)) {
-                throw new IllegalArgumentException("predicate: " + predicate + " is incompatible with property '" + propertyName + "'");
+                throw new ServiceException("Predicate: " + predicate + " is incompatible with property '" + propertyName + "'");
             } else if (operand.size() != 1) {
-                throw new IllegalArgumentException("one argument expected for predicate '" + predicate + "' of property '" + propertyName + "'");
+                throw new ServiceException("One argument expected for predicate '" + predicate + "' of property '" + propertyName + "'");
             }
             Property property = Property.fromUnchecked(propertyDescriptor, operand.getFirst());
             switch (predicate) {
@@ -109,11 +108,11 @@ public abstract class FilterCriterion {
                         filterCriterion = new CollectionContainsFilterCriterion(propertyName, operand);
                     } else if (propertyDescriptor.type() == PropertyDescriptor.Type.String) {
                         if (operand.size() != 1) {
-                            throw new IllegalArgumentException("one argument expected for predicate 'contains' of property '" + propertyName + "'");
+                            throw new ServiceException("One argument expected for predicate 'contains' of property '" + propertyName + "'");
                         }
                         filterCriterion = new ContainsCaseInsensitiveFilterCriterion(propertyName, (String) operand.getFirst());
                     } else {
-                        throw new IllegalArgumentException("predicate 'contains' is incompatible with property '" + propertyName + "'");
+                        throw new ServiceException("Predicate 'contains' is incompatible with property '" + propertyName + "'");
                     }
                 }
                 case IN -> filterCriterion = new InFilterCriterion(propertyName, operand);
@@ -128,14 +127,14 @@ public abstract class FilterCriterion {
             }
             return filterCriterion;
         } else {
-            throw new RuntimeException("predicate '" + predicate + "' not implemented");
+            throw new RuntimeException("Predicate '" + predicate + "' not implemented");
         }
     }
 
-    public boolean check(PropertyOwner propertyOwner, PropertyManager propertyManager) throws PropertyException, IOException {
+    public boolean check(PropertyOwner propertyOwner, PropertyManager propertyManager) throws PropertyException {
         return check_(propertyOwner, propertyManager);
     }
 
-    protected abstract boolean check_(PropertyOwner propertyOwner, PropertyManager propertyManager) throws PropertyException, IOException;
+    protected abstract boolean check_(PropertyOwner propertyOwner, PropertyManager propertyManager) throws PropertyException;
 
 }

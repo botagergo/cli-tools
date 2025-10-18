@@ -1,8 +1,9 @@
 package cli_tools.common.cli.property_to_string_converter;
 
+import cli_tools.common.backend.property_converter.PropertyConverterException;
+import cli_tools.common.backend.service.ServiceException;
 import cli_tools.common.cli.DateTimeFormatter;
 import cli_tools.common.core.data.OrderedLabel;
-import cli_tools.common.core.repository.LabelRepositoryFactory;
 import cli_tools.common.backend.label.service.LabelService;
 import cli_tools.common.backend.ordered_label.service.OrderedLabelService;
 import cli_tools.common.property_lib.Property;
@@ -13,7 +14,6 @@ import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.NotImplementedException;
 
-import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.*;
@@ -27,7 +27,6 @@ public class DefaultPropertyToStringConverter implements PropertyToStringConvert
     private String listSeparator = ", ";
     private String nullString = "";
     private String nullStringInList = "<null>";
-    private LabelRepositoryFactory labelRepositoryFactory;
     private LabelService labelService;
     private OrderedLabelService orderedLabelService;
     private DateTimeFormatter dateTimeFormatter;
@@ -42,43 +41,40 @@ public class DefaultPropertyToStringConverter implements PropertyToStringConvert
         this.dateTimeFormatter = dateTimeFormatter;
     }
 
-    public String propertyToString(String propertyName, Property property) throws IOException {
+    public String propertyToString(String propertyName, Property property) throws PropertyConverterException {
         if (property.getValue() == null) {
             return nullString;
         }
 
-        switch (property.getPropertyDescriptor().type()) {
-            case String -> {
-                return stringToString(property);
+        try {
+            switch (property.getPropertyDescriptor().type()) {
+                case String -> {
+                    return stringToString(property);
+                }
+                case UUID -> {
+                    return uuidToString(property);
+                }
+                case Boolean -> {
+                    return booleanToString(property);
+                }
+                case Integer -> {
+                    return integerToString(property);
+                }
+                case Date -> {
+                    return dateToString(property);
+                }
+                case Time -> {
+                    return timeToString(property);
+                }
+                default -> throw new RuntimeException();
             }
-            case UUID -> {
-                return uuidToString(property);
-            }
-            case Boolean -> {
-                return booleanToString(property);
-            }
-            case Integer -> {
-                return integerToString(property);
-            }
-            case Date -> {
-                return dateToString(property);
-            }
-            case Time -> {
-                return timeToString(property);
-            }
-            default -> throw new RuntimeException();
+        } catch (ServiceException e) {
+            throw new PropertyConverterException("Error converting property '%s' to string: %s".formatted(propertyName, e.getMessage()), e);
         }
     }
 
-    private String stringToString(Property property) throws IOException {
+    private String stringToString(Property property) {
         PropertyDescriptor propertyDescriptor = property.getPropertyDescriptor();
-        if (propertyDescriptor.subtype() != null) {
-            if (propertyDescriptor.subtype() instanceof PropertyDescriptor.Subtype.LabelSubtype(String labelType)) {
-                return labelStringToString(labelType, property);
-            } else {
-                throw new RuntimeException();
-            }
-        }
         if (propertyDescriptor.multiplicity() == PropertyDescriptor.Multiplicity.SINGLE) {
             return property.getStringUnchecked();
         } else if (propertyDescriptor.multiplicity() == PropertyDescriptor.Multiplicity.LIST) {
@@ -98,8 +94,15 @@ public class DefaultPropertyToStringConverter implements PropertyToStringConvert
         return stream.collect(Collectors.joining(listSeparator));
     }
 
-    private String uuidToString(Property property) {
+    private String uuidToString(Property property) throws ServiceException {
         PropertyDescriptor propertyDescriptor = property.getPropertyDescriptor();
+        if (propertyDescriptor.subtype() != null) {
+            if (propertyDescriptor.subtype() instanceof PropertyDescriptor.Subtype.LabelSubtype(String labelType)) {
+                return labelUuidToString(labelType, property);
+            } else {
+                throw new RuntimeException();
+            }
+        }
         if (propertyDescriptor.multiplicity() == PropertyDescriptor.Multiplicity.SINGLE) {
             return property.getUuidUnchecked().toString();
         } else if (propertyDescriptor.multiplicity() == PropertyDescriptor.Multiplicity.LIST) {
@@ -127,10 +130,10 @@ public class DefaultPropertyToStringConverter implements PropertyToStringConvert
         return stream.collect(Collectors.joining(listSeparator));
     }
 
-    private String labelStringStreamToString(Collection<String> labels, String labelType, boolean sort) throws IOException {
+    private String labelStringStreamToString(Collection<UUID> labelUuids, String labelType, boolean sort) throws ServiceException {
         List<String> labelTexts = new ArrayList<>();
-        for (String label : labels) {
-            labelTexts.add(labelStringToString_(labelType, label));
+        for (UUID labelUuid : labelUuids) {
+            labelTexts.add(labelUuidToString_(labelType, labelUuid));
         }
         var stream = labelTexts.stream();
         if (sort) {
@@ -139,28 +142,29 @@ public class DefaultPropertyToStringConverter implements PropertyToStringConvert
         return stream.collect(Collectors.joining(listSeparator));
     }
 
-    private String labelStringToString(String labelType, Property property) throws IOException {
+    private String labelUuidToString(String labelType, Property property) throws ServiceException {
         if (property.getPropertyDescriptor().multiplicity() == PropertyDescriptor.Multiplicity.SINGLE) {
-            return labelStringToString_(labelType, property.getStringUnchecked());
+            return labelUuidToString_(labelType, property.getUuidUnchecked());
         } else if (property.getPropertyDescriptor().multiplicity() == PropertyDescriptor.Multiplicity.LIST) {
-            return labelStringStreamToString(property.getStringListUnchecked(), labelType, false);
+            return labelStringStreamToString(property.getUuidListUnchecked(), labelType, false);
         } else if (property.getPropertyDescriptor().multiplicity() == PropertyDescriptor.Multiplicity.SET) {
-            return labelStringStreamToString(property.getStringSetUnchecked(), labelType, true);
+            return labelStringStreamToString(property.getUuidSetUnchecked(), labelType, true);
         } else {
             throw new RuntimeException();
         }
     }
 
-    private String labelStringToString_(String labelType, String labelText) throws IOException {
-        if (labelService.labelExists(labelType, labelText)) {
+    private String labelUuidToString_(String labelType, UUID uuid) throws ServiceException {
+        String labelText = labelService.getLabel(labelType, uuid);
+        if (labelText != null) {
             return labelText;
         } else {
-            log.warn("Label '{}' does not exist", labelText);
-            return "<NO_SUCH_LABEL:" + labelText + ">";
+            log.warn("Label with UUID '{}' does not exist", uuid.toString());
+            return "<NO_SUCH_LABEL:" + uuid + ">";
         }
     }
 
-    private String integerToString(Property property) throws IOException {
+    private String integerToString(Property property) throws ServiceException {
         PropertyDescriptor propertyDescriptor = property.getPropertyDescriptor();
         if (propertyDescriptor.multiplicity() == PropertyDescriptor.Multiplicity.SINGLE) {
             return integerToString(property.getIntegerUnchecked(), propertyDescriptor);
@@ -173,7 +177,7 @@ public class DefaultPropertyToStringConverter implements PropertyToStringConvert
         }
     }
 
-    private String integerToString(Integer integer, PropertyDescriptor propertyDescriptor) throws IOException {
+    private String integerToString(Integer integer, PropertyDescriptor propertyDescriptor) throws ServiceException {
         if (propertyDescriptor.subtype() != null) {
             if (propertyDescriptor.subtype() instanceof PropertyDescriptor.Subtype.OrderedLabelSubtype(
                     String orderedLabelType
@@ -187,7 +191,7 @@ public class DefaultPropertyToStringConverter implements PropertyToStringConvert
         }
     }
 
-    private String integerStreamToString(Stream<Integer> integers, PropertyDescriptor propertyDescriptor, boolean sort) throws IOException {
+    private String integerStreamToString(Stream<Integer> integers, PropertyDescriptor propertyDescriptor, boolean sort) throws ServiceException {
         if (propertyDescriptor.subtype() != null) {
             if (propertyDescriptor.subtype() instanceof PropertyDescriptor.Subtype.OrderedLabelSubtype(
                     String orderedLabelType
@@ -209,7 +213,7 @@ public class DefaultPropertyToStringConverter implements PropertyToStringConvert
         return stream.collect(Collectors.joining(listSeparator));
     }
 
-    private String orderedLabelIntegerStreamToString(Stream<Integer> integers, String orderedLabelType, boolean sort) throws IOException {
+    private String orderedLabelIntegerStreamToString(Stream<Integer> integers, String orderedLabelType, boolean sort) throws ServiceException {
         List<String> str = new ArrayList<>();
         for (Integer integer : integers.toArray(Integer[]::new)) {
             if (integer == null) {
@@ -225,10 +229,10 @@ public class DefaultPropertyToStringConverter implements PropertyToStringConvert
         return stream.collect(Collectors.joining(listSeparator));
     }
 
-    private String orderedLabelIntegerToString(Integer integer, String labelType) throws IOException {
+    private String orderedLabelIntegerToString(Integer integer, String labelType) throws ServiceException {
         OrderedLabel orderedLabel = orderedLabelService.getOrderedLabel(labelType, integer);
         if (orderedLabel == null) {
-            log.warn("Label with UUID '" + integer + "' does not exist");
+            log.warn("Label with ID '" + integer + "' does not exist");
             return "<" + integer + ">";
         }
         return orderedLabel.text();

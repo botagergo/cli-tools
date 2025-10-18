@@ -7,7 +7,6 @@ import lombok.NonNull;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 
-import java.io.IOException;
 import java.util.List;
 
 @Log4j2
@@ -29,8 +28,8 @@ public final class DeleteLabelCommand extends Command {
                     Print.printWarning("Label (%s) does not exist: %s", type, text);
                 }
             }
-        } catch (IOException e) {
-            Print.printAndLogException(e, log);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 

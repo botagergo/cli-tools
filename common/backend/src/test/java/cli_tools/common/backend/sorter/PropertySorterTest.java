@@ -1,5 +1,6 @@
 package cli_tools.common.backend.sorter;
 
+import cli_tools.common.backend.service.ServiceException;
 import cli_tools.common.core.data.SortingCriterion;
 import cli_tools.common.backend.property_comparator.PropertyNotComparableException;
 import cli_tools.common.property_lib.PropertyDescriptor;
@@ -39,7 +40,7 @@ public class PropertySorterTest {
     }
 
     @Test
-    void test_PropertySorter_sort_strings() throws IOException, PropertyException, PropertyNotComparableException {
+    void test_PropertySorter_sort_strings() throws ServiceException {
         PropertySorter<PropertyOwnerImpl> sorter = new PropertySorter<>(List.of(
                 new SortingCriterion("test_string1", true)
         ));
@@ -54,7 +55,7 @@ public class PropertySorterTest {
     }
 
     @Test
-    void test_PropertySorter_sort_booleans() throws IOException, PropertyException, PropertyNotComparableException {
+    void test_PropertySorter_sort_booleans() throws ServiceException {
         PropertySorter<PropertyOwnerImpl> sorter = new PropertySorter<>(List.of(
                 new SortingCriterion("test_boolean", true)
         ));
@@ -68,7 +69,7 @@ public class PropertySorterTest {
     }
 
     @Test
-    void test_PropertySorter_sort_integers() throws IOException, PropertyException, PropertyNotComparableException {
+    void test_PropertySorter_sort_integers() throws ServiceException {
         PropertySorter<PropertyOwnerImpl> sorter = new PropertySorter<>(List.of(
                 new SortingCriterion("test_integer", true)
         ));
@@ -84,7 +85,7 @@ public class PropertySorterTest {
     }
 
     @Test
-    void test_PropertySorter_sort_stringsWithDuplicate() throws IOException, PropertyException, PropertyNotComparableException {
+    void test_PropertySorter_sort_stringsWithDuplicate() throws ServiceException {
         PropertySorter<PropertyOwnerImpl> sorter = new PropertySorter<>(List.of(
                 new SortingCriterion("test_string1", true)
         ));
@@ -101,7 +102,7 @@ public class PropertySorterTest {
     }
 
     @Test
-    void test_PropertySorter_sort_stringsWithNulls() throws IOException, PropertyException, PropertyNotComparableException {
+    void test_PropertySorter_sort_stringsWithNulls() throws ServiceException {
         PropertySorter<PropertyOwnerImpl> sorter = new PropertySorter<>(List.of(
                 new SortingCriterion("test_string1", true)
         ));
@@ -117,7 +118,7 @@ public class PropertySorterTest {
     }
 
     @Test
-    void test_PropertySorter_sort_booleansWithDuplicate() throws IOException, PropertyException, PropertyNotComparableException {
+    void test_PropertySorter_sort_booleansWithDuplicate() throws ServiceException {
         PropertySorter<PropertyOwnerImpl> sorter = new PropertySorter<>(List.of(
                 new SortingCriterion("test_boolean", true)
         ));
@@ -134,7 +135,7 @@ public class PropertySorterTest {
     }
 
     @Test
-    void test_PropertySorter_sort_booleansWithNulls() throws IOException, PropertyException, PropertyNotComparableException {
+    void test_PropertySorter_sort_booleansWithNulls() throws ServiceException {
         PropertySorter<PropertyOwnerImpl> sorter = new PropertySorter<>(List.of(
                 new SortingCriterion("test_boolean", true)
         ));
@@ -151,7 +152,7 @@ public class PropertySorterTest {
     }
 
     @Test
-    void test_PropertySorter_sort_descending() throws IOException, PropertyException, PropertyNotComparableException {
+    void test_PropertySorter_sort_descending() throws ServiceException {
         PropertySorter<PropertyOwnerImpl> sorter = new PropertySorter<>(List.of(
                 new SortingCriterion("test_string1", false)
         ));
@@ -166,7 +167,7 @@ public class PropertySorterTest {
     }
 
     @Test
-    void test_PropertySorter_sort_multipleCriteria() throws IOException, PropertyException, PropertyNotComparableException {
+    void test_PropertySorter_sort_multipleCriteria() throws ServiceException {
         PropertySorter<PropertyOwnerImpl> sorter = new PropertySorter<>(List.of(
                 new SortingCriterion("test_string1", false),
                 new SortingCriterion("test_string2", true),
@@ -214,7 +215,7 @@ public class PropertySorterTest {
                         .sort(Utils.newArrayList(new PropertyOwnerImpl()), propertyManager));
     }
 
-    private void assertSorted(ArrayList<PropertyOwnerImpl> propertyOwners, PropertySorter<PropertyOwnerImpl> sorter, List<Integer> order) throws PropertyException, IOException, PropertyNotComparableException {
+    private void assertSorted(ArrayList<PropertyOwnerImpl> propertyOwners, PropertySorter<PropertyOwnerImpl> sorter, List<Integer> order) throws ServiceException {
         List<PropertyOwnerImpl> sortedPropertyOwners = sorter.sort(propertyOwners, propertyManager);
         assertOrder(propertyOwners, sortedPropertyOwners, order);
     }

@@ -1,10 +1,10 @@
 package cli_tools.common.cli.property_to_string_converter;
 
+import cli_tools.common.backend.property_converter.PropertyConverterException;
 import cli_tools.common.property_lib.Property;
 import com.fasterxml.jackson.annotation.JacksonInject;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.io.IOException;
 
 public class PatternPropertyToStringConverter implements PropertyToStringConverter {
     private final DefaultPropertyToStringConverter defaultPropertyToStringConverter;
@@ -19,7 +19,7 @@ public class PatternPropertyToStringConverter implements PropertyToStringConvert
     }
 
     @Override
-    public String propertyToString(String propertyName, Property property) throws IOException {
+    public String propertyToString(String propertyName, Property property) throws PropertyConverterException {
         if (property.getValue() == null) {
             return "";
         } else {

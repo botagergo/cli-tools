@@ -1,15 +1,16 @@
 package cli_tools.task_manager.cli.functional_test;
 
+import cli_tools.common.backend.service.ServiceException;
 import cli_tools.common.cli.executor.Executor;
 import cli_tools.common.cli.command_parser.CommandParserFactory;
 import cli_tools.common.property_lib.PropertyDescriptor;
 import cli_tools.common.property_lib.PropertyDescriptorCollection;
-import cli_tools.common.util.RoundRobinUUIDGenerator;
 import cli_tools.common.util.UUIDGenerator;
 import cli_tools.task_manager.cli.TaskManagerContext;
 import cli_tools.task_manager.cli.command_parser.*;
 import cli_tools.task_manager.cli.init.Initializer;
 import cli_tools.task_manager.backend.task.Task;
+import cli_tools.test_utils.RoundRobinUUIDGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -35,14 +36,24 @@ public class TestBase {
     private final ByteArrayOutputStream stdout = new ByteArrayOutputStream();
     private final PrintStream originalOut = System.out;
     protected String stdoutStr;
+    protected String stdoutStrLowercase;
     protected String[] stdoutLines;
     protected TaskManagerContext context;
     protected MockConfigurationRepository configurationRepository;
     protected UUID[] uuids;
     private Executor executor;
+    private final boolean shouldInitialize;
+
+    public TestBase(boolean shouldInitialize) {
+        this.shouldInitialize = shouldInitialize;
+    }
+
+    public TestBase() {
+        this(true);
+    }
 
     @BeforeClass
-    void setup() throws IOException {
+    void setup() throws IOException, ServiceException {
         Injector injector = Guice.createInjector(new TestModule());
 
         Initializer initializer = injector.getInstance(Initializer.class);
@@ -50,8 +61,6 @@ public class TestBase {
         context = injector.getInstance(TaskManagerContext.class);
         configurationRepository = (MockConfigurationRepository) context.getConfigurationRepository();
         uuids = ((RoundRobinUUIDGenerator) injector.getInstance(UUIDGenerator.class)).getUuids();
-
-        initializer.initialize();
 
         commandParserFactory.registerParser("add", AddTaskCommandParser::new);
         commandParserFactory.registerParser("list", ListTasksCommandParser::new);
@@ -63,6 +72,10 @@ public class TestBase {
         commandParserFactory.registerParser("addLabel", AddLabelCommandParser::new);
         commandParserFactory.registerParser("listLabel", ListLabelCommandParser::new);
         commandParserFactory.registerParser("deleteLabel", DeleteLabelCommandParser::new);
+
+        if (shouldInitialize) {
+            initializer.initialize();
+        }
 
         List<PropertyDescriptor> propertyDescriptors = context.getPropertyDescriptorService().getPropertyDescriptors();
         context.getPropertyManager().setPropertyDescriptorCollection(PropertyDescriptorCollection.fromList(propertyDescriptors));
@@ -82,12 +95,13 @@ public class TestBase {
             executor.execute(command);
         }
         stdoutStr = stdout.toString();
+        stdoutStrLowercase = stdoutStr.toLowerCase();
         stdoutLines = stdoutStr.split(System.lineSeparator());
     }
 
     protected void assertStdoutContains(String... strings) {
         for (String string : strings) {
-            assertTrue(stdoutStr.contains(string), stdoutStr);
+            assertTrue(stdoutStrLowercase.contains(string.toLowerCase()), stdoutStr);
         }
     }
 

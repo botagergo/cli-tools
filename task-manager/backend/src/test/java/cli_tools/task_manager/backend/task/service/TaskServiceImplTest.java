@@ -1,23 +1,22 @@
 package cli_tools.task_manager.backend.task.service;
 
+import cli_tools.common.backend.service.ServiceException;
 import cli_tools.common.core.data.FilterCriterionInfo;
 import cli_tools.common.core.data.Predicate;
 import cli_tools.common.core.data.SortingCriterion;
 import cli_tools.common.core.data.SortingInfo;
 import cli_tools.common.core.data.property.FilterPropertySpec;
 import cli_tools.common.backend.property_converter.PropertyConverter;
-import cli_tools.common.backend.property_converter.PropertyConverterException;
 import cli_tools.common.property_lib.PropertyDescriptor;
 import cli_tools.common.property_lib.PropertyDescriptorCollection;
-import cli_tools.common.property_lib.PropertyException;
 import cli_tools.common.property_lib.PropertyManager;
 import cli_tools.common.backend.temp_id_mapping.TempIDManager;
-import cli_tools.common.util.RoundRobinUUIDGenerator;
 import cli_tools.common.util.UUIDGenerator;
 import cli_tools.common.util.Utils;
 import cli_tools.task_manager.backend.task.PropertyOwnerTree;
 import cli_tools.task_manager.backend.task.Task;
 import cli_tools.task_manager.backend.task.repository.SimpleTaskRepository;
+import cli_tools.test_utils.RoundRobinUUIDGenerator;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -25,8 +24,8 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -35,7 +34,7 @@ import static org.testng.Assert.assertThrows;
 
 public class TaskServiceImplTest {
 
-    private final UUIDGenerator uuidGenerator = new RoundRobinUUIDGenerator(10);
+    private final RoundRobinUUIDGenerator uuidGenerator = new RoundRobinUUIDGenerator(10);
     private final UUID uuid1 = uuidGenerator.getUUID();
     private final UUID uuid2 = uuidGenerator.getUUID();
     private final UUID uuid3 = uuidGenerator.getUUID();
@@ -56,8 +55,8 @@ public class TaskServiceImplTest {
     void init() {
         MockitoAnnotations.openMocks(this);
 
-        simpleTaskRepository = new SimpleTaskRepository();
-        SimpleTaskRepository doneSimpleTaskRepository = new SimpleTaskRepository();
+        simpleTaskRepository = new SimpleTaskRepository(uuidGenerator);
+        SimpleTaskRepository doneSimpleTaskRepository = new SimpleTaskRepository(uuidGenerator);
         propertyManager = new PropertyManager();
         taskService = new TaskServiceImpl(
                 simpleTaskRepository,
@@ -73,18 +72,18 @@ public class TaskServiceImplTest {
 
     @BeforeMethod
     void beforeMethod() {
-        taskService.setUuidGenerator(new RoundRobinUUIDGenerator(10));
+        uuidGenerator.reset();
         initTasks();
     }
 
     @Test
-    void test_getTasks_all_empty() throws IOException {
+    void test_getTasks_all_empty() throws ServiceException {
         simpleTaskRepository.deleteAll();
         assertEquals(taskService.getTasks(true).size(), 0);
     }
 
     @Test
-    void test_getTasks_all() throws IOException {
+    void test_getTasks_all() throws ServiceException {
         List<Task> tasks = taskService.getTasks(true);
 
         assertEquals(tasks.size(), 3);
@@ -102,13 +101,13 @@ public class TaskServiceImplTest {
     }
 
     @Test
-    void test_getTasks_uuids_empty() throws IOException, PropertyException, PropertyConverterException, TaskServiceException {
+    void test_getTasks_uuids_empty() throws ServiceException {
         List<Task> tasks = taskService.getTasks(null, null, null, List.of(), true);
         assertEquals(tasks.size(), 0);
     }
 
     @Test
-    void test_getTasks_uuids_notExist() throws IOException, PropertyException, PropertyConverterException, TaskServiceException {
+    void test_getTasks_uuids_notExist() throws ServiceException {
         List<Task> tasks = taskService.getTasks(
                 null, null, null,
                 List.of(uuid1, uuid4), false
@@ -118,7 +117,7 @@ public class TaskServiceImplTest {
     }
 
     @Test
-    void test_getTasks_uuids_duplicate() throws IOException, PropertyException, PropertyConverterException, TaskServiceException {
+    void test_getTasks_uuids_duplicate() throws ServiceException {
         List<Task> tasks = taskService.getTasks(
                 null, null, null,
                 List.of(uuid3, uuid1, uuid1, uuid1, uuid3), false
@@ -129,7 +128,7 @@ public class TaskServiceImplTest {
     }
 
     @Test
-    void test_getTasks_uuids() throws IOException, PropertyException, PropertyConverterException, TaskServiceException {
+    void test_getTasks_uuids() throws ServiceException {
         List<Task> tasks = taskService.getTasks(
                 null, null, null,
                 List.of(uuid3, uuid1), false
@@ -140,7 +139,7 @@ public class TaskServiceImplTest {
     }
 
     @Test
-    void test_getTasks_filterCriterionInfo_contains() throws IOException, PropertyException, PropertyConverterException, TaskServiceException {
+    void test_getTasks_filterCriterionInfo_contains() throws ServiceException {
         List<Task> tasks = taskService.getTasks(
                 null, null,
                 FilterCriterionInfo.builder()
@@ -156,7 +155,7 @@ public class TaskServiceImplTest {
         assertEquals(tasks.get(0).getProperties().get("name"), "other task");
         assertEquals(tasks.get(1).getProperties().get("name"), "yet another task");
 
-        assertThrows(IllegalArgumentException.class, () -> taskService.getTasks(null, null,
+        assertThrows(ServiceException.class, () -> taskService.getTasks(null, null,
                 FilterCriterionInfo.builder()
                         .name("test")
                         .type(FilterCriterionInfo.Type.PROPERTY)
@@ -167,7 +166,7 @@ public class TaskServiceImplTest {
                 null, false
         ));
 
-        assertThrows(IllegalArgumentException.class, () -> taskService.getTasks(null, null,
+        assertThrows(ServiceException.class, () -> taskService.getTasks(null, null,
                 FilterCriterionInfo.builder()
                         .name("test")
                         .type(FilterCriterionInfo.Type.PROPERTY)
@@ -178,7 +177,7 @@ public class TaskServiceImplTest {
                 null, false
         ));
 
-        assertThrows(IllegalArgumentException.class, () -> taskService.getTasks(null, null,
+        assertThrows(ServiceException.class, () -> taskService.getTasks(null, null,
                 FilterCriterionInfo.builder()
                         .name("test")
                         .type(FilterCriterionInfo.Type.PROPERTY)
@@ -205,7 +204,7 @@ public class TaskServiceImplTest {
     }
 
     @Test
-    void test_getTasks_filterCriterionInfo_equals() throws IOException, PropertyException, PropertyConverterException, TaskServiceException {
+    void test_getTasks_filterCriterionInfo_equals() throws ServiceException {
         List<Task> tasks = taskService.getTasks(null, null,
                 FilterCriterionInfo.builder()
                         .name("test")
@@ -245,7 +244,7 @@ public class TaskServiceImplTest {
         assertEquals(tasks.size(), 1);
         assertEquals(tasks.get(0).getProperties().get("name"), "test task");
 
-        assertThrows(IllegalArgumentException.class, () -> taskService.getTasks(null, null,
+        assertThrows(ServiceException.class, () -> taskService.getTasks(null, null,
                 FilterCriterionInfo.builder()
                         .name("test")
                         .type(FilterCriterionInfo.Type.PROPERTY)
@@ -256,7 +255,7 @@ public class TaskServiceImplTest {
                 null, false
         ));
 
-        assertThrows(IllegalArgumentException.class, () -> taskService.getTasks(null, null,
+        assertThrows(ServiceException.class, () -> taskService.getTasks(null, null,
                 FilterCriterionInfo.builder()
                         .name("test")
                         .type(FilterCriterionInfo.Type.PROPERTY)
@@ -270,7 +269,7 @@ public class TaskServiceImplTest {
 
     @Test
     void test_getTasks_filterCriterionInfo_compare_invalid() {
-        assertThrows(IllegalArgumentException.class, () -> taskService.getTasks(null, null,
+        assertThrows(ServiceException.class, () -> taskService.getTasks(null, null,
                 FilterCriterionInfo.builder()
                         .name("test")
                         .type(FilterCriterionInfo.Type.PROPERTY)
@@ -281,7 +280,7 @@ public class TaskServiceImplTest {
                 null, false
         ));
 
-        assertThrows(IllegalArgumentException.class, () -> taskService.getTasks(null, null,
+        assertThrows(ServiceException.class, () -> taskService.getTasks(null, null,
                 FilterCriterionInfo.builder()
                         .name("test")
                         .type(FilterCriterionInfo.Type.PROPERTY)
@@ -292,7 +291,7 @@ public class TaskServiceImplTest {
                 null, false
         ));
 
-        assertThrows(IllegalArgumentException.class, () -> taskService.getTasks(null, null,
+        assertThrows(ServiceException.class, () -> taskService.getTasks(null, null,
                 FilterCriterionInfo.builder()
                         .name("test")
                         .type(FilterCriterionInfo.Type.PROPERTY)
@@ -305,7 +304,7 @@ public class TaskServiceImplTest {
     }
 
     @Test
-    void test_getTasks_filterCriterionInfo_less() throws IOException, PropertyException, PropertyConverterException, TaskServiceException {
+    void test_getTasks_filterCriterionInfo_less() throws ServiceException {
         List<Task> tasks = taskService.getTasks(null, null,
                 FilterCriterionInfo.builder()
                         .name("test")
@@ -321,7 +320,7 @@ public class TaskServiceImplTest {
     }
 
     @Test
-    void test_getTasks_filterCriterionInfo_lessEqual() throws IOException, PropertyException, PropertyConverterException, TaskServiceException {
+    void test_getTasks_filterCriterionInfo_lessEqual() throws ServiceException {
         List<Task> tasks = taskService.getTasks(null, null,
                 FilterCriterionInfo.builder()
                         .name("test")
@@ -338,7 +337,7 @@ public class TaskServiceImplTest {
     }
 
     @Test
-    void test_getTasks_filterCriterionInfo_greater() throws IOException, PropertyException, PropertyConverterException, TaskServiceException {
+    void test_getTasks_filterCriterionInfo_greater() throws ServiceException {
         List<Task> tasks = taskService.getTasks(null, null,
                 FilterCriterionInfo.builder()
                         .name("test")
@@ -354,7 +353,7 @@ public class TaskServiceImplTest {
     }
 
     @Test
-    void test_getTasks_filterCriterionInfo_greaterEqual() throws IOException, PropertyException, PropertyConverterException, TaskServiceException {
+    void test_getTasks_filterCriterionInfo_greaterEqual() throws ServiceException {
         List<Task> tasks = taskService.getTasks(null, null,
                 FilterCriterionInfo.builder()
                         .name("test")
@@ -371,7 +370,7 @@ public class TaskServiceImplTest {
     }
 
     @Test
-    void test_getTasks_filterCriterionInfo_in() throws IOException, PropertyException, PropertyConverterException, TaskServiceException {
+    void test_getTasks_filterCriterionInfo_in() throws ServiceException {
         List<Task> tasks = taskService.getTasks(
                 null, null,
                 FilterCriterionInfo.builder()
@@ -389,7 +388,7 @@ public class TaskServiceImplTest {
     }
 
     @Test
-    void test_getTasks_filterCriterionInfo_null() throws IOException, PropertyException, PropertyConverterException, TaskServiceException {
+    void test_getTasks_filterCriterionInfo_null() throws ServiceException {
         List<Task> tasks = taskService.getTasks(
                 null, null,
                 FilterCriterionInfo.builder()
@@ -406,7 +405,7 @@ public class TaskServiceImplTest {
     }
 
     @Test
-    void test_getTasks_filterCriterionInfo_empty() throws IOException, PropertyException, PropertyConverterException, TaskServiceException {
+    void test_getTasks_filterCriterionInfo_empty() throws ServiceException {
         List<Task> tasks = taskService.getTasks(
                 null, null,
                 FilterCriterionInfo.builder()
@@ -423,7 +422,7 @@ public class TaskServiceImplTest {
     }
 
     @Test
-    void test_getTasks_filterCriterionInfo_and() throws IOException, PropertyException, PropertyConverterException, TaskServiceException {
+    void test_getTasks_filterCriterionInfo_and() throws ServiceException {
         List<Task> tasks = taskService.getTasks(
                 null, null,
                 FilterCriterionInfo.builder()
@@ -473,7 +472,7 @@ public class TaskServiceImplTest {
     }
 
     @Test
-    void test_getTasks_filterCriterionInfo_not() throws IOException, PropertyException, PropertyConverterException, TaskServiceException {
+    void test_getTasks_filterCriterionInfo_not() throws ServiceException {
         List<Task> tasks = taskService.getTasks(
                 null, null,
                 FilterCriterionInfo.builder()
@@ -491,7 +490,7 @@ public class TaskServiceImplTest {
     }
 
     @Test
-    void test_getTasks_filterPropertySpecs() throws IOException, PropertyException, PropertyConverterException, TaskServiceException {
+    void test_getTasks_filterPropertySpecs() throws ServiceException {
         List<Task> tasks = taskService.getTasks(
                 List.of(
                         new FilterPropertySpec(propertyManager.getPropertyDescriptorCollection().get("name"), List.of("other"), false, Predicate.CONTAINS)
@@ -503,7 +502,7 @@ public class TaskServiceImplTest {
     }
 
     @Test
-    void test_getTasks_sortingInfo() throws IOException, PropertyException, PropertyConverterException, TaskServiceException {
+    void test_getTasks_sortingInfo() throws ServiceException {
         List<Task> tasks = taskService.getTasks(
                 null,
                 new SortingInfo(List.of(new SortingCriterion("name", true))),
@@ -516,7 +515,7 @@ public class TaskServiceImplTest {
     }
 
     @Test
-    void test_getTasks_complex() throws IOException, PropertyException, PropertyConverterException, TaskServiceException {
+    void test_getTasks_complex() throws ServiceException {
         simpleTaskRepository.deleteAll();
         simpleTaskRepository.getTasks().addAll(List.of(
                 Task.fromMap(Utils.newHashMap("name", "test task", "uuid", uuid1)),
@@ -545,7 +544,7 @@ public class TaskServiceImplTest {
     }
 
     @Test
-    void test_addTask() throws IOException {
+    void test_addTask() {
         simpleTaskRepository.deleteAll();
         taskService.addTask(Task.fromMap(Utils.newHashMap("name", "test task")));
         taskService.addTask(Task.fromMap(Utils.newHashMap("name", "other task", "done", true)));
@@ -559,7 +558,7 @@ public class TaskServiceImplTest {
     }
 
     @Test
-    void test_addTask_useDefault() throws IOException {
+    void test_addTask_useDefault() {
         simpleTaskRepository.deleteAll();
         propertyManager.setPropertyDescriptorCollection(new PropertyDescriptorCollection());
 
@@ -583,7 +582,7 @@ public class TaskServiceImplTest {
     }
 
     @Test
-    void test_addTask_propertyNotExist() throws IOException {
+    void test_addTask_propertyNotExist() {
         simpleTaskRepository.deleteAll();
         taskService.addTask(Task.fromMap(Utils.newHashMap("invalid_property", 123)));
         assertListEquals(
@@ -593,8 +592,8 @@ public class TaskServiceImplTest {
     }
 
     @Test
-    void test_modifyTask() throws IOException, TaskServiceException {
-        taskService.modifyTask(uuid2, Task.fromMap(Utils.newHashMap("done", false, "name", "do something")));
+    void test_modifyTask() throws ServiceException {
+        taskService.modifyTask(Task.fromMap(Utils.newHashMap("uuid", uuid2, "done", false, "name", "do something")));
         List<Task> tasks = simpleTaskRepository.getTasks();
         assertEquals(tasks.size(), 3);
         assertEquals(tasks.get(0), Task.fromMap(Utils.newHashMap(
@@ -609,8 +608,8 @@ public class TaskServiceImplTest {
     }
 
     @Test
-    void test_modifyTask_empty() throws IOException, TaskServiceException {
-        taskService.modifyTask(uuid2, new Task());
+    void test_modifyTask_empty() throws ServiceException {
+        taskService.modifyTask(Task.fromMap(Map.of("uuid", uuid2)));
         List<Task> tasks = simpleTaskRepository.getTasks();
         assertEquals(tasks.size(), 3);
         assertEquals(tasks.get(0), Task.fromMap(Utils.newHashMap(
@@ -626,8 +625,8 @@ public class TaskServiceImplTest {
     }
 
     @Test
-    void test_modifyTask_propertyNotExist() throws IOException, TaskServiceException {
-        taskService.modifyTask(uuid2, Task.fromMap(Utils.newHashMap("invalid_property", 123)));
+    void test_modifyTask_propertyNotExist() throws ServiceException {
+        taskService.modifyTask(Task.fromMap(Utils.newHashMap("uuid", uuid2, "invalid_property", 123)));
         List<Task> tasks = simpleTaskRepository.getTasks();
         assertEquals(tasks.size(), 3);
         assertEquals(tasks.get(0), Task.fromMap(Utils.newHashMap(
@@ -644,11 +643,11 @@ public class TaskServiceImplTest {
 
     @Test
     void test_modifyTask_notExist() {
-        assertThrows(TaskServiceException.class, () -> taskService.modifyTask(uuid4, Task.fromMap(Utils.newHashMap("done", false, "name", "do something"))));
+        assertThrows(TaskNotFoundException.class, () -> taskService.modifyTask(Task.fromMap(Utils.newHashMap("uuid", uuid4, "done", false, "name", "do something"))));
     }
 
     @Test
-    void test_deleteTask() throws IOException, TaskServiceException {
+    void test_deleteTask() throws ServiceException {
         taskService.deleteTask(uuid2);
         List<Task> tasks = simpleTaskRepository.getTasks();
         assertEquals(tasks.size(), 2);
@@ -658,11 +657,11 @@ public class TaskServiceImplTest {
 
     @Test
     void test_deleteTask_notExist() {
-        assertThrows(TaskServiceException.class, () -> taskService.deleteTask(uuid4));
+        assertThrows(TaskNotFoundException.class, () -> taskService.deleteTask(uuid4));
     }
 
     @Test
-    void test_getTaskTrees() throws PropertyException, IOException, PropertyConverterException, TaskServiceException {
+    void test_getTaskTrees() throws ServiceException {
         simpleTaskRepository.deleteAll();
         simpleTaskRepository.getTasks().addAll(List.of(
                 Task.fromMap(Utils.newHashMap("name", "task1", "uuid", uuid1, "parent", uuid4)),

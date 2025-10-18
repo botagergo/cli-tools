@@ -24,6 +24,7 @@ public class GrpcExecutor implements Executor {
         this.channel = channel;
         this.cliServiceBlockingStub = CliGrpc.newBlockingStub(channel);
         this.healthBlockingStub = HealthGrpc.newBlockingStub(channel);
+        channel.resetConnectBackoff();
     }
 
     public static GrpcExecutor create(String host, int port) {

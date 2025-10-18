@@ -1,6 +1,6 @@
 package cli_tools.common.backend.temp_id_mapping;
 
-import cli_tools.common.util.RoundRobinUUIDGenerator;
+import cli_tools.test_utils.RoundRobinUUIDGenerator;
 import org.testng.annotations.Test;
 
 import static org.testng.Assert.*;

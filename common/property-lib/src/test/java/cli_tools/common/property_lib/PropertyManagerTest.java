@@ -1,8 +1,8 @@
 package cli_tools.common.property_lib;
 
-import cli_tools.common.util.RoundRobinUUIDGenerator;
 import cli_tools.common.util.UUIDGenerator;
 import cli_tools.common.util.Utils;
+import cli_tools.test_utils.RoundRobinUUIDGenerator;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;

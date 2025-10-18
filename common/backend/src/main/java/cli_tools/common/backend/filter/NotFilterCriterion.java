@@ -4,7 +4,6 @@ import cli_tools.common.property_lib.PropertyException;
 import cli_tools.common.property_lib.PropertyManager;
 import cli_tools.common.property_lib.PropertyOwner;
 
-import java.io.IOException;
 
 public class NotFilterCriterion extends FilterCriterion {
 
@@ -15,7 +14,7 @@ public class NotFilterCriterion extends FilterCriterion {
     }
 
     @Override
-    protected boolean check_(PropertyOwner propertyOwner, PropertyManager propertyManager) throws PropertyException, IOException {
+    protected boolean check_(PropertyOwner propertyOwner, PropertyManager propertyManager) throws PropertyException {
         return !filterCriterion.check_(propertyOwner, propertyManager);
     }
 }

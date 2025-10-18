@@ -1,5 +1,6 @@
 package cli_tools.common.cli.string_to_property_converter;
 
+import cli_tools.common.backend.service.ServiceException;
 import cli_tools.common.cli.DateTimeParser;
 import cli_tools.common.cli.argument.PropertyArgument;
 import cli_tools.common.core.data.OrderedLabel;
@@ -12,13 +13,10 @@ import cli_tools.common.backend.ordered_label.service.OrderedLabelService;
 import cli_tools.common.backend.property_descriptor.service.PropertyDescriptorService;
 import cli_tools.common.property_lib.Property;
 import cli_tools.common.property_lib.PropertyDescriptor;
-import cli_tools.common.property_lib.PropertyException;
 import cli_tools.common.backend.temp_id_mapping.TempIDManager;
-import cli_tools.common.util.Utils;
 import jakarta.inject.Inject;
 import lombok.NonNull;
 
-import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
@@ -49,7 +47,7 @@ public class StringToPropertyConverter {
         this.dateTimeParser = new DateTimeParser();
     }
 
-    private static PropertyDescriptor.Subtype.OrderedLabelSubtype getOrderedLabelSubtype(PropertyDescriptor propertyDescriptor) throws StringToPropertyConverterException {
+    private static PropertyDescriptor.Subtype.OrderedLabelSubtype getOrderedLabelSubtype(PropertyDescriptor propertyDescriptor) throws ServiceException {
         PropertyDescriptor.Subtype.IntegerSubtype integerSubtype = propertyDescriptor.getIntegerSubtypeUnchecked();
         if (!(integerSubtype instanceof PropertyDescriptor.Subtype.OrderedLabelSubtype)) {
             throw new StringToPropertyConverterException(StringToPropertyConverterException.Type.NoAssociatedLabel,
@@ -62,7 +60,7 @@ public class StringToPropertyConverter {
     public List<FilterPropertySpec> convertPropertiesForFiltering(
             @NonNull List<PropertyArgument> propertyArguments,
             boolean createUuidIfNotExists
-    ) throws IOException, StringToPropertyConverterException, PropertyException {
+    ) throws ServiceException {
         List<FilterPropertySpec> filterPropertySpecs = new ArrayList<>();
 
         for (PropertyArgument propertyArgument : propertyArguments) {
@@ -83,7 +81,12 @@ public class StringToPropertyConverter {
                         propertyName);
             }
 
-            PropertyDescriptor propertyDescriptor = propertyDescriptorService.findPropertyDescriptor(propertyName);
+            PropertyDescriptor propertyDescriptor;
+            try {
+                propertyDescriptor = propertyDescriptorService.findPropertyDescriptor(propertyName);
+            } catch (ServiceException e) {
+                throw new RuntimeException(e);
+            }
 
             if (propertyValue == null) {
                 filterPropertySpecs.add(new FilterPropertySpec(propertyDescriptor, null, propertyArgument.affinity() == Affinity.NEGATIVE, predicate));
@@ -99,14 +102,19 @@ public class StringToPropertyConverter {
     public List<ModifyPropertySpec> convertPropertiesForModification(
             List<PropertyArgument> properties,
             boolean createUuidIfNotExists
-    ) throws IOException, StringToPropertyConverterException, PropertyException {
+    ) throws ServiceException {
         List<ModifyPropertySpec> modifyPropertySpecs = new ArrayList<>();
 
         for (PropertyArgument entry : properties) {
             String propertyName = entry.propertyName();
             List<String> propertyValue = entry.values();
 
-            PropertyDescriptor propertyDescriptor = propertyDescriptorService.findPropertyDescriptor(propertyName);
+            PropertyDescriptor propertyDescriptor;
+            try {
+                propertyDescriptor = propertyDescriptorService.findPropertyDescriptor(propertyName);
+            } catch (ServiceException e) {
+                throw new RuntimeException(e);
+            }
 
             Property property = null;
             if (propertyValue != null) {
@@ -127,7 +135,7 @@ public class StringToPropertyConverter {
             PropertyDescriptor propertyDescriptor,
             List<String> propertyValueList,
             boolean createUuidIfNotExists
-    ) throws StringToPropertyConverterException, IOException {
+    ) throws ServiceException {
         if (propertyValueList.isEmpty()) {
             throw new StringToPropertyConverterException(StringToPropertyConverterException.Type.EmptyList, "property value is empty", propertyDescriptor.name());
         }
@@ -145,7 +153,7 @@ public class StringToPropertyConverter {
         }
     }
 
-    public List<Object> stringListToProperty(PropertyDescriptor propertyDescriptor, List<String> propertyValueList, boolean createUuidIfNotExists) throws StringToPropertyConverterException, IOException {
+    public List<Object> stringListToProperty(PropertyDescriptor propertyDescriptor, List<String> propertyValueList, boolean createUuidIfNotExists) throws ServiceException {
         List<Object> convertedPropertyValueList = new ArrayList<>();
         for (String propertyValue : propertyValueList) {
             convertedPropertyValueList.add(singleStringToProperty(propertyDescriptor, propertyValue, createUuidIfNotExists));
@@ -153,7 +161,7 @@ public class StringToPropertyConverter {
         return convertedPropertyValueList;
     }
 
-    public LinkedHashSet<Object> stringSetToProperty(PropertyDescriptor propertyDescriptor, List<String> propertyValueList, boolean createUuidIfNotExists) throws StringToPropertyConverterException, IOException {
+    public LinkedHashSet<Object> stringSetToProperty(PropertyDescriptor propertyDescriptor, List<String> propertyValueList, boolean createUuidIfNotExists) throws ServiceException {
         LinkedHashSet<Object> convertedPropertyValueSet = new LinkedHashSet<>();
         for (String propertyValue : propertyValueList) {
             convertedPropertyValueSet.add(singleStringToProperty(propertyDescriptor, propertyValue, createUuidIfNotExists));
@@ -173,13 +181,13 @@ public class StringToPropertyConverter {
         }
     }
 
-    private Object singleStringToProperty(PropertyDescriptor propertyDescriptor, String propertyValue, boolean createLabelIfNotExist) throws StringToPropertyConverterException, IOException {
+    private Object singleStringToProperty(PropertyDescriptor propertyDescriptor, String propertyValue, boolean createLabelIfNotExist) throws ServiceException {
         if (propertyDescriptor.type() == PropertyDescriptor.Type.String) {
-            return stringToStringProperty(propertyDescriptor, propertyValue, createLabelIfNotExist);
+            return propertyValue;
         } else if (propertyDescriptor.type() == PropertyDescriptor.Type.Boolean) {
             return stringToBooleanProperty(propertyValue);
         } else if (propertyDescriptor.type() == PropertyDescriptor.Type.UUID) {
-            return stringToUuidProperty(propertyDescriptor, propertyValue);
+            return stringToUuidProperty(propertyDescriptor, propertyValue, createLabelIfNotExist);
         } else if (propertyDescriptor.type() == PropertyDescriptor.Type.Integer) {
             return stringToIntegerProperty(propertyDescriptor, propertyValue);
         } else if (propertyDescriptor.type() == PropertyDescriptor.Type.Date) {
@@ -188,23 +196,6 @@ public class StringToPropertyConverter {
             return stringToTimeProperty(propertyValue);
         } else {
             throw new RuntimeException();
-        }
-    }
-
-    private String stringToStringProperty(PropertyDescriptor propertyDescriptor, String propertyValue, boolean createLabelIfNotExist) throws StringToPropertyConverterException, IOException {
-        if (propertyDescriptor.subtype() instanceof PropertyDescriptor.Subtype.LabelSubtype(String labelType)) {
-            boolean labelExists = labelService.labelExists(labelType, propertyValue);
-            if (!labelExists && createLabelIfNotExist
-                    && Utils.yesNo("label '%s' does not exist, create it?".formatted(propertyValue))) {
-                labelExists = labelService.createLabel(labelType, propertyValue);
-            }
-            if (labelExists) {
-                return propertyValue;
-            } else {
-                throw new StringToPropertyConverterException(StringToPropertyConverterException.Type.LabelNotFound, "no such label: " + propertyValue, propertyValue);
-            }
-        } else {
-            return propertyValue;
         }
     }
 
@@ -260,29 +251,42 @@ public class StringToPropertyConverter {
         throw new RuntimeException();
     }
 
-    private UUID stringToUuidProperty(PropertyDescriptor propertyDescriptor, String propertyValueStr) throws StringToPropertyConverterException {
+    private UUID stringToUuidProperty(PropertyDescriptor propertyDescriptor, String propertyValueStr, boolean createLabelIfNotExist) throws ServiceException {
         try {
             return UUID.fromString(propertyValueStr);
-        } catch (IllegalArgumentException e1) {
-            PropertyDescriptor.Subtype.UUIDSubtype uuidSubtype = propertyDescriptor.getUuidSubtypeUnchecked();
-            if (tempIdManager != null && uuidSubtype instanceof PropertyDescriptor.Subtype.TaskSubtype) {
-                try {
-                    int tempId = Integer.parseInt(propertyValueStr);
-                    UUID uuid = tempIdManager.getUUID(tempId);
-                    if (uuid == null) {
-                        throw new StringToPropertyConverterException(StringToPropertyConverterException.Type.TempIdNotFound, "temporary ID not found: " + propertyValueStr, propertyValueStr);
-                    }
-                    return uuid;
-                } catch (NumberFormatException e) {
-                    throw new StringToPropertyConverterException(StringToPropertyConverterException.Type.InvalidTempId, "invalid temporary ID (must be a natural number): " + propertyValueStr, propertyValueStr);
-                }
-            } else {
-                throw new StringToPropertyConverterException(StringToPropertyConverterException.Type.InvalidUuid, "invalid UUID: " + propertyValueStr, propertyValueStr);
+        } catch (IllegalArgumentException ignored) {}
+
+        PropertyDescriptor.Subtype.UUIDSubtype uuidSubtype = propertyDescriptor.getUuidSubtypeUnchecked();
+        if (uuidSubtype instanceof PropertyDescriptor.Subtype.LabelSubtype(String labelType)) {
+            UUID labelUuid = labelService.findLabel(labelType, propertyValueStr);
+            if (labelUuid == null && createLabelIfNotExist
+                // TODO && Utils.yesNo("label '%s' does not exist, create it?".formatted(propertyValue))
+            ) {
+                labelUuid = labelService.createLabel(labelType, propertyValueStr);
             }
+            if (labelUuid != null) {
+                return labelUuid;
+            } else {
+                throw new StringToPropertyConverterException(StringToPropertyConverterException.Type.LabelNotFound, "no such label: " + propertyValueStr, propertyValueStr);
+            }
+        }
+        if (uuidSubtype instanceof PropertyDescriptor.Subtype.TaskSubtype && tempIdManager != null) {
+            try {
+                int tempId = Integer.parseInt(propertyValueStr);
+                UUID uuid = tempIdManager.getUUID(tempId);
+                if (uuid == null) {
+                    throw new StringToPropertyConverterException(StringToPropertyConverterException.Type.TempIdNotFound, "temporary ID not found: " + propertyValueStr, propertyValueStr);
+                }
+                return uuid;
+            } catch (NumberFormatException e) {
+                throw new StringToPropertyConverterException(StringToPropertyConverterException.Type.InvalidTempId, "invalid temporary ID (must be a natural number): " + propertyValueStr, propertyValueStr);
+            }
+        } else {
+            throw new StringToPropertyConverterException(StringToPropertyConverterException.Type.InvalidUuid, "invalid UUID: " + propertyValueStr, propertyValueStr);
         }
     }
 
-    private Integer stringToIntegerProperty(PropertyDescriptor propertyDescriptor, String propertyValueStr) throws StringToPropertyConverterException, IOException {
+    private Integer stringToIntegerProperty(PropertyDescriptor propertyDescriptor, String propertyValueStr) throws ServiceException {
         try {
             return Integer.parseInt(propertyValueStr);
         } catch (NumberFormatException e1) {

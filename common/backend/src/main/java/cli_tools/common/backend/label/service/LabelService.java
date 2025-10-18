@@ -1,19 +1,24 @@
 package cli_tools.common.backend.label.service;
 
-import java.io.IOException;
+import cli_tools.common.backend.service.ServiceException;
+import lombok.NonNull;
+
+import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.UUID;
 
 public interface LabelService {
-    boolean labelExists(String labelType, String labelText) throws IOException;
+    UUID findLabel(@NonNull String labelType, @NonNull String labelText) throws ServiceException;
 
-    List<String> getLabels(String labelType) throws IOException;
+    String getLabel(@NonNull String labelType, @NonNull UUID uuid) throws ServiceException;
 
-    Map<String, List<String>> getAllLabels() throws IOException;
+    @NonNull List<String> getLabels(@NonNull String labelType) throws ServiceException;
 
-    boolean createLabel(String labelType, String labelText) throws IOException;
+    @NonNull LinkedHashMap<String, LinkedHashMap<UUID, String>> getAllLabels() throws ServiceException;
 
-    boolean deleteLabel(String labelType, String labelText) throws IOException;
+    @NonNull UUID createLabel(@NonNull String labelType, @NonNull String labelText) throws ServiceException;
 
-    void deleteAllLabels(String labelType) throws IOException;
+    boolean deleteLabel(@NonNull String labelType, @NonNull String labelText) throws ServiceException;
+
+    void deleteAllLabels(@NonNull String labelType) throws ServiceException;
 }

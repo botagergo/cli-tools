@@ -1,5 +1,6 @@
 package cli_tools.task_manager.cli.command;
 
+import cli_tools.common.backend.property_converter.PropertyConverterException;
 import cli_tools.common.cli.Context;
 import cli_tools.common.cli.DateTimeFormatter;
 import cli_tools.common.cli.property_to_string_converter.DefaultPropertyToStringConverter;
@@ -13,7 +14,7 @@ import cli_tools.common.property_lib.PropertyOwner;
 import cli_tools.task_manager.cli.TaskManagerContext;
 import cli_tools.task_manager.backend.task.PropertyOwnerTree;
 import cli_tools.task_manager.backend.task.Task;
-import cli_tools.task_manager.backend.task.service.TaskServiceException;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.inamik.text.tables.GridTable;
@@ -23,7 +24,6 @@ import com.inamik.text.tables.grid.Util;
 import lombok.extern.log4j.Log4j2;
 import org.fusesource.jansi.Ansi;
 
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
 
@@ -37,7 +37,7 @@ public class TaskPrinter {
 
     public void printTasks(TaskManagerContext context, List<Task> tasks,
                            List<String> propertiesToList,
-                           OutputFormat outputFormat) throws PropertyException, IOException, TaskServiceException {
+                           OutputFormat outputFormat) throws TaskPrinterException {
 
         DefaultPropertyToStringConverter propertyToStringConverter = new DefaultPropertyToStringConverter(
                 context.getLabelService(),
@@ -45,19 +45,23 @@ public class TaskPrinter {
                 new DateTimeFormatter());
         MainPropertyToStringConverter mainPropertyToStringConverter = new MainPropertyToStringConverter(context.getPropertyToStringConverterRepository(), propertyToStringConverter);
 
-        if (outputFormat.equals(OutputFormat.TEXT)) {
-            printTasksText(context, mainPropertyToStringConverter, tasks, propertiesToList);
-        } else if (outputFormat.equals(OutputFormat.JSON)) {
-            Print.print(getObjectMapper().writeValueAsString(tasks.stream().map(Task::getProperties).toList()));
-        } else if (outputFormat.equals(OutputFormat.PRETTY_JSON)) {
-            Print.print(getObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(tasks.stream().map(Task::getProperties).toList()));
+        try {
+            if (outputFormat.equals(OutputFormat.TEXT)) {
+                printTasksText(context, mainPropertyToStringConverter, tasks, propertiesToList);
+            } else if (outputFormat.equals(OutputFormat.JSON)) {
+                Print.print(getObjectMapper().writeValueAsString(tasks.stream().map(Task::getProperties).toList()));
+            } else if (outputFormat.equals(OutputFormat.PRETTY_JSON)) {
+                Print.print(getObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(tasks.stream().map(Task::getProperties).toList()));
+            }
+        } catch (PropertyConverterException | JsonProcessingException | PropertyException e) {
+            throw new TaskPrinterException("Error printing tasks: %s".formatted(e.getMessage()), e);
         }
     }
 
     public void printTaskTrees(
             Context context,
             List<PropertyOwnerTree> taskTrees,
-            List<String> propertiesToList) throws PropertyException, IOException {
+            List<String> propertiesToList) throws PropertyException, PropertyConverterException {
         SimpleTable table = SimpleTable.of().nextRow();
 
         DefaultPropertyToStringConverter propertyToStringConverter = new DefaultPropertyToStringConverter(
@@ -81,7 +85,7 @@ public class TaskPrinter {
     private void printTasksText(TaskManagerContext context,
                                 PropertyToStringConverter propertyToStringConverter,
                                 List<Task> tasks,
-                                List<String> propertiesToList) throws PropertyException, IOException {
+                                List<String> propertiesToList) throws PropertyException, PropertyConverterException {
         SimpleTable table = SimpleTable.of().nextRow();
 
         for (String propertyName : propertiesToList) {
@@ -102,7 +106,7 @@ public class TaskPrinter {
             PropertyToStringConverter propertyToStringConverter,
             PropertyOwnerTree taskTree,
             List<String> propertiesToList,
-            int depth) throws IOException, PropertyException {
+            int depth) throws PropertyException, PropertyConverterException {
         Ansi ansiDone;
         Boolean done = context.getPropertyManager().getProperty(taskTree, "done").getBoolean();
         if (done != null && done) {
@@ -150,7 +154,7 @@ public class TaskPrinter {
             TaskManagerContext context,
             PropertyToStringConverter propertyToStringConverter,
             Task task,
-            List<String> propertiesToList) throws IOException, PropertyException {
+            List<String> propertiesToList) throws PropertyException, PropertyConverterException {
         Ansi ansiDone;
         Boolean done = context.getPropertyManager().getProperty(task, "done").getBoolean();
         if (done != null && done) {
@@ -182,7 +186,7 @@ public class TaskPrinter {
         }
     }
 
-    private String getIDStr(Context context, PropertyOwner propertyOwner) throws PropertyException, IOException {
+    private String getIDStr(Context context, PropertyOwner propertyOwner) throws PropertyException {
         return context.getPropertyManager().getProperty(propertyOwner, "id").getInteger().toString();
     }
 

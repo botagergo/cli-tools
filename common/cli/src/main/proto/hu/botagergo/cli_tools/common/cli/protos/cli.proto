@@ -9,6 +9,7 @@ message Command {
 
 message CommandOutput {
     string output = 1;
+    bool needs_input = 2;
 }
 
 service Cli {

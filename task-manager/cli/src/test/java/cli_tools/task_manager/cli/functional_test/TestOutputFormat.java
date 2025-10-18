@@ -1,5 +1,6 @@
 package cli_tools.task_manager.cli.functional_test;
 
+import cli_tools.common.backend.service.ServiceException;
 import cli_tools.common.core.data.OutputFormat;
 import cli_tools.common.core.data.SortingCriterion;
 import cli_tools.common.core.data.SortingInfo;
@@ -17,7 +18,7 @@ import static org.testng.Assert.assertEquals;
 public class TestOutputFormat extends TestBase {
 
     @BeforeClass
-    void setup1() throws IOException {
+    void setup1() throws ServiceException, IOException {
         context.getViewInfoService().addViewInfo("test_output_format", ViewInfo.builder()
                 .sortingInfo(new SortingInfo(List.of(new SortingCriterion("name", true))))
                 .outputFormat(OutputFormat.JSON)

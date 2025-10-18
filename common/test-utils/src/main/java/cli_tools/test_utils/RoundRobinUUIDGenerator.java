@@ -1,26 +1,22 @@
-package cli_tools.common.util;
+package cli_tools.test_utils;
 
+import cli_tools.common.util.UUIDGenerator;
 import jakarta.inject.Inject;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
 import java.nio.ByteBuffer;
 import java.util.UUID;
 
-@AllArgsConstructor
-@RequiredArgsConstructor
 public class RoundRobinUUIDGenerator implements UUIDGenerator {
 
     @Getter
-    private final UUID[] uuids;
-    private int currInd = -1;
+    private UUID[] uuids;
+    private final int number;
+    private int currInd;
 
     public RoundRobinUUIDGenerator(int number) {
-        this.uuids = new UUID[number];
-        for (byte i = 0; i < number; i++) {
-            uuids[i] = UUID.nameUUIDFromBytes(ByteBuffer.allocate(4).putInt(i).array());
-        }
+        this.number = number;
+        reset();
     }
 
     @Inject
@@ -32,6 +28,14 @@ public class RoundRobinUUIDGenerator implements UUIDGenerator {
     public UUID getUUID() {
         currInd = (currInd + 1) % uuids.length;
         return uuids[currInd];
+    }
+
+    public void reset() {
+        uuids = new UUID[number];
+        for (byte i = 0; i < number; i++) {
+            uuids[i] = UUID.nameUUIDFromBytes(ByteBuffer.allocate(4).putInt(i).array());
+        }
+        currInd = -1;
     }
 
 }

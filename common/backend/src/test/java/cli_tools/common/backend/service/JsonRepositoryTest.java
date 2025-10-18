@@ -1,6 +1,7 @@
 package cli_tools.common.backend.service;
 
 import cli_tools.common.backend.repository.SimpleJsonRepository;
+import cli_tools.common.core.repository.DataAccessException;
 import org.testng.annotations.Test;
 
 import java.io.File;
@@ -51,27 +52,27 @@ public class JsonRepositoryTest {
     @Test
     void test_fileContainsWhitespaceOnly_throwsException() throws IOException {
         repository = rc.createRepository("empty", " ");
-        assertThrows(IOException.class, () -> repository.getData());
+        assertThrows(DataAccessException.class, () -> repository.getData());
     }
 
     @Test
     void test_fileContainsNull_throwsException() throws IOException {
         repository = rc.createRepository("null", "null");
-        assertThrows(IOException.class, () -> repository.getData());
+        assertThrows(DataAccessException.class, () -> repository.getData());
     }
 
     @Test
     void test_invalidJson_throwsException() throws IOException {
         repository = rc.createRepository("invalid", "invalid json content");
-        assertThrows(IOException.class, () -> repository.getData());
+        assertThrows(DataAccessException.class, () -> repository.getData());
     }
 
     @Test
-    void test_parentNotExists_parentCreated() throws IOException {
+    void test_parentNotExists() throws IOException {
         File jsonFile = rc.getTempFile("parent_dir/file.json");
         repository = rc.createRepository(jsonFile);
-        repository.writeData();
-        assertTrue(jsonFile.exists());
+
+        assertThrows(DataAccessException.class, () -> repository.writeData());
     }
 
 }

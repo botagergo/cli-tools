@@ -1,17 +1,16 @@
 package cli_tools.common.cli.command_line;
 
+import cli_tools.common.backend.service.ServiceException;
 import cli_tools.common.cli.Context;
 import cli_tools.common.core.data.OrderedLabel;
 import cli_tools.common.core.data.Predicate;
 import cli_tools.common.core.util.Print;
 import cli_tools.common.property_lib.PropertyDescriptor;
-import cli_tools.common.property_lib.PropertyException;
 import lombok.extern.log4j.Log4j2;
 import org.jline.reader.Candidate;
 import org.jline.reader.LineReader;
 import org.jline.reader.ParsedLine;
 
-import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
@@ -86,9 +85,7 @@ public class Completer implements org.jline.reader.Completer {
             PropertyDescriptor propertyDescriptor;
             try {
                 propertyDescriptor = context.getPropertyDescriptorService().findPropertyDescriptor(propertyName);
-            } catch (PropertyException e) {
-                return;
-            } catch (IOException e) {
+            } catch (ServiceException e) {
                 Print.logException(e, log);
                 return;
             }
@@ -104,7 +101,7 @@ public class Completer implements org.jline.reader.Completer {
                     List<OrderedLabel> labels = context.getOrderedLabelService().getOrderedLabels(orderedLabelType);
                     labelStrs = labels.stream().map(OrderedLabel::text).toList();
                 }
-            } catch (IOException e) {
+            } catch (ServiceException e) {
                 Print.logException(e, log);
                 return;
             }
@@ -135,14 +132,11 @@ public class Completer implements org.jline.reader.Completer {
             String prefix = word.substring(0, dotIndex + 1);
             String propertyName = getPropertyName(word, dotIndex);
 
-            try {
-                PropertyDescriptor propertyDescriptor = context.getPropertyManager().getPropertyDescriptor(propertyName);
-                for (Predicate predicate : Predicate.values()) {
-                    if (predicate.isCompatibleWithProperty(propertyDescriptor)) {
-                        list.add(buildPredicateCandidate(prefix, predicate.name().toLowerCase()));
-                    }
+            PropertyDescriptor propertyDescriptor = context.getPropertyManager().getPropertyDescriptor(propertyName);
+            for (Predicate predicate : Predicate.values()) {
+                if (predicate.isCompatibleWithProperty(propertyDescriptor)) {
+                    list.add(buildPredicateCandidate(prefix, predicate.name().toLowerCase()));
                 }
-            } catch (PropertyException ignored) {
             }
         } else {
             List<String> properties;
@@ -170,7 +164,7 @@ public class Completer implements org.jline.reader.Completer {
                 for (String property : properties) {
                     list.add(buildPropertyCandidate(prefix, property));
                 }
-            } catch (IOException e) {
+            } catch (ServiceException e) {
                 Print.logException(e, log);
             }
         }

@@ -6,9 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 
-import java.io.IOException;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Log4j2
 @Getter
@@ -22,9 +20,9 @@ public final class ListLabelCommand extends Command {
         log.traceEntry();
         try {
             if (labelTypes == null || labelTypes.isEmpty()) {
-                Map<String, List<String>> allLabels = context.getLabelService().getAllLabels();
-                for (Map.Entry<String, List<String>> labels : allLabels.entrySet()) {
-                    printLabels(labels.getKey(), labels.getValue());
+                LinkedHashMap<String, LinkedHashMap<UUID, String>> allLabels = context.getLabelService().getAllLabels();
+                for (Map.Entry<String, LinkedHashMap<UUID, String>> labels : allLabels.entrySet()) {
+                    printLabels(labels.getKey(), labels.getValue().values());
                 }
             } else {
                 for (String labelType : labelTypes) {
@@ -32,12 +30,12 @@ public final class ListLabelCommand extends Command {
                     printLabels(labelType, labels);
                 }
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             Print.printAndLogException(e, log);
         }
     }
 
-    private void printLabels(String labelType, List<String> labels) {
+    private void printLabels(String labelType, Collection<String> labels) {
         Print.print(labelType);
         Print.print("-----");
         for (String label : labels) {

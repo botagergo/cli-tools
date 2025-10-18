@@ -1,19 +1,19 @@
 package cli_tools.common.cli.property_to_string_converter;
 
+import cli_tools.common.backend.property_converter.PropertyConverterException;
 import cli_tools.common.cli.DateTimeFormatter;
 import cli_tools.common.backend.label.service.LabelService;
 import cli_tools.common.backend.ordered_label.service.OrderedLabelService;
 import cli_tools.common.property_lib.Property;
 import cli_tools.common.property_lib.PropertyDescriptor;
-import cli_tools.common.util.RoundRobinUUIDGenerator;
 import cli_tools.common.util.UUIDGenerator;
 import cli_tools.common.util.Utils;
+import cli_tools.test_utils.RoundRobinUUIDGenerator;
 import org.mockito.Mock;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.UUID;
@@ -45,7 +45,7 @@ public class DefaultPropertyToStringConverterTest {
     }
 
     @Test
-    void test_PropertyToString_string() throws IOException {
+    void test_PropertyToString_string() throws PropertyConverterException {
         PropertyDescriptor propertyDescriptor = getPropertyDescriptor(PropertyDescriptor.Type.String, SINGLE);
 
         Property property = Property.fromUnchecked(propertyDescriptor, "str");
@@ -59,7 +59,7 @@ public class DefaultPropertyToStringConverterTest {
     }
 
     @Test
-    void test_PropertyToString_stringList() throws IOException {
+    void test_PropertyToString_stringList() throws PropertyConverterException {
         PropertyDescriptor propertyDescriptor = getPropertyDescriptor(PropertyDescriptor.Type.String, LIST);
 
         Property property = Property.fromUnchecked(propertyDescriptor, Utils.newArrayList());
@@ -79,7 +79,7 @@ public class DefaultPropertyToStringConverterTest {
     }
 
     @Test
-    void test_PropertyToString_stringSet() throws IOException {
+    void test_PropertyToString_stringSet() throws PropertyConverterException {
         PropertyDescriptor propertyDescriptor = getPropertyDescriptor(PropertyDescriptor.Type.String, SET);
 
         Property property = Property.fromUnchecked(propertyDescriptor, Utils.newLinkedHashSet());
@@ -99,7 +99,7 @@ public class DefaultPropertyToStringConverterTest {
     }
 
     @Test
-    void test_PropertyToString_integer() throws IOException {
+    void test_PropertyToString_integer() throws PropertyConverterException {
         PropertyDescriptor propertyDescriptor = getPropertyDescriptor(PropertyDescriptor.Type.Integer, SINGLE);
 
         Property property = Property.fromUnchecked(propertyDescriptor, 123);
@@ -116,7 +116,7 @@ public class DefaultPropertyToStringConverterTest {
     }
 
     @Test
-    void test_PropertyToString_integerList() throws IOException {
+    void test_PropertyToString_integerList() throws PropertyConverterException {
         PropertyDescriptor propertyDescriptor = getPropertyDescriptor(PropertyDescriptor.Type.Integer, LIST);
 
         Property property = Property.fromUnchecked(propertyDescriptor, Utils.newArrayList());
@@ -157,7 +157,7 @@ public class DefaultPropertyToStringConverterTest {
     } */
 
     @Test
-    void test_PropertyToString_integerSet() throws IOException {
+    void test_PropertyToString_integerSet() throws PropertyConverterException {
         PropertyDescriptor propertyDescriptor = getPropertyDescriptor(PropertyDescriptor.Type.Integer, SET);
 
         Property property = Property.fromUnchecked(propertyDescriptor, Utils.newArrayList());
@@ -177,7 +177,7 @@ public class DefaultPropertyToStringConverterTest {
     }
 
     @Test
-    void test_PropertyToString_booleanList() throws IOException {
+    void test_PropertyToString_booleanList() throws PropertyConverterException {
         PropertyDescriptor propertyDescriptor = getPropertyDescriptor(PropertyDescriptor.Type.Boolean, LIST);
 
         Property property = Property.fromUnchecked(propertyDescriptor, Utils.newArrayList());
@@ -197,7 +197,7 @@ public class DefaultPropertyToStringConverterTest {
     }
 
     @Test
-    void test_PropertyToString_booleanSet() throws IOException {
+    void test_PropertyToString_booleanSet() throws PropertyConverterException {
         PropertyDescriptor propertyDescriptor = getPropertyDescriptor(PropertyDescriptor.Type.Boolean, SET);
 
         Property property = Property.fromUnchecked(propertyDescriptor, Utils.newLinkedHashSet());
@@ -217,7 +217,7 @@ public class DefaultPropertyToStringConverterTest {
     }
 
     @Test
-    void test_PropertyToString_uuid() throws IOException {
+    void test_PropertyToString_uuid() throws PropertyConverterException {
         PropertyDescriptor propertyDescriptor = getPropertyDescriptor(PropertyDescriptor.Type.UUID, SINGLE);
 
         Property property = Property.fromUnchecked(propertyDescriptor, uuid1);
@@ -228,7 +228,7 @@ public class DefaultPropertyToStringConverterTest {
     }
 
     @Test
-    void test_PropertyToString_uuidList() throws IOException {
+    void test_PropertyToString_uuidList() throws PropertyConverterException {
         PropertyDescriptor propertyDescriptor = getPropertyDescriptor(PropertyDescriptor.Type.UUID, LIST);
 
         Property property = Property.fromUnchecked(propertyDescriptor, Utils.newArrayList());
@@ -248,7 +248,7 @@ public class DefaultPropertyToStringConverterTest {
     }
 
     @Test
-    void test_PropertyToString_uuidSet() throws IOException {
+    void test_PropertyToString_uuidSet() throws PropertyConverterException {
         PropertyDescriptor propertyDescriptor = getPropertyDescriptor(PropertyDescriptor.Type.UUID, SET);
 
         Property property = Property.fromUnchecked(propertyDescriptor, Utils.newLinkedHashSet());
@@ -268,7 +268,7 @@ public class DefaultPropertyToStringConverterTest {
     }
 
     @Test
-    void test_PropertyToString_date() throws IOException {
+    void test_PropertyToString_date() throws PropertyConverterException {
         PropertyDescriptor propertyDescriptor = getPropertyDescriptor(PropertyDescriptor.Type.Date, SINGLE);
 
         Property property = Property.fromUnchecked(propertyDescriptor, LocalDate.of(2025, 3, 20));
@@ -279,7 +279,7 @@ public class DefaultPropertyToStringConverterTest {
     }
 
     @Test
-    void test_PropertyToString_time() throws IOException {
+    void test_PropertyToString_time() throws PropertyConverterException {
         PropertyDescriptor propertyDescriptor = getPropertyDescriptor(PropertyDescriptor.Type.Time, SINGLE);
 
         Property property = Property.fromUnchecked(propertyDescriptor, LocalTime.of(17, 33, 1));
@@ -289,7 +289,7 @@ public class DefaultPropertyToStringConverterTest {
         assertPropertyToString(property, "");
     }
 
-    private void assertPropertyToString(Property property, String expected) throws IOException {
+    private void assertPropertyToString(Property property, String expected) throws PropertyConverterException {
         assertEquals(propertyToStringConverter.propertyToString("property", property), expected);
     }
 

@@ -1,12 +1,11 @@
 package cli_tools.common.backend.property_descriptor.service;
 
+import cli_tools.common.backend.service.ServiceException;
 import cli_tools.common.core.repository.ConfigurationRepository;
 import cli_tools.common.core.repository.PropertyDescriptorRepository;
 import cli_tools.common.property_lib.PropertyDescriptor;
-import cli_tools.common.property_lib.PropertyException;
 import jakarta.inject.Inject;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,40 +24,40 @@ public class PropertyDescriptorServiceImpl implements PropertyDescriptorService 
     }
 
     @Override
-    public void createPropertyDescriptor(PropertyDescriptor propertyDescriptor) throws IOException {
+    public void createPropertyDescriptor(PropertyDescriptor propertyDescriptor) {
         propertyDescriptorRepository.create(propertyDescriptor);
     }
 
     @Override
-    public PropertyDescriptor findPropertyDescriptor(String name) throws PropertyException, IOException {
+    public PropertyDescriptor findPropertyDescriptor(String name) throws ServiceException {
         if (!configurationRepository.allowPropertyPrefix()) {
             return getPropertyDescriptor(name);
         }
 
         List<PropertyDescriptor> propertyDescriptors = propertyDescriptorRepository.find(name);
         if (propertyDescriptors.isEmpty()) {
-            throw new PropertyException(PropertyException.Type.NotExist, name, null, null, null, null);
+            throw new ServiceException("Property does not exist: %s".formatted(name), null);
         } else if (propertyDescriptors.size() > 1) {
             Optional<PropertyDescriptor> propertyDescriptor = propertyDescriptors.stream().filter(pd -> pd.name().equals(name)).findAny();
             if (propertyDescriptor.isPresent()) {
                 return propertyDescriptor.get();
             } else {
-                throw new PropertyException(PropertyException.Type.MultipleMatches, name, null, null, null, null);
+                throw new ServiceException("Multiple properties match: %s".formatted(name), null);
             }
         } else {
-            return propertyDescriptors.get(0);
+            return propertyDescriptors.getFirst();
         }
     }
 
     @Override
-    public List<PropertyDescriptor> getPropertyDescriptors() throws IOException {
+    public List<PropertyDescriptor> getPropertyDescriptors() {
         return propertyDescriptorRepository.getAll();
     }
 
-    private PropertyDescriptor getPropertyDescriptor(String name) throws PropertyException, IOException {
+    private PropertyDescriptor getPropertyDescriptor(String name) throws ServiceException {
         PropertyDescriptor propertyDescriptor = propertyDescriptorRepository.get(name);
         if (propertyDescriptor == null) {
-            throw new PropertyException(PropertyException.Type.NotExist, name, null, null, null, null);
+            throw new ServiceException("Property does not exist: %s".formatted(name), null);
         } else {
             return propertyDescriptor;
         }

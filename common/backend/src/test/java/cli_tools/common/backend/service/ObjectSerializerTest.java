@@ -1,8 +1,8 @@
 package cli_tools.common.backend.service;
 
 import cli_tools.common.backend.repository.ObjectSerializer;
-import cli_tools.common.util.RoundRobinUUIDGenerator;
 import cli_tools.common.util.Utils;
+import cli_tools.test_utils.RoundRobinUUIDGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

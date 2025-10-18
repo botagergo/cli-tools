@@ -1,5 +1,6 @@
 package cli_tools.common.backend.sorter;
 
+import cli_tools.common.backend.service.ServiceException;
 import cli_tools.common.core.data.SortingCriterion;
 import cli_tools.common.backend.property_comparator.PropertyComparator;
 import cli_tools.common.backend.property_comparator.PropertyNotComparableException;
@@ -14,10 +15,8 @@ import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.tuple.Pair;
 
-import java.io.IOException;
 import java.util.*;
 
-//@AllArgsConstructor(onConstructor = @__(@JsonCreator))
 @Setter
 @Getter
 @JsonSerialize
@@ -33,7 +32,7 @@ public class PropertySorter<T extends PropertyOwner> {
         this.sortingCriteria = sortingCriteria;
     }
 
-    public List<T> sort(List<T> propertyOwners, PropertyManager propertyManager) throws PropertyException, IOException, PropertyNotComparableException {
+    public List<T> sort(List<T> propertyOwners, PropertyManager propertyManager) throws ServiceException {
         List<Pair<List<Property>, Boolean>> valuesToCompare = new ArrayList<>();
 
         for (SortingCriterion sortingCriterion : sortingCriteria) {
@@ -49,7 +48,13 @@ public class PropertySorter<T extends PropertyOwner> {
 
             Pair<List<Property>, Boolean> values = Pair.of(new ArrayList<>(), sortingCriterion.ascending());
             for (T propertyOwner : propertyOwners) {
-                Property propertyValue = propertyManager.getProperty(propertyOwner, propertyDescriptor);
+                Property propertyValue;
+                try {
+                    propertyValue = propertyManager.getProperty(propertyOwner, propertyDescriptor);
+                } catch (PropertyException e) {
+                    throw new ServiceException("Error getting the value of property '%s': %s"
+                            .formatted(propertyDescriptor.name(), e.getMessage()), e);
+                }
                 values.getLeft().add(propertyValue);
             }
             valuesToCompare.add(values);

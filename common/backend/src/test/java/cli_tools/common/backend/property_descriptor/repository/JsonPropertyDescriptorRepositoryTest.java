@@ -1,10 +1,12 @@
 package cli_tools.common.backend.property_descriptor.repository;
 
+import cli_tools.common.core.repository.DataAccessException;
 import cli_tools.common.property_lib.PropertyDescriptor;
 import cli_tools.common.backend.service.JsonRepositoryCreator;
 import cli_tools.common.backend.temp_id_mapping.TempIDManager;
 import org.testng.annotations.Test;
 
+import javax.xml.crypto.Data;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -154,15 +156,15 @@ public class JsonPropertyDescriptorRepositoryTest {
 
         Files.writeString(tempFile.toPath(), "[1, 2, 3]");
         repository = new JsonPropertyDescriptorRepository(tempFile, tempIdManager, PseudoPropertyProviderMixIn.class);
-        assertThrows(IOException.class, () -> repository.get("property"));
+        assertThrows(DataAccessException.class, () -> repository.get("property"));
 
         Files.writeString(tempFile.toPath(), "\"some string\"");
         repository = new JsonPropertyDescriptorRepository(tempFile, tempIdManager, PseudoPropertyProviderMixIn.class);
-        assertThrows(IOException.class, () -> repository.get("property"));
+        assertThrows(DataAccessException.class, () -> repository.get("property"));
 
         Files.writeString(tempFile.toPath(), "{\"name\":123}");
         repository = new JsonPropertyDescriptorRepository(tempFile, tempIdManager, PseudoPropertyProviderMixIn.class);
-        assertThrows(IOException.class, () -> repository.get("property"));
+        assertThrows(DataAccessException.class, () -> repository.get("property"));
     }
 
     @Test
@@ -176,7 +178,7 @@ public class JsonPropertyDescriptorRepositoryTest {
                 }
                 """);
         repository = new JsonPropertyDescriptorRepository(tempFile, tempIdManager, PseudoPropertyProviderMixIn.class);
-        assertThrows(IOException.class, () -> repository.get("property"));
+        assertThrows(DataAccessException.class, () -> repository.get("property"));
     }
 
     @Test
@@ -193,7 +195,7 @@ public class JsonPropertyDescriptorRepositoryTest {
                 }
                 """);
         repository = new JsonPropertyDescriptorRepository(tempFile, tempIdManager, PseudoPropertyProviderMixIn.class);
-        assertThrows(IOException.class, () -> repository.get("property"));
+        assertThrows(DataAccessException.class, () -> repository.get("property"));
     }
 
     @Test
@@ -214,7 +216,7 @@ public class JsonPropertyDescriptorRepositoryTest {
                 }
                 """);
         repository = new JsonPropertyDescriptorRepository(tempFile, tempIdManager, PseudoPropertyProviderMixIn.class);
-        assertThrows(IOException.class, () -> repository.get("property"));
+        assertThrows(DataAccessException.class, () -> repository.get("property"));
     }
 
     @Test
@@ -252,7 +254,7 @@ public class JsonPropertyDescriptorRepositoryTest {
                 }
                 """);
         repository = new JsonPropertyDescriptorRepository(tempFile, tempIdManager, PseudoPropertyProviderMixIn.class);
-        assertThrows(IOException.class, () -> repository.get("property"));
+        assertThrows(DataAccessException.class, () -> repository.get("property"));
     }
 
 }

@@ -17,3 +17,7 @@ include('common:cli')
 
 include('task-manager:backend')
 include('task-manager:cli')
+include('common:db-schema')
+include 'common:test-utils'
+findProject(':common:test-utils')?.name = 'test-utils'
+

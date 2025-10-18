@@ -36,6 +36,9 @@ subprojects {
         testAnnotationProcessor libs.lombok
         testImplementation      libs.mockito.core
         testImplementation      libs.testng
+        implementation 'org.flywaydb:flyway-database-postgresql:11.13.2'
+        implementation 'org.postgresql:postgresql:42.7.8'
+        implementation 'org.slf4j:slf4j-api:2.0.17'
     }
 
     tasks.withType(Test).configureEach {

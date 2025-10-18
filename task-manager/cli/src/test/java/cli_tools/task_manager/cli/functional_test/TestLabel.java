@@ -1,16 +1,23 @@
 package cli_tools.task_manager.cli.functional_test;
 
+import cli_tools.common.backend.service.ServiceException;
+import cli_tools.common.util.Utils;
 import org.testng.annotations.Test;
 
 import java.io.IOException;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import static org.testng.Assert.assertEquals;
 
 public class TestLabel extends TestBase {
 
+    public TestLabel() {
+        super(false);
+    }
+
     @Test
-    void test_label() throws IOException {
+    void test_label() throws ServiceException {
         execute("addLabel");
         assertStdoutContains("missing");
 
@@ -28,8 +35,8 @@ public class TestLabel extends TestBase {
         assertStdoutLineContains(0, "Created label");
 
         var labels = context.getLabelService().getAllLabels();
-        assertEquals(labels.get("label_type"), List.of("label1", "label2", "label3"));
-        assertEquals(labels.get("label_type1"), List.of("label4"));
+        assertEquals(labels.get("label_type"), Utils.newLinkedHashMap(uuids[0], "label1", uuids[1], "label2", uuids[2], "label3"));
+        assertEquals(labels.get("label_type1"), Utils.newLinkedHashMap(uuids[3], "label4"));
 
         execute("listLabel");
         assertStdoutLinesContain("label_type", "---", "label1", "label2", "label3");
@@ -54,8 +61,8 @@ public class TestLabel extends TestBase {
         assertStdoutLineContains(0, "Deleted label");
 
         labels = context.getLabelService().getAllLabels();
-        assertEquals(labels.get("label_type"), List.of("label2", "label3"));
-        assertEquals(labels.get("label_type1"), List.of());
+        assertEquals(labels.get("label_type"), Utils.newLinkedHashMap(uuids[1], "label2", uuids[2], "label3"));
+        assertEquals(labels.get("label_type1"), new LinkedHashMap<>());
     }
 
 }

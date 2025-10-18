@@ -4,6 +4,7 @@ plugins {
 
 dependencies {
     implementation          project(':common:util')
+    testImplementation      project(':common:test-utils')
 
     implementation          libs.jackson.databind
     implementation          libs.guice

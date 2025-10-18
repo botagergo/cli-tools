@@ -1,15 +1,13 @@
 package cli_tools.task_manager.cli;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class OsDirs {
     private static final String appName = "task_manager";
 
-    public enum DirType { CONFIG, DATA, CACHE, LOG, TEST }
+    public enum DirType { CONFIG, DATA, CACHE, LOG }
 
     public static File getDataDir(String profile) {
         String os = System.getProperty("os.name").toLowerCase();
@@ -24,18 +22,14 @@ public class OsDirs {
         }
     }
 
-    public static File getFile(DirType type, String profile, String fileName) throws IOException {
+    public static File getFile(DirType type, String profile, String fileName) {
         String os = System.getProperty("os.name").toLowerCase();
-
-        if (type == DirType.TEST) {
-            return Files.createTempFile("task-manager-ft", fileName).toFile();
-        }
 
         if (os.contains("win")) {
             return switch (type) {
                 case CONFIG, DATA -> buildPath(System.getenv("APPDATA"), profile, fileName).toFile();
                 case CACHE -> buildPath(System.getenv("LOCALAPPDATA"), profile, fileName).toFile();
-                case LOG -> buildPath(Paths.get(System.getenv("LOCALAPPDATA"), "Logs").toString(), profile, fileName).toFile();
+                case LOG -> buildPath(System.getenv("LOCALAPPDATA"), profile, "Logs").toFile();
                 default -> throw new IllegalArgumentException();
             };
         } else {

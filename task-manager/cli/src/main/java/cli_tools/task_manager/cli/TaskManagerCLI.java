@@ -1,12 +1,13 @@
 package cli_tools.task_manager.cli;
 
+import cli_tools.common.backend.service.ServiceException;
 import cli_tools.common.cli.Context;
 import cli_tools.common.cli.GrpcServer;
 import cli_tools.common.cli.command.custom_command.CustomCommandDefinition;
 import cli_tools.common.cli.command.custom_command.CustomCommandParserFactory;
 import cli_tools.common.cli.command.custom_command.repository.CustomCommandRepository;
-import cli_tools.common.cli.command_line.*;
 import cli_tools.common.cli.command_line.CommandLine;
+import cli_tools.common.cli.command_line.JlineCommandLine;
 import cli_tools.common.cli.command_parser.CommandParserFactory;
 import cli_tools.common.cli.executor.Executor;
 import cli_tools.common.cli.executor.GrpcExecutor;
@@ -23,7 +24,9 @@ import lombok.extern.log4j.Log4j2;
 import org.apache.commons.cli.*;
 import org.apache.commons.cli.help.HelpFormatter;
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.flywaydb.core.Flyway;
 
+import javax.sql.DataSource;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -40,13 +43,16 @@ public class TaskManagerCLI {
 
     public static void main(String @NonNull [] args) throws IOException, InterruptedException, URISyntaxException {
         Options options = new Options();
-
         options.addOption("h", "help", false, "Show help");
         options.addOption(null, "daemon", false, "Start daemon process");
         options.addOption(null, "connect-to-daemon", false, "Connect to an already running daemon");
         options.addOption(null, "standalone", false, "Run without daemon process");
         options.addOption(null, "daemon-host", true, "Hostname of daemon process");
         options.addOption(null, "daemon-port", true, "Port of daemon process");
+        options.addOption(null, "database-mode", true, "The way data is stored - json or postgresql");
+        options.addOption(null, "postgresql-url", true, "PostgreSQL database URL");
+        options.addOption(null, "postgresql-username", true, "PostgreSQL database username");
+        options.addOption(null, "postgresql-password", true, "PostgreSQL database password");
 
         DefaultParser parser = new DefaultParser();
         HelpFormatter formatter = HelpFormatter.builder()
@@ -74,6 +80,7 @@ public class TaskManagerCLI {
             return;
         }
 
+        TaskManagerConfig taskManagerConfig = new TaskManagerConfig();
 
         for (Option opt : cmd.getOptions()) {
             if (!options.hasOption(opt.getLongOpt())) {
@@ -123,6 +130,30 @@ public class TaskManagerCLI {
             }
         }
 
+        if (cmd.hasOption("database-mode")) {
+            String databaseMode = cmd.getOptionValue("database-mode");
+            switch (databaseMode) {
+                case "json" -> taskManagerConfig.setDatabaseMode(TaskManagerConfig.DatabaseMode.JSON);
+                case "postgresql" -> taskManagerConfig.setDatabaseMode(TaskManagerConfig.DatabaseMode.POSTGRESQL);
+                default -> {
+                    Print.printError("Not a valid database mode: %", databaseMode);
+                    return;
+                }
+            }
+        } else {
+            taskManagerConfig.setDatabaseMode(TaskManagerConfig.DatabaseMode.JSON);
+        }
+
+        if (cmd.hasOption("postgresql-url")) {
+            taskManagerConfig.setPostgresqlUrl(cmd.getOptionValue("postgresql-url"));
+        }
+        if (cmd.hasOption("postgresql-username")) {
+            taskManagerConfig.setPostgresqlUsername(cmd.getOptionValue("postgresql-username"));
+        }
+        if (cmd.hasOption("postgresql-password")) {
+            taskManagerConfig.setPostgresqlPassword(cmd.getOptionValue("postgresql-password"));
+        }
+
         if (cmd.getArgs().length > 0) {
             Print.printError("Positional arguments are not expected");
             return;
@@ -133,11 +164,37 @@ public class TaskManagerCLI {
             return;
         }
 
-        Injector injector = null;
+        if (taskManagerConfig.getProfile() == null) {
+            taskManagerConfig.setProfile("default");
+        }
+        if (taskManagerConfig.getPostgresqlUrl() == null) {
+            taskManagerConfig.setPostgresqlUrl("jdbc:postgresql://postgres:5432/task_manager_db");
+        }
+        if (taskManagerConfig.getPostgresqlUsername() == null) {
+            taskManagerConfig.setPostgresqlUsername("postgres");
+        }
+        if (taskManagerConfig.getPostgresqlPassword() == null) {
+            taskManagerConfig.setPostgresqlPassword("12345");
+        }
+
+        Injector injector = Guice.createInjector(new TaskManagerModule(taskManagerConfig));
+
+        if (taskManagerConfig.getDatabaseMode() == TaskManagerConfig.DatabaseMode.POSTGRESQL) {
+            Flyway flyway = Flyway.configure()
+                    .dataSource(injector.getInstance(DataSource.class))
+                    .load();
+            flyway.migrate();
+        }
 
         if (isDaemon || isStandalone) {
-            injector = init();
-            if (injector == null) {
+            if (!init(injector)) {
+                return;
+            }
+            try {
+                initDefaultDataIfNeeded(injector);
+            } catch (ServiceException e) {
+                Print.printError("Failed to initialize default data: %s".formatted(e.getMessage()), e);
+                Print.logException(e, log);
                 return;
             }
         }
@@ -149,11 +206,11 @@ public class TaskManagerCLI {
         } else if (isStandalone) {
             runStandalone(injector);
         } else {
-            runWithDaemon(daemonPort);
+            runWithDaemon(daemonPort, injector);
         }
     }
 
-    private static void runWithDaemon(Integer daemonPort) throws IOException, URISyntaxException, InterruptedException {
+    private static void runWithDaemon(Integer daemonPort, Injector injector) throws IOException, URISyntaxException, InterruptedException {
         if (daemonPort == null) {
             daemonPort = defaultDaemonPort;
         }
@@ -163,10 +220,12 @@ public class TaskManagerCLI {
             startDaemon(daemonPort);
             if (!executor.waitUntilServerReady()) {
                 Print.printWarning("Failed to start daemon process, running standalone");
-                Injector injector = init();
-                if (injector != null) {
-                    runStandalone(injector);
+
+                if (!init(injector)) {
+                    return;
                 }
+
+                runStandalone(injector);
                 return;
             }
             Print.printInfo("Started daemon on %s:%d", defaultDaemonHost, daemonPort);
@@ -208,8 +267,9 @@ public class TaskManagerCLI {
             Executor executor = injector.getInstance(LocalExecutor.class);
             GrpcServer grpcServer = new GrpcServer(daemonPort, executor);
 
-            Print.printInfo("Daemon listening on %s:%d", defaultDaemonHost, daemonPort);
             grpcServer.start();
+
+            Print.printInfo("Daemon listening on %s:%d", defaultDaemonHost, daemonPort);
 
             grpcServer.blockUntilShutdown();
         } catch (IOException e) {
@@ -230,26 +290,19 @@ public class TaskManagerCLI {
         }
     }
 
-    private static Injector init() throws IOException {
-        String profile = Objects.requireNonNullElse(System.getenv("TASK_MANAGER_PROFILE"), "default");
-        Injector injector = Guice.createInjector(new TaskManagerModule(profile));
-        Initializer initializer = injector.getInstance(Initializer.class);
+    //noinspection BooleanMethodIsAlwaysInverted
+    private static boolean init(Injector injector) throws IOException {
         CommandParserFactory commandParserFactory = injector.getInstance(CommandParserFactory.class);
         CustomCommandRepository customCommandRepository = injector.getInstance(CustomCommandRepository.class);
         CustomCommandParserFactory customCommandParserFactory = injector.getInstance(CustomCommandParserFactory.class);
         Context context = injector.getInstance(Context.class);
 
-        File initializedFile = Paths.get(OsDirs.getDataDir(profile).toString(), ".initialized").toFile();
-        if (!initializedFile.isFile()) {
-            try {
-                initializer.initialize();
-                //noinspection ResultOfMethodCallIgnored
-                initializedFile.createNewFile();
-            } catch (IOException e) {
-                Print.printError(e.getMessage());
-                log.error(ExceptionUtils.getStackTrace(e));
-                return null;
-            }
+        try {
+            initDefaultDataIfNeeded(injector);
+        } catch (ServiceException e) {
+            Print.printError("Failed to initialize default data: %s".formatted(e.getMessage()), e);
+            Print.logException(e, log);
+            return false;
         }
 
         commandParserFactory.registerParser("add", AddTaskCommandParser::new);
@@ -264,20 +317,44 @@ public class TaskManagerCLI {
         commandParserFactory.registerParser("listLabel", ListLabelCommandParser::new);
         commandParserFactory.registerParser("deleteLabel", DeleteLabelCommandParser::new);
 
-        List<PropertyDescriptor> propertyDescriptors = context.getPropertyDescriptorService().getPropertyDescriptors();
-        context.getPropertyManager().setPropertyDescriptorCollection(PropertyDescriptorCollection.fromList(propertyDescriptors));
-
+        List<PropertyDescriptor> propertyDescriptors;
         try {
-            for (CustomCommandDefinition customCommandDefinition : customCommandRepository.getAll()) {
-                commandParserFactory.registerParser(customCommandDefinition.getCommandName(),
-                        () -> customCommandParserFactory.createParser(customCommandDefinition));
-            }
-        } catch (IOException e) {
-            Print.printError(e.getMessage());
-            log.error(ExceptionUtils.getStackTrace(e));
+            propertyDescriptors = context.getPropertyDescriptorService().getPropertyDescriptors();
+        } catch (ServiceException e) {
+            Print.printError("Failed to load property descriptors: %s".formatted(e.getMessage()), e);
+            Print.logException(e, log);
+            return false;
         }
 
-        return injector;
+        context.getPropertyManager().setPropertyDescriptorCollection(PropertyDescriptorCollection.fromList(propertyDescriptors));
+
+        for (CustomCommandDefinition customCommandDefinition : customCommandRepository.getAll()) {
+            commandParserFactory.registerParser(customCommandDefinition.getCommandName(),
+                    () -> customCommandParserFactory.createParser(customCommandDefinition));
+        }
+
+        return true;
+    }
+
+    private static void initDefaultDataIfNeeded(Injector injector) throws IOException, ServiceException {
+        Initializer initializer = injector.getInstance(Initializer.class);
+        String profile = Objects.requireNonNullElse(System.getenv("TASK_MANAGER_PROFILE"), "default");
+        File initializedFile = Paths.get(OsDirs.getDataDir(profile).toString(), ".initialized").toFile();
+
+        if (!initializedFile.isFile()) {
+            log.info("Initializing database with default data");
+
+            if (!OsDirs.getDataDir(profile).mkdirs()) {
+                throw new IOException("Failed to create data directory: %s".formatted(OsDirs.getDataDir(profile).getAbsolutePath()));
+            }
+
+            initializer.initialize();
+            log.debug("Creating file {}}", initializedFile.getAbsolutePath());
+            //noinspection ResultOfMethodCallIgnored
+            initializedFile.createNewFile();
+        } else {
+            log.info("Database already initialized");
+        }
     }
 
     public static void startDaemon(int daemonPort) throws IOException, URISyntaxException {

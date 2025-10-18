@@ -1,5 +1,6 @@
 plugins {
     id 'java-library'
+    id 'nu.studer.jooq' version '10.1.1'
 }
 
 dependencies {
@@ -7,8 +8,46 @@ dependencies {
     implementation          project(':common:property-lib')
     implementation          project(':common:backend')
     implementation          project(':common:core')
+    implementation          project(':common:db-schema')
+    testImplementation      project(':common:test-utils')
 
     implementation          libs.jackson.databind
     testImplementation      libs.jackson.databind
+    implementation          libs.jackson.datatype.jsr310
+    testImplementation      libs.jackson.datatype.jsr310
     implementation          libs.jakarta.inject.api
+    implementation          libs.jooq
+    jooqGenerator           libs.jooq.codegen
+    jooqGenerator           libs.jooq.meta
+    jooqGenerator           libs.jooq.meta.extensions
+}
+
+repositories {
+    maven {
+        url "https://repo1.maven.org/maven2/org/jooq"
+    }
+}
+
+jooq {
+    configurations {
+        main {
+            generationTool {
+                logging = org.jooq.meta.jaxb.Logging.WARN
+                generator {
+                    database {
+                        name = 'org.jooq.meta.extensions.ddl.DDLDatabase'
+                        properties {
+                            property {
+                                key = "scripts"
+                                value = "src/main/resources/db/migration/"
+                            }
+                        }
+                    }
+                    target {
+                        packageName = 'cli_tools.task_manager.backend'
+                    }
+                }
+            }
+        }
+    }
 }

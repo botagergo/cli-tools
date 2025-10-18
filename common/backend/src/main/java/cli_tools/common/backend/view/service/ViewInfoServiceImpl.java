@@ -5,26 +5,23 @@ import cli_tools.common.core.repository.ViewInfoRepository;
 import jakarta.inject.Inject;
 import lombok.AllArgsConstructor;
 
-import java.io.IOException;
-
 @AllArgsConstructor(onConstructor = @__(@Inject))
 public class ViewInfoServiceImpl implements ViewInfoService {
 
     private final ViewInfoRepository viewInfoRepository;
 
     @Override
-    public ViewInfo getViewInfo(String name)
-            throws IOException {
+    public ViewInfo getViewInfo(String name) {
         return viewInfoRepository.get(name);
     }
 
     @Override
-    public void addViewInfo(String name, ViewInfo viewInfo) throws IOException {
+    public void addViewInfo(String name, ViewInfo viewInfo) {
         viewInfoRepository.create(name, viewInfo);
     }
 
     @Override
-    public void deleteAllViewInfos() throws IOException {
+    public void deleteAllViewInfos() {
         viewInfoRepository.deleteAll();
     }
 

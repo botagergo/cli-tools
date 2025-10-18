@@ -5,8 +5,6 @@ import cli_tools.common.property_lib.PropertyException;
 import cli_tools.common.property_lib.PropertyManager;
 import cli_tools.common.property_lib.PropertyOwner;
 
-import java.io.IOException;
-
 public abstract class PropertyFilterCriterion extends FilterCriterion {
 
     public final String propertyName;
@@ -16,7 +14,7 @@ public abstract class PropertyFilterCriterion extends FilterCriterion {
     }
 
     @Override
-    public boolean check_(PropertyOwner propertyOwner, PropertyManager propertyManager) throws PropertyException, IOException {
+    public boolean check_(PropertyOwner propertyOwner, PropertyManager propertyManager) throws PropertyException {
         Property property = propertyManager.getProperty(propertyOwner, propertyName);
         return check_(property);
     }

@@ -6,8 +6,6 @@ import cli_tools.common.property_lib.PseudoPropertyProvider;
 import cli_tools.common.backend.temp_id_mapping.TempIDManager;
 import com.fasterxml.jackson.annotation.JacksonInject;
 
-import java.io.IOException;
-
 public class TempIDPseudoPropertyProvider implements PseudoPropertyProvider {
     private final TempIDManager tempIdManager;
 
@@ -16,7 +14,12 @@ public class TempIDPseudoPropertyProvider implements PseudoPropertyProvider {
     }
 
     @Override
-    public Object getProperty(PropertyManager propertyManager, PropertyOwner propertyOwner) throws IOException {
+    public Object getProperty(PropertyManager propertyManager, PropertyOwner propertyOwner) {
         return tempIdManager.getOrCreateID(propertyOwner.getUUID());
+    }
+
+    @Override
+    public String toString() {
+        return "TempIDPseudoPropertyProvider()";
     }
 }

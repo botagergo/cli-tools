@@ -2,6 +2,7 @@ package cli_tools.common.backend.repository;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
+import com.fasterxml.jackson.databind.jsontype.TypeSerializer;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 
 import java.io.IOException;
@@ -45,6 +46,10 @@ public class ObjectSerializer extends StdSerializer<Object> {
             case null -> jgen.writeNull();
             default -> throw new NotSerializableException("Type '" + value.getClass() + " is not serializable");
         }
+    }
+    @Override
+    public void serializeWithType(Object value, JsonGenerator gen, SerializerProvider serializers, TypeSerializer typeSer) throws IOException {
+        serialize(value, gen, serializers);
     }
 
     private void writeObject(JsonGenerator jgen, String type, Collection<?> collection) throws IOException {

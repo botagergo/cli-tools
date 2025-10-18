@@ -1,6 +1,8 @@
 package cli_tools.task_manager.cli.functional_test;
 
+import cli_tools.common.backend.service.ServiceException;
 import cli_tools.task_manager.backend.task.Task;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.io.IOException;
@@ -11,7 +13,7 @@ import static org.testng.Assert.assertEquals;
 public class TestBasic extends TestBase {
 
     @Test
-    void test_basic() throws IOException {
+    void test_basic() throws ServiceException {
         execute("add go to the post office status:NextAction effort:High priority:Low",
                 "add buy a new TV status:NextAction dueDate:tomorrow",
                 "add read a book status:OnHold startDate:+31weeks",

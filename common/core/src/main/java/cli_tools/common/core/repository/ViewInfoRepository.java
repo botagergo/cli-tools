@@ -2,14 +2,12 @@ package cli_tools.common.core.repository;
 
 import cli_tools.common.core.data.ViewInfo;
 
-import java.io.IOException;
-
 public interface ViewInfoRepository {
 
-    ViewInfo get(String name) throws IOException;
+    ViewInfo get(String name) throws DataAccessException;
 
-    void create(String name, ViewInfo viewInfo) throws IOException;
+    void create(String name, ViewInfo viewInfo) throws DataAccessException;
 
-    void deleteAll() throws IOException;
+    void deleteAll() throws DataAccessException;
 
 }

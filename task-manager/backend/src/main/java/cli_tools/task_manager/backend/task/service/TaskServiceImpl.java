@@ -1,5 +1,6 @@
 package cli_tools.task_manager.backend.task.service;
 
+import cli_tools.common.backend.service.ServiceException;
 import cli_tools.common.core.data.FilterCriterionInfo;
 import cli_tools.common.core.data.SortingInfo;
 import cli_tools.common.core.data.property.FilterPropertySpec;
@@ -7,9 +8,7 @@ import cli_tools.common.backend.filter.AndFilterCriterion;
 import cli_tools.common.backend.filter.Filter;
 import cli_tools.common.backend.filter.FilterCriterion;
 import cli_tools.common.backend.filter.SimpleFilter;
-import cli_tools.common.backend.property_comparator.PropertyNotComparableException;
 import cli_tools.common.backend.property_converter.PropertyConverter;
-import cli_tools.common.backend.property_converter.PropertyConverterException;
 import cli_tools.common.property_lib.PropertyDescriptor;
 import cli_tools.common.property_lib.PropertyException;
 import cli_tools.common.property_lib.PropertyManager;
@@ -26,7 +25,6 @@ import lombok.NonNull;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 
-import java.io.IOException;
 import java.util.*;
 import java.util.stream.Stream;
 
@@ -44,8 +42,7 @@ public class TaskServiceImpl implements TaskService {
     private TempIDManager tempIdManager;
 
     @Override
-    public @NonNull Task addTask(@NonNull Task task) throws IOException {
-        task.getProperties().put("uuid", uuidGenerator.getUUID());
+    public @NonNull Task addTask(@NonNull Task task) {
         for (PropertyDescriptor propertyDescriptor : propertyManager.getPropertyDescriptorCollection().getAll().values()) {
             if (propertyDescriptor.defaultValue() != null && !task.getProperties().containsKey(propertyDescriptor.name())) {
                 task.getProperties().put(propertyDescriptor.name(), propertyDescriptor.defaultValue());
@@ -55,42 +52,42 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public @NonNull Task modifyTask(@NonNull UUID taskUuid, @NonNull Task task) throws IOException, TaskServiceException {
-        Task modifiedTask = taskRepository.update(taskUuid, task);
+    public @NonNull Task modifyTask(@NonNull Task task) throws ServiceException {
+        Task modifiedTask = taskRepository.update(task);
         if (modifiedTask == null) {
-            throw new TaskServiceException(String.format(TaskServiceException.taskNotFoundMessage, taskUuid));
+            throw new TaskNotFoundException(task.getUUID());
         }
         return modifiedTask;
     }
 
     @Override
-    public Task doneTask(@NonNull UUID taskUuid) throws IOException, TaskServiceException {
+    public Task doneTask(@NonNull UUID taskUuid) throws ServiceException {
         Task task = taskRepository.delete(taskUuid);
         if (task == null) {
-            throw new TaskServiceException(String.format(TaskServiceException.taskNotFoundMessage, taskUuid));
+            throw new TaskNotFoundException(taskUuid);
         }
         return doneTaskRepository.create(task);
     }
 
     @Override
-    public Task undoneTask(@NonNull UUID taskUuid) throws IOException, TaskServiceException {
+    public Task undoneTask(@NonNull UUID taskUuid) throws ServiceException {
         Task task = doneTaskRepository.delete(taskUuid);
         if (task == null) {
-            throw new TaskServiceException(String.format(TaskServiceException.taskNotFoundMessage, taskUuid));
+            throw new TaskNotFoundException(taskUuid);
         }
         return taskRepository.create(task);
     }
 
     @Override
-    public void deleteTask(@NonNull UUID uuid) throws IOException, TaskServiceException {
-        if (taskRepository.delete(uuid) == null) {
-            throw new TaskServiceException(String.format(TaskServiceException.taskNotFoundMessage, uuid));
+    public void deleteTask(@NonNull UUID taskUuid) throws ServiceException {
+        if (taskRepository.delete(taskUuid) == null) {
+            throw new TaskNotFoundException(taskUuid);
         }
-        tempIdManager.delete(uuid);
+        tempIdManager.delete(taskUuid);
     }
 
     @Override
-    public List<Task> getTasks(boolean getDone) throws IOException {
+    public List<Task> getTasks(boolean getDone) throws ServiceException {
         List<Task> tasks = taskRepository.getAll();
         tasks.forEach(task -> task.setDone(false));
         if (getDone) {
@@ -108,17 +105,13 @@ public class TaskServiceImpl implements TaskService {
             SortingInfo sortingInfo,
             FilterCriterionInfo filterCriterionInfo,
             List<UUID> taskUUIDs,
-            boolean getDone) throws IOException, TaskServiceException, PropertyException, PropertyConverterException {
+            boolean getDone) throws ServiceException {
 
         List<Task> tasks = getUnsortedTasks(filterPropertySpecs, filterCriterionInfo, taskUUIDs, getDone);
 
         if (sortingInfo != null) {
             PropertySorter<Task> propertySorter = new PropertySorter<>(sortingInfo.sortingCriteria());
-            try {
-                tasks = propertySorter.sort(tasks, propertyManager);
-            } catch (PropertyException | PropertyNotComparableException e) {
-                throw new TaskServiceException("failed to sort tasks: " + e.getMessage());
-            }
+            tasks = propertySorter.sort(tasks, propertyManager);
         }
 
         return tasks;
@@ -130,22 +123,26 @@ public class TaskServiceImpl implements TaskService {
             SortingInfo sortingInfo,
             FilterCriterionInfo filterCriterionInfo,
             List<UUID> taskUUIDs,
-            boolean getDone) throws IOException, TaskServiceException, PropertyException, PropertyConverterException {
+            boolean getDone) throws ServiceException {
         List<Task> tasks = getUnsortedTasks(propertySpecs, filterCriterionInfo, taskUUIDs, getDone);
 
         List<PropertyOwnerTree> taskTrees = new ArrayList<>();
         Map<UUID, PropertyOwnerTree> taskTreeMap = new HashMap<>();
 
         for (Task task : tasks) {
-            getTaskTree(taskTrees, taskTreeMap, task);
+            try {
+                getTaskTree(taskTrees, taskTreeMap, task);
+            } catch (PropertyException e) {
+                throw new ServiceException(e.getMessage(), e);
+            }
         }
 
         if (sortingInfo != null) {
             PropertySorter<PropertyOwnerTree> sorter = new PropertySorter<>(sortingInfo.sortingCriteria());
             try {
                 taskTrees = sortTaskTrees(taskTrees, sorter, propertyManager);
-            } catch (PropertyException | PropertyNotComparableException e) {
-                throw new TaskServiceException("failed to sort tasks: " + e.getMessage());
+            } catch (ServiceException e) {
+                throw new ServiceException("failed to sort tasks: " + e.getMessage(), e);
             }
         }
 
@@ -153,12 +150,12 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public void deleteAllTasks() throws IOException {
+    public void deleteAllTasks() {
         taskRepository.deleteAll();
         tempIdManager.deleteAll();
     }
 
-    private PropertyOwnerTree getTaskTree(List<PropertyOwnerTree> taskTrees, Map<UUID, PropertyOwnerTree> taskTreeMap, Task task) throws IOException, PropertyException, TaskServiceException {
+    private PropertyOwnerTree getTaskTree(List<PropertyOwnerTree> taskTrees, Map<UUID, PropertyOwnerTree> taskTreeMap, Task task) throws TaskNotFoundException, PropertyException {
         PropertyOwnerTree taskTree = taskTreeMap.get(task.getUUID());
         if (taskTree != null) {
             return taskTree;
@@ -185,7 +182,7 @@ public class TaskServiceImpl implements TaskService {
         return taskTree;
     }
 
-    private PropertyOwnerTree getTaskTree(List<PropertyOwnerTree> taskTrees, Map<UUID, PropertyOwnerTree> taskTreeMap, UUID uuid) throws IOException, PropertyException, TaskServiceException {
+    private PropertyOwnerTree getTaskTree(List<PropertyOwnerTree> taskTrees, Map<UUID, PropertyOwnerTree> taskTreeMap, UUID uuid) throws PropertyException, TaskNotFoundException {
         PropertyOwnerTree taskTree = taskTreeMap.get(uuid);
         if (taskTree != null) {
             return taskTree;
@@ -193,7 +190,7 @@ public class TaskServiceImpl implements TaskService {
 
         Task parent = taskRepository.get(uuid);
         if (parent == null) {
-            throw new TaskServiceException(String.format(TaskServiceException.taskNotFoundMessage, uuid));
+            throw new TaskNotFoundException(uuid);
         }
 
         taskTree = new PropertyOwnerTree(taskRepository.get(uuid), new ArrayList<>());
@@ -221,7 +218,7 @@ public class TaskServiceImpl implements TaskService {
             FilterCriterionInfo filterCriterionInfo,
             List<UUID> taskUUIDs,
             boolean getDone
-    ) throws IOException, TaskServiceException, PropertyException, PropertyConverterException {
+    ) throws ServiceException {
         List<FilterCriterion> finalFilterCriteria = new ArrayList<>();
 
         List<Task> tasks;
@@ -263,14 +260,14 @@ public class TaskServiceImpl implements TaskService {
             try {
                 tasks = filter.doFilter(tasks, propertyManager);
             } catch (PropertyException e) {
-                throw new TaskServiceException("Failed to filter tasks: " + e.getMessage());
+                throw new ServiceException("Failed to filter tasks: " + e.getMessage(), null);
             }
         }
 
         return tasks;
     }
 
-    private List<PropertyOwnerTree> sortTaskTrees(List<PropertyOwnerTree> taskTrees, PropertySorter<PropertyOwnerTree> propertySorter, PropertyManager propertyManager) throws PropertyException, PropertyNotComparableException, IOException {
+    private List<PropertyOwnerTree> sortTaskTrees(List<PropertyOwnerTree> taskTrees, PropertySorter<PropertyOwnerTree> propertySorter, PropertyManager propertyManager) throws ServiceException {
         taskTrees = propertySorter.sort(taskTrees, propertyManager);
         for (PropertyOwnerTree taskTree : taskTrees) {
             if (taskTree.getChildren() != null) {

@@ -1,83 +1,95 @@
 package cli_tools.common.backend;
 
 import cli_tools.common.backend.label.repository.JsonLabelRepository;
-import cli_tools.common.backend.service.JsonRepositoryCreator;
-import cli_tools.common.util.RoundRobinUUIDGenerator;
+import cli_tools.common.core.repository.DataAccessException;
+import cli_tools.test_utils.AssertUtils;
+import cli_tools.test_utils.RoundRobinUUIDGenerator;
+import cli_tools.test_utils.FileUtils;
+import jakarta.inject.Inject;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.util.List;
+import java.util.UUID;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertThrows;
 
 public class JsonLabelRepositoryTest {
 
-    final RoundRobinUUIDGenerator uuidGenerator = new RoundRobinUUIDGenerator();
-    private final JsonRepositoryCreator rc;
-    private JsonLabelRepository repository;
+    private RoundRobinUUIDGenerator uuidGenerator = new RoundRobinUUIDGenerator();
+    private final FileUtils fileUtils = new FileUtils();
+    @Inject private JsonLabelRepository repository;
 
-    public JsonLabelRepositoryTest() throws IOException {
-        rc = new JsonRepositoryCreator(Files.createTempDirectory("testng"));
+    private final UUID uuid1 = uuidGenerator.getUUID();
+    private final UUID uuid2 = uuidGenerator.getUUID();
+
+    public JsonLabelRepositoryTest() throws IOException {}
+
+    @BeforeMethod
+    void beforeMethod() {
+        uuidGenerator.reset();
     }
 
     @Test
     void test_read_successful() throws IOException {
-        File tempFile = rc.makeTempFile("read_successful", """
+        repository = getRepository("read_successful", """
                 {
-                    "mylabel": [ "label1", "label2" ]
+                    "mylabel": { "%s": "label1", "%s": "label2" }
                 }
-                """);
-        repository = new JsonLabelRepository(tempFile);
+                """, uuid1, uuid2);
         assertEquals(repository.getAllWithType("mylabel"), List.of("label1", "label2"));
     }
 
+
     @Test
     void test_write_successful() throws IOException {
-        File tempFile = rc.getTempFile("write_successful.json");
-        repository = new JsonLabelRepository(tempFile);
+        repository = getRepository("write_successful.json");
         repository.create("mylabel1", "label1");
         repository.create("mylabel1", "label2");
         repository.create("mylabel2", "label1");
         repository.create("mylabel2", "label4");
         repository.create("mylabel2", "");
-        String content = Files.readString(tempFile.toPath());
-        assertEquals(content.replaceAll("\\s", ""), String.format("""
+
+        String content = fileUtils.readFile(repository.getJsonFile());
+        AssertUtils.assertJsonEquals(content, """
                     {
-                        "mylabel1": [ "label1", "label2" ],
-                        "mylabel2": [ "label1", "label4", "" ]
+                        "mylabel1":  { "%s": "label1", "%s": "label2" },
+                        "mylabel2": { "%s": "label1", "%s": "label4", "%s": "" }
                     }
-                """.replaceAll("\\s", ""), uuidGenerator.getUuids()[0], uuidGenerator.getUuids()[1]).replaceAll("\\s+", ""));
+                """.formatted(uuidGenerator.getUuids()[0], uuidGenerator.getUuids()[1],
+                        uuidGenerator.getUuids()[2], uuidGenerator.getUuids()[3], uuidGenerator.getUuids()[4]));
     }
 
     @Test
     void test_badFormat_throwsException() throws IOException {
-        File tempFile = rc.getTempFile("bad_format");
+        repository = getRepository("bad_format", "[1, 2, 3]");
+        assertThrows(DataAccessException.class, () -> repository.getData());
 
-        Files.writeString(tempFile.toPath(), "[1, 2, 3]");
-        repository = new JsonLabelRepository(tempFile);
-        assertThrows(IOException.class, () -> repository.getData());
+        repository = getRepository("bad_format", "\"some string\"");
+        assertThrows(DataAccessException.class, () -> repository.getData());
 
-        Files.writeString(tempFile.toPath(), "\"some string\"");
-        repository = new JsonLabelRepository(tempFile);
-        assertThrows(IOException.class, () -> repository.getData());
-
-        Files.writeString(tempFile.toPath(), "{\"text\":123}");
-        repository = new JsonLabelRepository(tempFile);
-        assertThrows(IOException.class, () -> repository.getData());
+        repository = getRepository("bad_format", "{\"text\":123}");
+        assertThrows(DataAccessException.class, () -> repository.getData());
     }
 
     @Test
     void test_wrongFieldType_throwsException() throws IOException {
-        File tempFile = rc.makeTempFile("wrong_field_type", """
+        repository = getRepository("wrong_field_type", """
                 {
                     "mylabel":"asdf"
                 }
                 """);
-        repository = new JsonLabelRepository(tempFile);
-        assertThrows(IOException.class, () -> repository.getData());
+        assertThrows(DataAccessException.class, () -> repository.getData());
+    }
+
+    private JsonLabelRepository getRepository(String jsonName, String content, Object... args) throws IOException {
+        return new JsonLabelRepository(uuidGenerator, fileUtils.makeTempJsonFile(jsonName, content, args));
+    }
+
+    private JsonLabelRepository getRepository(String jsonName) throws IOException {
+        return new JsonLabelRepository(uuidGenerator, fileUtils.makeTempJsonFile(jsonName));
     }
 
 }

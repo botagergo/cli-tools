@@ -41,8 +41,7 @@ public final class AddTaskCommand extends Command {
             int tempID = context.getTempIdManager().getOrCreateID(addedTask.getUUID());
             context.setPrevTempId(tempID);
         } catch (Exception e) {
-            Print.printError(e.getMessage());
-            log.error("{}\n{}", e.getMessage(), ExceptionUtils.getStackTrace(e));
+            Print.printAndLogException(e, log);
         }
     }
 

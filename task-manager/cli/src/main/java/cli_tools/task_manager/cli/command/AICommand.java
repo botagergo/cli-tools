@@ -1,5 +1,6 @@
 package cli_tools.task_manager.cli.command;
 
+import cli_tools.common.backend.service.ServiceException;
 import cli_tools.common.cli.command.Command;
 import cli_tools.common.core.data.OutputFormat;
 import cli_tools.common.core.util.Print;
@@ -50,7 +51,7 @@ public final class AICommand extends Command {
             ChatCompletionRequest request = buildRequest(taskManagerContext, functions, taskManagerContext.getOpenAiChatMessages());
 
             ChatCompletionResult result = taskManagerContext.getOpenAiService().createChatCompletion(request);
-            ChatMessage response = result.getChoices().get(0).getMessage();
+            ChatMessage response = result.getChoices().getFirst().getMessage();
             ChatFunctionCall functionCall = response.getFunctionCall();
             if (functionCall != null) {
                 ChatMessage functionResponseMessage = executeFunction(taskManagerContext, functionCall);
@@ -59,7 +60,7 @@ public final class AICommand extends Command {
                 }
 
                 request = buildRequest(taskManagerContext, functions, taskManagerContext.getOpenAiChatMessages());
-                response = taskManagerContext.getOpenAiService().createChatCompletion(request).getChoices().get(0).getMessage();
+                response = taskManagerContext.getOpenAiService().createChatCompletion(request).getChoices().getFirst().getMessage();
                 taskManagerContext.getOpenAiChatMessages().add(response);
             }
 
@@ -125,7 +126,7 @@ public final class AICommand extends Command {
                 .build();
     }
 
-    private ChatMessage executeFunction(TaskManagerContext context, ChatFunctionCall functionCall) throws IOException {
+    private ChatMessage executeFunction(TaskManagerContext context, ChatFunctionCall functionCall) throws IOException, ServiceException {
         if (functionCall.getName().equals("list_tasks")) {
             listTasks(context, functionCall.getArguments());
         } else if (functionCall.getName().equals("add_tasks")) {

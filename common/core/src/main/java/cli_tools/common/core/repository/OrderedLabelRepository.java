@@ -1,20 +1,19 @@
 package cli_tools.common.core.repository;
 
-import cli_tools.common.core.data.OrderedLabel;
+import lombok.NonNull;
 
-import java.io.IOException;
 import java.util.List;
 
 public interface OrderedLabelRepository {
 
-    void create(String type, String text) throws IOException;
+    boolean create(@NonNull String type, @NonNull String text, int value) throws DataAccessException;
 
-    String get(String type, int value) throws IOException;
+    String get(@NonNull String type, int value) throws DataAccessException;
 
-    List<String> getAll(String type) throws IOException;
+    @NonNull List<String> getAll(@NonNull String type) throws DataAccessException;
 
-    Integer find(String type, String text) throws IOException;
+    Integer find(@NonNull String type, @NonNull String text) throws DataAccessException;
 
-    void deleteAll(String type) throws IOException;
+    void deleteAll(@NonNull String type) throws DataAccessException;
 
 }

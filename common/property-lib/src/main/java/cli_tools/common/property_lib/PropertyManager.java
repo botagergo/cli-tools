@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 
-import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -22,7 +21,7 @@ public class PropertyManager {
     }
 
     public Property getProperty(PropertyOwner propertyOwner, String propertyName)
-            throws PropertyException, IOException {
+            throws PropertyException {
         log.debug("getProperty - {}", propertyName);
 
         PropertyDescriptor propertyDescriptor = getPropertyDescriptor(propertyName);
@@ -33,7 +32,7 @@ public class PropertyManager {
     }
 
     public Property getProperty(PropertyOwner propertyOwner, PropertyDescriptor propertyDescriptor)
-            throws PropertyException, IOException {
+            throws PropertyException {
         Object propertyValue;
         if (propertyDescriptor.pseudoPropertyProvider() != null) {
             propertyValue = propertyDescriptor.pseudoPropertyProvider().getProperty(this, propertyOwner);
@@ -57,7 +56,7 @@ public class PropertyManager {
         propertyOwner.getProperties().put(propertyName, property.getValue());
     }
 
-    public void addPropertyValues(PropertyOwner propertyOwner, String propertyName, Collection<Object> propertyValue) throws PropertyException, IOException {
+    public void addPropertyValues(PropertyOwner propertyOwner, String propertyName, Collection<Object> propertyValue) throws PropertyException {
         log.debug("addProperty - {}", propertyName);
 
         if (propertyValue == null) {
@@ -91,7 +90,7 @@ public class PropertyManager {
         propertyOwner.getProperties().put(propertyName, newProperty);
     }
 
-    public void removePropertyValues(PropertyOwner propertyOwner, String propertyName, Collection<Object> propertyValue) throws PropertyException, IOException {
+    public void removePropertyValues(PropertyOwner propertyOwner, String propertyName, Collection<Object> propertyValue) throws PropertyException {
         log.debug("removeProperty - {}", propertyName);
 
         if (propertyValue == null) {
@@ -129,7 +128,7 @@ public class PropertyManager {
         propertyOwner.getProperties().remove(propertyName);
     }
 
-    public PropertyDescriptor getPropertyDescriptor(String propertyName) throws PropertyException {
+    public PropertyDescriptor getPropertyDescriptor(String propertyName) {
         return propertyDescriptorCollection.get(propertyName);
     }
 

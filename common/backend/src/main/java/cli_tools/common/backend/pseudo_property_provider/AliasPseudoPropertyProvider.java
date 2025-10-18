@@ -6,8 +6,6 @@ import cli_tools.common.property_lib.PropertyOwner;
 import cli_tools.common.property_lib.PseudoPropertyProvider;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.io.IOException;
-
 public class AliasPseudoPropertyProvider implements PseudoPropertyProvider {
     private final String propertyName;
 
@@ -16,7 +14,13 @@ public class AliasPseudoPropertyProvider implements PseudoPropertyProvider {
     }
 
     @Override
-    public Object getProperty(PropertyManager propertyManager, PropertyOwner propertyOwner) throws IOException, PropertyException {
+    public Object getProperty(PropertyManager propertyManager, PropertyOwner propertyOwner) throws PropertyException {
         return propertyManager.getProperty(propertyOwner, propertyName).getValue();
     }
+
+    @Override
+    public String toString() {
+        return "AliasPseudoPropertyProvider(%s)".formatted(propertyName);
+    }
+
 }

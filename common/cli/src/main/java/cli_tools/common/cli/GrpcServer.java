@@ -64,7 +64,7 @@ public class GrpcServer {
         @Override
         public void executeCommand(CliOuterClass.Command request,
                                    StreamObserver<CliOuterClass.CommandOutput> responseObserver) {
-            Print.print("Executing command: %s", request.getCommand());
+            log.info("Executing command: {}", request.getCommand());
             ByteArrayOutputStream out = new ByteArrayOutputStream();
             System.setOut(new PrintStream(out));
             executor.execute(request.getCommand());

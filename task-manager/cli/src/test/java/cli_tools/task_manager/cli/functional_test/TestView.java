@@ -1,5 +1,6 @@
 package cli_tools.task_manager.cli.functional_test;
 
+import cli_tools.common.backend.service.ServiceException;
 import cli_tools.common.core.data.*;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -12,16 +13,14 @@ import static org.testng.Assert.assertEquals;
 public class TestView extends TestBase {
 
     @BeforeClass
-    void setupTasks() {
+    void setup() throws ServiceException, IOException {
+        super.setup();
         execute("add go to the post office status:NextAction effort:Medium priority:Low",
                 "add buy a new TV status:NextAction effort:Low dueDate:tomorrow",
-                "add read a book status:OnHold effort:Low startDate:+31weeks priority:High",
-                "add buy a book status:Waiting parent:%s".formatted(uuids[2]),
+                "add read a book status:OnHold effort:Low startDate:+31weeks priority:High parent:%s".formatted(uuids[7]),
+                "add buy a book status:Waiting parent",
                 "add repair bicycle effort:High");
-    }
 
-    @BeforeClass
-    void setupViews() throws IOException {
         context.getViewInfoService().addViewInfo("default_view", ViewInfo.builder()
                 .filterCriterionInfo(FilterCriterionInfo.builder()
                         .type(FilterCriterionInfo.Type.PROPERTY)

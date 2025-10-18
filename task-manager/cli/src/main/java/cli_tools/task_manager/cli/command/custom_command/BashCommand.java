@@ -1,5 +1,6 @@
 package cli_tools.task_manager.cli.command.custom_command;
 
+import cli_tools.common.backend.property_converter.PropertyConverterException;
 import cli_tools.common.cli.Context;
 import cli_tools.common.cli.argument.PropertyArgument;
 import cli_tools.common.cli.command.custom_command.CustomCommand;
@@ -16,7 +17,6 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.extern.log4j.Log4j2;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -55,7 +55,7 @@ public class BashCommand extends CustomCommand {
         }
     }
 
-    private void fillEnv(List<Task> tasks, Map<String, String> env, Context context) throws PropertyException, IOException {
+    private void fillEnv(List<Task> tasks, Map<String, String> env, Context context) throws PropertyException, PropertyConverterException {
         for (int i = 0; i < tasks.size(); i++) {
             for (var entry : tasks.get(i).getProperties().entrySet()) {
                 String propertyName = entry.getKey();

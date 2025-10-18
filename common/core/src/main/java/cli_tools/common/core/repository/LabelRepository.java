@@ -1,21 +1,25 @@
 package cli_tools.common.core.repository;
 
-import java.io.IOException;
+import lombok.NonNull;
+
+import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.UUID;
 
 public interface LabelRepository {
 
-    boolean create(String labelType, String labelText) throws IOException;
+    @NonNull UUID create(@NonNull String labelType, @NonNull String labelText) throws DataAccessException;
 
-    boolean exists(String labelType, String labelName) throws IOException;
+    String get(@NonNull String labelType, @NonNull UUID uuid) throws DataAccessException;
 
-    List<String> getAllWithType(String labelType) throws IOException;
+    UUID find(@NonNull String labelType, @NonNull String labelText) throws DataAccessException;
 
-    Map<String, List<String>> getAll() throws IOException;
+    @NonNull List<String> getAllWithType(@NonNull String labelType) throws DataAccessException;
 
-    boolean delete(String labelType, String labelText) throws IOException;
+    @NonNull LinkedHashMap<String, LinkedHashMap<UUID, String>> getAll() throws DataAccessException;
 
-    void deleteAll(String labelType) throws IOException;
+    boolean delete(@NonNull String labelType, @NonNull UUID uuid) throws DataAccessException;
+
+    void deleteAll(@NonNull String labelType) throws DataAccessException;
 
 }

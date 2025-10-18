@@ -1,18 +1,18 @@
 package cli_tools.common.core.repository;
 
 import cli_tools.common.property_lib.PropertyDescriptor;
+import lombok.NonNull;
 
-import java.io.IOException;
 import java.util.List;
 
 public interface PropertyDescriptorRepository {
 
-    void create(PropertyDescriptor propertyDescriptor) throws IOException;
+    void create(@NonNull PropertyDescriptor propertyDescriptor) throws DataAccessException;
 
-    PropertyDescriptor get(String name) throws IOException;
+    PropertyDescriptor get(@NonNull String name) throws DataAccessException;
 
-    List<PropertyDescriptor> find(String name) throws IOException;
+    @NonNull List<PropertyDescriptor> find(@NonNull String name) throws DataAccessException;
 
-    List<PropertyDescriptor> getAll() throws IOException;
+    @NonNull List<PropertyDescriptor> getAll() throws DataAccessException;
 
 }

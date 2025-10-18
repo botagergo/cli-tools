@@ -1,5 +1,6 @@
 package cli_tools.task_manager.backend.task.repository;
 
+import cli_tools.common.util.UUIDGenerator;
 import cli_tools.task_manager.backend.task.Task;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,14 +15,17 @@ import java.util.*;
 @AllArgsConstructor
 public class SimpleTaskRepository implements TaskRepository {
 
+    private final UUIDGenerator uuidGenerator;
     private List<Task> tasks;
 
-    public SimpleTaskRepository() {
+    public SimpleTaskRepository(UUIDGenerator uuidGenerator) {
+        this.uuidGenerator = uuidGenerator;
         tasks = new ArrayList<>();
     }
 
     @Override
-    public Task create(@NonNull Task task) {
+    public @NonNull Task create(@NonNull Task task) {
+        task.getProperties().put("uuid", uuidGenerator.getUUID());
         tasks.add(task);
         return task;
     }
@@ -37,13 +41,13 @@ public class SimpleTaskRepository implements TaskRepository {
     }
 
     @Override
-    public List<Task> getAll() {
+    public @NonNull List<Task> getAll() {
         return tasks;
     }
 
     @Override
-    public Task update(@NonNull UUID taskUuid, @NonNull Task task) {
-        Optional<Task> taskToUpdateOptional = tasks.stream().filter(t -> t.getUUID() == taskUuid).findFirst();
+    public Task update(@NonNull Task task) {
+        Optional<Task> taskToUpdateOptional = tasks.stream().filter(t -> t.getUUID() == task.getUUID()).findFirst();
         if (taskToUpdateOptional.isEmpty()) {
             return null;
         }

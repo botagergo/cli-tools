@@ -1,11 +1,12 @@
 package cli_tools.common.backend.property_comparator;
 
+import cli_tools.common.backend.service.ServiceException;
 import cli_tools.common.property_lib.PropertyDescriptor;
 
-public class PropertyNotComparableException extends Exception {
+public class PropertyNotComparableException extends ServiceException {
 
     public PropertyNotComparableException(PropertyDescriptor propertyDescriptor) {
-        super("Property type '" + propertyDescriptor.type() + " " + propertyDescriptor.multiplicity() + "' is not comparable");
+        super("Property type '" + propertyDescriptor.type() + " " + propertyDescriptor.multiplicity() + "' is not comparable", null);
     }
 
 }

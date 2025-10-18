@@ -6,9 +6,9 @@ plugins {
 dependencies {
     implementation          project(':common:util')
     implementation          project(':common:property-lib')
-    testImplementation      project(':common:property-lib')
     implementation          project(':common:backend')
     implementation          project(':common:core')
+    testImplementation      project(':common:test-utils')
 
     implementation          libs.jackson.databind
     api                     libs.grpc.netty

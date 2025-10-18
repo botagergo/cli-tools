@@ -1,8 +1,8 @@
 package cli_tools.task_manager.backend.task;
 
-import cli_tools.common.util.RoundRobinUUIDGenerator;
 import cli_tools.common.util.UUIDGenerator;
 import cli_tools.common.util.Utils;
+import cli_tools.test_utils.RoundRobinUUIDGenerator;
 import org.testng.annotations.Test;
 
 import java.util.HashMap;

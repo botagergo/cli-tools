@@ -2,6 +2,7 @@ package cli_tools.common.backend.view.repository;
 
 import cli_tools.common.core.data.*;
 import cli_tools.common.backend.service.JsonRepositoryCreator;
+import cli_tools.common.core.repository.DataAccessException;
 import org.testng.annotations.Test;
 
 import java.io.File;
@@ -148,7 +149,7 @@ public class JsonViewInfoRepositoryTest {
                 }
                 """);
         repository = new JsonViewInfoRepository(tempFile);
-        assertThrows(IOException.class, () -> repository.get("view"));
+        assertThrows(DataAccessException.class, () -> repository.get("view"));
     }
 
     @Test
@@ -165,7 +166,7 @@ public class JsonViewInfoRepositoryTest {
                 }
                 """);
         repository = new JsonViewInfoRepository(tempFile);
-        assertThrows(IOException.class, () -> repository.get("view"));
+        assertThrows(DataAccessException.class, () -> repository.get("view"));
     }
 
     @Test
@@ -182,7 +183,7 @@ public class JsonViewInfoRepositoryTest {
                 }
                 """);
         repository = new JsonViewInfoRepository(tempFile);
-        assertThrows(IOException.class, () -> repository.get("view"));
+        assertThrows(DataAccessException.class, () -> repository.get("view"));
     }
 
     @Test
@@ -201,7 +202,7 @@ public class JsonViewInfoRepositoryTest {
                 }
                 """);
         repository = new JsonViewInfoRepository(tempFile);
-        assertThrows(IOException.class, () -> repository.get("view"));
+        assertThrows(DataAccessException.class, () -> repository.get("view"));
     }
 
     @Test
@@ -219,7 +220,7 @@ public class JsonViewInfoRepositoryTest {
                 }
                 """);
         repository = new JsonViewInfoRepository(tempFile);
-        assertThrows(IOException.class, () -> repository.get("view"));
+        assertThrows(DataAccessException.class, () -> repository.get("view"));
     }
 
     @Test
@@ -237,7 +238,7 @@ public class JsonViewInfoRepositoryTest {
                 }
                 """);
         repository = new JsonViewInfoRepository(tempFile);
-        assertThrows(IOException.class, () -> repository.get("view"));
+        assertThrows(DataAccessException.class, () -> repository.get("view"));
     }
 
     @Test
@@ -255,7 +256,7 @@ public class JsonViewInfoRepositoryTest {
                 }
                 """);
         repository = new JsonViewInfoRepository(tempFile);
-        assertThrows(IOException.class, () -> repository.get("view"));
+        assertThrows(DataAccessException.class, () -> repository.get("view"));
     }
 
     @Test
@@ -376,7 +377,7 @@ public class JsonViewInfoRepositoryTest {
                     [{"view1":{}]
                 """);
         repository = new JsonViewInfoRepository(tempFile);
-        assertThrows(IOException.class, () -> repository.get("view1"));
+        assertThrows(DataAccessException.class, () -> repository.get("view1"));
     }
 
 }

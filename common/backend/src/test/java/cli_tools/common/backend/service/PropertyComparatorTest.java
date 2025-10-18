@@ -3,7 +3,7 @@ package cli_tools.common.backend.service;
 import cli_tools.common.backend.property_comparator.PropertyComparator;
 import cli_tools.common.property_lib.Property;
 import cli_tools.common.property_lib.PropertyDescriptor;
-import cli_tools.common.util.RoundRobinUUIDGenerator;
+import cli_tools.test_utils.RoundRobinUUIDGenerator;
 import org.testng.annotations.Test;
 
 import static org.testng.Assert.*;

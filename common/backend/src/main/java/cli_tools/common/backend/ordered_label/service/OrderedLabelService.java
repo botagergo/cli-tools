@@ -1,18 +1,19 @@
 package cli_tools.common.backend.ordered_label.service;
 
+import cli_tools.common.backend.service.ServiceException;
 import cli_tools.common.core.data.OrderedLabel;
+import lombok.NonNull;
 
-import java.io.IOException;
 import java.util.List;
 
 public interface OrderedLabelService {
-    OrderedLabel getOrderedLabel(String labelType, int labelValue) throws IOException;
+    OrderedLabel getOrderedLabel(@NonNull String labelType, int labelValue) throws ServiceException;
 
-    OrderedLabel findOrderedLabel(String labelType, String labelText) throws IOException;
+    OrderedLabel findOrderedLabel(@NonNull String labelType, @NonNull String labelText) throws ServiceException;
 
-    void createOrderedLabel(String labelType, String labelText) throws IOException;
+    void createOrderedLabel(@NonNull String labelType, @NonNull String labelText, int labelValue) throws ServiceException;
 
-    List<OrderedLabel> getOrderedLabels(String labelType) throws IOException;
+    @NonNull List<OrderedLabel> getOrderedLabels(@NonNull String labelType) throws ServiceException;
 
-    void deleteAllOrderedLabels(String labelType) throws IOException;
+    void deleteAllOrderedLabels(@NonNull String labelType) throws ServiceException;
 }

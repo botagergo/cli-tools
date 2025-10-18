@@ -1,0 +1,1 @@
+result = java.lang.System.getProperty("log.to.stdout") == null;

@@ -1,9 +1,10 @@
 package cli_tools.common.cli.string_to_property_converter;
 
+import cli_tools.common.backend.service.ServiceException;
 import lombok.Getter;
 
 @Getter
-public class StringToPropertyConverterException extends Exception {
+public class StringToPropertyConverterException extends ServiceException {
 
     final Type exceptionType;
     final String argument;

@@ -4,6 +4,7 @@ import cli_tools.common.core.data.FilterCriterionInfo;
 import cli_tools.common.core.data.SortingCriterion;
 import cli_tools.common.core.data.SortingInfo;
 import cli_tools.common.core.data.ViewInfo;
+import cli_tools.common.core.repository.DataAccessException;
 import cli_tools.common.core.repository.ViewInfoRepository;
 import cli_tools.common.backend.repository.SimpleJsonRepository;
 import com.fasterxml.jackson.databind.JavaType;
@@ -12,7 +13,6 @@ import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.HashMap;
 
 public class JsonViewInfoRepository extends SimpleJsonRepository<HashMap<String, ViewInfo>> implements ViewInfoRepository {
@@ -27,18 +27,18 @@ public class JsonViewInfoRepository extends SimpleJsonRepository<HashMap<String,
     }
 
     @Override
-    public ViewInfo get(String name) throws IOException {
+    public ViewInfo get(String name) throws DataAccessException {
         return getData().getOrDefault(name, null);
     }
 
     @Override
-    public void create(String name, ViewInfo viewInfo) throws IOException {
+    public void create(String name, ViewInfo viewInfo) throws DataAccessException {
         getData().put(name, viewInfo);
         writeData();
     }
 
     @Override
-    public void deleteAll() throws IOException {
+    public void deleteAll() throws DataAccessException {
         getData().clear();
         writeData();
     }

@@ -1,18 +1,17 @@
 package cli_tools.task_manager.cli.command;
 
+import cli_tools.common.backend.service.ServiceException;
 import cli_tools.common.cli.argument.PropertyArgument;
-import cli_tools.common.cli.string_to_property_converter.StringToPropertyConverterException;
 import cli_tools.common.core.data.OutputFormat;
 import cli_tools.common.core.data.property.FilterPropertySpec;
+import cli_tools.common.core.util.Print;
 import cli_tools.common.property_lib.PropertyException;
 import cli_tools.common.property_lib.PropertyManager;
-import cli_tools.task_manager.cli.TaskManagerContext;
 import cli_tools.task_manager.backend.task.Task;
-import cli_tools.task_manager.backend.task.service.TaskServiceException;
+import cli_tools.task_manager.cli.TaskManagerContext;
 import lombok.NonNull;
 import lombok.extern.log4j.Log4j2;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -23,7 +22,7 @@ import java.util.stream.Collectors;
 public class CommandUtil {
     private static final Scanner scanner = new Scanner(System.in);
 
-    public static List<UUID> getUUIDsFromTempIDs(@NonNull TaskManagerContext context, List<Integer> tempIDs) throws IOException {
+    public static List<UUID> getUUIDsFromTempIDs(@NonNull TaskManagerContext context, List<Integer> tempIDs) {
         if (tempIDs == null || tempIDs.isEmpty()) {
             return null;
         }
@@ -41,14 +40,14 @@ public class CommandUtil {
         }
 
         if (!nonexistentTempIds.isEmpty()) {
-            throw new IllegalArgumentException("no task with temporary ID: %s".formatted(
+            throw new IllegalArgumentException("No task with temporary ID: %s".formatted(
                     nonexistentTempIds.stream().map(Object::toString).collect(Collectors.joining(", "))));
         }
 
         return uuids;
     }
 
-    public static List<FilterPropertySpec> getFilterPropertySpecs(@NonNull TaskManagerContext context, List<PropertyArgument> filterPropertyArgs) throws StringToPropertyConverterException, PropertyException, IOException {
+    public static List<FilterPropertySpec> getFilterPropertySpecs(@NonNull TaskManagerContext context, List<PropertyArgument> filterPropertyArgs) throws ServiceException {
         if (filterPropertyArgs != null && !filterPropertyArgs.isEmpty()) {
             return context.getStringToPropertyConverter().convertPropertiesForFiltering(filterPropertyArgs, false);
         } else {
@@ -62,7 +61,7 @@ public class CommandUtil {
             List<Integer> tempIDs,
             List<FilterPropertySpec> filterPropertySpecs,
             @NonNull ChangeType changeType
-    ) throws PropertyException, IOException, TaskServiceException {
+    ) throws TaskPrinterException, PropertyException {
         if (context.getConfigurationRepository().disableConfirmation() || tempIDs != null && !tempIDs.isEmpty()) {
             return tasks;
         }
@@ -116,7 +115,7 @@ public class CommandUtil {
         return message;
     }
 
-    private static List<Task> pickTasks(PropertyManager propertyManager, List<Task> tasks, ChangeType changeType) throws PropertyException, IOException {
+    private static List<Task> pickTasks(PropertyManager propertyManager, List<Task> tasks, ChangeType changeType) throws PropertyException {
         List<Task> tasksToChange = new ArrayList<>();
 
         for (Task task : tasks) {

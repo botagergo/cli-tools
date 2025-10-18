@@ -1,6 +1,8 @@
 package cli_tools.task_manager.cli.functional_test;
 
+import cli_tools.common.backend.service.ServiceException;
 import cli_tools.task_manager.backend.task.Task;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.io.IOException;
@@ -11,7 +13,7 @@ import static org.testng.Assert.assertEquals;
 public class TestTempId extends TestBase {
 
     @Test
-    void test_temp_id() throws IOException {
+    void test_temp_id() throws IOException, ServiceException {
         execute("~ list");
         assertStdoutContains("no previous temp id exists");
 

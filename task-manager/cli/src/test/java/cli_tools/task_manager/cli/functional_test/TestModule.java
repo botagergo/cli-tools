@@ -25,24 +25,22 @@ import cli_tools.common.backend.property_descriptor.service.PropertyDescriptorSe
 import cli_tools.common.backend.property_descriptor.service.PropertyDescriptorServiceImpl;
 import cli_tools.common.property_lib.PropertyManager;
 import cli_tools.common.backend.temp_id_mapping.TempIDManager;
-import cli_tools.common.util.RoundRobinUUIDGenerator;
 import cli_tools.common.util.UUIDGenerator;
 import cli_tools.common.backend.view.repository.JsonViewInfoRepository;
 import cli_tools.common.backend.view.service.ViewInfoService;
 import cli_tools.common.backend.view.service.ViewInfoServiceImpl;
-import cli_tools.task_manager.cli.OsDirs;
 import cli_tools.task_manager.cli.TaskManagerContext;
 import cli_tools.task_manager.cli.command.custom_command.CustomCommandDefinitionMixIn;
 import cli_tools.task_manager.cli.command.custom_command.CustomCommandParserFactoryImpl;
 import cli_tools.task_manager.backend.pseudo_property_provider.PseudoPropertyProviderMixIn;
 import cli_tools.task_manager.backend.task.repository.JsonTaskRepository;
-import cli_tools.task_manager.backend.task.repository.TaskRepository;
 import cli_tools.task_manager.backend.task.service.TaskService;
 import cli_tools.task_manager.backend.task.service.TaskServiceImpl;
+import cli_tools.test_utils.FileUtils;
+import cli_tools.test_utils.RoundRobinUUIDGenerator;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
-import com.google.inject.name.Named;
 import com.google.inject.name.Names;
 import lombok.SneakyThrows;
 
@@ -51,11 +49,16 @@ import java.io.IOException;
 
 
 public class TestModule extends AbstractModule {
+
+    private final FileUtils fileUtils = new FileUtils();
+
+    public TestModule() throws IOException {}
+
     @Provides
     @Singleton
-    CustomCommandRepository customCommandRepository() throws IOException {
+    CustomCommandRepository customCommandRepository() {
         JsonCustomCommandRepository jsonCustomCommandRepository =
-                new JsonCustomCommandRepository(OsDirs.getFile(OsDirs.DirType.TEST, null, "custom_command_definition.json"));
+                new JsonCustomCommandRepository(fileUtils.getTempFile("property_descriptors"));
         jsonCustomCommandRepository.setMixIn(CustomCommandDefinitionMixIn.class);
         return jsonCustomCommandRepository;
     }
@@ -66,10 +69,10 @@ public class TestModule extends AbstractModule {
             PropertyManager propertyManager,
             UUIDGenerator uuidGenerator,
             PropertyConverter propertyConverter,
-            TempIDManager tempIdManager) throws IOException {
+            TempIDManager tempIdManager) {
         return new TaskServiceImpl(
-                new JsonTaskRepository(OsDirs.getFile(OsDirs.DirType.TEST, null,"task.json")),
-                new JsonTaskRepository(OsDirs.getFile(OsDirs.DirType.TEST, null, "done_task.json")),
+                new JsonTaskRepository(fileUtils.getTempFile("tasks"), uuidGenerator),
+                new JsonTaskRepository(fileUtils.getTempFile("done_tasks"), uuidGenerator),
                 propertyManager,
                 uuidGenerator,
                 propertyConverter,
@@ -79,17 +82,16 @@ public class TestModule extends AbstractModule {
     @Provides
     @Singleton
     PropertyDescriptorRepository propertyDescriptorRepository(
-            TempIDManager tempIdManager,
-            @Named("propertyDescriptorJsonFile") File propertyDescriptorFile
+            TempIDManager tempIdManager
     ) {
         return new JsonPropertyDescriptorRepository(
-                propertyDescriptorFile,
+                fileUtils.getTempFile("property_descriptor"),
                 tempIdManager,
                 PseudoPropertyProviderMixIn.class);
     }
 
     @Provides
-    JlineCommandLine jlineCommandLine(Executor executor) throws IOException {
+    JlineCommandLine jlineCommandLine(Executor executor) {
         return new JlineCommandLine(executor, null, new File("history"));
     }
 
@@ -99,7 +101,6 @@ public class TestModule extends AbstractModule {
         bind(Tokenizer.class).to(TokenizerImpl.class);
         bind(CommandParserFactory.class).to(CommandParserFactoryImpl.class).asEagerSingleton();
         bind(CustomCommandParserFactory.class).to(CustomCommandParserFactoryImpl.class).asEagerSingleton();
-        bind(TaskRepository.class).to(JsonTaskRepository.class).asEagerSingleton();
         bind(ViewInfoRepository.class).to(JsonViewInfoRepository.class).asEagerSingleton();
         bind(LabelRepository.class).to(JsonLabelRepository.class).asEagerSingleton();
         bind(ConfigurationRepository.class).to(MockConfigurationRepository.class).asEagerSingleton();
@@ -116,13 +117,12 @@ public class TestModule extends AbstractModule {
         bind(Context.class).to(TaskManagerContext.class);
         bind(CommandLine.class).to(JlineCommandLine.class);
 
-        bind(File.class).annotatedWith(Names.named("taskJsonFile")).toInstance(OsDirs.getFile(OsDirs.DirType.TEST, null,"task.json"));
-        bind(File.class).annotatedWith(Names.named("propertyDescriptorJsonFile")).toInstance(OsDirs.getFile(OsDirs.DirType.TEST,null, "property_descriptor.json"));
-        bind(File.class).annotatedWith(Names.named("labelJsonFile")).toInstance(OsDirs.getFile(OsDirs.DirType.TEST,null, "label.json"));
-        bind(File.class).annotatedWith(Names.named("orderedLabelJsonFile")).toInstance(OsDirs.getFile(OsDirs.DirType.TEST,null, "ordered_label.json"));
-        bind(File.class).annotatedWith(Names.named("viewJsonFile")).toInstance(OsDirs.getFile(OsDirs.DirType.TEST,null, "view.json"));
-        bind(File.class).annotatedWith(Names.named("propertyToStringConverterJsonFile")).toInstance(OsDirs.getFile(OsDirs.DirType.TEST, null, "property_to_string_converter.json"));
-        bind(File.class).annotatedWith(Names.named("configurationYamlFile")).toInstance(OsDirs.getFile(OsDirs.DirType.TEST,null, "config.yaml"));
+        bind(File.class).annotatedWith(Names.named("propertyDescriptorJsonFile")).toInstance(fileUtils.getTempFile("property_descriptor"));
+        bind(File.class).annotatedWith(Names.named("labelJsonFile")).toInstance(fileUtils.getTempFile("label"));
+        bind(File.class).annotatedWith(Names.named("orderedLabelJsonFile")).toInstance(fileUtils.getTempFile("ordered_label"));
+        bind(File.class).annotatedWith(Names.named("viewJsonFile")).toInstance(fileUtils.getTempFile("view"));
+        bind(File.class).annotatedWith(Names.named("propertyToStringConverterJsonFile")).toInstance(fileUtils.getTempFile("property_to_string_converter"));
+        bind(File.class).annotatedWith(Names.named("configurationYamlFile")).toInstance(fileUtils.getTempFile("config"));
     }
 
 }

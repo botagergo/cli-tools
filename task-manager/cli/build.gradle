@@ -21,6 +21,7 @@ dependencies {
     implementation          project(':common:cli')
     implementation          project(':common:core')
     implementation          project(':common:backend')
+    testImplementation      project(':common:test-utils')
     implementation          project(':task-manager:backend')
 
     implementation          libs.commons.cli
@@ -36,6 +37,9 @@ dependencies {
     runtimeOnly             libs.log4j.jul
     implementation          libs.openai.gpt3
     implementation          libs.snakeyaml
+
+    // https://mvnrepository.com/artifact/com.zaxxer/HikariCP
+    implementation 'com.zaxxer:HikariCP:7.0.2'
 }
 
 application {
@@ -64,18 +68,18 @@ docker {
 }
 
 tasks.register("createDockerfile", Dockerfile) {
-    dependsOn shadowJar
     def jarName = shadowJar.archiveFileName.get()
     from "eclipse-temurin:21-jre-alpine"
     copyFile("build/libs/$jarName", "/app/")
-    entryPoint("java", "-jar", "/app/$jarName", "--daemon")
+    entryPoint("java", "-Dlog.to.stdout=true", "-jar", "/app/$jarName", "--daemon", "--database-mode", "postgresql")
 }
 
 tasks.register("buildDockerImage", DockerBuildImage) {
-    dependsOn createDockerfile
+    dependsOn createDockerfile, shadowJar
     inputDir = project.projectDir
     setDockerFile(new File("build/docker/Dockerfile"))
     images.add("task-manager-daemon:latest")
+    network = "host"
 }
 
 tasks.register("createDockerContainer", DockerCreateContainer) {
@@ -89,3 +93,6 @@ tasks.register("startDockerContainer", DockerStartContainer) {
     containerId = createDockerContainer.getContainerId()
 }
 
+tasks.named("dockerSyncBuildContext").configure {
+    duplicatesStrategy DuplicatesStrategy.INCLUDE
+}

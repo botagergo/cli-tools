@@ -1,9 +1,10 @@
 package cli_tools.common.backend.repository;
 
-import com.fasterxml.jackson.core.exc.StreamReadException;
+import cli_tools.common.core.repository.DataAccessException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.type.TypeFactory;
+import lombok.Getter;
 
 import java.io.File;
 import java.io.IOException;
@@ -11,6 +12,7 @@ import java.io.IOException;
 public abstract class JsonRepository<T_Json, T_Stored> {
 
     private final ObjectMapper objectMapper;
+    @Getter
     private final File jsonFile;
     private T_Stored data = null;
     private ObjectWriter objectWriter;
@@ -22,9 +24,18 @@ public abstract class JsonRepository<T_Json, T_Stored> {
         objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
     }
 
-    public T_Stored getData() throws IOException {
+    public T_Stored getData() throws DataAccessException {
         if (data == null) {
-            data = jsonToStoredData(loadData());
+            T_Json jsonData;
+            try {
+                jsonData = loadData();
+            } catch (IOException e) {
+                throw new DataAccessException("Error reading JSON file: %s".formatted(jsonFile.getAbsolutePath()), e);
+            }
+            data = jsonToStoredData(jsonData);
+            if (data == null) {
+                throw new DataAccessException("JSON contains null: " + jsonFile.getAbsolutePath(), null);
+            }
         }
         return data;
     }
@@ -41,43 +52,12 @@ public abstract class JsonRepository<T_Json, T_Stored> {
         return null;
     }
 
-    public void writeData() throws IOException {
+    public void writeData() throws DataAccessException {
         try {
-            if (!jsonFile.exists()) {
-                File parent = jsonFile.getParentFile();
-                if (parent != null && !parent.exists()) {
-                    //noinspection ResultOfMethodCallIgnored
-                    parent.mkdirs();
-                }
-            }
-
             getObjectWriter().writeValue(jsonFile, storedToJsonData(data));
         } catch (IOException e) {
-            throw new IOException("Failed to write JSON file: " + jsonFile, e);
+            throw new DataAccessException("Error writing JSON file: " + jsonFile.getAbsolutePath(), e);
         }
-    }
-
-    protected T_Json loadData() throws IOException {
-        T_Json data;
-        try {
-            if (jsonFile.exists() && jsonFile.length() > 0) {
-                data = getObjectReader().readValue(jsonFile);
-            } else {
-                data = getEmptyData();
-            }
-        } catch (StreamReadException e) {
-            throw new IOException("Failed to parse JSON file: " + jsonFile, e);
-        } catch (DatabindException e) {
-            throw new IOException("JSON file contains invalid data: " + jsonFile, e);
-        } catch (IOException e) {
-            throw new IOException("Failed to read JSON file: " + jsonFile, e);
-        }
-
-        if (data == null) {
-            throw new IOException("JSON contains null: " + jsonFile);
-        }
-
-        return data;
     }
 
     protected abstract T_Stored jsonToStoredData(T_Json data);
@@ -98,6 +78,14 @@ public abstract class JsonRepository<T_Json, T_Stored> {
             }
         }
         return objectReader;
+    }
+
+    private T_Json loadData() throws IOException {
+        if (jsonFile.exists() && jsonFile.length() > 0) {
+            return getObjectReader().readValue(jsonFile);
+        } else {
+            return getEmptyData();
+        }
     }
 
     private ObjectWriter getObjectWriter() {

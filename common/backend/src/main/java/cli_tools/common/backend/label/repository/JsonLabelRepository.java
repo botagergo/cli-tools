@@ -1,78 +1,97 @@
 package cli_tools.common.backend.label.repository;
 
+import cli_tools.common.core.repository.ConstraintViolationException;
+import cli_tools.common.core.repository.DataAccessException;
 import cli_tools.common.core.repository.LabelRepository;
 import cli_tools.common.backend.repository.SimpleJsonRepository;
+import cli_tools.common.util.UUIDGenerator;
 import com.fasterxml.jackson.core.type.TypeReference;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NonNull;
 
 import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-public class JsonLabelRepository extends SimpleJsonRepository<LinkedHashMap<String, List<String>>> implements LabelRepository {
+@Getter
+public class JsonLabelRepository extends SimpleJsonRepository<LinkedHashMap<String, LinkedHashMap<UUID, String>>> implements LabelRepository {
+
+    private final UUIDGenerator uuidGenerator;
 
     @Inject
-    public JsonLabelRepository(@Named("labelJsonFile") File jsonFile) {
+    public JsonLabelRepository(UUIDGenerator uuidGenerator, @Named("labelJsonFile") File jsonFile) {
         super(jsonFile);
+        this.uuidGenerator = uuidGenerator;
     }
 
     @Override
-    public boolean create(String labelType, String labelText) throws IOException {
-        List<String> labelTexts = getData().computeIfAbsent(labelType, k -> new ArrayList<>());
-        if (!labelTexts.contains(labelText)) {
-            labelTexts.add(labelText);
+    public @NonNull UUID create(@NonNull String labelType, @NonNull String labelText) throws DataAccessException {
+        LinkedHashMap<UUID, String> labelTexts = getData().computeIfAbsent(labelType, k -> new LinkedHashMap<>());
+        if (!labelTexts.containsValue(labelText)) {
+            UUID uuid = uuidGenerator.getUUID();
+            labelTexts.put(uuid, labelText);
             writeData();
-            return true;
+            return uuid;
         } else {
-            return false;
+            throw new ConstraintViolationException("Label '%s' (%s) already exists".formatted(labelText, labelType), null);
         }
     }
 
     @Override
-    public boolean exists(String labelType, String labelText) throws IOException {
-        List<String> labelTexts = getData().get(labelType);
+    public String get(@NonNull String labelType, @NonNull UUID uuid) throws DataAccessException {
+        LinkedHashMap<UUID, String> labelTexts = getData().get(labelType);
         if (labelTexts == null) {
-            return false;
+            return null;
         }
-        return labelTexts.contains(labelText);
+        return labelTexts.get(uuid);
     }
 
     @Override
-    public List<String> getAllWithType(String labelType) throws IOException {
-        return getData().getOrDefault(labelType, List.of());
+    public UUID find(@NonNull String labelType, @NonNull String labelText) throws DataAccessException {
+        LinkedHashMap<UUID, String> labelTexts = getData().get(labelType);
+        if (labelTexts == null) {
+            return null;
+        }
+        var entry = labelTexts.entrySet().stream().filter(entry_ -> entry_.getValue().equals(labelText))
+                .findFirst();
+        return entry.map(Map.Entry::getKey).orElse(null);
     }
 
     @Override
-    public Map<String, List<String>> getAll() throws IOException {
+    public @NonNull List<String> getAllWithType(@NonNull String labelType) throws DataAccessException {
+        return getData().getOrDefault(labelType, new LinkedHashMap<>())
+                .values().stream().toList();
+    }
+
+    @Override
+    public @NonNull LinkedHashMap<String, LinkedHashMap<UUID, String>> getAll() throws DataAccessException {
         return getData();
     }
 
     @Override
-    public boolean delete(String labelType, String labelText) throws IOException {
-        List<String> labelTexts = getData().get(labelType);
+    public boolean delete(@NonNull String labelType, @NonNull UUID uuid) throws DataAccessException {
+        LinkedHashMap<UUID, String> labelTexts = getData().get(labelType);
         if (labelTexts == null) {
             return false;
         }
-        return labelTexts.remove(labelText);
+        return labelTexts.remove(uuid) != null;
     }
 
     @Override
-    public void deleteAll(String labelType) throws IOException {
+    public void deleteAll(@NonNull String labelType) throws DataAccessException {
         getData().remove(labelType);
         writeData();
     }
 
     @Override
-    public LinkedHashMap<String, List<String>> getEmptyData() {
+    public LinkedHashMap<String, LinkedHashMap<UUID, String>> getEmptyData() {
         return new LinkedHashMap<>();
     }
 
     @Override
-    protected TypeReference<LinkedHashMap<String, List<String>>> getTypeReference() {
+    protected TypeReference<LinkedHashMap<String, LinkedHashMap<UUID, String>>> getTypeReference() {
         return new TypeReference<>() {
         };
     }
