@@ -11,7 +11,7 @@ import cli_tools.common.backend.pseudo_property_provider.TempIDPseudoPropertyPro
 import cli_tools.common.backend.temp_id_mapping.TempIDManager;
 import cli_tools.common.backend.view.service.ViewInfoService;
 import cli_tools.task_manager.backend.pseudo_property_provider.DonePseudoPropertyProvider;
-import cli_tools.task_manager.cli.OsDirs;
+import cli_tools.task_manager.backend.task.Task;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import org.yaml.snakeyaml.Yaml;
@@ -20,7 +20,6 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.Paths;
 import java.util.*;
 
 public class Initializer {
@@ -63,68 +62,78 @@ public class Initializer {
     }
 
     private void initializeStatuses() throws ServiceException {
-        labelService.deleteAllLabels("status");
-        labelService.createLabel("status", "NextAction");
-        labelService.createLabel("status", "Waiting");
-        labelService.createLabel("status", "Planning");
-        labelService.createLabel("status", "OnHold");
+        labelService.deleteAllLabels(Task.STATUS);
+        labelService.createLabel(Task.STATUS, "NextAction");
+        labelService.createLabel(Task.STATUS, "Waiting");
+        labelService.createLabel(Task.STATUS, "Planning");
+        labelService.createLabel(Task.STATUS, "OnHold");
     }
 
     private void initializePropertyDescriptors() throws ServiceException {
         propertyDescriptorService.createPropertyDescriptor(
                 new PropertyDescriptor("name", PropertyDescriptor.Type.String, null, PropertyDescriptor.Multiplicity.SINGLE, "", null));
         propertyDescriptorService.createPropertyDescriptor(
-                new PropertyDescriptor("uuid", PropertyDescriptor.Type.UUID, null, PropertyDescriptor.Multiplicity.SINGLE, null, null));
+                new PropertyDescriptor(Task.UUID
+
+, PropertyDescriptor.Type.UUID, null, PropertyDescriptor.Multiplicity.SINGLE, null, null));
         propertyDescriptorService.createPropertyDescriptor(
-                new PropertyDescriptor("tags", PropertyDescriptor.Type.UUID, new PropertyDescriptor.Subtype.LabelSubtype("tag"), PropertyDescriptor.Multiplicity.SET, new LinkedHashSet<>(), null));
+                new PropertyDescriptor(Task.TAGS, PropertyDescriptor.Type.UUID, new PropertyDescriptor.Subtype.LabelSubtype("tag"), PropertyDescriptor.Multiplicity.SET, new LinkedHashSet<>(), null));
         propertyDescriptorService.createPropertyDescriptor(
-                new PropertyDescriptor("status", PropertyDescriptor.Type.UUID, new PropertyDescriptor.Subtype.LabelSubtype("status"), PropertyDescriptor.Multiplicity.SINGLE, null, null));
+                new PropertyDescriptor(Task.STATUS, PropertyDescriptor.Type.UUID, new PropertyDescriptor.Subtype.LabelSubtype(Task.STATUS), PropertyDescriptor.Multiplicity.SINGLE, null, null));
         propertyDescriptorService.createPropertyDescriptor(
-                new PropertyDescriptor("priority", PropertyDescriptor.Type.Integer, new PropertyDescriptor.Subtype.OrderedLabelSubtype("priority"), PropertyDescriptor.Multiplicity.SINGLE, null, null));
+                new PropertyDescriptor(Task.PRIORITY, PropertyDescriptor.Type.Integer, new PropertyDescriptor.Subtype.OrderedLabelSubtype(Task.PRIORITY), PropertyDescriptor.Multiplicity.SINGLE, null, null));
         propertyDescriptorService.createPropertyDescriptor(
-                new PropertyDescriptor("effort", PropertyDescriptor.Type.Integer, new PropertyDescriptor.Subtype.OrderedLabelSubtype("effort"), PropertyDescriptor.Multiplicity.SINGLE, null, null));
+                new PropertyDescriptor(Task.EFFORT, PropertyDescriptor.Type.Integer, new PropertyDescriptor.Subtype.OrderedLabelSubtype(Task.EFFORT), PropertyDescriptor.Multiplicity.SINGLE, null, null));
         propertyDescriptorService.createPropertyDescriptor(
                 new PropertyDescriptor("id", PropertyDescriptor.Type.Integer, null, PropertyDescriptor.Multiplicity.SINGLE, null, new TempIDPseudoPropertyProvider(tempIdManager)));
         propertyDescriptorService.createPropertyDescriptor(
-                new PropertyDescriptor("startDate", PropertyDescriptor.Type.Date, null, PropertyDescriptor.Multiplicity.SINGLE, null, null));
+                new PropertyDescriptor(Task.START_DATE, PropertyDescriptor.Type.Date, null, PropertyDescriptor.Multiplicity.SINGLE, null, null));
         propertyDescriptorService.createPropertyDescriptor(
-                new PropertyDescriptor("startTime", PropertyDescriptor.Type.Time, null, PropertyDescriptor.Multiplicity.SINGLE, null, null));
+                new PropertyDescriptor(Task.START_TIME, PropertyDescriptor.Type.Time, null, PropertyDescriptor.Multiplicity.SINGLE, null, null));
         propertyDescriptorService.createPropertyDescriptor(
-                new PropertyDescriptor("dueDate", PropertyDescriptor.Type.Date, null, PropertyDescriptor.Multiplicity.SINGLE, null, null));
+                new PropertyDescriptor(Task.DUE_DATE, PropertyDescriptor.Type.Date, null, PropertyDescriptor.Multiplicity.SINGLE, null, null));
         propertyDescriptorService.createPropertyDescriptor(
-                new PropertyDescriptor("dueTime", PropertyDescriptor.Type.Time, null, PropertyDescriptor.Multiplicity.SINGLE, null, null));
+                new PropertyDescriptor(Task.DUE_TIME, PropertyDescriptor.Type.Time, null, PropertyDescriptor.Multiplicity.SINGLE, null, null));
         propertyDescriptorService.createPropertyDescriptor(
-                new PropertyDescriptor("parent", PropertyDescriptor.Type.UUID, new PropertyDescriptor.Subtype.TaskSubtype(), PropertyDescriptor.Multiplicity.SINGLE, null, null));
+                new PropertyDescriptor(Task.PARENT, PropertyDescriptor.Type.UUID, new PropertyDescriptor.Subtype.TaskSubtype(), PropertyDescriptor.Multiplicity.SINGLE, null, null));
         propertyDescriptorService.createPropertyDescriptor(
                 new PropertyDescriptor("done", PropertyDescriptor.Type.Boolean, null, PropertyDescriptor.Multiplicity.SINGLE, null, new DonePseudoPropertyProvider()));
     }
 
     private void initializePriorities() throws ServiceException {
-        orderedLabelService.deleteAllOrderedLabels("priority");
-        orderedLabelService.createOrderedLabel("priority", "Low", 0);
-        orderedLabelService.createOrderedLabel("priority", "Medium", 1);
-        orderedLabelService.createOrderedLabel("priority", "High", 2);
+        orderedLabelService.deleteAllOrderedLabels(Task.PRIORITY);
+        orderedLabelService.createOrderedLabel(Task.PRIORITY, "Low", 0);
+        orderedLabelService.createOrderedLabel(Task.PRIORITY, "Medium", 1);
+        orderedLabelService.createOrderedLabel(Task.PRIORITY, "High", 2);
     }
 
     private void initializeEfforts() throws ServiceException {
-        orderedLabelService.deleteAllOrderedLabels("effort");
-        orderedLabelService.createOrderedLabel("effort", "Trivial", 0);
-        orderedLabelService.createOrderedLabel("effort", "Low", 1);
-        orderedLabelService.createOrderedLabel("effort", "Medium", 2);
-        orderedLabelService.createOrderedLabel("effort", "High", 3);
+        orderedLabelService.deleteAllOrderedLabels(Task.EFFORT);
+        orderedLabelService.createOrderedLabel(Task.EFFORT, "Trivial", 0);
+        orderedLabelService.createOrderedLabel(Task.EFFORT, "Low", 1);
+        orderedLabelService.createOrderedLabel(Task.EFFORT, "Medium", 2);
+        orderedLabelService.createOrderedLabel(Task.EFFORT, "High", 3);
     }
 
     private void initializeViewInfo() throws ServiceException {
         viewInfoService.deleteAllViewInfos();
         viewInfoService.addViewInfo("default", ViewInfo.builder()
-                .sortingInfo(new SortingInfo(List.of(new SortingCriterion("name", true))))
-                .propertiesToList(List.of("id", "name", "status", "tags", "dueDate"))
+                .sortingInfo(new SortingInfo(List.of(new SortingCriterion(Task.NAME
+
+, true))))
+                .propertiesToList(List.of("id", Task.NAME
+
+, Task.STATUS, Task.TAGS, Task.DUE_DATE))
                 .outputFormat(OutputFormat.TEXT)
                 .build());
 
         viewInfoService.addViewInfo("all", ViewInfo.builder()
-                .sortingInfo(new SortingInfo(List.of(new SortingCriterion("name", true))))
-                .propertiesToList(List.of("id", "name", "status", "tags", "dueDate"))
+                .sortingInfo(new SortingInfo(List.of(new SortingCriterion(Task.NAME
+
+, true))))
+                .propertiesToList(List.of("id", Task.NAME
+
+, Task.STATUS, Task.TAGS, Task.DUE_DATE))
                 .outputFormat(OutputFormat.TEXT)
                 .listDone(true)
                 .build());

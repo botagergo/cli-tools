@@ -1,20 +1,26 @@
 package cli_tools.task_manager.backend.task.repository;
 
+import cli_tools.common.backend.filter.EqualFilterCriterion;
+import cli_tools.common.backend.filter.FilterCriterion;
+import cli_tools.common.backend.filter.GreaterFilterCriterion;
 import cli_tools.common.backend.repository.PostgresRepository;
+import cli_tools.common.backend.service.ServiceException;
+import cli_tools.common.core.data.FilterCriterionInfo;
+import cli_tools.common.core.data.property.FilterPropertySpec;
 import cli_tools.common.core.repository.ConstraintViolationException;
 import cli_tools.common.core.repository.DataAccessException;
 import cli_tools.common.db_schema.tables.records.TaskTagsRecord;
 import cli_tools.common.db_schema.tables.records.TasksRecord;
 import cli_tools.task_manager.backend.task.Task;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-import org.jooq.JSON;
+import org.jooq.*;
 import org.jooq.exception.IntegrityConstraintViolationException;
 
 import javax.sql.DataSource;
+import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -27,8 +33,6 @@ public class PostgresTaskRepository extends PostgresRepository implements TaskRe
     private final ObjectReader objectReader;
     private final ObjectWriter objectWriter;
 
-    private final TaskRecordMapper taskRecordMapper;
-
     private final boolean done;
 
     public PostgresTaskRepository(
@@ -39,7 +43,6 @@ public class PostgresTaskRepository extends PostgresRepository implements TaskRe
         super(dataSource);
         this.objectReader = objectReader;
         this.objectWriter = objectWriter;
-        this.taskRecordMapper = new TaskRecordMapper();
         this.done = done;
     }
 
@@ -48,16 +51,14 @@ public class PostgresTaskRepository extends PostgresRepository implements TaskRe
         var ctx = ctx();
 
         Map<String, Object> mutableProperties = new HashMap<>(task.getProperties());
-        TasksRecord tasksRecord = taskRecordMapper.taskToRecord(ctx, mutableProperties, done);
-        Object tags = mutableProperties.remove("tags");
+        TasksRecord tasksRecord = TaskRecordMapper.taskToRecord(ctx, mutableProperties, done);
+        Object tags = mutableProperties.remove(Task.TAGS);
 
-        String mutablePropertiesJson;
-        try {
-            mutablePropertiesJson = objectWriter.writeValueAsString(mutableProperties);
-        } catch (JsonProcessingException e) {
-            throw new DataAccessException("Error converting task properties to json", e);
-        }
-        tasksRecord.set(TASKS.PROPERTIES, JSON.json(mutablePropertiesJson));
+        JSON mutablePropertiesJson = TaskRecordMapper.propertiesToJson(mutableProperties, objectWriter);
+
+        TaskRecordMapper.putPropertiesToTasksRecord(
+                null, mutableProperties, tasksRecord, objectReader, objectWriter);
+        tasksRecord.set(TASKS.PROPERTIES, mutablePropertiesJson);
 
         try {
             tasksRecord = ctx.insertInto(TASKS)
@@ -81,9 +82,69 @@ public class PostgresTaskRepository extends PostgresRepository implements TaskRe
 
         Task addedTask = new Task();
         addedTask.getProperties().putAll(task.getProperties());
-        addedTask.getProperties().put("uuid", uuid);
-        addedTask.getProperties().put("tags", createdTags);
+        addedTask.getProperties().put(Task.UUID, uuid);
+        addedTask.getProperties().put(Task.TAGS, createdTags);
         return addedTask;
+    }
+
+    public List<Task> get(List<FilterCriterionInfo> filterCriterionInfos, List<FilterPropertySpec> filterPropertySpecs) throws ServiceException {
+        if (filterPropertySpecs == null) {
+            return getAll();
+        }
+        var ctx = ctx();
+
+        var select = ctx.selectFrom(TASKS).where();
+        for (FilterPropertySpec filterPropertySpec : filterPropertySpecs) {
+            select = filterPropertySpecToWhere(select, (EqualFilterCriterion) FilterCriterion.from(filterPropertySpec));
+        }
+
+        return execSelect(ctx, select);
+    }
+
+    private SelectConditionStep<TasksRecord> filterPropertySpecToWhere(
+            SelectConditionStep<TasksRecord> where, EqualFilterCriterion filterCriterion) {
+        if (filterCriterion.getOperand() instanceof String) {
+            var field = getStringProperty(filterCriterion.propertyName);
+            if (field == null) {
+                throw new RuntimeException();
+            }
+            return where.and(getCondition(field, filterCriterion));
+        } else if (filterCriterion.getOperand() instanceof LocalDate) {
+            var field = getDateProperty(filterCriterion.propertyName);
+            return where.and(getCondition(field, filterCriterion));
+        } else {
+            throw new RuntimeException();
+        }
+    }
+
+    private <T> Condition getCondition(TableField<TasksRecord, T> field, FilterCriterion filterCriterion) {
+        if (filterCriterion instanceof EqualFilterCriterion criterion) {
+            return field.eq((T) criterion.getOperand());
+        } else if (filterCriterion instanceof GreaterFilterCriterion criterion) {
+            return field.greaterThan((T) criterion.getOperand().getValue());
+        } else {
+            throw new RuntimeException();
+        }
+    }
+
+    private TableField<TasksRecord, String> getStringProperty(String propertyName) {
+        switch (propertyName) {
+            case Task.NAME:
+                return TASKS.NAME;
+            default:
+                throw new RuntimeException();
+        }
+    }
+
+    private TableField<TasksRecord, LocalDate> getDateProperty(String propertyName) {
+        switch (propertyName) {
+            case Task.START_DATE:
+                return TASKS.START_DATE;
+            case Task.DUE_DATE:
+                return TASKS.DUE_DATE;
+            default:
+                throw new RuntimeException();
+        }
     }
 
     @Override
@@ -98,7 +159,7 @@ public class PostgresTaskRepository extends PostgresRepository implements TaskRe
             return null;
         }
 
-        Task task = taskRecordMapper.recordToTask(tasksRecord, done);
+        Task task = TaskRecordMapper.recordToTask(tasksRecord, done);
 
         Set<UUID> tags = ctx.selectFrom(TASK_TAGS)
                 .where(TASK_TAGS.TASK.eq(tasksRecord.getUuid()))
@@ -106,15 +167,10 @@ public class PostgresTaskRepository extends PostgresRepository implements TaskRe
                 .map(TaskTagsRecord::getLabel)
                 .collect(Collectors.toCollection(LinkedHashSet::new));
         if (!tags.isEmpty()) {
-            task.getProperties().put("tags", tags);
+            task.getProperties().put(Task.TAGS, tags);
         }
 
-        if (tasksRecord.getProperties() != null) {
-            Map<String, Object> properties = readProperties(tasksRecord.getProperties());
-            if (!properties.isEmpty()) {
-                task.getProperties().putAll(properties);
-            }
-        }
+        TaskRecordMapper.putPropertiesToTask(tasksRecord, task, objectReader);
 
         return task;
     }
@@ -122,25 +178,23 @@ public class PostgresTaskRepository extends PostgresRepository implements TaskRe
     @Override
     public @NonNull List<Task> getAll() throws DataAccessException {
         var ctx = ctx();
+        return execSelect(ctx, ctx.selectFrom(TASKS).where(TASKS.DONE.eq(done)));
+    }
 
+    private List<Task> execSelect(DSLContext ctx, SelectConditionStep<TasksRecord> where) {
         List<Task> tasks = new ArrayList<>();
 
         var tagsByTask = ctx.selectFrom(TASK_TAGS)
                 .fetchGroups(TASK_TAGS.TASK, TASK_TAGS.LABEL);
-        for (TasksRecord tasksRecord : ctx.selectFrom(TASKS).where(TASKS.DONE.eq(done))) {
-            Task task = taskRecordMapper.recordToTask(tasksRecord, done);
+
+        for (TasksRecord tasksRecord : where) {
+            Task task = TaskRecordMapper.recordToTask(tasksRecord, done);
             List<UUID> tags = tagsByTask.get(tasksRecord.getUuid());
             if (tags != null) {
-                task.getProperties().put("tags", new LinkedHashSet<>(tags));
+                task.getProperties().put(Task.TAGS, new LinkedHashSet<>(tags));
             }
             if (tasksRecord.getProperties() != null) {
-                Map<String, Object> properties;
-                try {
-                    properties = objectReader.readValue(tasksRecord.getProperties().data());
-                } catch (JsonProcessingException e) {
-                    throw new DataAccessException("Error reading properties from JSON: %s"
-                            .formatted(tasksRecord.getProperties().data().replace(System.lineSeparator(), " ")), e);
-                }
+                Map<String, Object> properties = TaskRecordMapper.readProperties(tasksRecord.getProperties(), objectReader);
                 task.getProperties().putAll(properties);
             }
             tasks.add(task);
@@ -157,23 +211,24 @@ public class PostgresTaskRepository extends PostgresRepository implements TaskRe
 
         var ctx = ctx();
 
+        var mutableProperties = new HashMap<>(task.getProperties());
+        TasksRecord tasksRecord = TaskRecordMapper.taskToRecord(ctx, mutableProperties, done);
+
         var existingPropertiesJson = ctx.selectFrom(TASKS)
                 .where(TASKS.UUID.eq(uuid))
                 .fetchOne(TASKS.PROPERTIES);
-        if (existingPropertiesJson == null) {
-            return null;
+
+        if (existingPropertiesJson != null) {
+            TaskRecordMapper.putPropertiesToTasksRecord(
+                    existingPropertiesJson, mutableProperties, tasksRecord, objectReader, objectWriter);
         }
 
-        Map<String, Object> mergedProperties = readProperties(existingPropertiesJson);
-        mergedProperties.putAll(task.getProperties());
-
-        TasksRecord tasksRecord = taskRecordMapper.taskToRecord(ctx, mergedProperties, done);
         tasksRecord.attach(ctx.configuration());
         if (tasksRecord.update() != 1) {
             return null;
         }
         tasksRecord.refresh();
-        return taskRecordMapper.recordToTask(tasksRecord, done);
+        return TaskRecordMapper.recordToTask(tasksRecord, done);
     }
 
     @Override
@@ -185,7 +240,7 @@ public class PostgresTaskRepository extends PostgresRepository implements TaskRe
         if (tasksRecord == null) {
             return null;
         }
-        return taskRecordMapper.recordToTask(tasksRecord, done);
+        return TaskRecordMapper.recordToTask(tasksRecord, done);
     }
 
     @Override
@@ -195,12 +250,4 @@ public class PostgresTaskRepository extends PostgresRepository implements TaskRe
                 .execute();
     }
 
-    private Map<String, Object> readProperties(JSON propertiesJson) {
-        try {
-            return objectReader.readValue(propertiesJson.data());
-        } catch (JsonProcessingException e) {
-            throw new DataAccessException("Error reading properties from JSON: %s"
-                    .formatted(propertiesJson.data().replace(System.lineSeparator(), "")), e);
-        }
-    }
 }

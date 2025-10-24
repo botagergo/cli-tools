@@ -17,6 +17,7 @@ import cli_tools.common.backend.temp_id_mapping.TempIDManager;
 import cli_tools.common.util.UUIDGenerator;
 import cli_tools.task_manager.backend.task.PropertyOwnerTree;
 import cli_tools.task_manager.backend.task.Task;
+import cli_tools.task_manager.backend.task.repository.PostgresTaskRepository;
 import cli_tools.task_manager.backend.task.repository.TaskRepository;
 import jakarta.inject.Inject;
 import lombok.AllArgsConstructor;
@@ -87,8 +88,15 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public List<Task> getTasks(boolean getDone) throws ServiceException {
-        List<Task> tasks = taskRepository.getAll();
+    public List<Task> getTasks(boolean getDone, List<FilterPropertySpec> filterPropertySpecs) throws ServiceException {
+        List<Task> tasks;
+
+        if (taskRepository instanceof PostgresTaskRepository pgTaskRepository) {
+            tasks = pgTaskRepository.get(null, filterPropertySpecs);
+        } else {
+            tasks = taskRepository.getAll();
+        }
+
         tasks.forEach(task -> task.setDone(false));
         if (getDone) {
             List<Task> doneTasks = doneTaskRepository.getAll();
@@ -164,7 +172,7 @@ public class TaskServiceImpl implements TaskService {
         taskTree = new PropertyOwnerTree(task, new ArrayList<>());
         taskTreeMap.put(task.getUUID(), taskTree);
 
-        UUID parentUuid = propertyManager.getProperty(taskTree.getParent(), "parent").getUuid();
+        UUID parentUuid = propertyManager.getProperty(taskTree.getParent(), Task.PARENT).getUuid();
 
         if (parentUuid != null) {
             PropertyOwnerTree parentTaskTree = taskTreeMap.get(parentUuid);
@@ -196,7 +204,7 @@ public class TaskServiceImpl implements TaskService {
         taskTree = new PropertyOwnerTree(taskRepository.get(uuid), new ArrayList<>());
         taskTreeMap.put(uuid, taskTree);
 
-        UUID parentUuid = propertyManager.getProperty(taskTree.getParent(), "parent").getUuid();
+        UUID parentUuid = propertyManager.getProperty(taskTree.getParent(), Task.PARENT).getUuid();
         if (parentUuid != null) {
             PropertyOwnerTree parentTaskTree = taskTreeMap.get(parentUuid);
             if (parentTaskTree == null) {
@@ -241,7 +249,7 @@ public class TaskServiceImpl implements TaskService {
                 }
             }
         } else {
-            tasks = getTasks(getDone);
+            tasks = getTasks(getDone, filterPropertySpecs);
         }
 
         if (filterCriterionInfo != null) {

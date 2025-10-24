@@ -1,12 +1,13 @@
 package cli_tools.common.backend.filter;
 
 import cli_tools.common.property_lib.Property;
+import lombok.Getter;
 
 import java.util.Comparator;
 
 public class GreaterFilterCriterion extends PropertyFilterCriterion {
 
-    private final Property operand;
+    @Getter private final Property operand;
     private final Comparator<Property> propertyComparator;
 
     public GreaterFilterCriterion(

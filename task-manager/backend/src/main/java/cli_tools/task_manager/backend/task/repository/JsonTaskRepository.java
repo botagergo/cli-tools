@@ -40,7 +40,7 @@ public class JsonTaskRepository extends JsonRepository<List<HashMap<String, Obje
         List<Task> tasks = getData();
 
         if (task.getUUID() == null) {
-            task.getProperties().put("uuid", uuidGenerator.getUUID());
+            task.getProperties().put(Task.UUID, uuidGenerator.getUUID());
         }
 
         tasks.add(task);

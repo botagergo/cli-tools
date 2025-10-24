@@ -2,10 +2,8 @@ package cli_tools.task_manager.cli.functional_test;
 
 import cli_tools.common.backend.service.ServiceException;
 import cli_tools.task_manager.backend.task.Task;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import java.io.IOException;
 import java.util.List;
 
 import static org.testng.Assert.assertEquals;
@@ -19,7 +17,7 @@ public class TestBasic extends TestBase {
                 "add read a book status:OnHold startDate:+31weeks",
                 "add finish tax return status:Waiting");
 
-        List<Task> tasks = context.getTaskService().getTasks(false);
+        List<Task> tasks = context.getTaskService().getTasks(false, null);
         assertEquals(tasks.size(), 4);
         assertEquals(tasks.get(0).getProperties().get("name"), "go to the post office");
         assertEquals(tasks.get(1).getProperties().get("name"), "buy a new TV");

@@ -6,7 +6,6 @@ import cli_tools.common.backend.service.JsonRepositoryCreator;
 import cli_tools.common.backend.temp_id_mapping.TempIDManager;
 import org.testng.annotations.Test;
 
-import javax.xml.crypto.Data;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -105,7 +104,7 @@ public class JsonPropertyDescriptorRepositoryTest {
     }
 
     @Test
-    void test_find_fileNotExist() throws IOException {
+    void test_find_fileNotExist() {
         File tempFile = rc.getTempFile("test_find_fileNotExist");
         repository = new JsonPropertyDescriptorRepository(tempFile, tempIdManager, PseudoPropertyProviderMixIn.class);
         assertEquals(repository.find("name3").size(), 0);

@@ -23,7 +23,7 @@ public interface TaskService {
 
     void deleteTask(@NonNull UUID uuid) throws ServiceException;
 
-    List<Task> getTasks(boolean getDone) throws ServiceException;
+    List<Task> getTasks(boolean getDone, List<FilterPropertySpec> filterPropertySpecs) throws ServiceException;
 
     List<Task> getTasks(
             List<FilterPropertySpec> propertySpecs,

@@ -41,7 +41,7 @@ public final class ListTasksCommand extends Command {
             SortingInfo sortingInfo = null;
             String actualViewName = viewName;
             Boolean actualHierarchical = hierarchical;
-            List<String> actualProperties = List.of("name", "status", "tags");
+            List<String> actualProperties = List.of(Task.NAME, Task.STATUS, Task.TAGS);
             List<UUID> taskUUIDs = CommandUtil.getUUIDsFromTempIDs(taskManagerContext, tempIDs);
             List<FilterPropertySpec> filterPropertySpecs = CommandUtil.getFilterPropertySpecs(taskManagerContext, filterPropertyArgs);
             Boolean actualListDone = listDone;
@@ -102,7 +102,7 @@ public final class ListTasksCommand extends Command {
                 actualProperties = properties;
             }
 
-            if (actualHierarchical && context.getPropertyManager().getPropertyDescriptor("parent") == null) {
+            if (actualHierarchical && context.getPropertyManager().getPropertyDescriptor(Task.PARENT) == null) {
                 Print.printWarning("Cannot print tasks hierarchically because the 'parent' property does not exist");
                 actualHierarchical = false;
             }

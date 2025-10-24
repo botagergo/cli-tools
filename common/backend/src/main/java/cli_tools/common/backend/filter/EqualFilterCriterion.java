@@ -1,7 +1,9 @@
 package cli_tools.common.backend.filter;
 
 import cli_tools.common.property_lib.Property;
+import lombok.Getter;
 
+@Getter
 public class EqualFilterCriterion extends PropertyFilterCriterion {
 
     private final Object operand;

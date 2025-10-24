@@ -11,7 +11,6 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
-import org.apache.commons.lang3.exception.ExceptionUtils;
 
 import java.util.List;
 
@@ -30,7 +29,7 @@ public final class AddTaskCommand extends Command {
         try {
             Task task = new Task();
 
-            context.getPropertyManager().setProperty(task, "name", name);
+            context.getPropertyManager().setProperty(task, Task.NAME, name);
 
             if (modifyPropertyArgs != null) {
                 List<ModifyPropertySpec> propertySpecs = context.getStringToPropertyConverter().convertPropertiesForModification(modifyPropertyArgs, true);
@@ -44,5 +43,4 @@ public final class AddTaskCommand extends Command {
             Print.printAndLogException(e, log);
         }
     }
-
 }

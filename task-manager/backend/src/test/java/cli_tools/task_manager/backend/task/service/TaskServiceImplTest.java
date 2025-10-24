@@ -11,7 +11,6 @@ import cli_tools.common.property_lib.PropertyDescriptor;
 import cli_tools.common.property_lib.PropertyDescriptorCollection;
 import cli_tools.common.property_lib.PropertyManager;
 import cli_tools.common.backend.temp_id_mapping.TempIDManager;
-import cli_tools.common.util.UUIDGenerator;
 import cli_tools.common.util.Utils;
 import cli_tools.task_manager.backend.task.PropertyOwnerTree;
 import cli_tools.task_manager.backend.task.Task;
@@ -79,12 +78,12 @@ public class TaskServiceImplTest {
     @Test
     void test_getTasks_all_empty() throws ServiceException {
         simpleTaskRepository.deleteAll();
-        assertEquals(taskService.getTasks(true).size(), 0);
+        assertEquals(taskService.getTasks(true, null).size(), 0);
     }
 
     @Test
     void test_getTasks_all() throws ServiceException {
-        List<Task> tasks = taskService.getTasks(true);
+        List<Task> tasks = taskService.getTasks(true, null);
 
         assertEquals(tasks.size(), 3);
         assertEquals(tasks.size(), 3);

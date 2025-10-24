@@ -132,7 +132,7 @@ public final class AICommand extends Command {
         } else if (functionCall.getName().equals("add_tasks")) {
             addTasks(context, functionCall.getArguments());
         } else if (functionCall.getName().equals("query_tasks")) {
-            List<Task> tasks = context.getTaskService().getTasks(false);
+            List<Task> tasks = context.getTaskService().getTasks(false, null);
             ObjectMapper objectMapper = new ObjectMapper();
             return new ChatMessage(
                     ChatMessageRole.FUNCTION.value(),
@@ -144,7 +144,7 @@ public final class AICommand extends Command {
 
     private void listTasks(TaskManagerContext context, JsonNode arguments) {
         try {
-            List<String> propertiesToList = List.of("name", "status", "tags");
+            List<String> propertiesToList = List.of(Task.NAME, Task.STATUS, Task.TAGS);
             List<UUID> taskUuidsList = new ArrayList<>();
             for (JsonNode jsonNode : arguments.get("taskUuids")) {
                 taskUuidsList.add(UUID.fromString(jsonNode.asText()));

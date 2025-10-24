@@ -25,7 +25,9 @@ public class SimpleTaskRepository implements TaskRepository {
 
     @Override
     public @NonNull Task create(@NonNull Task task) {
-        task.getProperties().put("uuid", uuidGenerator.getUUID());
+        task.getProperties().put(Task.UUID
+
+, uuidGenerator.getUUID());
         tasks.add(task);
         return task;
     }

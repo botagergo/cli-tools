@@ -22,8 +22,8 @@ create table if not exists tasks (
     effort integer,
     start_date date,
     start_time time,
-    end_date date,
-    end_time time,
+    due_date date,
+    due_time time,
     parent uuid references tasks(uuid),
     properties jsonb,
     done boolean not null

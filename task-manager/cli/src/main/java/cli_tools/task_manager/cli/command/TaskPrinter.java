@@ -128,7 +128,9 @@ public class TaskPrinter {
                 propertyString = propertyToStringConverter.propertyToString(propertyName, property);
             }
 
-            if (propertyName.equals("name")) {
+            if (propertyName.equals(Task.NAME
+
+)) {
                 propertyString = ansiDone + propertyString;
             }
 
@@ -175,7 +177,9 @@ public class TaskPrinter {
                 propertyString = propertyToStringConverter.propertyToString(propertyName, property);
             }
 
-            if (propertyName.equals("name")) {
+            if (propertyName.equals(Task.NAME
+
+)) {
                 propertyString = ansiDone + propertyString;
             }
 

@@ -4,7 +4,6 @@ import cli_tools.common.backend.service.ServiceException;
 import cli_tools.common.cli.argument.PropertyArgument;
 import cli_tools.common.core.data.OutputFormat;
 import cli_tools.common.core.data.property.FilterPropertySpec;
-import cli_tools.common.core.util.Print;
 import cli_tools.common.property_lib.PropertyException;
 import cli_tools.common.property_lib.PropertyManager;
 import cli_tools.task_manager.backend.task.Task;
@@ -77,7 +76,9 @@ public class CommandUtil {
                 return null;
             }
             case 's' -> {
-                context.getTaskPrinter().printTasks(context, tasks, List.of("name"), OutputFormat.TEXT);
+                context.getTaskPrinter().printTasks(context, tasks, List.of(Task.NAME
+
+), OutputFormat.TEXT);
                 return confirmAndGetTasksToChange(context, tasks, null, filterPropertySpecs, changeType);
             }
             case 'p' -> {
@@ -119,7 +120,9 @@ public class CommandUtil {
         List<Task> tasksToChange = new ArrayList<>();
 
         for (Task task : tasks) {
-            String taskName = propertyManager.getProperty(task, "name").getString();
+            String taskName = propertyManager.getProperty(task, Task.NAME
+
+).getString();
 
             String message = switch (changeType) {
                 case DELETE -> "Delete task '" + taskName + "'? ([y]es/[n]o/[c]ancel/[q]uit) ";
