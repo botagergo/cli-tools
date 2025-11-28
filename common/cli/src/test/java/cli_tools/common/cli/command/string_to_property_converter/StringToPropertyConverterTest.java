@@ -1,5 +1,8 @@
 package cli_tools.common.cli.command.string_to_property_converter;
 
+import cli_tools.common.backend.label.service.LabelService;
+import cli_tools.common.backend.ordered_label.service.OrderedLabelService;
+import cli_tools.common.backend.property_descriptor.service.PropertyDescriptorService;
 import cli_tools.common.backend.service.ServiceException;
 import cli_tools.common.cli.argument.PropertyArgument;
 import cli_tools.common.cli.string_to_property_converter.StringToPropertyConverter;
@@ -9,9 +12,6 @@ import cli_tools.common.core.data.Predicate;
 import cli_tools.common.core.data.property.Affinity;
 import cli_tools.common.core.data.property.FilterPropertySpec;
 import cli_tools.common.core.data.property.ModifyPropertySpec;
-import cli_tools.common.backend.label.service.LabelService;
-import cli_tools.common.backend.ordered_label.service.OrderedLabelService;
-import cli_tools.common.backend.property_descriptor.service.PropertyDescriptorService;
 import cli_tools.common.property_lib.Property;
 import cli_tools.common.property_lib.PropertyDescriptor;
 import cli_tools.common.util.UUIDGenerator;
@@ -292,7 +292,10 @@ public class StringToPropertyConverterTest {
         List<PropertyArgument> properties = List.of(
                 new PropertyArgument(Affinity.NEUTRAL, "boolean_property", "contains", null)
         );
-        assertThrows(StringToPropertyConverterException.class, () -> propertyConverter.convertPropertiesForFiltering(properties, true));
+        assertEquals(propertyConverter.convertPropertiesForFiltering(properties, true),
+                List.of(new FilterPropertySpec(new PropertyDescriptor("boolean_property", PropertyDescriptor.Type.Boolean, null, PropertyDescriptor.Multiplicity.SINGLE, null, null),
+                        null, false, Predicate.CONTAINS)
+                ));
     }
 
     @Test

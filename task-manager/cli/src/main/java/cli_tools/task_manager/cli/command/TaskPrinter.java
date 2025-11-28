@@ -95,7 +95,6 @@ public class TaskPrinter {
         for (Task task : tasks) {
             addTaskToTable(table, context, propertyToStringConverter, task, propertiesToList);
         }
-
         GridTable gridTable = Border.of(Border.Chars.of('+', '-', '|')).apply(table.toGrid());
         Util.print(gridTable, new PrintWriter(System.out, true));
     }

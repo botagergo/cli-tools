@@ -5,16 +5,13 @@ import cli_tools.common.backend.repository.SimpleJsonRepository;
 import cli_tools.common.core.repository.DataAccessException;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.type.TypeFactory;
-import jakarta.inject.Inject;
-import jakarta.inject.Named;
 
 import java.io.File;
 import java.util.List;
 
 public class JsonCustomCommandRepository extends SimpleJsonRepository<List<CustomCommandDefinition>> implements CustomCommandRepository {
 
-    @Inject
-    public JsonCustomCommandRepository(@Named("customCommandDefinitionJsonFile") File jsonFile) {
+    public JsonCustomCommandRepository(File jsonFile) {
         super(jsonFile);
     }
 

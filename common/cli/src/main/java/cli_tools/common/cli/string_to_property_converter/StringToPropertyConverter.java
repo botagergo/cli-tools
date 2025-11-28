@@ -69,12 +69,7 @@ public class StringToPropertyConverter {
 
             Predicate predicate = parsePredicate(propertyArgument.predicate());
 
-            if (propertyValue == null && !(predicate == Predicate.NULL || predicate == Predicate.EMPTY)) {
-                throw new StringToPropertyConverterException(
-                        StringToPropertyConverterException.Type.MissingPropertyValue,
-                        "missing value for property '" + propertyName + "'",
-                        propertyName);
-            } else if (propertyValue != null && (predicate == Predicate.NULL || predicate == Predicate.EMPTY)) {
+            if (propertyValue != null && (predicate == Predicate.NULL || predicate == Predicate.EMPTY)) {
                 throw new StringToPropertyConverterException(
                         StringToPropertyConverterException.Type.UnexpectedPropertyValue,
                         "unexpected property value for predicate '" + predicate + "'",
@@ -216,12 +211,18 @@ public class StringToPropertyConverter {
             return Predicate.GREATER;
         } else if (predicateStr.equals("greater_equal")) {
             return Predicate.GREATER_EQUAL;
+        } else if (predicateStr.equals("true")) {
+            return Predicate.TRUE;
+        } else if (predicateStr.equals("false")) {
+            return Predicate.FALSE;
+        } else if (predicateStr.equals("false_or_null")) {
+            return Predicate.FALSE_OR_NULL;
         } else if (predicateStr.equals("null")) {
             return Predicate.NULL;
         } else if (predicateStr.equals("empty")) {
             return Predicate.EMPTY;
         } else {
-            throw new StringToPropertyConverterException(StringToPropertyConverterException.Type.InvalidPredicate, "Invalid option: " + predicateStr, predicateStr);
+            throw new StringToPropertyConverterException(StringToPropertyConverterException.Type.InvalidPredicate, "Invalid predicate: " + predicateStr, predicateStr);
         }
     }
 

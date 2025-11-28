@@ -33,7 +33,7 @@ public class TestOutputFormat extends TestBase {
 
     @Test
     void test_outputFormat_text() {
-        execute("list .outputFormat:text");
+        execute("list /outputFormat:text");
         assertStdoutContains("NAME",
                 "go to the post office",
                 "buy a new TV",
@@ -43,13 +43,13 @@ public class TestOutputFormat extends TestBase {
 
     @Test
     void test_outputFormat_json() throws IOException {
-        execute("list .outputFormat:json");
+        execute("list /outputFormat:json");
         assertJsonOutput();
     }
 
     @Test
     void test_outputFormat_prettyJson() throws IOException {
-        execute("list .outputFormat:prettyJson");
+        execute("list /outputFormat:prettyJson");
         assertPrettyJsonOutput();
     }
 

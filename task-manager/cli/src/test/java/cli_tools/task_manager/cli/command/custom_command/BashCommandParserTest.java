@@ -13,10 +13,23 @@ import org.testng.annotations.Test;
 
 import java.util.List;
 
+import static org.testng.Assert.assertEquals;
+
 public class BashCommandParserTest {
 
     private final Context context = Mockito.mock(Context.class);
     private final BashCommandParser parser = new BashCommandParser("echo $TASK_0_NAME", 1000);
+
+    public static int visibleLength(String s) {
+        // Regex for ANSI escape sequences (color, style, cursor movement, etc.)
+        String ansiRegex = "\\u001B\\[[;\\d]*m";
+        return s.replaceAll(ansiRegex, "").length();
+    }
+
+    @Test
+    void test() {
+        assertEquals(visibleLength("\u001B[36mabc\u001B[0m"), 3);
+    }
 
     @Test
     void test_noArguments() throws CommandParserException {
@@ -24,7 +37,7 @@ public class BashCommandParserTest {
 
         Assert.assertTrue(command instanceof BashCommand);
         BashCommand bashCommand = (BashCommand) command;
-        Assert.assertEquals(bashCommand.getBashCommand(), "echo $TASK_0_NAME");
+        assertEquals(bashCommand.getBashCommand(), "echo $TASK_0_NAME");
         Assert.assertTrue(bashCommand.getTempIDs().isEmpty());
         Assert.assertTrue(bashCommand.getFilterPropertyArgs().isEmpty());
     }
@@ -67,9 +80,9 @@ public class BashCommandParserTest {
         BashCommandParser parser = new BashCommandParser("echo $TASK_0_NAME", 1000);
         BashCommand command = (BashCommand) parser.parse(context, argList);
 
-        Assert.assertEquals(command.getTempIDs(), List.of(1, 2));
-        Assert.assertEquals(command.getFilterPropertyArgs(), List.of(
+        assertEquals(command.getTempIDs(), List.of(1, 2));
+        assertEquals(command.getFilterPropertyArgs(), List.of(
                 new PropertyArgument(Affinity.POSITIVE, "prop", null, List.of("value"))));
-        Assert.assertEquals(command.getBashCommand(), "echo $TASK_0_NAME");
+        assertEquals(command.getBashCommand(), "echo $TASK_0_NAME");
     }
 }

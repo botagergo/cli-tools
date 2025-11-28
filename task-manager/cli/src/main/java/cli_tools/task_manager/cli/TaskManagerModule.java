@@ -70,7 +70,6 @@ public class TaskManagerModule extends AbstractModule {
             TaskManagerConfig taskManagerConfig
     ) {
         this.taskManagerConfig = taskManagerConfig;
-
         if (this.taskManagerConfig.getProfile() == null) {
             this.taskManagerConfig.setProfile("default");
         }
@@ -193,7 +192,7 @@ public class TaskManagerModule extends AbstractModule {
     LabelRepository labelRepository(UUIDGenerator uuidGenerator) {
         switch (taskManagerConfig.getDatabaseMode()) {
             case JSON -> {
-                return new JsonLabelRepository(uuidGenerator, OsDirs.getFile(OsDirs.DirType.DATA, taskManagerConfig.getProfile(),"ordered_label.json"));
+                return new JsonLabelRepository(uuidGenerator, OsDirs.getFile(OsDirs.DirType.DATA, taskManagerConfig.getProfile(),"label.json"));
             }
             case POSTGRESQL -> {
                 return new PostgresLabelRepository(dataSource());

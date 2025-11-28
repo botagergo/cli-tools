@@ -78,22 +78,22 @@ public class TestView extends TestBase {
 
     @Test
     void test_view() throws IOException {
-        execute("list .view:view123");
+        execute("list /view:view123");
         assertStdoutContains("no such view");
 
-        execute("list .view");
+        execute("list /view");
         assertStdoutContains("option 'view' needs an argument");
 
-        execute("list .view:");
+        execute("list /view:");
         assertStdoutContains("option 'view' needs an argument");
 
-        execute("list .view:view1,view2");
+        execute("list /view:view1,view2");
         assertStdoutContains("option 'view' accepts one argument");
 
         execute("list");
         assertEquals(parseTasksFromJsonStdout().size(), 1);
 
-        execute("list .view:view1");
+        execute("list /view:view1");
         assertStdoutTaskHeaderContains("ID", "NAME", "PRIORITY");
         assertStdoutTaskHeaderNotContains("EFFORT", "STATUS", "TAGS");
         assertStdoutNotContains("•");

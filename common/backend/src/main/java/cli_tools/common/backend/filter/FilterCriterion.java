@@ -12,11 +12,12 @@ import org.apache.commons.lang3.NotImplementedException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 public abstract class FilterCriterion {
     public static FilterCriterion from(FilterPropertySpec filterPropertySpec) throws ServiceException {
-        List<Object> operand = filterPropertySpec.operand();
+        List<Object> operand = Objects.requireNonNullElse(filterPropertySpec.operand(), List.of());
         return create(filterPropertySpec.propertyDescriptor(), filterPropertySpec.predicate(), filterPropertySpec.negate(), operand);
     }
 
@@ -71,14 +72,23 @@ public abstract class FilterCriterion {
         String propertyName = propertyDescriptor.name();
         FilterCriterion filterCriterion = null;
 
-        if (predicate == null || predicate.equals(Predicate.EQUALS)) {
+        if (predicate == null) {
+            if (operand.isEmpty()) {
+                predicate = Predicate.TRUE;
+            } else {
+                predicate = Predicate.EQUALS;
+            }
+        }
+
+        if (predicate.equals(Predicate.EQUALS)) {
             Object finalOperand;
+
             if (propertyDescriptor.isList()) {
                 finalOperand = operand;
             } else if (propertyDescriptor.isSet()) {
                 finalOperand = Set.copyOf(operand);
             } else if (operand.size() != 1) {
-                throw new ServiceException("One argument expected for predicate 'equals' of property '" + propertyName + "'", null);
+                throw new ServiceException("One argument expected for predicate '" + Predicate.EQUALS + "' of property '" + propertyName + "'", null);
             } else {
                 finalOperand = operand.getFirst();
             }
@@ -101,6 +111,16 @@ public abstract class FilterCriterion {
                 case GREATER_EQUAL ->
                         filterCriterion = new GreaterEqualFilterCriterion(propertyName, property, new PropertyComparator(false));
             }
+        } else if (predicate == Predicate.TRUE || predicate == Predicate.FALSE || predicate == Predicate.FALSE_OR_NULL) {
+            if (propertyDescriptor.type() != PropertyDescriptor.Type.Boolean || propertyDescriptor.multiplicity() != PropertyDescriptor.Multiplicity.SINGLE) {
+                throw new ServiceException("Predicate '" + predicate + "' is incompatible with property '" + propertyName + "'");
+            }
+            switch (predicate) {
+                case TRUE -> filterCriterion = new EqualFilterCriterion(propertyName, true);
+                case FALSE -> filterCriterion = new EqualFilterCriterion(propertyName, false);
+                case FALSE_OR_NULL ->
+                        filterCriterion = new NotFilterCriterion(new EqualFilterCriterion(propertyName, true));
+            }
         } else {
             switch (predicate) {
                 case CONTAINS -> {
@@ -108,11 +128,11 @@ public abstract class FilterCriterion {
                         filterCriterion = new CollectionContainsFilterCriterion(propertyName, operand);
                     } else if (propertyDescriptor.type() == PropertyDescriptor.Type.String) {
                         if (operand.size() != 1) {
-                            throw new ServiceException("One argument expected for predicate 'contains' of property '" + propertyName + "'");
+                            throw new ServiceException("One argument expected for predicate '" + Predicate.CONTAINS + "' of property '" + propertyName + "'");
                         }
                         filterCriterion = new ContainsCaseInsensitiveFilterCriterion(propertyName, (String) operand.getFirst());
                     } else {
-                        throw new ServiceException("Predicate 'contains' is incompatible with property '" + propertyName + "'");
+                        throw new ServiceException("Predicate '" + Predicate.CONTAINS + "' is incompatible with property '" + propertyName + "'");
                     }
                 }
                 case IN -> filterCriterion = new InFilterCriterion(propertyName, operand);

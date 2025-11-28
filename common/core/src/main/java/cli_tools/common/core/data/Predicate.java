@@ -10,6 +10,9 @@ public enum Predicate {
     LESS_EQUAL,
     GREATER,
     GREATER_EQUAL,
+    TRUE,
+    FALSE,
+    FALSE_OR_NULL,
     NULL,
     EMPTY;
 
@@ -26,6 +29,10 @@ public enum Predicate {
                 return propertyDescriptor.multiplicity() == PropertyDescriptor.Multiplicity.SINGLE &&
                         (propertyDescriptor.type() == PropertyDescriptor.Type.Integer ||
                                 propertyDescriptor.type() == PropertyDescriptor.Type.String);
+            }
+            case TRUE, FALSE, FALSE_OR_NULL -> {
+                return propertyDescriptor.type() == PropertyDescriptor.Type.Boolean &&
+                        propertyDescriptor.multiplicity() == PropertyDescriptor.Multiplicity.SINGLE;
             }
             default -> {
                 return true;

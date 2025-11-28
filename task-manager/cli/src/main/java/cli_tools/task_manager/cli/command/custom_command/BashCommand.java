@@ -28,7 +28,7 @@ import java.util.concurrent.TimeUnit;
 public class BashCommand extends CustomCommand {
 
     private final String bashCommand;
-    private final int timeoutMillis;
+    private final Integer timeoutMillis;
     private List<@NonNull Integer> tempIDs;
     private List<@NonNull PropertyArgument> filterPropertyArgs;
 
@@ -49,7 +49,7 @@ public class BashCommand extends CustomCommand {
             p.redirectOutput(ProcessBuilder.Redirect.INHERIT);
             p.redirectError(ProcessBuilder.Redirect.INHERIT);
 
-            p.start().waitFor(timeoutMillis, TimeUnit.MILLISECONDS);
+            p.start().waitFor(timeoutMillis != null ? timeoutMillis : 10000, TimeUnit.MILLISECONDS);
         } catch (Exception e) {
             Print.printAndLogException(e, log);
         }

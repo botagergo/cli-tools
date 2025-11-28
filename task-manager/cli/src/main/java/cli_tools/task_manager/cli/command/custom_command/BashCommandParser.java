@@ -12,7 +12,7 @@ import lombok.AllArgsConstructor;
 public class BashCommandParser extends CustomCommandParser {
 
     private final String commandName;
-    private final int timeoutMillis;
+    private final Integer timeoutMillis;
 
     @Override
     public Command parse(Context context, ArgumentList argList) throws CommandParserException {

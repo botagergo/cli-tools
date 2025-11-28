@@ -131,24 +131,15 @@ public class ArgumentListTest {
     }
 
     @Test
-    void test_from_multipleSpecialArgs() throws ArgumentList.ArgumentListException {
-        ArgumentList argList = ArgumentList.from(List.of("command", "%arg1", "!arg2", "!arg3", "?arg4"));
-        Assert.assertEquals(argList.getCommandName(), "command");
-        Assert.assertEquals(argList.getTrailingPositionalArguments(), List.of("%arg1", "!arg2", "!arg3", "?arg4"));
-        Assert.assertEquals(argList.getSpecialArguments().size(), 0);
-        Assert.assertEquals(argList.getModifyPropertyArguments().size(), 0);
-        Assert.assertEquals(argList.getFilterPropertyArguments().size(), 0);
-        Assert.assertEquals(argList.getOptionArguments().size(), 0);
-    }
-
-    @Test
     void test_from_mixed() throws ArgumentList.ArgumentListException {
         ArgumentList argList = ArgumentList.from(List.of("1", "prop:value", "2", "command", "arg1", "+arg2", "arg3", "!arg4"));
         Assert.assertEquals(argList.getCommandName(), "command");
         Assert.assertEquals(argList.getLeadingPositionalArguments(), List.of("1", "2"));
-        Assert.assertEquals(argList.getTrailingPositionalArguments(), List.of("arg1", "arg3", "!arg4"));
+        Assert.assertEquals(argList.getTrailingPositionalArguments(), List.of("arg1", "arg3"));
         Assert.assertEquals(argList.getSpecialArguments().size(), 0);
-        Assert.assertEquals(argList.getModifyPropertyArguments(), List.of(new PropertyArgument(Affinity.POSITIVE, "arg2", null, null)));
+        Assert.assertEquals(argList.getModifyPropertyArguments(), List.of(
+                new PropertyArgument(Affinity.POSITIVE, "arg2", null, null),
+                new PropertyArgument(Affinity.NEGATIVE, "arg4", null, null)));
         Assert.assertEquals(argList.getFilterPropertyArguments(), List.of(new PropertyArgument(Affinity.NEUTRAL, "prop", null, List.of("value"))));
         Assert.assertEquals(argList.getOptionArguments().size(), 0);
     }
@@ -244,6 +235,17 @@ public class ArgumentListTest {
     @Test
     void test_from_oneNegativeModifyPropertyArg() throws ArgumentList.ArgumentListException {
         ArgumentList argList = ArgumentList.from(List.of("command", "-prop:value"));
+        Assert.assertEquals(argList.getCommandName(), "command");
+        Assert.assertEquals(argList.getTrailingPositionalArguments().size(), 0);
+        Assert.assertEquals(argList.getSpecialArguments().size(), 0);
+        Assert.assertEquals(argList.getOptionArguments().size(), 0);
+        Assert.assertEquals(argList.getModifyPropertyArguments(), List.of(new PropertyArgument(Affinity.NEGATIVE, "prop", null, List.of("value"))));
+        Assert.assertEquals(argList.getFilterPropertyArguments().size(), 0);
+    }
+
+    @Test
+    void test_from_oneNegatedModifyPropertyArg() throws ArgumentList.ArgumentListException {
+        ArgumentList argList = ArgumentList.from(List.of("command", "!prop:value"));
         Assert.assertEquals(argList.getCommandName(), "command");
         Assert.assertEquals(argList.getTrailingPositionalArguments().size(), 0);
         Assert.assertEquals(argList.getSpecialArguments().size(), 0);
@@ -442,6 +444,17 @@ public class ArgumentListTest {
     }
 
     @Test
+    void test_from_oneNegatedFilterPropertyArg() throws ArgumentList.ArgumentListException {
+        ArgumentList argList = ArgumentList.from(List.of("!prop:value", "command"));
+        Assert.assertEquals(argList.getCommandName(), "command");
+        Assert.assertEquals(argList.getTrailingPositionalArguments().size(), 0);
+        Assert.assertEquals(argList.getSpecialArguments().size(), 0);
+        Assert.assertEquals(argList.getOptionArguments().size(), 0);
+        Assert.assertEquals(argList.getModifyPropertyArguments().size(), 0);
+        Assert.assertEquals(argList.getFilterPropertyArguments(), List.of(new PropertyArgument(Affinity.NEGATIVE, "prop", null, List.of("value"))));
+    }
+
+    @Test
     void test_from_oneNegativeFilterPropertyArgWithCommas() throws ArgumentList.ArgumentListException {
         ArgumentList argList = ArgumentList.from(List.of("-prop:value1,value2,value3", "command"));
         Assert.assertEquals(argList.getCommandName(), "command");
@@ -533,27 +546,27 @@ public class ArgumentListTest {
 
     @Test
     void test_from_oneOptionArg() throws ArgumentList.ArgumentListException {
-        ArgumentList argList = ArgumentList.from(List.of("command", ".predicate:value"));
+        ArgumentList argList = ArgumentList.from(List.of("command", "/option:value"));
         Assert.assertEquals(argList.getCommandName(), "command");
         Assert.assertEquals(argList.getTrailingPositionalArguments().size(), 0);
         Assert.assertEquals(argList.getSpecialArguments().size(), 0);
         Assert.assertEquals(argList.getModifyPropertyArguments().size(), 0);
-        Assert.assertEquals(argList.getOptionArguments(), List.of(new OptionArgument("predicate", List.of("value"))));
+        Assert.assertEquals(argList.getOptionArguments(), List.of(new OptionArgument("option", List.of("value"))));
     }
 
     @Test
     void test_from_oneOptionArgWithCommas() throws ArgumentList.ArgumentListException {
-        ArgumentList argList = ArgumentList.from(List.of("command", ".predicate:value1,value2"));
+        ArgumentList argList = ArgumentList.from(List.of("command", "/option:value1,value2"));
         Assert.assertEquals(argList.getCommandName(), "command");
         Assert.assertEquals(argList.getTrailingPositionalArguments().size(), 0);
         Assert.assertEquals(argList.getSpecialArguments().size(), 0);
         Assert.assertEquals(argList.getModifyPropertyArguments().size(), 0);
-        Assert.assertEquals(argList.getOptionArguments(), List.of(new OptionArgument("predicate", List.of("value1", "value2"))));
+        Assert.assertEquals(argList.getOptionArguments(), List.of(new OptionArgument("option", List.of("value1", "value2"))));
     }
 
     @Test
     void test_from_emptyOptionArg() throws ArgumentList.ArgumentListException {
-        ArgumentList argList = ArgumentList.from(List.of("command", ".prop:"));
+        ArgumentList argList = ArgumentList.from(List.of("command", "/prop:"));
         Assert.assertEquals(argList.getCommandName(), "command");
         Assert.assertEquals(argList.getTrailingPositionalArguments().size(), 0);
         Assert.assertEquals(argList.getSpecialArguments().size(), 0);
@@ -563,7 +576,7 @@ public class ArgumentListTest {
 
     @Test
     void test_from_optionArgWithoutValue() throws ArgumentList.ArgumentListException {
-        ArgumentList argList = ArgumentList.from(List.of("command", ".prop"));
+        ArgumentList argList = ArgumentList.from(List.of("command", "/prop"));
         Assert.assertEquals(argList.getCommandName(), "command");
         Assert.assertEquals(argList.getTrailingPositionalArguments().size(), 0);
         Assert.assertEquals(argList.getSpecialArguments().size(), 0);
@@ -573,7 +586,7 @@ public class ArgumentListTest {
 
     @Test
     void test_from_singleSpecialCharacterArgument() throws ArgumentList.ArgumentListException {
-        ArgumentList argList = ArgumentList.from(List.of("command", ".", "+", "-", ":"));
+        ArgumentList argList = ArgumentList.from(List.of("command", "/", "+", "-", ":"));
         Assert.assertEquals(argList.getCommandName(), "command");
         Assert.assertEquals(argList.getTrailingPositionalArguments().size(), 0);
         Assert.assertEquals(argList.getSpecialArguments().size(), 0);

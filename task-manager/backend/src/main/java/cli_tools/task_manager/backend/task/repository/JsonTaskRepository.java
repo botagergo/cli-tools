@@ -26,12 +26,10 @@ public class JsonTaskRepository extends JsonRepository<List<HashMap<String, Obje
     @Inject
     public JsonTaskRepository(@Named("taskJsonFile") File jsonPath, UUIDGenerator uuidGenerator) {
         super(jsonPath);
-
         SimpleModule simpleModule = new SimpleModule();
         simpleModule.addSerializer(new MapSerializer());
         simpleModule.addDeserializer(HashMap.class, new MapDeserializer());
         getObjectMapper().registerModule(simpleModule);
-
         this.uuidGenerator = uuidGenerator;
     }
 

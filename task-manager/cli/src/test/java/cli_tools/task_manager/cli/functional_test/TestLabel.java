@@ -21,16 +21,16 @@ public class TestLabel extends TestBase {
         execute("addLabel");
         assertStdoutContains("missing");
 
-        execute("addLabel .type:label_type label1 label2");
+        execute("addLabel /type:label_type label1 label2");
         assertStdoutNumLines(2);
         assertStdoutLineContains(0, "Created label");
         assertStdoutLineContains(1, "Created label");
 
-        execute("addLabel .type:label_type label3");
+        execute("addLabel /type:label_type label3");
         assertStdoutNumLines(1);
         assertStdoutLineContains(0, "Created label");
 
-        execute("addLabel .type:label_type1 label4");
+        execute("addLabel /type:label_type1 label4");
         assertStdoutNumLines(1);
         assertStdoutLineContains(0, "Created label");
 
@@ -42,21 +42,21 @@ public class TestLabel extends TestBase {
         assertStdoutLinesContain("label_type", "---", "label1", "label2", "label3");
         assertStdoutLinesContain("label_type1", "---", "label4");
 
-        execute("listLabel .type:label_type");
+        execute("listLabel /type:label_type");
         assertStdoutLinesContain("label1", "label2", "label3");
         assertStdoutNotContains("label_type1");
 
-        execute("deleteLabel .type:label_type2 label1 label2");
+        execute("deleteLabel /type:label_type2 label1 label2");
         assertStdoutNumLines(2);
         assertStdoutLineContains(0, "does not exist");
         assertStdoutLineContains(1, "does not exist");
 
-        execute("deleteLabel .type:label_type label1 label123");
+        execute("deleteLabel /type:label_type label1 label123");
         assertStdoutNumLines(2);
         assertStdoutLineContains(0, "Deleted label");
         assertStdoutLineContains(1, "does not exist");
 
-        execute("deleteLabel .type:label_type1 label4");
+        execute("deleteLabel /type:label_type1 label4");
         assertStdoutNumLines(1);
         assertStdoutLineContains(0, "Deleted label");
 

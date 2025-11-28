@@ -60,7 +60,7 @@ public class LocalExecutor implements Executor {
 
         String commandName = argList.getCommandName();
         if (commandName == null || commandName.isEmpty()) {
-            Print.printError("no command specified");
+            Print.printError("No command specified");
             return;
         }
 

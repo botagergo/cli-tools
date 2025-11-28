@@ -85,7 +85,7 @@ public class ArgumentList {
             } else if (currentQuote != 0) {
                 currentToken.append(currentChar);
                 continue;
-            } else if ("+-.".indexOf(currentChar) >= 0) {
+            } else if ("+-!./".indexOf(currentChar) >= 0) {
                 isPropertyArg = true;
                 currentToken.append(currentChar);
             } else if (currentChar == ':') {
@@ -116,13 +116,13 @@ public class ArgumentList {
         boolean isOption = false;
         if (!leftPart.isEmpty()) {
             char firstChar = leftPart.charAt(0);
-            if (firstChar == '-') {
+            if (firstChar == '-' || firstChar == '!') {
                 affinity = Affinity.NEGATIVE;
                 skipFirst = true;
-            } else if (firstChar == '+') {
+            } else if (firstChar == '+' || firstChar == '.') {
                 affinity = Affinity.POSITIVE;
                 skipFirst = true;
-            } else if (firstChar == '.') {
+            } else if (firstChar == '/') {
                 isOption = true;
                 skipFirst = true;
             }

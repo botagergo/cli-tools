@@ -24,6 +24,9 @@ import lombok.extern.log4j.Log4j2;
 import org.apache.commons.cli.*;
 import org.apache.commons.cli.help.HelpFormatter;
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.core.Appender;
+import org.apache.logging.log4j.core.LoggerContext;
 import org.flywaydb.core.Flyway;
 
 import javax.sql.DataSource;
@@ -33,7 +36,6 @@ import java.net.URISyntaxException;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @Log4j2
 public class TaskManagerCLI {
@@ -42,8 +44,11 @@ public class TaskManagerCLI {
     private static final int defaultDaemonPort = 8224;
 
     public static void main(String @NonNull [] args) throws IOException, InterruptedException, URISyntaxException {
+        setLog4j2Appender();
+
         Options options = new Options();
         options.addOption("h", "help", false, "Show help");
+        options.addOption(null, "profile", true, "Profile to load");
         options.addOption(null, "daemon", false, "Start daemon process");
         options.addOption(null, "connect-to-daemon", false, "Connect to an already running daemon");
         options.addOption(null, "standalone", false, "Run without daemon process");
@@ -87,6 +92,10 @@ public class TaskManagerCLI {
                 Print.printError("Unrecognized option: %s", opt.getKey());
                 return;
             }
+        }
+
+        if (cmd.hasOption("profile")) {
+            taskManagerConfig.setProfile(cmd.getOptionValue("profile"));
         }
 
         if (cmd.hasOption("daemon") && cmd.hasOption("daemon-host")) {
@@ -187,11 +196,11 @@ public class TaskManagerCLI {
         }
 
         if (isDaemon || isStandalone) {
-            if (!init(injector)) {
+            if (!init(injector, taskManagerConfig)) {
                 return;
             }
             try {
-                initDefaultDataIfNeeded(injector);
+                initDefaultDataIfNeeded(injector, taskManagerConfig);
             } catch (ServiceException e) {
                 Print.printError("Failed to initialize default data: %s".formatted(e.getMessage()), e);
                 Print.logException(e, log);
@@ -206,11 +215,11 @@ public class TaskManagerCLI {
         } else if (isStandalone) {
             runStandalone(injector);
         } else {
-            runWithDaemon(daemonPort, injector);
+            runWithDaemon(daemonPort, injector, taskManagerConfig);
         }
     }
 
-    private static void runWithDaemon(Integer daemonPort, Injector injector) throws IOException, URISyntaxException, InterruptedException {
+    private static void runWithDaemon(Integer daemonPort, Injector injector, TaskManagerConfig taskManagerConfig) throws IOException, URISyntaxException, InterruptedException {
         if (daemonPort == null) {
             daemonPort = defaultDaemonPort;
         }
@@ -221,7 +230,7 @@ public class TaskManagerCLI {
             if (!executor.waitUntilServerReady()) {
                 Print.printWarning("Failed to start daemon process, running standalone");
 
-                if (!init(injector)) {
+                if (!init(injector, taskManagerConfig)) {
                     return;
                 }
 
@@ -291,14 +300,14 @@ public class TaskManagerCLI {
     }
 
     //noinspection BooleanMethodIsAlwaysInverted
-    private static boolean init(Injector injector) throws IOException {
+    private static boolean init(Injector injector, TaskManagerConfig taskManagerConfig) throws IOException {
         CommandParserFactory commandParserFactory = injector.getInstance(CommandParserFactory.class);
         CustomCommandRepository customCommandRepository = injector.getInstance(CustomCommandRepository.class);
         CustomCommandParserFactory customCommandParserFactory = injector.getInstance(CustomCommandParserFactory.class);
         Context context = injector.getInstance(Context.class);
 
         try {
-            initDefaultDataIfNeeded(injector);
+            initDefaultDataIfNeeded(injector, taskManagerConfig);
         } catch (ServiceException e) {
             Print.printError("Failed to initialize default data: %s".formatted(e.getMessage()), e);
             Print.logException(e, log);
@@ -336,16 +345,22 @@ public class TaskManagerCLI {
         return true;
     }
 
-    private static void initDefaultDataIfNeeded(Injector injector) throws IOException, ServiceException {
+    private static void initDefaultDataIfNeeded(Injector injector, TaskManagerConfig taskManagerConfig) throws IOException, ServiceException {
         Initializer initializer = injector.getInstance(Initializer.class);
-        String profile = Objects.requireNonNullElse(System.getenv("TASK_MANAGER_PROFILE"), "default");
-        File initializedFile = Paths.get(OsDirs.getDataDir(profile).toString(), ".initialized").toFile();
+        File dataDir = OsDirs.getDataDir(taskManagerConfig.getProfile());
+        File initializedFile = Paths.get(dataDir.toString(), ".initialized").toFile();
 
         if (!initializedFile.isFile()) {
             log.info("Initializing database with default data");
 
-            if (!OsDirs.getDataDir(profile).mkdirs()) {
-                throw new IOException("Failed to create data directory: %s".formatted(OsDirs.getDataDir(profile).getAbsolutePath()));
+            if (dataDir.isFile()) {
+                throw new IOException("Failed to create data directory: %s - file already exists".formatted(dataDir.getAbsolutePath()));
+            }
+
+            if (dataDir.isDirectory()) {
+                log.debug("Data directory already exists:  {}", dataDir.getAbsolutePath());
+            } else if (!dataDir.mkdirs()) {
+                throw new IOException("Failed to create data directory: %s".formatted(dataDir.getAbsolutePath()));
             }
 
             initializer.initialize();
@@ -357,7 +372,7 @@ public class TaskManagerCLI {
         }
     }
 
-    public static void startDaemon(int daemonPort) throws IOException, URISyntaxException {
+    private static void startDaemon(int daemonPort) throws IOException, URISyntaxException {
         String jarPath = getRunningJar();
         List<String> command = new ArrayList<>();
         command.add(System.getProperty("java.home") + "/bin/java");
@@ -371,11 +386,20 @@ public class TaskManagerCLI {
         pb.start();
     }
 
-    public static String getRunningJar() throws URISyntaxException {
+    private static String getRunningJar() throws URISyntaxException {
         return new File(TaskManagerCLI.class.getProtectionDomain()
                 .getCodeSource()
                 .getLocation()
                 .toURI()).getAbsolutePath();
+    }
+
+    private static void setLog4j2Appender() {
+        boolean logToStdout = System.getProperty("log.to.stdout") != null;
+        LoggerContext loggerContext = (LoggerContext) LogManager.getContext(false);
+        Appender appender = loggerContext.getConfiguration().getAppender(logToStdout ? "Stdout" : "File");
+        appender.start();
+        loggerContext.getRootLogger().addAppender(appender);
+        loggerContext.updateLoggers();
     }
 
 }
