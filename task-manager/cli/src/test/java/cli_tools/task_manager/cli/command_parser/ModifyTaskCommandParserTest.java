@@ -104,7 +104,7 @@ public class ModifyTaskCommandParserTest {
                 "modify",
                 leadingPositionalArgs,
                 new ArrayList<>(),
-                new LinkedHashMap<>(),
+                List.of(),
                 filterPropertyArgs,
                 modifyPropertyArgs,
                 new ArrayList<>()

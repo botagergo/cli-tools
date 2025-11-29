@@ -1,23 +1,13 @@
 package cli_tools.common.cli.argument;
 
+import cli_tools.common.core.data.property.Affinity;
+
 import java.util.Set;
 
 public record SpecialArgument(char type, String value) {
 
     public static final Set<Character> specialChars =
-            Set.of('!', '@', '/', '?', '#', '+', '*', ':', '<', '>', '&', '=', '%', '.');
-
-    public static SpecialArgument from(String arg) throws NotASpecialArgumentException {
-        if (!isSpecialArgument(arg)) {
-            throw new NotASpecialArgumentException(arg);
-        }
-
-        return new SpecialArgument(arg.charAt(0), arg.substring(1));
-    }
-
-    public static boolean isSpecialArgument(String value) {
-        return (!value.isEmpty() && isSpecialArgumentChar(value.charAt(0)));
-    }
+            Set.of('@', '?', '#', '*', '<', '>', '&', '=', '%', '$');
 
     public static boolean isSpecialArgumentChar(char ch) {
         return specialChars.contains(ch);

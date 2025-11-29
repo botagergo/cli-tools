@@ -54,7 +54,7 @@ public class TaskPrinter {
                 Print.print(getObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(tasks.stream().map(Task::getProperties).toList()));
             }
         } catch (PropertyConverterException | JsonProcessingException | PropertyException e) {
-            throw new TaskPrinterException("Error printing tasks: %s".formatted(e.getMessage()), e);
+            throw new TaskPrinterException(e.getMessage(), e);
         }
     }
 
@@ -95,6 +95,7 @@ public class TaskPrinter {
         for (Task task : tasks) {
             addTaskToTable(table, context, propertyToStringConverter, task, propertiesToList);
         }
+
         GridTable gridTable = Border.of(Border.Chars.of('+', '-', '|')).apply(table.toGrid());
         Util.print(gridTable, new PrintWriter(System.out, true));
     }
@@ -119,17 +120,9 @@ public class TaskPrinter {
         for (int i = 0; i < propertiesToList.size(); i++) {
             String propertyName = propertiesToList.get(i);
             Property property = context.getPropertyManager().getProperty(taskTree, propertyName);
-            String propertyString;
+            String propertyString = propertyToStringConverter.propertyToString(propertyName, property);
 
-            if (propertyName.equals("id")) {
-                propertyString = getIDStr(context, taskTree);
-            } else {
-                propertyString = propertyToStringConverter.propertyToString(propertyName, property);
-            }
-
-            if (propertyName.equals(Task.NAME
-
-)) {
+            if (propertyName.equals(Task.NAME)) {
                 propertyString = ansiDone + propertyString;
             }
 
@@ -170,15 +163,9 @@ public class TaskPrinter {
             Property property = context.getPropertyManager().getProperty(task, propertyName);
             String propertyString;
 
-            if (propertyName.equals("id")) {
-                propertyString = getIDStr(context, task);
-            } else {
-                propertyString = propertyToStringConverter.propertyToString(propertyName, property);
-            }
+            propertyString = propertyToStringConverter.propertyToString(propertyName, property);
 
-            if (propertyName.equals(Task.NAME
-
-)) {
+            if (propertyName.equals(Task.NAME)) {
                 propertyString = ansiDone + propertyString;
             }
 
@@ -187,10 +174,6 @@ public class TaskPrinter {
                 table.addLine(" " + line + " ");
             }
         }
-    }
-
-    private String getIDStr(Context context, PropertyOwner propertyOwner) throws PropertyException {
-        return context.getPropertyManager().getProperty(propertyOwner, "id").getInteger().toString();
     }
 
     private String[] splitByNewlines(String str) {

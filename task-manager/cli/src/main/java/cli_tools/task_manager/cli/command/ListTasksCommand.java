@@ -14,6 +14,7 @@ import lombok.NonNull;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -28,6 +29,7 @@ public final class ListTasksCommand extends Command {
     private Boolean hierarchical;
     private List<@NonNull Integer> tempIDs;
     private List<String> properties;
+    private Boolean overwriteProperties;
     private Boolean listDone;
 
     @Override
@@ -41,7 +43,7 @@ public final class ListTasksCommand extends Command {
             SortingInfo sortingInfo = null;
             String actualViewName = viewName;
             Boolean actualHierarchical = hierarchical;
-            List<String> actualProperties = List.of(Task.NAME, Task.STATUS, Task.TAGS);
+            List<String> actualProperties = new ArrayList<>(List.of(Task.ID, Task.NAME, Task.STATUS, Task.TAGS));
             List<UUID> taskUUIDs = CommandUtil.getUUIDsFromTempIDs(taskManagerContext, tempIDs);
             List<FilterPropertySpec> filterPropertySpecs = CommandUtil.getFilterPropertySpecs(taskManagerContext, filterPropertyArgs);
             Boolean actualListDone = listDone;
@@ -66,7 +68,7 @@ public final class ListTasksCommand extends Command {
                 }
 
                 if (viewInfo.propertiesToList() != null) {
-                    actualProperties = viewInfo.propertiesToList();
+                    actualProperties = new ArrayList<>(viewInfo.propertiesToList());
                 }
 
                 if (outputFormat == null) {
@@ -99,7 +101,11 @@ public final class ListTasksCommand extends Command {
             }
 
             if (properties != null && !properties.isEmpty()) {
-                actualProperties = properties;
+                if (overwriteProperties != null && overwriteProperties) {
+                    actualProperties = properties;
+                } else {
+                    actualProperties.addAll(properties);
+                }
             }
 
             if (actualHierarchical && context.getPropertyManager().getPropertyDescriptor(Task.PARENT) == null) {

@@ -118,22 +118,14 @@ public class Initializer {
     private void initializeViewInfo() throws ServiceException {
         viewInfoService.deleteAllViewInfos();
         viewInfoService.addViewInfo("default", ViewInfo.builder()
-                .sortingInfo(new SortingInfo(List.of(new SortingCriterion(Task.NAME
-
-, true))))
-                .propertiesToList(List.of("id", Task.NAME
-
-, Task.STATUS, Task.TAGS, Task.DUE_DATE))
+                .sortingInfo(new SortingInfo(List.of(new SortingCriterion(Task.NAME, true))))
+                .propertiesToList(List.of("id", Task.NAME, Task.STATUS, Task.TAGS, Task.DUE_DATE))
                 .outputFormat(OutputFormat.TEXT)
                 .build());
 
         viewInfoService.addViewInfo("all", ViewInfo.builder()
-                .sortingInfo(new SortingInfo(List.of(new SortingCriterion(Task.NAME
-
-, true))))
-                .propertiesToList(List.of("id", Task.NAME
-
-, Task.STATUS, Task.TAGS, Task.DUE_DATE))
+                .sortingInfo(new SortingInfo(List.of(new SortingCriterion(Task.NAME, true))))
+                .propertiesToList(List.of("id", Task.NAME, Task.STATUS, Task.TAGS, Task.DUE_DATE))
                 .outputFormat(OutputFormat.TEXT)
                 .listDone(true)
                 .build());

@@ -4,6 +4,7 @@ import cli_tools.common.cli.Context;
 import cli_tools.common.cli.argument.ArgumentList;
 import cli_tools.common.cli.command.Command;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public abstract class CommandParser {
@@ -39,8 +40,8 @@ public abstract class CommandParser {
 
     protected List<String> parseListOptionValue(List<String> values) {
         if (values == null) {
-            return List.of();
+            return new ArrayList<>();
         }
-        return values;
+        return new ArrayList<>(values);
     }
 }

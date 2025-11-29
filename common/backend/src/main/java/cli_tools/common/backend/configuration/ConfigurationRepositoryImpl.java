@@ -3,6 +3,7 @@ package cli_tools.common.backend.configuration;
 import cli_tools.common.core.repository.ConfigurationRepository;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
+import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.github.gestalt.config.Gestalt;
@@ -19,9 +20,12 @@ import java.util.Map;
 public class ConfigurationRepositoryImpl implements ConfigurationRepository {
 
     private final Gestalt gestalt;
+    @Getter private final File configFile;
 
     @Inject
     public ConfigurationRepositoryImpl(@Named("configurationYamlFile") File configFile) throws IOException {
+        this.configFile = configFile;
+
         if (!configFile.exists()) {
             File parentFile = configFile.getParentFile();
             if (parentFile != null && !parentFile.isDirectory()) {

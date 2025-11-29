@@ -22,6 +22,7 @@ import org.testng.annotations.BeforeClass;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
@@ -143,6 +144,15 @@ public class TestBase {
         for (String string : strings) {
             assertFalse(stdoutLines[1].contains(string), stdoutStr);
         }
+    }
+
+    protected void assertStdoutTaskHeader(String... strings) {
+        assertTrue(stdoutLines.length >= 2, stdoutStr);
+        List<String> properties = Arrays.stream(stdoutLines[1].split("\\|"))
+                .map(String::strip)
+                .filter(prop -> !prop.isEmpty())
+                .toList();
+        assertEquals(properties, Arrays.asList(strings));
     }
 
     protected void assertStdoutTaskRowContains(int taskNumber, String... strings) {

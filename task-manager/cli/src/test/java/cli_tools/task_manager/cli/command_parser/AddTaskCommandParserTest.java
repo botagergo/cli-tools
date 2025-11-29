@@ -103,7 +103,7 @@ public class AddTaskCommandParserTest {
                 "add",
                 new ArrayList<>(),
                 Arrays.asList(PositionalArgs),
-                new LinkedHashMap<>(),
+                List.of(),
                 new ArrayList<>(),
                 new ArrayList<>(),
                 new ArrayList<>()
@@ -118,7 +118,7 @@ public class AddTaskCommandParserTest {
                 "add",
                 new ArrayList<>(),
                 PositionalArgs,
-                new LinkedHashMap<>(),
+                List.of(),
                 new ArrayList<>(),
                 modifyPropertyArgs,
                 new ArrayList<>()

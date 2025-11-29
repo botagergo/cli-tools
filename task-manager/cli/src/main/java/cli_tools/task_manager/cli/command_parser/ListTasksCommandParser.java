@@ -3,6 +3,7 @@ package cli_tools.task_manager.cli.command_parser;
 import cli_tools.common.cli.Context;
 import cli_tools.common.cli.argument.ArgumentList;
 import cli_tools.common.cli.argument.OptionArgument;
+import cli_tools.common.cli.argument.SpecialArgument;
 import cli_tools.common.cli.command.Command;
 import cli_tools.common.cli.command_parser.CommandParser;
 import cli_tools.common.cli.command_parser.CommandParserException;
@@ -14,6 +15,7 @@ import cli_tools.task_manager.cli.command.ListTasksCommand;
 import lombok.extern.log4j.Log4j2;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Log4j2
@@ -24,13 +26,13 @@ public class ListTasksCommandParser extends CommandParser {
         ListTasksCommand command = new ListTasksCommand();
 
         if (!argList.getModifyPropertyArguments().isEmpty()) {
-            throw new CommandParserException("command 'list' does not accept modify property arguments");
+            throw new CommandParserException("Command 'list' does not accept modify property arguments");
         }
 
         if (argList.getTrailingPositionalArguments().size() == 1) {
             command.setViewName(String.join(" ", argList.getTrailingPositionalArguments()));
         } else if (argList.getTrailingPositionalArguments().size() > 1) {
-            throw new CommandParserException("one positional argument expected: view name");
+            throw new CommandParserException("One positional argument expected: view name");
         }
 
         if (!argList.getFilterPropertyArguments().isEmpty()) {
@@ -41,7 +43,10 @@ public class ListTasksCommandParser extends CommandParser {
             switch (optionArg.optionName()) {
                 case "sort" -> command.setSortingCriteria(parseSortingCriteria(optionArg.values()));
                 case "view" -> command.setViewName(parseSingleOptionValue("view", optionArg.values()));
-                case "properties" -> command.setProperties(parseProperties(optionArg.values()));
+                case "properties" -> {
+                    command.setProperties(parseProperties(optionArg.values()));
+                    command.setOverwriteProperties(true);
+                }
                 case "outputFormat" -> command.setOutputFormat(parseOutputFormat(optionArg.values()));
                 case "hierarchical" -> command.setHierarchical(parseBoolean("hierarchical", optionArg.values()));
                 case "listDone" -> command.setListDone(parseBoolean("listDone", optionArg.values()));
@@ -49,9 +54,39 @@ public class ListTasksCommandParser extends CommandParser {
             }
         }
 
+        for (SpecialArgument specialArgument : argList.getSpecialArguments()) {
+            switch (specialArgument.type()) {
+                case '$' -> parsePropertiesSpecialArg(specialArgument.value(), command);
+                default -> throw new CommandParserException("Invalid special argument type for command 'list': " + specialArgument.type());
+            }
+        }
+
         command.setTempIDs(ParseUtil.getTempIds(context, argList.getLeadingPositionalArguments()));
 
         return command;
+    }
+
+    private void parsePropertiesSpecialArg(String propertiesStr, ListTasksCommand listTasksCommand) {
+        boolean overwriteProperties = true;
+        if (propertiesStr.startsWith("+")) {
+            propertiesStr = propertiesStr.substring(1);
+            overwriteProperties = false;
+        }
+
+        String[] properties = propertiesStr.isEmpty() ? new String[0] : propertiesStr.split(",");
+        if (overwriteProperties) {
+            listTasksCommand.setProperties(new ArrayList<>(Arrays.asList(properties)));
+            listTasksCommand.setOverwriteProperties(true);
+        } else {
+            if (listTasksCommand.getProperties() == null) {
+                listTasksCommand.setProperties(new ArrayList<>(Arrays.asList(properties)));
+            } else {
+                listTasksCommand.getProperties().addAll(List.of(properties));
+            }
+            if (listTasksCommand.getOverwriteProperties() != null) {
+                listTasksCommand.setOverwriteProperties(true);
+            }
+        }
     }
 
 
