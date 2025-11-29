@@ -28,7 +28,7 @@ public class TestView extends TestBase {
                         .predicate(Predicate.EQUALS)
                         .operands(List.of("read a book"))
                         .build())
-                .outputFormat(OutputFormat.JSON)
+                .outputFormat("json")
                 .build());
 
         context.getViewInfoService().addViewInfo("view1", ViewInfo.builder()
@@ -42,34 +42,34 @@ public class TestView extends TestBase {
                         .operands(List.of(3)) // Medium
                         .build())
                 .propertiesToList(List.of("id", "name", "priority"))
-                .outputFormat(OutputFormat.TEXT)
+                .outputFormat("grid")
                 .build());
 
         context.getViewInfoService().addViewInfo("view2", ViewInfo.builder()
                 .propertiesToList(List.of("id", "name", "priority"))
-                .outputFormat(OutputFormat.JSON)
+                .outputFormat("json")
                 .build());
 
         context.getViewInfoService().addViewInfo("view3", ViewInfo.builder()
                 .propertiesToList(List.of("id", "name", "priority"))
-                .outputFormat(OutputFormat.PRETTY_JSON)
+                .outputFormat("prettyJson")
                 .build());
 
         context.getViewInfoService().addViewInfo("view4", ViewInfo.builder()
                 .propertiesToList(List.of("id", "name", "priority"))
-                .outputFormat(OutputFormat.TEXT)
+                .outputFormat("grid")
                 .hierarchical(true)
                 .build());
 
         context.getViewInfoService().addViewInfo("view5", ViewInfo.builder().build());
 
         context.getViewInfoService().addViewInfo("view6", ViewInfo.builder()
-                .outputFormat(OutputFormat.JSON)
+                .outputFormat("json")
                 .hierarchical(true)
                 .build());
 
         context.getViewInfoService().addViewInfo("view7", ViewInfo.builder()
-                .outputFormat(OutputFormat.PRETTY_JSON)
+                .outputFormat("prettyJson")
                 .hierarchical(true)
                 .build());
 
@@ -128,10 +128,10 @@ public class TestView extends TestBase {
         assertStdoutContains("go to the post office");
 
         execute("list view6");
-        assertStdoutContains("hierarchical printing is not possible");
+        assertStdoutContains("hierarchical printing is not supported");
 
         execute("list view7");
-        assertStdoutContains("hierarchical printing is not possible");
+        assertStdoutContains("hierarchical printing is not supported");
     }
 
 }

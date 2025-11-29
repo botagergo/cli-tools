@@ -5,7 +5,6 @@ import cli_tools.common.cli.argument.OptionArgument;
 import cli_tools.common.cli.argument.PropertyArgument;
 import cli_tools.common.cli.argument.SpecialArgument;
 import cli_tools.common.cli.command_parser.CommandParserException;
-import cli_tools.common.core.data.OutputFormat;
 import cli_tools.common.core.data.SortingCriterion;
 import cli_tools.common.core.data.property.Affinity;
 import cli_tools.task_manager.cli.TaskManagerContext;
@@ -31,7 +30,7 @@ public class ListTasksCommandParserTest {
         assertNull(command.getSortingCriteria());
         assertEquals(command.getTempIDs().size(), 0);
         assertNull(command.getFilterPropertyArgs());
-        assertNull(command.getOutputFormat());
+        assertNull(command.getOutputFormatName());
 
     }
 
@@ -118,31 +117,6 @@ public class ListTasksCommandParserTest {
                 new PropertyArgument(Affinity.NEGATIVE, "p", "in", List.of()),
                 new PropertyArgument(Affinity.NEUTRAL, "property", "in", List.of("val1", "val2"))
         ));
-    }
-
-    @Test
-    void test_parse_outputFormat() throws CommandParserException {
-        assertThrows(CommandParserException.class, () -> parse(getArgList(List.of(), List.of(), List.of(),
-                List.of(new OptionArgument("outputFormat", List.of("jpg"))),
-                List.of())));
-        assertThrows(CommandParserException.class, () -> parse(getArgList(List.of(), List.of(), List.of(),
-                List.of(new OptionArgument("outputFormat", List.of())),
-                List.of())));
-        assertThrows(CommandParserException.class, () -> parse(getArgList(List.of(), List.of(), List.of(),
-                List.of(new OptionArgument("outputFormat", List.of("text", "json"))),
-                List.of())));
-        ListTasksCommand command = parse(getArgList(List.of(), List.of(), List.of(),
-                List.of(new OptionArgument("outputFormat", List.of("text"))),
-                List.of()));
-        assertEquals(command.getOutputFormat(), OutputFormat.TEXT);
-        command = parse(getArgList(List.of(), List.of(), List.of(),
-                List.of(new OptionArgument("outputFormat", List.of("json"))),
-                List.of()));
-        assertEquals(command.getOutputFormat(), OutputFormat.JSON);
-        command = parse(getArgList(List.of(), List.of(), List.of(),
-                List.of(new OptionArgument("outputFormat", List.of("prettyJson"))),
-                List.of()));
-        assertEquals(command.getOutputFormat(), OutputFormat.PRETTY_JSON);
     }
 
     @Test

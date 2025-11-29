@@ -29,6 +29,7 @@ import cli_tools.common.util.UUIDGenerator;
 import cli_tools.common.backend.view.repository.JsonViewInfoRepository;
 import cli_tools.common.backend.view.service.ViewInfoService;
 import cli_tools.common.backend.view.service.ViewInfoServiceImpl;
+import cli_tools.task_manager.cli.OsDirs;
 import cli_tools.task_manager.cli.TaskManagerContext;
 import cli_tools.task_manager.cli.command.custom_command.CustomCommandDefinitionMixIn;
 import cli_tools.task_manager.cli.command.custom_command.CustomCommandParserFactoryImpl;
@@ -36,6 +37,8 @@ import cli_tools.task_manager.backend.pseudo_property_provider.PseudoPropertyPro
 import cli_tools.task_manager.backend.task.repository.JsonTaskRepository;
 import cli_tools.task_manager.backend.task.service.TaskService;
 import cli_tools.task_manager.backend.task.service.TaskServiceImpl;
+import cli_tools.task_manager.cli.output_format.JsonOutputFormatRepository;
+import cli_tools.task_manager.cli.output_format.OutputFormatRepository;
 import cli_tools.test_utils.FileUtils;
 import cli_tools.test_utils.RoundRobinUUIDGenerator;
 import com.google.inject.AbstractModule;
@@ -88,6 +91,12 @@ public class TestModule extends AbstractModule {
                 fileUtils.getTempFile("property_descriptor"),
                 tempIdManager,
                 PseudoPropertyProviderMixIn.class);
+    }
+
+    @Provides
+    @Singleton
+    private OutputFormatRepository outputFormatRepository() {
+        return new JsonOutputFormatRepository(fileUtils.getTempFile("output_format"));
     }
 
     @Provides

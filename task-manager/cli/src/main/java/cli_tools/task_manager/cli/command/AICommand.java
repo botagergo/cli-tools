@@ -2,11 +2,11 @@ package cli_tools.task_manager.cli.command;
 
 import cli_tools.common.backend.service.ServiceException;
 import cli_tools.common.cli.command.Command;
-import cli_tools.common.core.data.OutputFormat;
 import cli_tools.common.core.util.Print;
 import cli_tools.task_manager.cli.TaskManagerContext;
 import cli_tools.task_manager.backend.task.Task;
 import cli_tools.task_manager.backend.task.service.TaskService;
+import cli_tools.task_manager.cli.task_printer.GridTaskPrinter;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.theokanning.openai.completion.chat.*;
@@ -153,7 +153,7 @@ public final class AICommand extends Command {
             List<Task> tasks = context.getTaskService().getTasks(
                     null, null, null,
                     taskUuidsList, false);
-            context.getTaskPrinter().printTasks(context, tasks, propertiesToList, OutputFormat.TEXT);
+            new GridTaskPrinter('+', '-', '|').printTasks(tasks, propertiesToList, context);
         } catch (Exception e) {
             Print.printError(e.getMessage());
         }

@@ -1,7 +1,6 @@
 package cli_tools.common.backend.view.repository;
 
 import cli_tools.common.core.data.FilterCriterionInfo;
-import cli_tools.common.core.data.OutputFormat;
 import cli_tools.common.core.data.SortingInfo;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -21,7 +20,7 @@ public record ViewInfoMixIn(
         @JsonProperty("properties")
         List<String> propertiesToList,
         @JsonProperty("outputFormat")
-        OutputFormat outputFormat,
+        String outputFormat,
         @JsonProperty(value = "hierarchical", defaultValue = "true")
         boolean hierarchical,
         @JsonProperty(value = "listDone", defaultValue = "false")

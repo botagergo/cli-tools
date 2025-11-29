@@ -1,7 +1,6 @@
 package cli_tools.task_manager.cli.functional_test;
 
 import cli_tools.common.backend.service.ServiceException;
-import cli_tools.common.core.data.OutputFormat;
 import cli_tools.common.core.data.SortingCriterion;
 import cli_tools.common.core.data.SortingInfo;
 import cli_tools.common.core.data.ViewInfo;
@@ -21,7 +20,7 @@ public class TestOutputFormat extends TestBase {
     void setup1() throws ServiceException, IOException {
         context.getViewInfoService().addViewInfo("test_output_format", ViewInfo.builder()
                 .sortingInfo(new SortingInfo(List.of(new SortingCriterion("name", true))))
-                .outputFormat(OutputFormat.JSON)
+                .outputFormat("json")
                 .build());
 
         configurationRepository.defaultView = "test_output_format";
@@ -33,7 +32,7 @@ public class TestOutputFormat extends TestBase {
 
     @Test
     void test_outputFormat_text() {
-        execute("list /outputFormat:text");
+        execute("list /outputFormat:grid");
         assertStdoutContains("NAME",
                 "go to the post office",
                 "buy a new TV",

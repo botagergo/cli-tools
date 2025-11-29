@@ -2,12 +2,14 @@ package cli_tools.task_manager.cli.command;
 
 import cli_tools.common.backend.service.ServiceException;
 import cli_tools.common.cli.argument.PropertyArgument;
-import cli_tools.common.core.data.OutputFormat;
 import cli_tools.common.core.data.property.FilterPropertySpec;
 import cli_tools.common.property_lib.PropertyException;
 import cli_tools.common.property_lib.PropertyManager;
 import cli_tools.task_manager.backend.task.Task;
 import cli_tools.task_manager.cli.TaskManagerContext;
+import cli_tools.task_manager.cli.task_printer.GridTaskPrinter;
+import cli_tools.task_manager.cli.task_printer.TaskPrinter;
+import cli_tools.task_manager.cli.task_printer.TaskPrinterException;
 import lombok.NonNull;
 import lombok.extern.log4j.Log4j2;
 
@@ -20,6 +22,7 @@ import java.util.stream.Collectors;
 @Log4j2
 public class CommandUtil {
     private static final Scanner scanner = new Scanner(System.in);
+    private static final TaskPrinter taskPrinter = new GridTaskPrinter('+', '-', '|');
 
     public static List<UUID> getUUIDsFromTempIDs(@NonNull TaskManagerContext context, List<Integer> tempIDs) {
         if (tempIDs == null || tempIDs.isEmpty()) {
@@ -76,9 +79,7 @@ public class CommandUtil {
                 return null;
             }
             case 's' -> {
-                context.getTaskPrinter().printTasks(context, tasks, List.of(Task.NAME
-
-), OutputFormat.TEXT);
+                taskPrinter.printTasks(tasks, List.of(Task.ID, Task.NAME), context);
                 return confirmAndGetTasksToChange(context, tasks, null, filterPropertySpecs, changeType);
             }
             case 'p' -> {

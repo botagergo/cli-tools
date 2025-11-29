@@ -6,7 +6,7 @@ public record ViewInfo(
         SortingInfo sortingInfo,
         FilterCriterionInfo filterCriterionInfo,
         List<String> propertiesToList,
-        OutputFormat outputFormat,
+        String outputFormat,
         boolean hierarchical,
         boolean listDone
 ) {
@@ -18,7 +18,7 @@ public record ViewInfo(
         private SortingInfo sortingInfo;
         private FilterCriterionInfo filterCriterionInfo;
         private List<String> propertiesToList;
-        private OutputFormat outputFormat;
+        private String outputFormat;
         private boolean hierarchical = false;
         private boolean listDone = false;
 
@@ -43,7 +43,7 @@ public record ViewInfo(
             return this;
         }
 
-        public Builder outputFormat(OutputFormat outputFormat) {
+        public Builder outputFormat(String outputFormat) {
             this.outputFormat = outputFormat;
             return this;
         }

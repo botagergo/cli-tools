@@ -128,23 +128,18 @@ public class PostgresTaskRepository extends PostgresRepository implements TaskRe
     }
 
     private TableField<TasksRecord, String> getStringProperty(String propertyName) {
-        switch (propertyName) {
-            case Task.NAME:
-                return TASKS.NAME;
-            default:
-                throw new RuntimeException();
-        }
+        return switch (propertyName) {
+            case Task.NAME -> TASKS.NAME;
+            default -> throw new RuntimeException();
+        };
     }
 
     private TableField<TasksRecord, LocalDate> getDateProperty(String propertyName) {
-        switch (propertyName) {
-            case Task.START_DATE:
-                return TASKS.START_DATE;
-            case Task.DUE_DATE:
-                return TASKS.DUE_DATE;
-            default:
-                throw new RuntimeException();
-        }
+        return switch (propertyName) {
+            case Task.START_DATE -> TASKS.START_DATE;
+            case Task.DUE_DATE -> TASKS.DUE_DATE;
+            default -> throw new RuntimeException();
+        };
     }
 
     @Override

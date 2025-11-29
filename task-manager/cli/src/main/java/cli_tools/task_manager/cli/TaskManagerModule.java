@@ -47,6 +47,8 @@ import cli_tools.task_manager.backend.task.repository.JsonTaskRepository;
 import cli_tools.task_manager.backend.task.repository.TaskRepository;
 import cli_tools.task_manager.backend.task.service.TaskService;
 import cli_tools.task_manager.backend.task.service.TaskServiceImpl;
+import cli_tools.task_manager.cli.output_format.JsonOutputFormatRepository;
+import cli_tools.task_manager.cli.output_format.OutputFormatRepository;
 import com.fasterxml.jackson.databind.InjectableValues;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -228,6 +230,12 @@ public class TaskManagerModule extends AbstractModule {
         hikariConfig.setPassword(taskManagerConfig.getPostgresqlPassword());
         hikariConfig.setMaximumPoolSize(5);
         return new HikariDataSource(hikariConfig);
+    }
+
+    @Provides
+    @Singleton
+    private OutputFormatRepository outputFormatRepository() {
+        return new JsonOutputFormatRepository(OsDirs.getFile(OsDirs.DirType.DATA, taskManagerConfig.getProfile(),"output_format.json"));
     }
 
     @Override

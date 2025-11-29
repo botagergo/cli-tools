@@ -12,6 +12,8 @@ import cli_tools.common.backend.temp_id_mapping.TempIDManager;
 import cli_tools.common.backend.view.service.ViewInfoService;
 import cli_tools.task_manager.backend.pseudo_property_provider.DonePseudoPropertyProvider;
 import cli_tools.task_manager.backend.task.Task;
+import cli_tools.task_manager.cli.output_format.OutputFormat;
+import cli_tools.task_manager.cli.output_format.OutputFormatRepository;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import org.yaml.snakeyaml.Yaml;
@@ -27,6 +29,7 @@ public class Initializer {
     private final PropertyDescriptorService propertyDescriptorService;
     private final LabelService labelService;
     private final OrderedLabelService orderedLabelService;
+    private final OutputFormatRepository outputFormatRepository;
     private final ViewInfoService viewInfoService;
     private final ConfigurationRepository configurationRepository;
     private final TempIDManager tempIdManager;
@@ -39,6 +42,7 @@ public class Initializer {
             LabelService labelService,
             OrderedLabelService orderedLabelService,
             ConfigurationRepository configurationRepository,
+            OutputFormatRepository outputFormatRepository,
             ViewInfoService viewInfoService,
             TempIDManager tempIdManager,
             @Named("configurationYamlFile") File configFile
@@ -46,6 +50,7 @@ public class Initializer {
         this.propertyDescriptorService = propertyDescriptorService;
         this.labelService = labelService;
         this.orderedLabelService = orderedLabelService;
+        this.outputFormatRepository = outputFormatRepository;
         this.viewInfoService = viewInfoService;
         this.configurationRepository = configurationRepository;
         this.tempIdManager = tempIdManager;
@@ -57,6 +62,7 @@ public class Initializer {
         initializeStatuses();
         initializePriorities();
         initializeEfforts();
+        initializeOutputFormat();
         initializeViewInfo();
         initializeConfig();
     }
@@ -115,18 +121,24 @@ public class Initializer {
         orderedLabelService.createOrderedLabel(Task.EFFORT, "High", 3);
     }
 
+    private void initializeOutputFormat() {
+        outputFormatRepository.create("grid", new OutputFormat.GridOutputFormat('+', '-', '|'));
+        outputFormatRepository.create("json", new OutputFormat.JsonOutputFormat(false));
+        outputFormatRepository.create("prettyJson", new OutputFormat.JsonOutputFormat(true));
+    }
+
     private void initializeViewInfo() throws ServiceException {
         viewInfoService.deleteAllViewInfos();
         viewInfoService.addViewInfo("default", ViewInfo.builder()
                 .sortingInfo(new SortingInfo(List.of(new SortingCriterion(Task.NAME, true))))
                 .propertiesToList(List.of("id", Task.NAME, Task.STATUS, Task.TAGS, Task.DUE_DATE))
-                .outputFormat(OutputFormat.TEXT)
+                .outputFormat("grid")
                 .build());
 
         viewInfoService.addViewInfo("all", ViewInfo.builder()
                 .sortingInfo(new SortingInfo(List.of(new SortingCriterion(Task.NAME, true))))
                 .propertiesToList(List.of("id", Task.NAME, Task.STATUS, Task.TAGS, Task.DUE_DATE))
-                .outputFormat(OutputFormat.TEXT)
+                .outputFormat("grid")
                 .listDone(true)
                 .build());
     }

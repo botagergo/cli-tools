@@ -1,104 +1,74 @@
-package cli_tools.task_manager.cli.command;
+package cli_tools.task_manager.cli.task_printer;
 
 import cli_tools.common.backend.property_converter.PropertyConverterException;
-import cli_tools.common.cli.Context;
 import cli_tools.common.cli.DateTimeFormatter;
 import cli_tools.common.cli.property_to_string_converter.DefaultPropertyToStringConverter;
 import cli_tools.common.cli.property_to_string_converter.MainPropertyToStringConverter;
 import cli_tools.common.cli.property_to_string_converter.PropertyToStringConverter;
-import cli_tools.common.core.data.OutputFormat;
-import cli_tools.common.core.util.Print;
 import cli_tools.common.property_lib.Property;
 import cli_tools.common.property_lib.PropertyException;
-import cli_tools.common.property_lib.PropertyOwner;
-import cli_tools.task_manager.cli.TaskManagerContext;
 import cli_tools.task_manager.backend.task.PropertyOwnerTree;
 import cli_tools.task_manager.backend.task.Task;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import cli_tools.task_manager.cli.TaskManagerContext;
 import com.inamik.text.tables.GridTable;
 import com.inamik.text.tables.SimpleTable;
 import com.inamik.text.tables.grid.Border;
 import com.inamik.text.tables.grid.Util;
-import lombok.extern.log4j.Log4j2;
+import lombok.AllArgsConstructor;
 import org.fusesource.jansi.Ansi;
 
 import java.io.PrintWriter;
 import java.util.List;
 
-@Log4j2
-public class TaskPrinter {
+@AllArgsConstructor
+public class GridTaskPrinter extends TaskPrinter {
 
-    private ObjectMapper objectMapper = null;
+    private char intersectChar;
+    private char horizontalChar;
+    private char verticalChar;
 
-    public TaskPrinter() {
-    }
-
-    public void printTasks(TaskManagerContext context, List<Task> tasks,
-                           List<String> propertiesToList,
-                           OutputFormat outputFormat) throws TaskPrinterException {
-
-        DefaultPropertyToStringConverter propertyToStringConverter = new DefaultPropertyToStringConverter(
-                context.getLabelService(),
-                context.getOrderedLabelService(),
-                new DateTimeFormatter());
-        MainPropertyToStringConverter mainPropertyToStringConverter = new MainPropertyToStringConverter(context.getPropertyToStringConverterRepository(), propertyToStringConverter);
-
-        try {
-            if (outputFormat.equals(OutputFormat.TEXT)) {
-                printTasksText(context, mainPropertyToStringConverter, tasks, propertiesToList);
-            } else if (outputFormat.equals(OutputFormat.JSON)) {
-                Print.print(getObjectMapper().writeValueAsString(tasks.stream().map(Task::getProperties).toList()));
-            } else if (outputFormat.equals(OutputFormat.PRETTY_JSON)) {
-                Print.print(getObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(tasks.stream().map(Task::getProperties).toList()));
-            }
-        } catch (PropertyConverterException | JsonProcessingException | PropertyException e) {
-            throw new TaskPrinterException(e.getMessage(), e);
-        }
-    }
-
-    public void printTaskTrees(
-            Context context,
-            List<PropertyOwnerTree> taskTrees,
-            List<String> propertiesToList) throws PropertyException, PropertyConverterException {
+    @Override
+    public void printTasks(List<Task> tasks,
+                            List<String> properties,
+                           TaskManagerContext taskManagerContext) throws TaskPrinterException {
         SimpleTable table = SimpleTable.of().nextRow();
 
-        DefaultPropertyToStringConverter propertyToStringConverter = new DefaultPropertyToStringConverter(
-                context.getLabelService(),
-                context.getOrderedLabelService(),
-                new DateTimeFormatter());
-        MainPropertyToStringConverter mainPropertyToStringConverter = new MainPropertyToStringConverter(context.getPropertyToStringConverterRepository(), propertyToStringConverter);
-
-        for (String propertyName : propertiesToList) {
-            table.nextCell().addLine(String.format(" %s ", propertyName.toUpperCase()));
-        }
-
-        for (PropertyOwnerTree taskTree : taskTrees) {
-            addTaskTreeToTable(table, context, mainPropertyToStringConverter, taskTree, propertiesToList, 0);
-        }
-
-        GridTable gridTable = Border.of(Border.Chars.of('+', '-', '|')).apply(table.toGrid());
-        Util.print(gridTable, new PrintWriter(System.out, true));
-    }
-
-    private void printTasksText(TaskManagerContext context,
-                                PropertyToStringConverter propertyToStringConverter,
-                                List<Task> tasks,
-                                List<String> propertiesToList) throws PropertyException, PropertyConverterException {
-        SimpleTable table = SimpleTable.of().nextRow();
-
-        for (String propertyName : propertiesToList) {
+        for (String propertyName : properties) {
             table.nextCell().addLine(String.format(" %s ", propertyName.toUpperCase()));
         }
 
         for (Task task : tasks) {
-            addTaskToTable(table, context, propertyToStringConverter, task, propertiesToList);
+            try {
+                addTaskToTable(table, taskManagerContext, taskManagerContext.getPropertyToStringConverter(), task, properties);
+            } catch (PropertyException | PropertyConverterException e) {
+                throw new TaskPrinterException(e.getMessage(), e);
+            }
+        }
+
+        GridTable gridTable = Border.of(Border.Chars.of(intersectChar, horizontalChar, verticalChar)).apply(table.toGrid());
+        Util.print(gridTable, new PrintWriter(System.out, true));
+    }
+
+    @Override
+    public void printTasksTrees(List<PropertyOwnerTree> taskTrees, List<String> properties, TaskManagerContext taskManagerContext) throws TaskPrinterException {
+        SimpleTable table = SimpleTable.of().nextRow();
+
+        for (String propertyName : properties) {
+            table.nextCell().addLine(String.format(" %s ", propertyName.toUpperCase()));
+        }
+
+        for (PropertyOwnerTree taskTree : taskTrees) {
+            try {
+                addTaskTreeToTable(table, taskManagerContext, taskManagerContext.getPropertyToStringConverter(), taskTree, properties, 0);
+            } catch (PropertyException | PropertyConverterException e) {
+                throw new TaskPrinterException(e.getMessage(), e);
+            }
         }
 
         GridTable gridTable = Border.of(Border.Chars.of('+', '-', '|')).apply(table.toGrid());
         Util.print(gridTable, new PrintWriter(System.out, true));
     }
+
 
     private void addTaskTreeToTable(
             SimpleTable table,
@@ -178,13 +148,6 @@ public class TaskPrinter {
 
     private String[] splitByNewlines(String str) {
         return str.split("\\r?\\n");
-    }
-
-    private ObjectMapper getObjectMapper() {
-        if (objectMapper == null) {
-            objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
-        }
-        return objectMapper;
     }
 
 }

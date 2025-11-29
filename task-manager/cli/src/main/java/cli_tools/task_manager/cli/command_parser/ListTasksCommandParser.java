@@ -9,7 +9,6 @@ import cli_tools.common.cli.command_parser.CommandParser;
 import cli_tools.common.cli.command_parser.CommandParserException;
 import cli_tools.common.cli.command_parser.InvalidOptionException;
 import cli_tools.common.cli.command_parser.ParseUtil;
-import cli_tools.common.core.data.OutputFormat;
 import cli_tools.common.core.data.SortingCriterion;
 import cli_tools.task_manager.cli.command.ListTasksCommand;
 import lombok.extern.log4j.Log4j2;
@@ -47,7 +46,7 @@ public class ListTasksCommandParser extends CommandParser {
                     command.setProperties(parseProperties(optionArg.values()));
                     command.setOverwriteProperties(true);
                 }
-                case "outputFormat" -> command.setOutputFormat(parseOutputFormat(optionArg.values()));
+                case "outputFormat" -> command.setOutputFormatName(parseSingleOptionValue("outputFormat", optionArg.values()));
                 case "hierarchical" -> command.setHierarchical(parseBoolean("hierarchical", optionArg.values()));
                 case "listDone" -> command.setListDone(parseBoolean("listDone", optionArg.values()));
                 default -> throw new InvalidOptionException(optionArg.optionName());
@@ -119,23 +118,6 @@ public class ListTasksCommandParser extends CommandParser {
         }
 
         return sortingCriteria;
-    }
-
-    private OutputFormat parseOutputFormat(List<String> values) throws CommandParserException {
-        String outputFormat = parseSingleOptionValue("outputFormat", values);
-        switch (outputFormat) {
-            case "text" -> {
-                return OutputFormat.TEXT;
-            }
-            case "json" -> {
-                return OutputFormat.JSON;
-            }
-            case "prettyJson" -> {
-                return OutputFormat.PRETTY_JSON;
-            }
-            default ->
-                    throw new CommandParserException("invalid output format: " + outputFormat + "\nvalid values: text, json, prettyJson");
-        }
     }
 
     private List<String> parseProperties(List<String> values) {

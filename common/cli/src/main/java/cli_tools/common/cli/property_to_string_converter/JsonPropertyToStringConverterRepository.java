@@ -40,8 +40,7 @@ public class JsonPropertyToStringConverterRepository extends SimpleJsonRepositor
 
     @Override
     protected TypeReference<HashMap<String, PropertyToStringConverter>> getTypeReference() {
-        return new TypeReference<>() {
-        };
+        return new TypeReference<>() {};
     }
 
     @Override

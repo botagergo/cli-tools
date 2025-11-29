@@ -1,6 +1,5 @@
 package cli_tools.task_manager.cli.command;
 
-import cli_tools.common.backend.service.ServiceException;
 import cli_tools.common.cli.argument.PropertyArgument;
 import cli_tools.common.cli.command.Command;
 import cli_tools.common.core.data.*;
@@ -9,6 +8,10 @@ import cli_tools.common.core.util.Print;
 import cli_tools.task_manager.cli.TaskManagerContext;
 import cli_tools.task_manager.backend.task.PropertyOwnerTree;
 import cli_tools.task_manager.backend.task.Task;
+import cli_tools.task_manager.cli.output_format.OutputFormat;
+import cli_tools.task_manager.cli.output_format.OutputFormatRepository;
+import cli_tools.task_manager.cli.task_printer.GridTaskPrinter;
+import cli_tools.task_manager.cli.task_printer.TaskPrinter;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
@@ -25,7 +28,7 @@ public final class ListTasksCommand extends Command {
     private List<@NonNull SortingCriterion> sortingCriteria;
     private List<@NonNull PropertyArgument> filterPropertyArgs;
     private String viewName;
-    private OutputFormat outputFormat;
+    private String outputFormatName;
     private Boolean hierarchical;
     private List<@NonNull Integer> tempIDs;
     private List<String> properties;
@@ -47,13 +50,14 @@ public final class ListTasksCommand extends Command {
             List<UUID> taskUUIDs = CommandUtil.getUUIDsFromTempIDs(taskManagerContext, tempIDs);
             List<FilterPropertySpec> filterPropertySpecs = CommandUtil.getFilterPropertySpecs(taskManagerContext, filterPropertyArgs);
             Boolean actualListDone = listDone;
+            TaskPrinter taskPrinter;
 
             if (actualViewName == null) {
                 actualViewName = context.getConfigurationRepository().defaultView();
             }
 
             if (actualViewName != null) {
-                ViewInfo viewInfo = getView(taskManagerContext, actualViewName);
+                ViewInfo viewInfo = context.getViewInfoService().getViewInfo(actualViewName);
                 if (viewInfo == null) {
                     Print.printError("No such view: %s".formatted(actualViewName));
                     return;
@@ -71,8 +75,8 @@ public final class ListTasksCommand extends Command {
                     actualProperties = new ArrayList<>(viewInfo.propertiesToList());
                 }
 
-                if (outputFormat == null) {
-                    outputFormat = viewInfo.outputFormat();
+                if (outputFormatName == null) {
+                    outputFormatName = viewInfo.outputFormat();
                 }
 
                 if (actualHierarchical == null) {
@@ -86,10 +90,6 @@ public final class ListTasksCommand extends Command {
 
             if (sortingCriteria != null) {
                 sortingInfo = new SortingInfo(sortingCriteria);
-            }
-
-            if (outputFormat == null) {
-                outputFormat = OutputFormat.TEXT;
             }
 
             if (actualHierarchical == null) {
@@ -113,16 +113,17 @@ public final class ListTasksCommand extends Command {
                 actualHierarchical = false;
             }
 
+            taskPrinter = getTaskPrinter(taskManagerContext.getOutputFormatRepository(), outputFormatName);
+            if (taskPrinter == null) {
+                return;
+            }
+
             if (actualHierarchical) {
-                if (outputFormat != OutputFormat.TEXT) {
-                    Print.printError("'outputFormat' is not 'text', hierarchical printing is not possible");
-                    return;
-                }
-                List<PropertyOwnerTree> taskHierarchies = taskManagerContext.getTaskService().getTaskTrees(filterPropertySpecs, sortingInfo, filterCriterionInfo, taskUUIDs, actualListDone);
-                taskManagerContext.getTaskPrinter().printTaskTrees(taskManagerContext, taskHierarchies, actualProperties);
+                List<PropertyOwnerTree> taskTrees = taskManagerContext.getTaskService().getTaskTrees(filterPropertySpecs, sortingInfo, filterCriterionInfo, taskUUIDs, actualListDone);
+                taskPrinter.printTasksTrees(taskTrees, actualProperties, taskManagerContext);
             } else {
                 List<Task> tasks = taskManagerContext.getTaskService().getTasks(filterPropertySpecs, sortingInfo, filterCriterionInfo, taskUUIDs, actualListDone);
-                taskManagerContext.getTaskPrinter().printTasks(taskManagerContext, tasks, actualProperties, outputFormat);
+                taskPrinter.printTasks(tasks, actualProperties, taskManagerContext);
 
                 if (!tempIDs.isEmpty()) {
                     int hiddenTasks = tempIDs.size() - tasks.size();
@@ -138,8 +139,18 @@ public final class ListTasksCommand extends Command {
         }
     }
 
-    private ViewInfo getView(TaskManagerContext context, String viewName) throws ServiceException {
-        return context.getViewInfoService().getViewInfo(viewName);
+    private TaskPrinter getTaskPrinter(OutputFormatRepository outputFormatRepository, String outputFormatName) {
+        if (outputFormatName == null) {
+            return new GridTaskPrinter('+', '-', '|');
+        } else {
+            OutputFormat outputFormat = outputFormatRepository.get(outputFormatName);
+            if (outputFormat == null) {
+                Print.printError("No such output format: " + outputFormatName);
+                return null;
+            }
+            return TaskPrinter.from(outputFormat);
+        }
     }
+
 }
 

@@ -298,7 +298,7 @@ public class StringToPropertyConverter {
                 return orderedLabel.value();
             } else {
                 throw new StringToPropertyConverterException(StringToPropertyConverterException.Type.OrderedLabelNotFound,
-                        "no such ordered label: " + propertyValueStr, propertyValueStr);
+                        "No such " + orderedLabelSubtype.orderedLabelType() + ": " + propertyValueStr, propertyValueStr);
             }
         }
     }
