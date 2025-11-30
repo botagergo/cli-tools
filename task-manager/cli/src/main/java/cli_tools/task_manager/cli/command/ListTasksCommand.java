@@ -72,7 +72,17 @@ public final class ListTasksCommand extends Command {
                 }
 
                 if (viewInfo.propertiesToList() != null) {
-                    actualProperties = new ArrayList<>(viewInfo.propertiesToList());
+                    List<String> propertiesFromView = new ArrayList<>();
+                    for (String property : viewInfo.propertiesToList()) {
+                        if (context.getPropertyManager().getPropertyDescriptor(property) == null) {
+                            Print.printWarning("Property '" + property + "' does not exist (in view '" + actualViewName + "')");
+                        } else {
+                            propertiesFromView.add(property);
+                        }
+                    }
+                    if (!propertiesFromView.isEmpty()) {
+                        actualProperties = propertiesFromView;
+                    }
                 }
 
                 if (outputFormatName == null) {

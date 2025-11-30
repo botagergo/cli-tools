@@ -92,6 +92,7 @@ public class ArgumentList {
         for (; index < token.length(); index++) {
             currentChar = token.charAt(index);
             if (currentChar == '\\') {
+                currentToken.append('\\');
                 index++;
                 if (index < token.length()) {
                     currentToken.append(token.charAt(index));
@@ -133,7 +134,7 @@ public class ArgumentList {
         } else if (argList.commandName == null && token.matches("^[a-zA-Z]+$")) {
             argList.commandName = token;
         } else {
-            (argList.commandName == null ? argList.leadingPositionalArguments : argList.trailingPositionalArguments).add(currentToken.toString());
+            (argList.commandName == null ? argList.leadingPositionalArguments : argList.trailingPositionalArguments).add(removeEscapes(currentToken.toString()));
         }
     }
 
@@ -161,7 +162,7 @@ public class ArgumentList {
     }
 
     private static void parseOptionArgument(String leftPart, String rightPart, ArgumentList argList) {
-        leftPart = leftPart.substring(1);
+        leftPart = removeEscapes(leftPart.substring(1));
         List<String> valueList = rightPart != null ? getValues(rightPart, ',') : null;
         argList.optionArguments.add(new OptionArgument(leftPart, valueList));
     }
@@ -206,6 +207,21 @@ public class ArgumentList {
         return values;
     }
 
+    private static String removeEscapes(String s) {
+        int n = s.length();
+        StringBuilder sb = new StringBuilder(n);
+
+        for (int i = 0; i < n; i++) {
+            char c = s.charAt(i);
+            if (c == '\\' && i + 1 < n) {
+                i++;                // skip the backslash
+                sb.append(s.charAt(i));  // append escaped char
+            } else {
+                sb.append(c);
+            }
+        }
+        return sb.toString();
+    }
     public static class ArgumentListException extends Exception {
         public ArgumentListException(String msg) {
             super(msg);

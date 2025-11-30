@@ -76,12 +76,7 @@ public class StringToPropertyConverter {
                         propertyName);
             }
 
-            PropertyDescriptor propertyDescriptor;
-            try {
-                propertyDescriptor = propertyDescriptorService.findPropertyDescriptor(propertyName);
-            } catch (ServiceException e) {
-                throw new RuntimeException(e);
-            }
+            PropertyDescriptor propertyDescriptor = propertyDescriptorService.findPropertyDescriptor(propertyName);
 
             if (propertyValue == null) {
                 filterPropertySpecs.add(new FilterPropertySpec(propertyDescriptor, null, propertyArgument.affinity() == Affinity.NEGATIVE, predicate));
@@ -104,12 +99,7 @@ public class StringToPropertyConverter {
             String propertyName = entry.propertyName();
             List<String> propertyValue = entry.values();
 
-            PropertyDescriptor propertyDescriptor;
-            try {
-                propertyDescriptor = propertyDescriptorService.findPropertyDescriptor(propertyName);
-            } catch (ServiceException e) {
-                throw new RuntimeException(e);
-            }
+            PropertyDescriptor propertyDescriptor = propertyDescriptorService.findPropertyDescriptor(propertyName);
 
             Property property = null;
             if (propertyValue != null) {

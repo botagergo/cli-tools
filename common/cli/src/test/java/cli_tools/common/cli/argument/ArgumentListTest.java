@@ -42,6 +42,18 @@ public class ArgumentListTest {
     }
 
     @Test
+    void test_from_escpapeInPositionalArg() throws ArgumentList.ArgumentListException {
+        ArgumentList argList = ArgumentList.from(List.of("\\1", "command", "ar\\g"));
+        Assert.assertEquals(argList.getCommandName(), "command");
+        Assert.assertEquals(argList.getLeadingPositionalArguments(), List.of("1"));
+        Assert.assertEquals(argList.getTrailingPositionalArguments(), List.of("arg"));
+        Assert.assertEquals(argList.getSpecialArguments().size(), 0);
+        Assert.assertEquals(argList.getModifyPropertyArguments().size(), 0);
+        Assert.assertEquals(argList.getFilterPropertyArguments().size(), 0);
+        Assert.assertEquals(argList.getOptionArguments().size(), 0);
+    }
+
+    @Test
     void test_from_emptyTrailingPositionalArg() throws ArgumentList.ArgumentListException {
         ArgumentList argList = ArgumentList.from(List.of("command", ""));
         Assert.assertEquals(argList.getCommandName(), "command");
@@ -542,6 +554,28 @@ public class ArgumentListTest {
                 new PropertyArgument(Affinity.POSITIVE, "prop2", "option1", List.of("value2")),
                 new PropertyArgument(Affinity.NEGATIVE, "prop3", "", List.of("value3")),
                 new PropertyArgument(Affinity.NEGATIVE, "", "predicate", List.of("value4"))));
+    }
+
+    @Test
+    void test_from_propertyArg_escapeInLeftSide() throws ArgumentList.ArgumentListException {
+        ArgumentList argList = ArgumentList.from(List.of("prop\\.one:abcd", "command"));
+        Assert.assertEquals(argList.getCommandName(), "command");
+        Assert.assertEquals(argList.getTrailingPositionalArguments().size(), 0);
+        Assert.assertEquals(argList.getSpecialArguments().size(), 0);
+        Assert.assertEquals(argList.getOptionArguments().size(), 0);
+        Assert.assertEquals(argList.getModifyPropertyArguments().size(), 0);
+        Assert.assertEquals(argList.getFilterPropertyArguments(), List.of(new PropertyArgument(Affinity.NEUTRAL, "prop.one", null, List.of("abcd"))));
+    }
+
+    @Test
+    void test_from_optionArg_escapeInLeftSide() throws ArgumentList.ArgumentListException {
+        ArgumentList argList = ArgumentList.from(List.of("/option\\:one:abcd", "command"));
+        Assert.assertEquals(argList.getCommandName(), "command");
+        Assert.assertEquals(argList.getTrailingPositionalArguments().size(), 0);
+        Assert.assertEquals(argList.getSpecialArguments().size(), 0);
+        Assert.assertEquals(argList.getOptionArguments(), List.of(new OptionArgument("option:one", List.of("abcd"))));
+        Assert.assertEquals(argList.getModifyPropertyArguments().size(), 0);
+        Assert.assertEquals(argList.getFilterPropertyArguments().size(), 0);
     }
 
     @Test

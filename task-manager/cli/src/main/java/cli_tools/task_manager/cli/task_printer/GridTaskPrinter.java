@@ -1,9 +1,6 @@
 package cli_tools.task_manager.cli.task_printer;
 
 import cli_tools.common.backend.property_converter.PropertyConverterException;
-import cli_tools.common.cli.DateTimeFormatter;
-import cli_tools.common.cli.property_to_string_converter.DefaultPropertyToStringConverter;
-import cli_tools.common.cli.property_to_string_converter.MainPropertyToStringConverter;
 import cli_tools.common.cli.property_to_string_converter.PropertyToStringConverter;
 import cli_tools.common.property_lib.Property;
 import cli_tools.common.property_lib.PropertyException;
@@ -39,7 +36,7 @@ public class GridTaskPrinter extends TaskPrinter {
 
         for (Task task : tasks) {
             try {
-                addTaskToTable(table, taskManagerContext, taskManagerContext.getPropertyToStringConverter(), task, properties);
+                addTaskToGrid(table, taskManagerContext, taskManagerContext.getPropertyToStringConverter(), task, properties);
             } catch (PropertyException | PropertyConverterException e) {
                 throw new TaskPrinterException(e.getMessage(), e);
             }
@@ -113,7 +110,7 @@ public class GridTaskPrinter extends TaskPrinter {
         }
     }
 
-    private void addTaskToTable(
+    private void addTaskToGrid(
             SimpleTable table,
             TaskManagerContext context,
             PropertyToStringConverter propertyToStringConverter,

@@ -10,12 +10,20 @@ public class Print {
         System.out.printf(text + "%n", args);
     }
 
+    public static void print(String text) {
+        System.out.printf(text + "%n");
+    }
+
     public static void print() {
         System.out.println();
     }
 
     public static void printError(String text, Object... args) {
         System.out.println(Ansi.ansi().fg(Ansi.Color.RED).a(text.formatted(args)).reset());
+    }
+
+    public static void printError(String text) {
+        System.out.println(Ansi.ansi().fg(Ansi.Color.RED).a(text).reset());
     }
 
     public static void logException(Exception e, Logger log) {
@@ -52,7 +60,15 @@ public class Print {
         System.out.println(Ansi.ansi().fg(Ansi.Color.CYAN).a(text.formatted(args)).reset());
     }
 
+    public static void printInfo(String text) {
+        System.out.println(Ansi.ansi().fg(Ansi.Color.CYAN).a(text).reset());
+    }
+
     public static void printWarning(String text, Object... args) {
         System.out.println(Ansi.ansi().fg(Ansi.Color.YELLOW).a(text.formatted(args)).reset());
+    }
+
+    public static void printWarning(String text) {
+        System.out.println(Ansi.ansi().fg(Ansi.Color.YELLOW).a(text).reset());
     }
 }
