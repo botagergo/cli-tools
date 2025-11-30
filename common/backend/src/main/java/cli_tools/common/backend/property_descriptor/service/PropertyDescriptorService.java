@@ -8,7 +8,7 @@ import java.util.List;
 public interface PropertyDescriptorService {
     void createPropertyDescriptor(PropertyDescriptor propertyDescriptor) throws ServiceException;
 
-    PropertyDescriptor findPropertyDescriptor(String name) throws ServiceException;
+    PropertyDescriptor findPropertyDescriptor(String name, boolean allowPrefix) throws ServiceException;
 
     List<PropertyDescriptor> getPropertyDescriptors() throws ServiceException;
 }

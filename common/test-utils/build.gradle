@@ -1,0 +1,11 @@
+plugins {
+    id 'java-library'
+}
+
+dependencies {
+    implementation          project(':common:util')
+
+    implementation          libs.jakarta.inject.api
+    implementation          libs.testng
+
+}

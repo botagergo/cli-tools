@@ -468,7 +468,7 @@ public class StringToPropertyConverterTest {
     }
 
     private void mockitoPropertyDescriptor(String name, PropertyDescriptor.Type type, PropertyDescriptor.Multiplicity multiplicity) throws ServiceException {
-        Mockito.when(propertyDescriptorService.findPropertyDescriptor(name)).thenReturn(new PropertyDescriptor(name,
+        Mockito.when(propertyDescriptorService.findPropertyDescriptor(name, false)).thenReturn(new PropertyDescriptor(name,
                 type, null, multiplicity, null, null));
     }
 

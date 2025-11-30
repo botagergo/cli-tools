@@ -13,7 +13,7 @@ import java.util.List;
 public record FilterCriterionInfoMixIn(
         String name,
         @JsonProperty(required = true) FilterCriterionInfo.Type type,
-        @JsonProperty("property") String propertyName,
+        @JsonProperty("property") String property,
         List<FilterCriterionInfo> children,
         Predicate predicate,
         Predicate predicateNegated,

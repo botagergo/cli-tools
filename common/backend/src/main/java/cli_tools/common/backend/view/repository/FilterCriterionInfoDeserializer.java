@@ -25,7 +25,7 @@ public class FilterCriterionInfoDeserializer extends JsonDeserializer<FilterCrit
                 throw JsonMappingException.from(ctxt, "NOT filter criterion must have exactly one child");
             }
         } else if (filterCriterionInfo.type() == FilterCriterionInfo.Type.PROPERTY) {
-            if (filterCriterionInfo.propertyName() == null) {
+            if (filterCriterionInfo.property() == null) {
                 throw JsonMappingException.from(ctxt, "'propertyName' is required for property filter criterion");
             }
             if (filterCriterionInfo.predicate() == null && filterCriterionInfo.predicateNegated() == null) {

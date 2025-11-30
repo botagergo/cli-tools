@@ -84,7 +84,7 @@ public class Completer implements org.jline.reader.Completer {
 
             PropertyDescriptor propertyDescriptor;
             try {
-                propertyDescriptor = context.getPropertyDescriptorService().findPropertyDescriptor(propertyName);
+                propertyDescriptor = context.getPropertyDescriptorService().findPropertyDescriptor(propertyName, false);
             } catch (ServiceException e) {
                 Print.logException(e, log);
                 return;

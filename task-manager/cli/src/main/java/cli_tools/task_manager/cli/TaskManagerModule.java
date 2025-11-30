@@ -122,15 +122,13 @@ public class TaskManagerModule extends AbstractModule {
             PropertyManager propertyManager,
             UUIDGenerator uuidGenerator,
             PropertyConverter propertyConverter,
-            @Named("propertyDescriptorObjectMapper") ObjectMapper objectMapper,
-            TempIDManager tempIdManager) {
+            @Named("propertyDescriptorObjectMapper") ObjectMapper objectMapper) {
         return new TaskServiceImpl(
                 taskRepository(objectMapper, uuidGenerator, false),
                 taskRepository(objectMapper, uuidGenerator, true),
                 propertyManager,
                 uuidGenerator,
-                propertyConverter,
-                tempIdManager);
+                propertyConverter);
     }
 
 
@@ -151,7 +149,7 @@ public class TaskManagerModule extends AbstractModule {
     @Provides
     @Singleton
     @Named("propertyMapObjectMapper")
-    ObjectMapper propertyMapObjectMapper(TempIDManager tempIdManager) {
+    ObjectMapper propertyMapObjectMapper() {
         ObjectMapper objectMapper = new ObjectMapper();
         SimpleModule simpleModule = new SimpleModule();
         simpleModule.addSerializer(new MapSerializer());

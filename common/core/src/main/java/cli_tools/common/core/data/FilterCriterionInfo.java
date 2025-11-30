@@ -5,7 +5,7 @@ import java.util.List;
 public record FilterCriterionInfo(
         String name,
         Type type,
-        String propertyName,
+        String property,
         List<FilterCriterionInfo> children,
         Predicate predicate,
         Predicate predicateNegated,

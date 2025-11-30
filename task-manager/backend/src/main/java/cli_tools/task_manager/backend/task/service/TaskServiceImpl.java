@@ -13,7 +13,6 @@ import cli_tools.common.property_lib.PropertyDescriptor;
 import cli_tools.common.property_lib.PropertyException;
 import cli_tools.common.property_lib.PropertyManager;
 import cli_tools.common.backend.sorter.PropertySorter;
-import cli_tools.common.backend.temp_id_mapping.TempIDManager;
 import cli_tools.common.util.UUIDGenerator;
 import cli_tools.task_manager.backend.task.PropertyOwnerTree;
 import cli_tools.task_manager.backend.task.Task;
@@ -40,7 +39,6 @@ public class TaskServiceImpl implements TaskService {
     private PropertyManager propertyManager;
     private UUIDGenerator uuidGenerator;
     private PropertyConverter propertyConverter;
-    private TempIDManager tempIdManager;
 
     @Override
     public @NonNull Task addTask(@NonNull Task task) {
@@ -84,7 +82,6 @@ public class TaskServiceImpl implements TaskService {
         if (taskRepository.delete(taskUuid) == null) {
             throw new TaskNotFoundException(taskUuid);
         }
-        tempIdManager.delete(taskUuid);
     }
 
     @Override
@@ -160,7 +157,6 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public void deleteAllTasks() {
         taskRepository.deleteAll();
-        tempIdManager.deleteAll();
     }
 
     private PropertyOwnerTree getTaskTree(List<PropertyOwnerTree> taskTrees, Map<UUID, PropertyOwnerTree> taskTreeMap, Task task) throws TaskNotFoundException, PropertyException {

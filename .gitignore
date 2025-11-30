@@ -11,3 +11,4 @@ db/build/
 logic/build/
 server/build/
 music-cli/build/
+**/test-output/

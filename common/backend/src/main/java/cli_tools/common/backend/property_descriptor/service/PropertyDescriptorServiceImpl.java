@@ -1,7 +1,6 @@
 package cli_tools.common.backend.property_descriptor.service;
 
 import cli_tools.common.backend.service.ServiceException;
-import cli_tools.common.core.repository.ConfigurationRepository;
 import cli_tools.common.core.repository.PropertyDescriptorRepository;
 import cli_tools.common.property_lib.PropertyDescriptor;
 import jakarta.inject.Inject;
@@ -12,15 +11,11 @@ import java.util.Optional;
 public class PropertyDescriptorServiceImpl implements PropertyDescriptorService {
 
     final PropertyDescriptorRepository propertyDescriptorRepository;
-    private final ConfigurationRepository configurationRepository;
 
     @Inject
     public PropertyDescriptorServiceImpl(
-            PropertyDescriptorRepository propertyDescriptorRepository,
-            ConfigurationRepository configurationRepository
-    ) {
+            PropertyDescriptorRepository propertyDescriptorRepository) {
         this.propertyDescriptorRepository = propertyDescriptorRepository;
-        this.configurationRepository = configurationRepository;
     }
 
     @Override
@@ -29,8 +24,8 @@ public class PropertyDescriptorServiceImpl implements PropertyDescriptorService 
     }
 
     @Override
-    public PropertyDescriptor findPropertyDescriptor(String name) throws ServiceException {
-        if (!configurationRepository.allowPropertyPrefix()) {
+    public PropertyDescriptor findPropertyDescriptor(String name, boolean allowPrefix) throws ServiceException {
+        if (!allowPrefix) {
             return getPropertyDescriptor(name);
         }
 

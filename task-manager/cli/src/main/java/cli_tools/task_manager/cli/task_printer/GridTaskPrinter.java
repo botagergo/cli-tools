@@ -62,7 +62,7 @@ public class GridTaskPrinter extends TaskPrinter {
             }
         }
 
-        GridTable gridTable = Border.of(Border.Chars.of('+', '-', '|')).apply(table.toGrid());
+        GridTable gridTable = Border.of(Border.Chars.of(intersectChar, horizontalChar, verticalChar)).apply(table.toGrid());
         Util.print(gridTable, new PrintWriter(System.out, true));
     }
 

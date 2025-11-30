@@ -10,7 +10,6 @@ import cli_tools.common.backend.property_converter.PropertyConverter;
 import cli_tools.common.property_lib.PropertyDescriptor;
 import cli_tools.common.property_lib.PropertyDescriptorCollection;
 import cli_tools.common.property_lib.PropertyManager;
-import cli_tools.common.backend.temp_id_mapping.TempIDManager;
 import cli_tools.common.util.Utils;
 import cli_tools.task_manager.backend.task.PropertyOwnerTree;
 import cli_tools.task_manager.backend.task.Task;
@@ -45,7 +44,6 @@ public class TaskServiceImplTest {
     @InjectMocks
     private PropertyConverter propertyConverter;
     @Mock
-    private TempIDManager tempIdManager;
     private TaskServiceImpl taskService;
     private PropertyManager propertyManager;
     private SimpleTaskRepository simpleTaskRepository;
@@ -62,8 +60,7 @@ public class TaskServiceImplTest {
                 doneSimpleTaskRepository,
                 propertyManager,
                 null,
-                propertyConverter,
-                tempIdManager
+                propertyConverter
         );
 
         initPropertyDescriptors();

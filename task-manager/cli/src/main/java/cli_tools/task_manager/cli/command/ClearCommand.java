@@ -15,6 +15,7 @@ public class ClearCommand extends Command {
 
         try {
             ((TaskManagerContext) context).getTaskService().deleteAllTasks();
+            context.getTempIdManager().deleteAll();
             context.getLabelService().deleteAllLabels("tag");
         } catch (Exception e) {
             Print.printError(e.getMessage());

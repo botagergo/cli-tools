@@ -29,7 +29,6 @@ import cli_tools.common.util.UUIDGenerator;
 import cli_tools.common.backend.view.repository.JsonViewInfoRepository;
 import cli_tools.common.backend.view.service.ViewInfoService;
 import cli_tools.common.backend.view.service.ViewInfoServiceImpl;
-import cli_tools.task_manager.cli.OsDirs;
 import cli_tools.task_manager.cli.TaskManagerContext;
 import cli_tools.task_manager.cli.command.custom_command.CustomCommandDefinitionMixIn;
 import cli_tools.task_manager.cli.command.custom_command.CustomCommandParserFactoryImpl;
@@ -71,15 +70,13 @@ public class TestModule extends AbstractModule {
     TaskService taskService(
             PropertyManager propertyManager,
             UUIDGenerator uuidGenerator,
-            PropertyConverter propertyConverter,
-            TempIDManager tempIdManager) {
+            PropertyConverter propertyConverter) {
         return new TaskServiceImpl(
                 new JsonTaskRepository(fileUtils.getTempFile("tasks"), uuidGenerator),
                 new JsonTaskRepository(fileUtils.getTempFile("done_tasks"), uuidGenerator),
                 propertyManager,
                 uuidGenerator,
-                propertyConverter,
-                tempIdManager);
+                propertyConverter);
     }
 
     @Provides
@@ -95,7 +92,7 @@ public class TestModule extends AbstractModule {
 
     @Provides
     @Singleton
-    private OutputFormatRepository outputFormatRepository() {
+    OutputFormatRepository outputFormatRepository() {
         return new JsonOutputFormatRepository(fileUtils.getTempFile("output_format"));
     }
 

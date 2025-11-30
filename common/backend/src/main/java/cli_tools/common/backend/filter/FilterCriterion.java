@@ -28,7 +28,7 @@ public abstract class FilterCriterion {
     ) throws ServiceException {
         switch (filterCriterionInfo.type()) {
             case PROPERTY -> {
-                PropertyDescriptor propertyDescriptor = propertyManager.getPropertyDescriptor(filterCriterionInfo.propertyName());
+                PropertyDescriptor propertyDescriptor = propertyManager.getPropertyDescriptor(filterCriterionInfo.property());
                 List<Object> operand = null;
                 if (filterCriterionInfo.operands() != null) {
                     operand = propertyConverter.convertProperty(propertyDescriptor, filterCriterionInfo.operands());
